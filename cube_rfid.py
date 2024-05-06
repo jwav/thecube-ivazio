@@ -7,6 +7,8 @@ import time
 from pynput import keyboard
 from collections import deque
 
+import cube_logger
+
 AZERTY_DICT = {
     '&': '1', 'é': '2', '"': '3', "'": '4', '(': '5',
     '-': '6', 'è': '7', '_': '8', 'ç': '9', 'à': '0'}
@@ -31,6 +33,7 @@ class CubeRfidLine:
 
 class CubeRfidListener:
     def __init__(self):
+        self.log = cube_logger.make_logger("RFID Listener")
         self.current_chars_buffer = deque()  # Use deque for efficient pop/append operations
         self.completed_lines = deque()  # Store completed lines with their timestamps
         self.lock = threading.Lock()  # Lock for thread-safe access to keycodes
@@ -46,8 +49,13 @@ class CubeRfidListener:
         with self.lock:  # Ensure thread-safe modification of the deque
             # Signal that a new line has been entered
             if key == keyboard.Key.enter:
-                self.completed_lines.append(CubeRfidLine(time.time(), "".join(self.current_chars_buffer)))
+                newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
                 self.current_chars_buffer.clear()
+                if newline.is_valid():
+                    self.completed_lines.append(newline)
+                    self.log.info(f"Valid RFID line entered: {newline.line}")
+                else:
+                    self.log.error(f"Invalid RFID line entered: {newline.line}")
             else:
                 try:
                     # convert azerty to qwerty is need be
@@ -72,11 +80,13 @@ class CubeRfidListener:
 if __name__ == "__main__":
     rfid = CubeRfidListener()
     rfid.start()
+    rfid.log.info("RFID listener test. Press Ctrl+C to stop.")
     try:
         while True:
             if lines := rfid.get_completed_lines():
                 for line in lines:
                     print(f"Line entered at {line.timestamp}: {line.line} : {'valid' if line.is_valid() else 'invalid'}")
+                rfid.completed_lines.clear()
     except KeyboardInterrupt:
         print("Stopping listener...")
     finally:

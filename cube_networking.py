@@ -50,7 +50,7 @@ class CubeNetworking:
             time.sleep(1)
 
     @staticmethod
-    def get_self_ip(self):
+    def get_self_ip():
         """Returns the IP of the current node"""
         return socket.gethostbyname(socket.gethostname())
 

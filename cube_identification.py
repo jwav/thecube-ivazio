@@ -86,7 +86,7 @@ class NodesList:
             f"CubeServer: name={self.cubeServer.name}, ip={self.cubeServer.ip}\n" + \
             "\n".join([f"{cubebox.name}: name={cubebox.name}, ip={cubebox.ip}" for cubebox in self.cubeBoxes])
 
-    def set_node_ip_from_node_name(self, node_name, ip):
+    def set_node_ip_from_node_name(self, node_name:str, ip:str):
         if node_name == FRONTDESK_NAME:
             self.frontDesk.ip = ip
         elif node_name == CUBESERVER_NAME:
