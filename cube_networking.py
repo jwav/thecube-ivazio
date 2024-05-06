@@ -1,15 +1,16 @@
 """Handles everything related to networking communications"""
+from collections import deque
+
 import cube_identification as cubeid
 import cube_logger as cube_logger
 
 import threading
 import time
-
-
 import socket
 
 
-
+# TODO : make two threads : one for listening and one for sending
+#  let's just do UDP for now, the whole discovery thing is a pain
 
 class CubeNetworking:
     DISCOVERY_PORT = 5005
@@ -19,18 +20,23 @@ class CubeNetworking:
     DISCOVERY_BUFSIZE = 1024
 
     def __init__(self, node_name: str):
-        self.node_name = node_name
         self.log = cube_logger.make_logger(f"{node_name} Networking")
+
+        # check if the node name is valid. If not, raise an exception
+        if not cubeid.is_valid_node_name(node_name):
+            self.log.error(f"Invalid node name: {node_name}")
+            raise ValueError(f"Invalid node name: {node_name}")
+
+        self.node_name = node_name
         self._thread = None
         self._keep_running = False
 
         self.nodes_list = cubeid.NodesList()
         self.nodes_list.set_node_ip_from_node_name(self.node_name, self.get_self_ip())
 
-        # check if the node name is valid. If not, raise an exception
-        if not cubeid.is_valid_node_name(node_name):
-            self.log.error(f"Invalid node name: {node_name}")
-            raise ValueError(f"Invalid node name: {node_name}")
+        self.outgoing_messages = deque()
+        self.incoming_messages = deque()
+
 
     def start(self):
         """launches a thread running _main_loop"""

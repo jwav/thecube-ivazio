@@ -1,5 +1,7 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
 
+import cube_identification as cubeid
+
 import enum
 
 class CubeMsgType(enum.Enum):
