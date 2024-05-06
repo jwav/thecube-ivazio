@@ -4,8 +4,9 @@ This module handles everything RFID-related for the CubeBox
 
 
 # TODO : add methods to initialize and read from the RFID reader.
-class CubeBoxRfid:
-    pass
+class CubeRfid:
+    def __init__(self):
+        raise NotImplementedError
 
 
 # TODO: perform test read

@@ -2,12 +2,12 @@
 The CubeBox module handles everything in CubeBoxes, i.e. the raspberrypis embedded within TheCube's boxes
 """
 
-from cubebox_rfid import CubeBoxRfid
-from cubebox_button import CubeBoxButton
+import cube_networking as cbnet
 
 
 class CubeBox:
-    def __init__(self):
+    def __init__(self, node_name: str):
+        self.net = cbnet.CubeNetworking(node_name=node_name)
         raise NotImplementedError
 
 
