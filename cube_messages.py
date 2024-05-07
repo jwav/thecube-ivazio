@@ -1,6 +1,5 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
 
-import cube_identification as cubeid
 
 import enum
 
@@ -12,6 +11,8 @@ class CubeMsgType(enum.Enum):
     VERSION_REQUEST = 22
     HEARTBEAT = 30
     ACK = 40
+    WHO_IS = 45
+    I_AM = 50
 
 
     # Cubebox messages
@@ -22,7 +23,7 @@ class CubeMsgType(enum.Enum):
     CUBESERVER_SCORESHEET = 200
     CUBESERVER_TIME_IS_UP = 210
     CUBESERVER_PLAYING_TEAMS = 220
-    WHO_IS = 230
+
 
     # Frontdesk messages
     FRONTDESK_NEW_TEAM = 300
@@ -43,6 +44,11 @@ class CubeMessage:
         self.require_ack = True
         self.kwargs = kwargs
 
+    def hash(self):
+        """Returns an alphanumeric hash of the message 10 chars long."""
+        import hashlib
+        return hashlib.md5(self.to_string().encode()).hexdigest()[:10]
+
     def copy(self):
         ret = CubeMessage(self.msgtype, self.sender, **self.kwargs)
         ret.require_ack = self.require_ack
@@ -59,13 +65,17 @@ class CubeMessage:
         return self.to_string().encode()
 
     @staticmethod
-    def make_from_bytes(self, msg_bytes:bytes):
-        return self.make_from_string(msg_bytes.decode())
+    def make_from_message(msg: 'CubeMessage'):
+        return CubeMessage(msg.msgtype, msg.sender, **msg.kwargs)
 
     @staticmethod
-    def make_from_string(self, msg_str:str):
-        sep = self.SEPARATOR
-        if not msg_str.startswith(self.PREFIX):
+    def make_from_bytes(msg_bytes:bytes):
+        return CubeMessage.make_from_string(msg_bytes.decode())
+
+    @staticmethod
+    def make_from_string(msg_str:str):
+        sep = CubeMessage.SEPARATOR
+        if not msg_str.startswith(CubeMessage.PREFIX):
             return None
         parts = msg_str.split(sep)
         if len(parts) < 3:
@@ -73,8 +83,13 @@ class CubeMessage:
         sender = None
         msgtype = None
         kwargs = {}
+        print(parts)
+        print(parts[1:])
         for part in parts[1:]:
-            key, value = part.split("=")
+            try:
+                key, value = part.split("=")
+            except ValueError:
+                pass
             if key == "sender":
                 sender = value
             elif key == "msgtype":
@@ -95,6 +110,11 @@ class CubeMessage:
     def __repr__(self):
         return self.to_string()
 
+class CubeMsgHeartbeat(CubeMessage):
+    def __init__(self, sender):
+        super().__init__(CubeMsgType.HEARTBEAT, sender)
+        self.require_ack = False
+
 class CubeMsgVersionRequest(CubeMessage):
     def __init__(self, sender):
         super().__init__(CubeMsgType.VERSION_REQUEST, sender)
@@ -105,14 +125,22 @@ class CubeMsgVersionReply(CubeMessage):
         from cube_utils import get_git_branch_date
         super().__init__(CubeMsgType.VERSION_REPLY, sender, version=get_git_branch_date())
 
+class CubeMsgWhoIs(CubeMessage):
+    def __init__(self, sender, node_name_to_find):
+        super().__init__(CubeMsgType.WHO_IS, sender, node_name_to_find=node_name_to_find)
+
+class CubeMsgIAm(CubeMessage):
+    def __init__(self, sender):
+        super().__init__(CubeMsgType.I_AM, sender)
+
 class CubeMsgNewTeam(CubeMessage):
     def __init__(self, sender, team, max_time_sec):
         super().__init__(CubeMsgType.FRONTDESK_NEW_TEAM, sender, team=team, max_time_sec=max_time_sec)
 
 
 class CubeMsgRfidRead(CubeMessage):
-    def __init__(self, sender, uid):
-        super().__init__(CubeMsgType.CUBEBOX_RFID_READ, sender, uid=uid)
+    def __init__(self, sender, uid, timestamp):
+        super().__init__(CubeMsgType.CUBEBOX_RFID_READ, sender, uid=uid, timestamp=timestamp)
 
 
 class CubeMsgButtonPress(CubeMessage):

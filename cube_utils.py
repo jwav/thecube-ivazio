@@ -1,5 +1,7 @@
 """Utility functions for the cube project"""
 
+import time
+
 def get_git_branch_version():
     """
     Get the current git branch and commit hash
@@ -22,6 +24,17 @@ def get_git_branch_date():
         return date
     except subprocess.CalledProcessError:
         return "Unknown"
+
+class SimpleTimer:
+    def __init__(self, timeout):
+        self.timeout = timeout
+        self.start_time = time.time()
+
+    def is_timeout(self):
+        return time.time() - self.start_time >= self.timeout
+
+    def reset(self):
+        self.start_time = time.time()
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())

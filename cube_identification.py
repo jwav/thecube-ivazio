@@ -4,7 +4,7 @@
 - all cubebox servers
 """
 
-from typing import Union, Optional
+from typing import Optional
 
 NB_CUBEBOXES = 12
 FRONTDESK_NAME = "FrontDesk"
@@ -95,6 +95,17 @@ class NodesList:
             cubebox_index = node_name_to_cubebox_index(node_name)
             if cubebox_index is not None:
                 self.cubeBoxes[cubebox_index - 1].ip = ip
+
+    def get_node_ip_from_node_name(self, node_name:str) -> Optional[str]:
+        if node_name == FRONTDESK_NAME:
+            return self.frontDesk.ip
+        elif node_name == CUBESERVER_NAME:
+            return self.cubeServer.ip
+        elif node_name.startswith(CUBEBOX_NAME_PREFIX):
+            cubebox_index = node_name_to_cubebox_index(node_name)
+            if cubebox_index is not None:
+                return self.cubeBoxes[cubebox_index - 1].ip
+        return None
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ This module handles everything RFID-related for the CubeBox
 
 import threading
 import time
+from typing import Union
+
 from pynput import keyboard
 from collections import deque
 
@@ -14,22 +16,15 @@ AZERTY_DICT = {
     '-': '6', 'è': '7', '_': '8', 'ç': '9', 'à': '0'}
 
 
-def on_press(key):
-    try:
-        print(f'Key {key.char} pressed')
-    except AttributeError:
-        print(f'Key {key} with keycode {key.value.vk} pressed')
-
-
 class CubeRfidLine:
     UID_LENGTH = 10
     """Represents a line of RFID data entered by the user with a timestamp"""
-    def __init__(self, timestamp:float, line: str):
+    def __init__(self, timestamp:float, uid: str):
         self.timestamp = timestamp
-        self.line = line
+        self.uid = uid
 
     def is_valid(self):
-        return len(self.line) == self.UID_LENGTH and all([char.isdigit() for char in self.line])
+        return len(self.uid) == self.UID_LENGTH and all([char.isdigit() for char in self.uid])
 
 class CubeRfidListener:
     def __init__(self):
@@ -39,7 +34,7 @@ class CubeRfidListener:
         self.lock = threading.Lock()  # Lock for thread-safe access to keycodes
         self.listener = keyboard.Listener(on_press=self.on_press)
 
-    def on_press(self, key):
+    def on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         try:
             keycode = key.vk  # Get the virtual key code
         except AttributeError:
@@ -53,10 +48,11 @@ class CubeRfidListener:
                 self.current_chars_buffer.clear()
                 if newline.is_valid():
                     self.completed_lines.append(newline)
-                    self.log.info(f"Valid RFID line entered: {newline.line}")
+                    self.log.info(f"Valid RFID line entered: {newline.uid}")
                 else:
-                    self.log.error(f"Invalid RFID line entered: {newline.line}")
+                    self.log.error(f"Invalid RFID line entered: {newline.uid}")
             else:
+                # noinspection PyBroadException
                 try:
                     # convert azerty to qwerty is need be
                     char = key.char if key.char not in AZERTY_DICT else AZERTY_DICT[key.char]
@@ -72,9 +68,11 @@ class CubeRfidListener:
 
     def get_completed_lines(self):
         with self.lock:
-            lines = list(self.completed_lines)
-            self.completed_lines.clear()
-        return lines
+            return list(self.completed_lines)
+
+    def remove_line(self, line: CubeRfidLine):
+        with self.lock:
+            self.completed_lines.remove(line)
 
 
 if __name__ == "__main__":
@@ -85,7 +83,7 @@ if __name__ == "__main__":
         while True:
             if lines := rfid.get_completed_lines():
                 for line in lines:
-                    print(f"Line entered at {line.timestamp}: {line.line} : {'valid' if line.is_valid() else 'invalid'}")
+                    print(f"Line entered at {line.timestamp}: {line.uid} : {'valid' if line.is_valid() else 'invalid'}")
                 rfid.completed_lines.clear()
     except KeyboardInterrupt:
         print("Stopping listener...")
