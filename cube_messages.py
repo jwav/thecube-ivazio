@@ -8,17 +8,21 @@ import enum
 class CubeMsgType(enum.Enum):
     """Enumeration of the different types of messages that can be sent."""
     TEST = 0
+    VERSION_REPLY = 10
+    VERSION_REQUEST = 22
+    HEARTBEAT = 30
+    ACK = 40
 
-    GENERAL_VERSION_INFO = 1
-    GENERAL_HEARTBEAT = 2
+
     # Cubebox messages
     CUBEBOX_RFID_READ = 100
-    CUBEBOX_BUTTON_PRESS = 101
+    CUBEBOX_BUTTON_PRESS = 110
 
     # Cubeserver messages
     CUBESERVER_SCORESHEET = 200
-    CUBESERVER_TIME_IS_UP = 201
-    CUBESERVER_PLAYING_TEAMS = 202
+    CUBESERVER_TIME_IS_UP = 210
+    CUBESERVER_PLAYING_TEAMS = 220
+    WHO_IS = 230
 
     # Frontdesk messages
     FRONTDESK_NEW_TEAM = 300
@@ -29,15 +33,61 @@ class CubeMsgType(enum.Enum):
 
 class CubeMessage:
     """Base class for all messages."""
+    SEPARATOR = "|"
+    PREFIX = "CUBEMSG"
 
     def __init__(self, msgtype: CubeMsgType, sender: str, **kwargs):
         self.msgtype = msgtype
         self.sender = sender
+        # must be manually set to False if no acknowledgement is required
+        self.require_ack = True
         self.kwargs = kwargs
 
+    def copy(self):
+        ret = CubeMessage(self.msgtype, self.sender, **self.kwargs)
+        ret.require_ack = self.require_ack
+        return ret
+
+    def is_valid(self):
+        return all([isinstance(self.sender, str), isinstance(self.msgtype, CubeMsgType), all([isinstance(k, str) for k in self.kwargs.keys()])])
+
     def to_string(self):
-        sep = "|"
-        return f"CUBEMSG{sep}sender={self.sender}{sep}msgtype={self.msgtype.name}{sep}{sep.join([f'{k}={v}' for k, v in self.kwargs.items()])}"
+        sep = self.SEPARATOR
+        return f"{self.PREFIX}{sep}sender={self.sender}{sep}msgtype={self.msgtype.name}{sep}{sep.join([f'{k}={v}' for k, v in self.kwargs.items()])}"
+
+    def to_bytes(self):
+        return self.to_string().encode()
+
+    @staticmethod
+    def make_from_bytes(self, msg_bytes:bytes):
+        return self.make_from_string(msg_bytes.decode())
+
+    @staticmethod
+    def make_from_string(self, msg_str:str):
+        sep = self.SEPARATOR
+        if not msg_str.startswith(self.PREFIX):
+            return None
+        parts = msg_str.split(sep)
+        if len(parts) < 3:
+            return None
+        sender = None
+        msgtype = None
+        kwargs = {}
+        for part in parts[1:]:
+            key, value = part.split("=")
+            if key == "sender":
+                sender = value
+            elif key == "msgtype":
+                msgtype = value
+            else:
+                kwargs[key] = value
+        if not all([sender, msgtype]):
+            return None
+        return CubeMessage(CubeMsgType[msgtype], sender, **kwargs)
+
+    def is_ack_of(self, other: 'CubeMessage'):
+        """Returns True if this message is an acknowledgement of the other message."""
+        return self.msgtype == CubeMsgType.ACK and self.kwargs == other.kwargs
 
     def __str__(self):
         return self.to_string()
@@ -45,6 +95,15 @@ class CubeMessage:
     def __repr__(self):
         return self.to_string()
 
+class CubeMsgVersionRequest(CubeMessage):
+    def __init__(self, sender):
+        super().__init__(CubeMsgType.VERSION_REQUEST, sender)
+        self.require_ack = False
+
+class CubeMsgVersionReply(CubeMessage):
+    def __init__(self, sender):
+        from cube_utils import get_git_branch_date
+        super().__init__(CubeMsgType.VERSION_REPLY, sender, version=get_git_branch_date())
 
 class CubeMsgNewTeam(CubeMessage):
     def __init__(self, sender, team, max_time_sec):

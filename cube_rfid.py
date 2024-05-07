@@ -64,7 +64,7 @@ class CubeRfidListener:
                 except:
                     pass
 
-    def start(self):
+    def run(self):
         self.listener.start()
 
     def stop(self):
@@ -79,7 +79,7 @@ class CubeRfidListener:
 
 if __name__ == "__main__":
     rfid = CubeRfidListener()
-    rfid.start()
+    rfid.run()
     rfid.log.info("RFID listener test. Press Ctrl+C to stop.")
     try:
         while True:
