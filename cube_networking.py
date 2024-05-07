@@ -144,7 +144,7 @@ class CubeNetworking:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             sock.sendto(message, (self.DISCOVERY_BROADCAST_IP, self.DISCOVERY_PORT))
-            while True:
+            while self._keep_running and time.time() < time.time() + timeout:
                 try:
                     sock.settimeout(timeout)
                     data, addr = sock.recvfrom(self.UDP_BUFSIZE)
@@ -177,7 +177,7 @@ class CubeNetworking:
         self.log.info("Starting discovery response loop")
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.bind((self.DISCOVERY_LISTEN_IP, self.DISCOVERY_PORT))
-            while True:
+            while self._keep_running:
                 data, addr = sock.recvfrom(self.UDP_BUFSIZE)
                 self.log.debug(f"Received message: {data.decode()} from {addr}")
                 if data.decode() == cubeid.IDENTIFICATION_MESSAGE:
@@ -235,7 +235,7 @@ class CubeNetworking:
 
         self.log.debug(f"Waiting for ack of message: {message}, timeout: {timeout} s")
 
-        while True:
+        while self._keep_running:
             if timeout != 0 and time.time() > end_time:
                 self.log.debug("Ack timeout")
                 return False

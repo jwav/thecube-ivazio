@@ -42,8 +42,11 @@ class CubeBoxButton:
         self._thread.start()
 
     def stop(self):
+        print("Stopping button thread...")
+        self.listener.stop()
         self._keep_running = False
         self._thread.join()
+        print("Button thread stopped")
 
     def reset(self):
         self._pressed = False
@@ -63,7 +66,7 @@ class CubeBoxButton:
                 if not self._timer_started:
                     self._press_timer.reset()
                     self._timer_started = True
-                    print("starting button timer")
+                    #print("starting button timer")
                 if self._timer_started and self._press_timer.is_timeout():
                     self._pressed_long_enough = True
             else: # if not pressed
