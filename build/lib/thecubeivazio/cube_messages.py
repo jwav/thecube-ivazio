@@ -2,6 +2,7 @@
 
 
 import enum
+import time
 
 
 class CubeMsgType(enum.Enum):
@@ -40,6 +41,7 @@ class CubeMessage:
     def __init__(self, msgtype: CubeMsgType, sender: str, **kwargs):
         self.msgtype = msgtype
         self.sender = sender
+        self.sender_ip = None
         # must be manually set to False if no acknowledgement is required
         self.require_ack = True
         self.kwargs = kwargs
@@ -103,7 +105,7 @@ class CubeMessage:
 
     def is_ack_of(self, other: 'CubeMessage'):
         """Returns True if this message is an acknowledgement of the other message."""
-        return self.msgtype == CubeMsgType.ACK and self.kwargs == other.kwargs
+        return self.msgtype == CubeMsgType.ACK and self.kwargs.get("acked_hash") == other.hash
 
     def __str__(self):
         return self.to_string()
@@ -111,47 +113,64 @@ class CubeMessage:
     def __repr__(self):
         return self.to_string()
 
+class CubeMsgAck(CubeMessage):
+    """Sent from a node to another node to acknowledge a message."""
+    def __init__(self, sender, acked_msg):
+        super().__init__(CubeMsgType.ACK, sender, acked_hash=acked_msg.hash)
+        self.require_ack = False
+
 class CubeMsgHeartbeat(CubeMessage):
+    """Sent from a node to everyone to signal its presence."""
     def __init__(self, sender):
         super().__init__(CubeMsgType.HEARTBEAT, sender)
         self.require_ack = False
 
 class CubeMsgVersionRequest(CubeMessage):
+    """Sent from a node to another node to ask for its version."""
     def __init__(self, sender):
         super().__init__(CubeMsgType.VERSION_REQUEST, sender)
         self.require_ack = False
 
 class CubeMsgVersionReply(CubeMessage):
+    """Sent from a node to another node in response to a VERSION_REQUEST message."""
     def __init__(self, sender):
         from cube_utils import get_git_branch_date
         super().__init__(CubeMsgType.VERSION_REPLY, sender, version=get_git_branch_date())
 
 class CubeMsgWhoIs(CubeMessage):
+    """Sent from whatever node to everyone to ask who is a specific node (asking for IP)."""
     def __init__(self, sender, node_name_to_find):
         super().__init__(CubeMsgType.WHO_IS, sender, node_name_to_find=node_name_to_find)
 
 class CubeMsgIAm(CubeMessage):
+    """Sent from whatever node to everyone to announce its presence."""
     def __init__(self, sender):
         super().__init__(CubeMsgType.I_AM, sender)
 
 class CubeMsgNewTeam(CubeMessage):
+    """Sent from the Frontdesk to the CubeServer when a new team is registered."""
     def __init__(self, sender, team, max_time_sec):
         super().__init__(CubeMsgType.FRONTDESK_NEW_TEAM, sender, team=team, max_time_sec=max_time_sec)
 
 
 class CubeMsgRfidRead(CubeMessage):
+    """Sent from the CubeBox to the CubeServer when an RFID tag is read."""
     def __init__(self, sender, uid, timestamp):
         super().__init__(CubeMsgType.CUBEBOX_RFID_READ, sender, uid=uid, timestamp=timestamp)
 
 
 class CubeMsgButtonPress(CubeMessage):
+    """Sent from the CubeBox to the CubeServer when the button is pressed."""
     def __init__(self, sender):
         super().__init__(CubeMsgType.CUBEBOX_BUTTON_PRESS, sender)
+        self.require_ack = True
 
 
 class CubeMsgScoresheet(CubeMessage):
+    """Sent from the CubeServer to the Frontdesk to update the scoresheet of a team that just finished playing."""
     def __init__(self, sender, scoresheet):
         super().__init__(CubeMsgType.CUBEBOX_BUTTON_PRESS, sender, scoresheet=scoresheet)
+        self.require_ack = True
 
 
 class CubeMsgTimeIsUp(CubeMessage):
@@ -159,10 +178,11 @@ class CubeMsgTimeIsUp(CubeMessage):
         super().__init__(CubeMsgType.CUBESERVER_TIME_IS_UP, sender, team=team)
 
 
+
 if __name__ == "__main__":
     # test the CubeMessage class and all its subclasses
     sender_name = "FooSender"
     print(CubeMessage(CubeMsgType.TEST, sender_name, a=1, b=2, c=3))
-    print(CubeMsgRfidRead(sender_name, "1234567890"))
+    print(CubeMsgRfidRead(sender_name, uid="1234567890", timestamp=time.time()))
     print(CubeMsgButtonPress(sender_name))
     print(CubeMsgNewTeam(sender_name, "Team1", 1200))

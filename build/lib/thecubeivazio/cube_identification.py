@@ -7,6 +7,8 @@
 from typing import Optional
 
 NB_CUBEBOXES = 12
+FIRST_CUBEBOX_INDEX = 1
+CUBE_IDS = range(FIRST_CUBEBOX_INDEX, FIRST_CUBEBOX_INDEX + NB_CUBEBOXES)
 FRONTDESK_NAME = "FrontDesk"
 CUBESERVER_NAME = "CubeServer"
 CUBEBOX_NAME_PREFIX = "CubeBox"
@@ -109,6 +111,7 @@ class NodesList:
 
 
 if __name__ == "__main__":
+    print([x for x in CUBE_IDS])
     nodes_list = NodesList()
     # display the list of all nodes, names and ips
     print(nodes_list.to_string())

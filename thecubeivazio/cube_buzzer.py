@@ -17,6 +17,7 @@ class CubeBuzzer:
         self._lock = threading.Lock()
         # check if on RaspberryPi
         try:
+            # noinspection PyUnresolvedReferences
             import RPi.GPIO as GPIO
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.BUZZER_PIN, GPIO.OUT)
@@ -65,9 +66,9 @@ class CubeBuzzer:
         cycles = int(duration * pitch)  # Number of cycles for the tone
 
         for i in range(cycles):
-            GPIO.output(buzzer_pin, True)
+            GPIO.output(self.BUZZER_PIN, True)
             time.sleep(delay)
-            GPIO.output(buzzer_pin, False)
+            GPIO.output(self.BUZZER_PIN, False)
             time.sleep(delay)
 
     def play_rfid_ok_sound(self):

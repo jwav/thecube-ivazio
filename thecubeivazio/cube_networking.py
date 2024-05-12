@@ -8,7 +8,7 @@ import threading
 import time
 import socket
 from collections import deque
-from typing import Deque, List, Tuple, Dict
+from typing import Deque, Tuple, Dict
 
 from thecubeivazio.cube_messages import CubeMessage
 
@@ -137,6 +137,7 @@ class CubeNetworking:
             port = self.UDP_PORT
         if timeout is None:
             timeout = self.UDP_LISTEN_TIMEOUT
+        # noinspection PyBroadException
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
                 self.log.debug(f"Getting UDP packet from ip={ip}, port={port}, timeout={timeout}")

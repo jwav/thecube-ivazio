@@ -136,4 +136,5 @@ if __name__ == "__main__":
     try:
         box.run()
     except KeyboardInterrupt:
+        print("KeyboardInterrupt. Stopping CubeBox...")
         box.stop()

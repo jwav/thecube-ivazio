@@ -79,9 +79,9 @@ class CubeRfidListener:
         with self.lock:
             return list(self.completed_lines)
 
-    def remove_line(self, line: CubeRfidLine):
+    def remove_line(self, rfid_line: CubeRfidLine):
         with self.lock:
-            self.completed_lines.remove(line)
+            self.completed_lines.remove(rfid_line)
 
 
 if __name__ == "__main__":

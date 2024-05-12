@@ -110,4 +110,5 @@ if __name__ == "__main__":
     try:
         cs.run()
     except KeyboardInterrupt:
+        print("KeyboardInterrupt received. Stopping CubeServer...")
         cs.stop()

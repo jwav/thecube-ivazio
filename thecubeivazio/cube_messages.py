@@ -2,6 +2,7 @@
 
 
 import enum
+import time
 
 
 class CubeMsgType(enum.Enum):
@@ -91,7 +92,7 @@ class CubeMessage:
             try:
                 key, value = part.split("=")
             except ValueError:
-                pass
+                continue
             if key == "sender":
                 sender = value
             elif key == "msgtype":
@@ -182,6 +183,6 @@ if __name__ == "__main__":
     # test the CubeMessage class and all its subclasses
     sender_name = "FooSender"
     print(CubeMessage(CubeMsgType.TEST, sender_name, a=1, b=2, c=3))
-    print(CubeMsgRfidRead(sender_name, "1234567890"))
+    print(CubeMsgRfidRead(sender_name, uid="1234567890", timestamp=time.time()))
     print(CubeMsgButtonPress(sender_name))
     print(CubeMsgNewTeam(sender_name, "Team1", 1200))

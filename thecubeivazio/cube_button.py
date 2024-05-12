@@ -3,14 +3,11 @@ This module handles everything button-related for the CubeBox
 It is meant to interact with the Raspberry Pi's GPIO pins,
 but when testing on a regular computer, it will simply tell if the 'v' key is pressed
 """
+from thecubeivazio import cube_logger
+from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
+
 import logging
 import threading
-
-from thecubeivazio import cube_logger
-
-from thecubeivazio.cube_utils import SimpleTimer
-from thecubeivazio.cube_utils import XvfbManager
-
 import time
 from typing import Union
 
@@ -26,11 +23,13 @@ class CubeButton:
     DEBOUNCE_TIME = 1
     PERIOD = 0.01
     BUTTON_PIN = 18
+
     def __init__(self):
         self.log = cube_logger.make_logger(name="Button")
         self.log.setLevel(logging.INFO)
         # test if we're on a Raspberry Pi or not
         try:
+            # noinspection PyUnresolvedReferences
             import RPi.GPIO as GPIO
             self.GPIO = GPIO
             self.GPIO.setmode(GPIO.BCM)
@@ -38,8 +37,8 @@ class CubeButton:
             self._is_raspberry_pi = True
         except ModuleNotFoundError:
             self.GPIO = None
-            self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
-            self.listener.start()
+            self.keyboard_listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
+            self.keyboard_listener.start()
             self.log.info("Not on a Raspberry Pi, using 'v' key to simulate button press")
             self._is_raspberry_pi = False
         self._pressed = False
@@ -57,16 +56,14 @@ class CubeButton:
     def stop(self):
         self.log.info("Stopping button thread...")
         # noinspection PyBroadException
-        try:
-            self.listener.stop()
-        except:
-            pass
+        if not self._is_raspberry_pi:
+            self.keyboard_listener.stop()
         self._keep_running = False
-        self._thread.join()
+        self._thread.join(timeout=1)
         self.log.info("Button thread stopped")
 
     def reset(self):
-        #print("Resetting button")
+        # print("Resetting button")
         self._pressed = False
         self._timer_started = False
         self._press_timer.reset()
@@ -90,11 +87,11 @@ class CubeButton:
                     self._press_timer.reset()
                     self.log.debug("resetting button timer")
                     self._timer_started = True
-                    #print("starting button timer")
+                    # print("starting button timer")
                 if self._timer_started and self._press_timer.is_timeout():
                     self.log.debug("Button pressed long enough")
                     self._pressed_long_enough = True
-            else: # if not pressed
+            else:  # if not pressed
                 self.reset()
             time.sleep(self.PERIOD)
 
@@ -112,13 +109,10 @@ class CubeButton:
             # print("v key pressed")
             self._pressed = True
 
-
     def on_release(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         if hasattr(key, 'char') and key.char == 'v':
             # print("v key released")
             self._pressed = False
-
-
 
 
 # TODO: perform test read
@@ -126,12 +120,17 @@ if __name__ == "__main__":
     btn = CubeButton()
     btn.log.setLevel(logging.DEBUG)
     btn.run()
-    while True:
-        print("Button ON" if btn.is_pressed_now() else "Button OFF")
-        if btn.has_been_pressed_long_enough():
-            print("Button pressed long enough")
-            print("Waiting for button to be released...")
-            btn.wait_until_released()
-            print("Button released")
-            btn.reset()
-        time.sleep(0.5)
+    try:
+        while True:
+            print("Button ON" if btn.is_pressed_now() else "Button OFF")
+            if btn.has_been_pressed_long_enough():
+                print("Button pressed long enough")
+                print("Waiting for button to be released...")
+                btn.wait_until_released()
+                print("Button released")
+                btn.reset()
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        btn.stop()
+        print("Button test stopped")
+        exit(0)

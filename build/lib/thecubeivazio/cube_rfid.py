@@ -2,14 +2,18 @@
 This module handles everything RFID-related for the CubeBox
 """
 
+import thecubeivazio.cube_logger as cube_logger
+from thecubeivazio.cube_utils import XvfbManager
+
 import threading
 import time
 from typing import Union
-
-from pynput import keyboard
 from collections import deque
 
-import cube_logger
+# pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
+if not XvfbManager.has_x_server():
+    XvfbManager.start_xvfb()
+from pynput import keyboard
 
 AZERTY_DICT = {
     '&': '1', 'é': '2', '"': '3', "'": '4', '(': '5',
@@ -19,12 +23,14 @@ AZERTY_DICT = {
 class CubeRfidLine:
     UID_LENGTH = 10
     """Represents a line of RFID data entered by the user with a timestamp"""
-    def __init__(self, timestamp:float, uid: str):
+
+    def __init__(self, timestamp: float, uid: str):
         self.timestamp = timestamp
         self.uid = uid
 
     def is_valid(self):
         return len(self.uid) == self.UID_LENGTH and all([char.isdigit() for char in self.uid])
+
 
 class CubeRfidListener:
     def __init__(self):
@@ -42,23 +48,24 @@ class CubeRfidListener:
         if keycode is None:
             return
         with self.lock:  # Ensure thread-safe modification of the deque
-            # Signal that a new line has been entered
-            if key == keyboard.Key.enter:
-                newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
-                self.current_chars_buffer.clear()
-                if newline.is_valid():
-                    self.completed_lines.append(newline)
-                    self.log.info(f"Valid RFID line entered: {newline.uid}")
+            # noinspection PyBroadException
+            try:
+                # Signal that a new line has been entered
+                if key == keyboard.Key.enter:
+                    newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
+                    self.current_chars_buffer.clear()
+                    if newline.is_valid():
+                        self.completed_lines.append(newline)
+                        self.log.info(f"Valid RFID line entered: {newline.uid}")
+                    else:
+                        self.log.error(f"Invalid RFID line entered: {newline.uid}")
                 else:
-                    self.log.error(f"Invalid RFID line entered: {newline.uid}")
-            else:
-                # noinspection PyBroadException
-                try:
+
                     # convert azerty to qwerty is need be
                     char = key.char if key.char not in AZERTY_DICT else AZERTY_DICT[key.char]
                     self.current_chars_buffer.append(char)
-                except:
-                    pass
+            except:
+                pass
 
     def run(self):
         self.listener.start()
@@ -72,9 +79,9 @@ class CubeRfidListener:
         with self.lock:
             return list(self.completed_lines)
 
-    def remove_line(self, line: CubeRfidLine):
+    def remove_line(self, rfid_line: CubeRfidLine):
         with self.lock:
-            self.completed_lines.remove(line)
+            self.completed_lines.remove(rfid_line)
 
 
 if __name__ == "__main__":
