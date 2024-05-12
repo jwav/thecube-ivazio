@@ -1,6 +1,8 @@
 """
 This module handles everything RFID-related for the CubeBox
 """
+import re
+import subprocess
 
 import thecubeivazio.cube_logger as cube_logger
 from thecubeivazio.cube_utils import XvfbManager
@@ -28,7 +30,43 @@ def rfid_raw_test():
         if line:
             print(f"RFID card UID: {line}")
 
+def get_usb_device_name(vendor_id, product_id):
+    # Run lsusb command and capture its output
+    lsusb_output = subprocess.check_output(['lsusb']).decode('utf-8')
 
+    # Construct regex pattern to match the device line
+    pattern = r'(\d+:\d+)\s+(.*?)\s+(.*?)$'
+
+    # Search for the device line using regex
+    match = re.search(pattern, lsusb_output, re.MULTILINE)
+
+    # Loop through each line of lsusb output
+    while match:
+        # Check if the vendor and product IDs match
+        if vendor_id in match.group(2) and product_id in match.group(2):
+            # Extract the device name from the matched line
+            device_name = match.group(3)
+
+            # Replace spaces with underscores in device name
+            device_name = device_name.replace(' ', '_')
+
+            return device_name
+
+        # Search for the next device line
+        match = re.search(pattern, lsusb_output, re.MULTILINE)
+
+    return None
+
+def usb_get_test():
+    # Example usage: Get the device name for a specific vendor and product ID
+    vendor_id = 'ffff'  # Replace with your actual vendor ID
+    product_id = '0035' # Replace with your actual product ID
+    device_name = get_usb_device_name(vendor_id, product_id)
+
+    if device_name:
+        print(f"USB device name: {device_name}")
+    else:
+        print("USB device not found.")
 
 
 class CubeRfidLine:
@@ -96,7 +134,8 @@ class CubeRfidListener:
 
 
 if __name__ == "__main__":
-    rfid_raw_test()
+    # rfid_raw_test()
+    usb_get_test()
     exit(0)
     rfid = CubeRfidListener()
     rfid.run()
