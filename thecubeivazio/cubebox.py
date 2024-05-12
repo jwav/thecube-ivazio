@@ -13,6 +13,9 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
 import thecubeivazio.cube_buzzer as cube_buzzer
 
+print("cube logger contents:")
+print(dir(cube_logger))
+
 
 
 # TODO: put rfid, button, and networking in separate threads
