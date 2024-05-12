@@ -8,7 +8,8 @@ import threading
 
 from thecubeivazio import cube_logger
 
-from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
+from thecubeivazio.cube_utils import SimpleTimer
+from thecubeivazio.cube_utils import XvfbManager
 
 import time
 from typing import Union
