@@ -33,6 +33,7 @@ def rfid_raw_test():
 def get_usb_device_name(vendor_id, product_id):
     # Run lsusb command and capture its output
     lsusb_output = subprocess.check_output(['lsusb']).decode('utf-8')
+    print("lsusb_output:", lsusb_output)
 
     # Construct regex pattern to match the device line
     pattern = r'(\d+:\d+)\s+(.*?)\s+(.*?)$'
