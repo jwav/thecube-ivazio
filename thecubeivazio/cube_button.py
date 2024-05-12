@@ -14,6 +14,7 @@ from thecubeivazio.cube_utils import XvfbManager
 import time
 from typing import Union
 
+# pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
 if not XvfbManager.has_x_server():
     XvfbManager.start_xvfb()
 from pynput import keyboard
