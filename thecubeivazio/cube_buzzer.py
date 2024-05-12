@@ -59,6 +59,7 @@ class CubeBuzzer:
 
     def buzz(self, pitch:int, duration:float):
         """Play a tone on the buzzer."""
+        self.log.info(f"Playing tone: {pitch} Hz for {duration} seconds")
         if not self._is_raspberry_pi:
             return
         if pitch == 0:
