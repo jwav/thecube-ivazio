@@ -6,6 +6,7 @@ import os
 import atexit
 
 
+# aaa
 
 def get_git_branch_version():
     """
