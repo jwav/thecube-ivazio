@@ -36,9 +36,10 @@ def get_usb_device_name(vendor_id, product_id):
     print("lsusb_output:", lsusb_output)
 
     # Construct regex pattern to match the device line
-    pattern = r'(\d+:\d+)\s+(.*?)\s+(.*?)$'
+    pattern = r'ID\s([a-fA-F0-9]+):([a-fA-F0-9]+)'
 
-    # Search for the device line using regex
+
+# Search for the device line using regex
     match = re.search(pattern, lsusb_output, re.MULTILINE)
 
     # Loop through each line of lsusb output
