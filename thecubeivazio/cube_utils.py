@@ -6,6 +6,7 @@ import os
 import atexit
 
 
+
 def get_git_branch_version():
     """
     Get the current git branch and commit hash
