@@ -895,3 +895,365 @@
 2024-05-12 19:59:53,048 - CubeBox1 Networking - INFO - Networking stopped
 2024-05-12 19:59:53,485 - CubeServer Networking - INFO - Stopping networking...
 2024-05-12 19:59:54,493 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 20:02:50,067 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:02:50,094 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 20:02:50,154 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:02:50,159 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:02:50,231 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 20:02:50,237 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:02:50,247 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 20:02:50,311 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:02:50,357 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:02:51,463 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:51,500 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:51,520 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:51,540 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:02:51,560 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:51,586 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:51,608 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 20:02:51,608 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 20:02:51,616 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:51,632 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 20:02:51,674 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 20:02:51,705 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 20:02:51,737 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 20:02:51,748 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:02:51,759 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 20:02:51,795 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.150:5005
+2024-05-12 20:02:57,288 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:57,319 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:57,329 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:57,335 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:02:57,345 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:57,365 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:57,487 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:02:59,290 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:59,315 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:59,356 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:59,367 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:02:59,377 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:59,382 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:59,408 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:02:59,591 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:01,316 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,342 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,398 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,419 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:01,429 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,439 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,450 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,470 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:01,591 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:03,311 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,343 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,358 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,384 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:03,404 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,450 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,461 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,482 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:03,633 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:05,336 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,409 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,424 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,425 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:05,539 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:07,344 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,375 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,395 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,411 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:07,421 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,442 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,457 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,493 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,518 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,523 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,529 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:07,656 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:09,376 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,407 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,417 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,448 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:09,463 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,484 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,535 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,556 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,576 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,598 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,613 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,640 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:09,768 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:11,376 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,418 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,443 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,459 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:11,484 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,510 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,551 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,577 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,598 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,625 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,676 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,692 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,712 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:11,840 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:13,380 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,406 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,416 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,426 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:13,437 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,447 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,462 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,473 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,494 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,524 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,535 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,545 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,565 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,591 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:13,755 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:15,405 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,467 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,482 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,498 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:15,534 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,580 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,595 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,646 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,682 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,702 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,723 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,744 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,784 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,805 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,825 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:15,942 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:17,407 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,439 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,464 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,506 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:17,516 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,552 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,573 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,613 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,634 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,660 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,681 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,702 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,717 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,738 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,768 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,779 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:17,911 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:19,414 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,526 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,542 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,552 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:19,562 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,588 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,634 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,691 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,722 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,737 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,763 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,773 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,783 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,814 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,829 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,840 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:19,871 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:20,038 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:21,431 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,458 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,483 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,517 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:21,538 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,554 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,587 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,609 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,639 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,670 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,747 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,760 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,760 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,761 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,761 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,761 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,761 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,761 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:21,887 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:23,371 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 20:03:23,421 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,437 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,463 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,489 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:23,540 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,566 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,597 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,607 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,618 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,628 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,638 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,654 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,664 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,706 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,735 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,771 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,792 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,818 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:23,854 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:24,005 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 20:03:25,085 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:25,251 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 20:03:25,293 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:03:25,293 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:03:25,344 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 20:03:25,349 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:03:25,360 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 20:03:25,375 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:03:25,437 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:27,453 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:27,484 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:27,500 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:27,510 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:27,510 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:27,520 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 20:03:27,531 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:27,531 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:27,551 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 20:03:27,592 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 20:03:27,633 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 20:03:27,674 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 20:03:27,700 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 20:03:27,741 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:27,749 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 20:03:27,846 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.150:5005
+2024-05-12 20:03:55,716 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:55,747 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:55,762 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:55,783 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:55,803 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:55,819 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:55,982 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:57,753 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:57,783 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:57,804 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:57,814 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:57,825 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:57,835 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:57,845 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:57,993 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:03:59,766 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:59,787 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:59,817 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:59,833 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:03:59,843 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:59,854 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:59,925 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:03:59,946 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:00,109 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:04:01,754 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,790 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,812 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,838 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:04:01,863 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,884 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,899 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,925 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:01,935 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:02,115 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:04:02,894 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:02,935 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:02,976 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,008 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:04:03,045 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,075 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,096 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,132 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,168 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,209 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:04:03,463 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:06:16,464 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,495 - CubeServer Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,510 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,582 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:06:16,633 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:16,638 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:16,648 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:16,654 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:16,684 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:16,715 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:16,721 - CubeServer Networking - DEBUG - Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,731 - CubeServer Networking - INFO - Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,731 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,736 - CubeServer Networking - DEBUG - Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 20:06:16,879 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:06:23,491 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,537 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,542 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,568 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:06:23,604 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,614 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,635 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,655 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,671 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,686 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,702 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:23,829 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:06:25,492 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,533 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,539 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,561 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:06:25,577 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,597 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,613 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,639 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,659 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,680 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,706 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,737 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:25,942 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:06:27,512 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,533 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,554 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,569 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:06:27,585 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,631 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,652 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,662 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,703 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,718 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,734 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,750 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,780 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:27,915 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:06:28,008 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 20:06:29,018 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 20:06:29,357 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 20:06:29,502 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 20:06:29,523 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:29,549 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 20:06:29,554 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.150', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:29,596 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:29,601 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 20:06:29,632 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 20:06:29,652 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 20:06:29,672 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:29,690 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:29,706 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 20:06:29,711 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 20:06:29,748 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 20:06:29,788 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 20:06:29,807 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 20:06:29,808 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 20:06:29,813 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 20:06:29,819 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 20:06:29,858 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.150:5005
+2024-05-12 20:06:29,863 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0

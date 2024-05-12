@@ -7,6 +7,11 @@ from typing import Tuple
 
 from thecubeivazio import cube_logger
 
+try:
+    # noinspection PyUnresolvedReferences
+    import RPi.GPIO as GPIO
+except ModuleNotFoundError:
+    GPIO = None
 
 class CubeBuzzer:
     BUZZER_PIN = 17
@@ -16,13 +21,11 @@ class CubeBuzzer:
         self._thread = None
         self._lock = threading.Lock()
         # check if on RaspberryPi
-        try:
-            # noinspection PyUnresolvedReferences
-            import RPi.GPIO as GPIO
+        if GPIO is not None:
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.BUZZER_PIN, GPIO.OUT)
             self._is_raspberry_pi = True
-        except ModuleNotFoundError:
+        else:
             self.log.info("Not on a Raspberry Pi, using sound files to simulate buzzer")
             self._is_raspberry_pi = False
 
