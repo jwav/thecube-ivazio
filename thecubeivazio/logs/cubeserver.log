@@ -1,0 +1,284 @@
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+msg require ack? False, require_ack? False
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+Not waiting for ack
+Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Handling common incoming messages
+Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Received message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Added node CubeBox1 to the nodes list
+Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Cannot remove message from listen queue (468733a2ee) :  CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Handling common incoming messages
+Received button press message from CubeBox1
+Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Handling common incoming messages
+Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received button press message from CubeBox1
+Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Received message: 245134ce9f from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Ignoring message from self : (245134ce9f) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Not waiting for ack
+Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Handling common incoming messages
+Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received button press message from CubeBox1
+Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+msg require ack? False, require_ack? False
+Not waiting for ack
+Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Handling common incoming messages
+Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received button press message from CubeBox1
+Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+msg require ack? False, require_ack? False
+Not waiting for ack
+Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Stopping networking...
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+msg require ack? False, require_ack? False
+Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+Not waiting for ack
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Handling common incoming messages
+Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Added node CubeBox1 to the nodes list
+Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Handling common incoming messages
+Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Received button press message from CubeBox1
+Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+msg require ack? False, require_ack? False
+Not waiting for ack
+Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+Stopping networking...
+Networking stopped
+2024-05-12 16:33:14,217 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:14,365 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:33:14,412 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,422 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,443 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:14,463 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,468 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:14,484 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,546 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:18,927 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,958 - CubeServer Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,974 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,005 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 16:33:19,025 - CubeServer Networking - DEBUG - Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,036 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 16:33:19,025 - CubeServer - DEBUG - Received message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,046 - CubeServer Networking - INFO - Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,057 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,083 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,108 - CubeServer Networking - DEBUG - Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,189 - CubeServer Networking - ERROR - Cannot remove message from listen queue (468733a2ee) :  CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,378 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:23,238 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,259 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,279 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,279 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,290 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 16:33:23,300 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 16:33:23,305 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,326 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,377 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 16:33:23,494 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,525 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:23,535 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:23,535 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:23,576 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 16:33:23,587 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+2024-05-12 16:33:23,619 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,662 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:23,680 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:23,707 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,738 - CubeServer Networking - DEBUG - Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,749 - CubeServer Networking - DEBUG - Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:34:21,809 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 16:41:11,315 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:11,468 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:41:11,504 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,509 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,535 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:41:11,570 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,591 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:41:11,627 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,689 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:12,434 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 16:41:14,456 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 16:41:22,554 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:22,673 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:41:22,698 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,719 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,719 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,729 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,770 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:41:22,781 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:22,826 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:41:25,182 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 16:41:26,203 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 18:13:49,517 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:13:49,674 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:13:49,720 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,725 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,746 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:13:49,751 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,766 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:13:49,787 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,838 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:13:58,236 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 18:14:21,394 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:21,554 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:14:21,615 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,636 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,652 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:21,672 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,677 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:21,738 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,795 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:49,513 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,524 - CubeServer Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,535 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,581 - CubeServer - DEBUG - Received message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,571 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 18:14:49,597 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,602 - CubeServer Networking - DEBUG - Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,619 - CubeServer Networking - DEBUG - Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,629 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 18:14:49,671 - CubeServer Networking - INFO - Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,707 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,719 - CubeServer Networking - ERROR - Cannot remove message from listen queue (468733a2ee) :  CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,866 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:52,410 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,446 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,461 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,472 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,487 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 18:14:52,497 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 18:14:52,513 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,518 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,554 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 18:14:52,616 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,645 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:52,655 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:52,676 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:52,697 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 18:14:52,712 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+2024-05-12 18:14:52,748 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,779 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:52,855 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:52,891 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,907 - CubeServer Networking - DEBUG - Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,932 - CubeServer Networking - DEBUG - Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:17:38,058 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 18:38:25,132 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:38:25,297 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:38:25,323 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,338 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,369 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:38:25,379 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,409 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:38:25,481 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,542 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:38:28,327 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 18:38:29,358 - CubeServer Networking - INFO - Networking stopped
