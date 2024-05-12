@@ -10,6 +10,8 @@ import socket
 from collections import deque
 from typing import Deque, List, Tuple, Dict
 
+from thecubeivazio.cube_messages import CubeMessage
+
 
 # TODO: are messages well acknowledged? I dont remember right now
 # TODO: apparently not. we get an inifinite loop of acks
@@ -63,10 +65,10 @@ class CubeNetworking:
         """stops the main loop thread"""
         self.log.info("Stopping networking...")
         self._keep_running = False
-        self._listenThread.join(timeout=2)
+        self._listenThread.join(timeout=1)
         self.log.info("Networking stopped")
 
-    def get_incoming_msg_queue(self) -> Tuple[cm.CubeMessage]:
+    def get_incoming_msg_queue(self) -> Tuple[CubeMessage, ...]:
         """Returns the incoming_messages queue"""
         with self._listenLock:
             return tuple(self.incoming_messages)
