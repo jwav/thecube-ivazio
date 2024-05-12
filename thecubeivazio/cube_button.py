@@ -8,10 +8,13 @@ import threading
 
 from thecubeivazio import cube_logger
 
-from thecubeivazio.cube_utils import SimpleTimer
+from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
 
 import time
 from typing import Union
+
+if not XvfbManager.has_x_server():
+    XvfbManager.start_xvfb()
 from pynput import keyboard
 
 
