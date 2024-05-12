@@ -5,6 +5,7 @@ import subprocess
 import os
 import atexit
 
+
 def get_git_branch_version():
     """
     Get the current git branch and commit hash
@@ -16,6 +17,7 @@ def get_git_branch_version():
         return f"{branch} {commit}"
     except subprocess.CalledProcessError:
         return "Unknown"
+
 
 def get_git_branch_date():
     """
@@ -32,6 +34,7 @@ def get_git_branch_date():
 class XvfbManager:
     """static class handling the Xvfb virtual display in case we're running without X and some module needs it"""
     xvfb_process = None
+
     @staticmethod
     def has_x_server():
         """Check if an X server is running on the machine. Return True if it is, False otherwise."""
@@ -64,6 +67,7 @@ class XvfbManager:
         except AttributeError:
             print("Xvfb process not found")
 
+
 class SimpleTimer:
     def __init__(self, timeout):
         self.timeout = timeout
@@ -77,6 +81,7 @@ class SimpleTimer:
 
     def timer(self):
         return time.time() - self.start_time
+
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())
