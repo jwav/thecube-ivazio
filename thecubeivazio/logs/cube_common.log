@@ -1,0 +1,700 @@
+2024-05-12 16:33:14,217 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:14,365 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:33:14,412 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,422 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,443 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:14,463 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,468 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:14,484 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:33:14,546 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:18,913 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 16:33:18,914 - Buzzer - INFO - Not on a Raspberry Pi, using sound files to simulate buzzer
+2024-05-12 16:33:18,924 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:18,926 - CubeBox1 Networking - DEBUG - Sending message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:33:18,926 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,926 - CubeBox1 Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,927 - CubeBox1 Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,927 - CubeBox1 Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:18,927 - CubeBox1 Networking - DEBUG - Ignoring message from self : (468733a2ee) CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,927 - CubeBox1 Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:18,927 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:18,927 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,958 - CubeServer Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:18,974 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,005 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 16:33:19,025 - CubeServer Networking - DEBUG - Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,025 - CubeServer - DEBUG - Received message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,036 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 16:33:19,046 - CubeServer Networking - INFO - Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,057 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,083 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,108 - CubeServer Networking - DEBUG - Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,189 - CubeServer Networking - ERROR - Cannot remove message from listen queue (468733a2ee) :  CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 16:33:19,378 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:22,224 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,324 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,425 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,525 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,625 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,726 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,826 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:22,927 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:23,027 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:23,127 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:23,228 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 16:33:23,228 - CubeBox1 - INFO - Button pressed long enough. Sending msg to CubeServer
+2024-05-12 16:33:23,228 - CubeBox1 Networking - DEBUG - Sending message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS| to 192.168.1.255:5005
+2024-05-12 16:33:23,228 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,228 - CubeBox1 Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,229 - CubeBox1 Networking - DEBUG - Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,229 - CubeBox1 Networking - DEBUG - msg require ack? True, require_ack? False
+2024-05-12 16:33:23,229 - CubeBox1 Networking - DEBUG - Ignoring message from self : (f32b909526) CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,229 - CubeBox1 Networking - DEBUG - Waiting for ack of message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS| (nb try: 0/999)
+2024-05-12 16:33:23,229 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:23,229 - CubeBox1 Networking - DEBUG - Waiting for ack of message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|, timeout: 2 s
+2024-05-12 16:33:23,238 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,259 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,279 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,279 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,290 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 16:33:23,300 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 16:33:23,305 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,326 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,377 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 16:33:23,469 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,469 - CubeBox1 Networking - DEBUG - Received message: 245134ce9f from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,469 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,469 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-12 16:33:23,470 - CubeBox1 Networking - DEBUG - Handling message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,470 - CubeBox1 Networking - INFO - Added node CubeServer to the nodes list
+2024-05-12 16:33:23,494 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,525 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:23,529 - CubeBox1 Networking - INFO - Received ack msg: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,530 - CubeBox1 Networking - DEBUG - Removing message from listen queue: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,530 - CubeBox1 Networking - DEBUG - Message removed from listen queue: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,535 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:23,535 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:23,571 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:33:23,576 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 16:33:23,587 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+2024-05-12 16:33:23,619 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,662 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:33:23,680 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:33:23,707 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 16:33:23,738 - CubeServer Networking - DEBUG - Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:23,749 - CubeServer Networking - DEBUG - Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 16:33:26,513 - CubeBox1 - INFO - Button released
+2024-05-12 16:33:26,514 - CubeBox1 - INFO - Button reset
+2024-05-12 16:33:59,093 - RFID Listener - ERROR - Invalid RFID line entered: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvtamaminispeakerraspberryipijack
+2024-05-12 16:34:20,506 - CubeBox1 Networking - INFO - Stopping networking...
+2024-05-12 16:34:20,506 - Button - INFO - Stopping button thread...
+2024-05-12 16:34:20,510 - Button - INFO - Button thread stopped
+2024-05-12 16:34:21,809 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 16:41:11,315 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:11,468 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:41:11,504 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,509 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,535 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:41:11,570 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,591 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:41:11,627 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:11,689 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:12,434 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 16:41:14,456 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 16:41:22,554 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:22,673 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 16:41:22,698 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,719 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,719 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,729 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 16:41:22,770 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 16:41:22,781 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 16:41:22,826 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 16:41:25,182 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 16:41:26,203 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 17:46:20,629 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 17:47:49,872 - Button - DEBUG - resetting button timer
+2024-05-12 17:47:59,349 - Button - DEBUG - resetting button timer
+2024-05-12 17:48:42,068 - Button - DEBUG - resetting button timer
+2024-05-12 17:50:07,742 - Button - DEBUG - resetting button timer
+2024-05-12 17:51:06,887 - Button - DEBUG - resetting button timer
+2024-05-12 17:51:35,866 - Button - DEBUG - resetting button timer
+2024-05-12 17:52:14,373 - Button - DEBUG - resetting button timer
+2024-05-12 17:54:23,068 - Button - DEBUG - resetting button timer
+2024-05-12 17:54:48,622 - Button - DEBUG - resetting button timer
+2024-05-12 17:54:52,320 - Button - DEBUG - resetting button timer
+2024-05-12 17:54:55,305 - Button - DEBUG - resetting button timer
+2024-05-12 17:56:16,546 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 17:56:16,547 - Buzzer - INFO - Not on a Raspberry Pi, using sound files to simulate buzzer
+2024-05-12 17:56:16,549 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 17:56:16,556 - CubeBox1 Networking - DEBUG - Sending message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 17:56:16,556 - CubeBox1 Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:56:16,556 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:56:16,556 - CubeBox1 Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 17:56:16,565 - CubeBox1 Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:56:16,565 - CubeBox1 Networking - DEBUG - Not waiting for ack
+2024-05-12 17:56:16,570 - CubeBox1 Networking - DEBUG - Ignoring message from self : (468733a2ee) CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:56:16,573 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 17:56:26,767 - CubeBox1 Networking - INFO - Stopping networking...
+2024-05-12 17:56:26,767 - Button - INFO - Stopping button thread...
+2024-05-12 17:56:26,771 - Button - INFO - Button thread stopped
+2024-05-12 17:56:27,768 - CubeBox1 Networking - INFO - Networking stopped
+2024-05-12 17:57:14,890 - Button - DEBUG - resetting button timer
+2024-05-12 17:57:16,800 - Button - DEBUG - resetting button timer
+2024-05-12 17:57:33,619 - Button - DEBUG - resetting button timer
+2024-05-12 17:58:17,114 - Button - DEBUG - resetting button timer
+2024-05-12 17:59:38,257 - Button - DEBUG - resetting button timer
+2024-05-12 17:59:53,369 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 17:59:53,372 - Buzzer - INFO - Not on a Raspberry Pi, using sound files to simulate buzzer
+2024-05-12 17:59:53,373 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - Sending message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - Not waiting for ack
+2024-05-12 17:59:53,378 - CubeBox1 Networking - DEBUG - Ignoring message from self : (468733a2ee) CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 17:59:53,379 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 17:59:56,978 - Button - INFO - Stopping button thread...
+2024-05-12 17:59:56,979 - CubeBox1 Networking - INFO - Stopping networking...
+2024-05-12 17:59:56,980 - Button - INFO - Button thread stopped
+2024-05-12 17:59:57,979 - CubeBox1 Networking - INFO - Networking stopped
+2024-05-12 18:00:37,303 - Button - DEBUG - resetting button timer
+2024-05-12 18:00:52,133 - Button - DEBUG - resetting button timer
+2024-05-12 18:01:05,677 - Button - DEBUG - resetting button timer
+2024-05-12 18:03:47,397 - Button - DEBUG - resetting button timer
+2024-05-12 18:04:54,267 - Button - DEBUG - resetting button timer
+2024-05-12 18:04:54,907 - Button - DEBUG - resetting button timer
+2024-05-12 18:05:02,123 - Button - DEBUG - resetting button timer
+2024-05-12 18:05:22,512 - Button - DEBUG - resetting button timer
+2024-05-12 18:05:22,896 - Button - DEBUG - resetting button timer
+2024-05-12 18:05:26,365 - Button - DEBUG - resetting button timer
+2024-05-12 18:05:28,033 - Button - DEBUG - resetting button timer
+2024-05-12 18:05:28,358 - Button - DEBUG - resetting button timer
+2024-05-12 18:13:32,795 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 18:13:35,184 - Button - DEBUG - resetting button timer
+2024-05-12 18:13:36,187 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,198 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,208 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,219 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,229 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,240 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,250 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,261 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,271 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,282 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,293 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,303 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,314 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,325 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,335 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,346 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,356 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,367 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,377 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,388 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,398 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,408 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,419 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,429 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,439 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,450 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,460 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,471 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,481 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,492 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,502 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,512 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,523 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,533 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,543 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,553 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,564 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,574 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,585 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,595 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,606 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,616 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,626 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,637 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,647 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,658 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,668 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,679 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,689 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,699 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,710 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,720 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,731 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,741 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,752 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,762 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,773 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,784 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,795 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,805 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,815 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,826 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,836 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,846 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,856 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,867 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,877 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,887 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,898 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,908 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,919 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,929 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,939 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,950 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,960 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,971 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,982 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:36,992 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,003 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,013 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,024 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,034 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,044 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,055 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,065 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,076 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,086 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,096 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,107 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,117 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,128 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,138 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,149 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,159 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,170 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,180 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,191 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,202 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,212 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,223 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,234 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,244 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,255 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,265 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,275 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,286 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,296 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,307 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,317 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,328 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,338 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,349 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,359 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,370 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,380 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,391 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,401 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,412 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,422 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,433 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,443 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,454 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,464 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,475 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,485 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,496 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,506 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,517 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,527 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,538 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,548 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,559 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,569 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,579 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,590 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,600 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,611 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,621 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,632 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,642 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,653 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,663 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,674 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,684 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,695 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,705 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,716 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,727 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,737 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,747 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,758 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,768 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,779 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,789 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,800 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,811 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,821 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,832 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,842 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,853 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,863 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,873 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,884 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,894 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,905 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,915 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,926 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,936 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,947 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,957 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,969 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,980 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:37,991 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,001 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,011 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,022 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,032 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,043 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,053 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,064 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,074 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,085 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,095 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,106 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,116 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,126 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,137 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,147 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,159 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,169 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,180 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,190 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,201 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,211 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,222 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,232 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,243 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,254 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,264 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,275 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,285 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,296 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,306 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,317 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,327 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,337 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,348 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,358 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,369 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,379 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,390 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,400 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,411 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,421 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,432 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,442 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,453 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,463 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,474 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,484 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,495 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,505 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,516 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,527 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,537 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,547 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,558 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,568 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,579 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,589 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,600 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,610 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,621 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,631 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,642 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,652 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,663 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,674 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:38,684 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:13:49,517 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:13:49,674 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:13:49,720 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,725 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,746 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:13:49,751 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,766 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:13:49,787 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:13:49,838 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:13:58,236 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 18:14:08,902 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 18:14:10,860 - Button - DEBUG - resetting button timer
+2024-05-12 18:14:11,862 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,873 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,883 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,895 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,905 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,915 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,926 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,936 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,947 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,957 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,967 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,978 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,988 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:11,999 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,009 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,020 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,030 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,041 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,051 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,061 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,072 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,083 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,093 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,104 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,114 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,124 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,135 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,146 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,156 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,166 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,177 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,188 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,198 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,209 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,219 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,230 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:12,240 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:21,394 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:21,554 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:14:21,615 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,636 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,652 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:21,672 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,677 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:21,738 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:14:21,795 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:32,510 - Button - DEBUG - resetting button timer
+2024-05-12 18:14:33,518 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,528 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,539 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,549 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,559 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,570 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,580 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,591 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,601 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,611 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,622 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,632 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,642 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,653 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,663 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,673 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,684 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,694 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,704 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,714 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,725 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,735 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,746 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,756 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,766 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,777 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,787 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,797 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,808 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,818 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,829 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,839 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,849 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,859 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,870 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,880 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,890 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,900 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,910 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,921 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,932 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,942 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,952 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,963 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,973 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,983 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:33,993 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,004 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,014 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,024 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,034 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,045 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,055 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:34,065 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:49,496 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 18:14:49,497 - Buzzer - INFO - Not on a Raspberry Pi, using sound files to simulate buzzer
+2024-05-12 18:14:49,507 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:49,510 - CubeBox1 Networking - DEBUG - Sending message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:14:49,510 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,510 - CubeBox1 Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,511 - CubeBox1 Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,511 - CubeBox1 Networking - DEBUG - Ignoring message from self : (468733a2ee) CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,511 - CubeBox1 Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:49,512 - CubeBox1 Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:49,512 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:49,513 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,524 - CubeServer Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,535 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,581 - CubeServer - DEBUG - Received message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,571 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 18:14:49,597 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,602 - CubeServer Networking - DEBUG - Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,619 - CubeServer Networking - DEBUG - Message removed from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,629 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-12 18:14:49,671 - CubeServer Networking - INFO - Handled message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,707 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,719 - CubeServer Networking - ERROR - Cannot remove message from listen queue (468733a2ee) :  CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-12 18:14:49,866 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:51,383 - Button - DEBUG - resetting button timer
+2024-05-12 18:14:51,404 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:51,504 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:51,605 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:51,705 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:51,806 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:51,906 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:52,006 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:52,107 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:52,207 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:52,308 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:52,393 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,403 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,408 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:14:52,408 - CubeBox1 - INFO - Button pressed long enough. Sending msg to CubeServer
+2024-05-12 18:14:52,409 - CubeBox1 Networking - DEBUG - Sending message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS| to 192.168.1.255:5005
+2024-05-12 18:14:52,409 - CubeBox1 Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,409 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,409 - CubeBox1 Networking - DEBUG - msg require ack? True, require_ack? False
+2024-05-12 18:14:52,409 - CubeBox1 Networking - DEBUG - Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,410 - CubeBox1 Networking - DEBUG - Waiting for ack of message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS| (nb try: 0/999)
+2024-05-12 18:14:52,410 - CubeBox1 Networking - DEBUG - Ignoring message from self : (f32b909526) CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,410 - CubeBox1 Networking - DEBUG - Waiting for ack of message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|, timeout: 2 s
+2024-05-12 18:14:52,410 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:52,414 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,410 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,424 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,434 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,444 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,446 - CubeServer Networking - DEBUG - Received message: f32b909526 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,455 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,461 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,465 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,475 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,486 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,472 - CubeServer - DEBUG - Received message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,496 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,487 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-12 18:14:52,497 - CubeServer - INFO - Received button press message from CubeBox1
+2024-05-12 18:14:52,506 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,517 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,513 - CubeServer Networking - DEBUG - Handling message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,518 - CubeServer Networking - INFO - Acknowledging message: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,527 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,537 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,547 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,558 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,554 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.255:5005
+2024-05-12 18:14:52,568 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,578 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,588 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,599 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,601 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,601 - CubeBox1 Networking - DEBUG - Received message: 245134ce9f from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,601 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,601 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-12 18:14:52,601 - CubeBox1 Networking - DEBUG - Handling message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,602 - CubeBox1 Networking - INFO - Added node CubeServer to the nodes list
+2024-05-12 18:14:52,609 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,611 - CubeBox1 Networking - INFO - Received ack msg: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,612 - CubeBox1 Networking - DEBUG - Removing message from listen queue: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,612 - CubeBox1 Networking - DEBUG - Message removed from listen queue: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,619 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,616 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,630 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,640 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,645 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:52,650 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,661 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,655 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:52,671 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,682 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,676 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:52,692 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,702 - CubeBox1 Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:14:52,697 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526, require_ack: False
+2024-05-12 18:14:52,702 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,712 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,712 - CubeServer Networking - DEBUG - Sending message: (245134ce9f) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526 to 192.168.1.68:5005
+2024-05-12 18:14:52,723 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,733 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,743 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,748 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,753 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,764 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,774 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,784 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,794 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,805 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,815 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,779 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:14:52,825 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,835 - Button - DEBUG - Button pressed long enough
+2024-05-12 18:14:52,847 - CubeBox1 - INFO - Button released
+2024-05-12 18:14:52,847 - CubeBox1 - INFO - Button reset
+2024-05-12 18:14:52,855 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:14:52,891 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526
+2024-05-12 18:14:52,907 - CubeServer Networking - DEBUG - Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:14:52,932 - CubeServer Networking - DEBUG - Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-12 18:15:03,344 - RFID Listener - ERROR - Invalid RFID line entered: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvfpygame
+2024-05-12 18:15:19,834 - RFID Listener - ERROR - Invalid RFID line entered: 
+2024-05-12 18:15:20,950 - RFID Listener - ERROR - Invalid RFID line entered: 
+2024-05-12 18:15:30,565 - Buzzer - INFO - Not on a Raspberry Pi, using sound files to simulate buzzer
+2024-05-12 18:15:30,566 - Buzzer - INFO - Playing RFID OK sound
+2024-05-12 18:15:30,583 - Buzzer - DEBUG - Playing sound file: sounds/rfid_ok.mp3
+2024-05-12 18:15:32,153 - Buzzer - INFO - Playing RFID error sound
+2024-05-12 18:15:32,159 - Buzzer - DEBUG - Playing sound file: sounds/rfid_error.mp3
+2024-05-12 18:15:33,662 - Buzzer - INFO - Playing victory sound
+2024-05-12 18:15:33,662 - Buzzer - DEBUG - Playing sound file: sounds/victory.mp3
+2024-05-12 18:15:36,365 - Buzzer - INFO - Playing game over sound
+2024-05-12 18:15:36,366 - Buzzer - DEBUG - Playing sound file: sounds/game_over.mp3
+2024-05-12 18:15:37,668 - Buzzer - INFO - Done
+2024-05-12 18:15:40,686 - Buzzer - INFO - Not on a Raspberry Pi, using sound files to simulate buzzer
+2024-05-12 18:15:40,687 - Buzzer - INFO - Playing RFID OK sound
+2024-05-12 18:15:40,687 - Buzzer - DEBUG - Playing sound file: sounds/rfid_ok.mp3
+2024-05-12 18:15:41,905 - Buzzer - INFO - Playing RFID error sound
+2024-05-12 18:15:41,905 - Buzzer - DEBUG - Playing sound file: sounds/rfid_error.mp3
+2024-05-12 18:15:43,407 - Buzzer - INFO - Playing victory sound
+2024-05-12 18:15:43,407 - Buzzer - DEBUG - Playing sound file: sounds/victory.mp3
+2024-05-12 18:15:46,109 - Buzzer - INFO - Playing game over sound
+2024-05-12 18:15:46,110 - Buzzer - DEBUG - Playing sound file: sounds/game_over.mp3
+2024-05-12 18:15:47,411 - Buzzer - INFO - Done
+2024-05-12 18:16:48,753 - RFID Listener - ERROR - Invalid RFID line entered: 
+2024-05-12 18:17:16,837 - Button - DEBUG - resetting button timer
+2024-05-12 18:17:16,857 - CubeBox1 - DEBUG - Button pressed now
+2024-05-12 18:17:35,258 - CubeBox1 Networking - INFO - Stopping networking...
+2024-05-12 18:17:35,293 - Button - INFO - Stopping button thread...
+2024-05-12 18:17:35,295 - Button - INFO - Button thread stopped
+2024-05-12 18:17:36,260 - CubeBox1 Networking - INFO - Networking stopped
+2024-05-12 18:17:38,058 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 18:19:24,016 - Button - DEBUG - resetting button timer
+2024-05-12 18:20:15,863 - Button - DEBUG - resetting button timer
+2024-05-12 18:20:18,462 - Button - DEBUG - resetting button timer
+2024-05-12 18:26:07,776 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 18:38:25,132 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:38:25,297 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-12 18:38:25,323 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,338 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,369 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-12 18:38:25,379 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,409 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-12 18:38:25,481 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-12 18:38:25,542 - CubeServer Networking - DEBUG - Getting UDP packet from ip=0.0.0.0, port=5005, timeout=0
+2024-05-12 18:38:28,327 - CubeServer Networking - INFO - Stopping networking...
+2024-05-12 18:38:29,358 - CubeServer Networking - INFO - Networking stopped
+2024-05-12 18:38:52,570 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 18:40:11,343 - Button - INFO - Not on a Raspberry Pi, using 'v' key to simulate button press
+2024-05-12 18:40:14,837 - Button - INFO - Stopping button thread...
+2024-05-12 18:40:14,843 - Button - INFO - Button thread stopped
