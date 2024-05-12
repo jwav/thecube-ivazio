@@ -15,16 +15,21 @@ import thecubeivazio.cube_identification as cubeid
 
 class CubeServer:
     def __init__(self):
+        # set up the logger
         self.log = cube_logger.make_logger(name=cubeid.CUBESERVER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
+        # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBESERVER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
+        # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidListener()
 
+        # params for threading
         self._rfid_thread = None
         self._networking_thread = None
         self._webpage_thread = None
         self._display_thread = None
         self._keep_running = False
 
+        # heartbeat setup
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
 

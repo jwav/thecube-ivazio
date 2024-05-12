@@ -41,6 +41,7 @@ class CubeNetworking:
             self.log.error(f"Invalid node name: {node_name}")
             raise ValueError(f"Invalid node name: {node_name}")
 
+        # params declaration
         self.node_name = node_name
         self._listenThread = None
         self._keep_running = False
