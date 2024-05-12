@@ -22,6 +22,7 @@ AZERTY_DICT = {
 
 def rfid_raw_test():
     import sys
+    print("rfid_raw_test()")
     while True:
         line = sys.stdin.readline().strip()
         if line:
