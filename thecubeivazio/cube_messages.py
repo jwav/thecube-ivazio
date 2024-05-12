@@ -1,6 +1,5 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
 
-
 import enum
 import time
 
@@ -11,10 +10,11 @@ class CubeMsgType(enum.Enum):
     VERSION_REPLY = 10
     VERSION_REQUEST = 22
     HEARTBEAT = 30
+    # sent from a node to another node to acknowledge that the message has been received and handled.
+    # can include an info, see the MsgAck class for standard values for `info`
     ACK = 40
     WHO_IS = 45
     I_AM = 50
-
 
     # Cubebox messages
     CUBEBOX_RFID_READ = 100
@@ -25,12 +25,12 @@ class CubeMsgType(enum.Enum):
     CUBESERVER_TIME_IS_UP = 210
     CUBESERVER_PLAYING_TEAMS = 220
 
-
     # Frontdesk messages
     FRONTDESK_NEW_TEAM = 300
 
 
 # TODO: make acknowledgement messages
+
 
 
 class CubeMessage:
@@ -58,7 +58,8 @@ class CubeMessage:
         return ret
 
     def is_valid(self):
-        return all([isinstance(self.sender, str), isinstance(self.msgtype, CubeMsgType), all([isinstance(k, str) for k in self.kwargs.keys()])])
+        return all([isinstance(self.sender, str), isinstance(self.msgtype, CubeMsgType),
+                    all([isinstance(k, str) for k in self.kwargs.keys()])])
 
     def to_string(self):
         sep = self.SEPARATOR
@@ -72,11 +73,11 @@ class CubeMessage:
         return CubeMessage(msg.msgtype, msg.sender, **msg.kwargs)
 
     @staticmethod
-    def make_from_bytes(msg_bytes:bytes):
+    def make_from_bytes(msg_bytes: bytes):
         return CubeMessage.make_from_string(msg_bytes.decode())
 
     @staticmethod
-    def make_from_string(msg_str:str):
+    def make_from_string(msg_str: str):
         sep = CubeMessage.SEPARATOR
         if not msg_str.startswith(CubeMessage.PREFIX):
             return None
@@ -113,54 +114,78 @@ class CubeMessage:
     def __repr__(self):
         return self.to_string()
 
+
+# TODO: use the info field in cubeserver to tell the cubebox: "valid or invalid button press", "valid or invalid RFID read"
 class CubeMsgAck(CubeMessage):
     """Sent from a node to another node to acknowledge a message."""
-    def __init__(self, sender, acked_msg):
+
+    INFO_NONE = "NONE"
+    INFO_OK = "OK"
+    INFO_ERROR = "ERROR"
+    INFO_DENIED = "DENIED"
+    INFO_INVALID = "INVALID"
+
+    def __init__(self, sender, acked_msg, info=None):
         super().__init__(CubeMsgType.ACK, sender, acked_hash=acked_msg.hash)
+        if info is None:
+            self.kwargs["info"] = self.INFO_NONE
         self.require_ack = False
 
 class CubeMsgHeartbeat(CubeMessage):
     """Sent from a node to everyone to signal its presence."""
+
     def __init__(self, sender):
         super().__init__(CubeMsgType.HEARTBEAT, sender)
         self.require_ack = False
 
+
 class CubeMsgVersionRequest(CubeMessage):
     """Sent from a node to another node to ask for its version."""
+
     def __init__(self, sender):
         super().__init__(CubeMsgType.VERSION_REQUEST, sender)
         self.require_ack = False
 
+
 class CubeMsgVersionReply(CubeMessage):
     """Sent from a node to another node in response to a VERSION_REQUEST message."""
+
     def __init__(self, sender):
         from cube_utils import get_git_branch_date
         super().__init__(CubeMsgType.VERSION_REPLY, sender, version=get_git_branch_date())
 
+
 class CubeMsgWhoIs(CubeMessage):
     """Sent from whatever node to everyone to ask who is a specific node (asking for IP)."""
+
     def __init__(self, sender, node_name_to_find):
         super().__init__(CubeMsgType.WHO_IS, sender, node_name_to_find=node_name_to_find)
 
+
 class CubeMsgIAm(CubeMessage):
     """Sent from whatever node to everyone to announce its presence."""
+
     def __init__(self, sender):
         super().__init__(CubeMsgType.I_AM, sender)
 
+
 class CubeMsgNewTeam(CubeMessage):
     """Sent from the Frontdesk to the CubeServer when a new team is registered."""
+
     def __init__(self, sender, team, max_time_sec):
         super().__init__(CubeMsgType.FRONTDESK_NEW_TEAM, sender, team=team, max_time_sec=max_time_sec)
 
 
 class CubeMsgRfidRead(CubeMessage):
     """Sent from the CubeBox to the CubeServer when an RFID tag is read."""
+
     def __init__(self, sender, uid, timestamp):
         super().__init__(CubeMsgType.CUBEBOX_RFID_READ, sender, uid=uid, timestamp=timestamp)
 
 
 class CubeMsgButtonPress(CubeMessage):
     """Sent from the CubeBox to the CubeServer when the button is pressed."""
+
     def __init__(self, sender):
         super().__init__(CubeMsgType.CUBEBOX_BUTTON_PRESS, sender)
         self.require_ack = True
@@ -168,6 +193,7 @@ class CubeMsgButtonPress(CubeMessage):
 
 class CubeMsgScoresheet(CubeMessage):
     """Sent from the CubeServer to the Frontdesk to update the scoresheet of a team that just finished playing."""
+
     def __init__(self, sender, scoresheet):
         super().__init__(CubeMsgType.CUBEBOX_BUTTON_PRESS, sender, scoresheet=scoresheet)
         self.require_ack = True
@@ -176,7 +202,6 @@ class CubeMsgScoresheet(CubeMessage):
 class CubeMsgTimeIsUp(CubeMessage):
     def __init__(self, sender, team):
         super().__init__(CubeMsgType.CUBESERVER_TIME_IS_UP, sender, team=team)
-
 
 
 if __name__ == "__main__":

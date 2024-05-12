@@ -12,27 +12,7 @@ CUBE_IDS = range(FIRST_CUBEBOX_INDEX, FIRST_CUBEBOX_INDEX + NB_CUBEBOXES)
 FRONTDESK_NAME = "FrontDesk"
 CUBESERVER_NAME = "CubeServer"
 CUBEBOX_NAME_PREFIX = "CubeBox"
-
-IDENTIFICATION_MESSAGE = "whospartofthecube?"
-CUBESERVER_IDENTIFICATION_MESSAGE = "imthecubeserver"
-FRONTDESK_IDENTIFICATION_MESSAGE = "imthecubefrontdesk"
-CUBEBOX_IDENTIFICATION_PREFIX = "imacubebox:"
-
-
-def get_node_name_from_response(response: str) -> str:
-    if not response.startswith(CUBEBOX_IDENTIFICATION_PREFIX):
-        return ""
-    else:
-        return response[len(CUBEBOX_IDENTIFICATION_PREFIX):]
-
-
-def make_response_from_node_name(name: str) -> str:
-    if name == FRONTDESK_NAME:
-        return FRONTDESK_IDENTIFICATION_MESSAGE
-    elif name == CUBESERVER_NAME:
-        return CUBESERVER_IDENTIFICATION_MESSAGE
-    elif name.startswith(CUBEBOX_NAME_PREFIX):
-        return f"{CUBEBOX_IDENTIFICATION_PREFIX}{name}"
+EVERYONE_NAME = "CubeEveryone"
 
 
 def is_valid_node_name(name: str) -> bool:
@@ -40,6 +20,7 @@ def is_valid_node_name(name: str) -> bool:
 
 
 def is_valid_ip(ip: str) -> bool:
+    """Checks if the IP address is a string of 4 numbers separated by dots, each number being between 0 and 255."""
     return ip.count(".") == 3 and all([0 <= int(num) <= 255 for num in ip.split(".")])
 
 

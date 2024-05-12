@@ -22,7 +22,7 @@ class CubeNetworking:
     UDP_LISTEN_IP = "0.0.0.0"
     UDP_PORT = 5005
     UDP_BUFSIZE = 1024
-    UDP_LISTEN_TIMEOUT = 0  # seconds
+    UDP_LISTEN_TIMEOUT = 0.1  # seconds
 
     DISCOVERY_PORT = UDP_PORT
     DISCOVERY_LOOP_TIMEOUT = 2  # seconds
@@ -45,7 +45,12 @@ class CubeNetworking:
         self.node_name = node_name
         self._listenThread = None
         self._keep_running = False
-        self._listenLock = threading.Lock()
+        self._incoming_queue_lock = threading.Lock()
+
+        self._udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        self._udp_socket.bind((self.UDP_BROADCAST_IP, self.UDP_PORT))
 
         self.nodes_list = cubeid.NodesList()
         # add own IP to the nodes list
@@ -71,13 +76,13 @@ class CubeNetworking:
 
     def get_incoming_msg_queue(self) -> Tuple[CubeMessage, ...]:
         """Returns the incoming_messages queue"""
-        with self._listenLock:
+        with self._incoming_queue_lock:
             return tuple(self.incoming_messages)
 
     def remove_from_incoming_msg_queue(self, message: cm.CubeMessage) -> bool:
         """Removes a message from the incoming_messages queue"""
         self.log.debug(f"Removing message from listen queue: ({message.hash}) : {message}")
-        with self._listenLock:
+        with self._incoming_queue_lock:
             # noinspection PyBroadException
             try:
                 self.incoming_messages.remove(message)
@@ -116,7 +121,7 @@ class CubeNetworking:
                 self.log.debug(f"Ignoring message from self : ({message.hash}) {message}")
                 continue
             if message.is_valid():
-                with self._listenLock:
+                with self._incoming_queue_lock:
                     self.incoming_messages.append(message)
                 self.log.info(f"Valid message: {message}")
             else:
@@ -139,16 +144,11 @@ class CubeNetworking:
             timeout = self.UDP_LISTEN_TIMEOUT
         # noinspection PyBroadException
         try:
-            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-                self.log.debug(f"Getting UDP packet from ip={ip}, port={port}, timeout={timeout}")
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)  # Allow multiple instances to use the same port
-                sock.bind((ip, port))
-                if timeout != 0:
-                    sock.settimeout(timeout)
-                data, addr = sock.recvfrom(self.UDP_BUFSIZE)
-                self.log.debug(f"Received UDP packet from {addr}: {data.decode()}")
-                return data, addr
+            if timeout != 0:
+                self._udp_socket.settimeout(timeout)
+            data, addr = self._udp_socket.recvfrom(self.UDP_BUFSIZE)
+            self.log.debug(f"Received UDP packet from {addr}: {data.decode()}")
+            return data, addr
         except:
             return b"", ("", 0)
 
@@ -179,8 +179,10 @@ class CubeNetworking:
                 result = True
 
             if result:
-                self.log.info(f"Handled message: {message}")
+                self.log.info(f"Handled common message: ({message.hash}) : {message}")
                 self.remove_from_incoming_msg_queue(message)
+            else:
+                self.log.debug(f"Not a common message: ({message.hash}) : {message}")
 
 
     @staticmethod
@@ -199,58 +201,15 @@ class CubeNetworking:
     def discover_servers(self, timeout=None) -> bool:
         if timeout is None:
             timeout = self.DISCOVERY_LOOP_TIMEOUT
-        self.log.info("Discovering servers...")
-        message = cubeid.IDENTIFICATION_MESSAGE.encode()
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)  # Allow multiple instances to use the same port
-            sock.sendto(message, (self.DISCOVERY_BROADCAST_IP, self.DISCOVERY_PORT))
-            while self._keep_running and time.time() < time.time() + timeout:
-                try:
-                    sock.settimeout(timeout)
-                    data, addr = sock.recvfrom(self.UDP_BUFSIZE)
-                    self.log.debug(f"Received response from {addr}: {data.decode()}")
-                    name = cubeid.get_node_name_from_response(data.decode())
-                    if name == cubeid.FRONTDESK_NAME:
-                        self.nodes_list.frontDesk.ip = addr[0]
-                        self.log.info(f"found FrontDesk IP: {self.nodes_list.frontDesk.ip}")
-                        return True
-                    elif name == cubeid.CUBESERVER_NAME:
-                        self.nodes_list.cubeServer.ip = addr[0]
-                        self.log.info(f"found CubeServer IP: {self.nodes_list.cubeServer.ip}")
-                        return True
-                    elif name.startswith(cubeid.CUBEBOX_NAME_PREFIX):
-                        for cubebox in self.nodes_list.cubeBoxes:
-                            if name == cubebox.name:
-                                cubebox.ip = addr[0]
-                                self.log.info(f"found CubeBox IP: {cubebox.ip}")
-                                return True
-                    else:
-                        self.log.debug("Unknown response")
-                        return False
-                except socket.timeout:
-                    self.log.info("Discovery timeout")
-                    return False
+        self.log.info("Discovering cube nodes...")
+        # TODO: redo with WHO_IS and I_AM messages
+        return False
 
     # TODO: redo with WHO_IS and I_AM messages
     def discovery_response_loop(self):
         """Listens for discovery requests and responds with the node name"""
-        self.log.info("Starting discovery response loop")
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)  # Allow multiple instances to use the same port
-            sock.bind((self.DISCOVERY_LISTEN_IP, self.DISCOVERY_PORT))
-            while self._keep_running:
-                data, addr = sock.recvfrom(self.UDP_BUFSIZE)
-                message = cm.CubeMessage.make_from_bytes(data)
-                self.log.debug(f"Discovery response : Received message: ({message.hash}) from {addr} : {data.decode()}")
-                if data.decode() == cubeid.IDENTIFICATION_MESSAGE:
-                    response = cubeid.make_response_from_node_name(self.node_name).encode()
-                    sock.sendto(response, addr)
-                    self.log.info(f"Sent response to {addr}: {response.decode()}")
-                    self.nodes_list.cubeServer.ip = addr[0]
-                    break
+        # TODO: redo with WHO_IS and I_AM messages
+        pass
 
     # TESTME
     def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack=False) -> bool:
@@ -282,13 +241,13 @@ class CubeNetworking:
             return True
 
     def _send_bytes_with_udp(self, data: bytes, ip: str, port: int):
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)  # Allow multiple instances to use the same port
-            sock.bind((ip, port))
-            sock.sendto(data, (ip, port))
+        # noinspection PyBroadException
+        try:
+            assert self._udp_socket.sendto(data, (ip, port))
             self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
+        except Exception as e:
+            self.log.error(f"Failed to send bytes to {ip}:{port}: {data.decode()}")
+            self.log.error(e.__str__())
 
     def send_msg_to(self, message: cm.CubeMessage, node_name: str, require_ack=False) -> bool:
         """Sends a message to a node. Returns True if the message was acknowledged, False otherwise."""

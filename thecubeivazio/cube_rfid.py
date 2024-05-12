@@ -20,6 +20,16 @@ AZERTY_DICT = {
     '-': '6', 'è': '7', '_': '8', 'ç': '9', 'à': '0'}
 
 
+def rfid_raw_test():
+    import sys
+    while True:
+        line = sys.stdin.readline().strip()
+        if line:
+            print(f"RFID card UID: {line}")
+
+
+
+
 class CubeRfidLine:
     UID_LENGTH = 10
     """Represents a line of RFID data entered by the user with a timestamp"""
@@ -85,6 +95,8 @@ class CubeRfidListener:
 
 
 if __name__ == "__main__":
+    rfid_raw_test()
+    exit(0)
     rfid = CubeRfidListener()
     rfid.run()
     rfid.log.info("RFID listener test. Press Ctrl+C to stop.")

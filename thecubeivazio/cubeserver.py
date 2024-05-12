@@ -12,8 +12,6 @@ import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 
-# aaa
-
 class CubeServer:
     def __init__(self):
         # set up the logger

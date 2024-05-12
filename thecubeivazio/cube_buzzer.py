@@ -14,7 +14,7 @@ except ModuleNotFoundError:
     GPIO = None
 
 class CubeBuzzer:
-    BUZZER_PIN = 17
+    BUZZER_PIN = 15
     def __init__(self):
         self.log = cube_logger.make_logger("Buzzer")
         self.log.setLevel(logging.INFO)
