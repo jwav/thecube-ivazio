@@ -58,6 +58,7 @@ def get_usb_device_name(vendor_id, product_id):
     return None
 
 def usb_get_test():
+    print("usb_get_test()")
     # Example usage: Get the device name for a specific vendor and product ID
     vendor_id = 'ffff'  # Replace with your actual vendor ID
     product_id = '0035' # Replace with your actual product ID
