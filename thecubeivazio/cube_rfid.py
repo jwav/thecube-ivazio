@@ -3,6 +3,7 @@
 """
 This module handles everything RFID-related for the CubeBox
 """
+import logging
 import os
 import re
 import subprocess
@@ -79,6 +80,7 @@ class CubeRfidEventListener:
     def __init__(self):
         self._is_setup = False
         self.log = cube_logger.make_logger("RFID Event Listener")
+        self.log.setLevel(logging.INFO)
 
         self._current_chars_buffer = deque()
         self._completed_lines = deque()  # Store completed lines with their timestamps
@@ -128,8 +130,8 @@ class CubeRfidEventListener:
                 for event in self._device.read_loop():
                     # Check if the event is a key event
                     if event.type == evdev.ecodes.EV_KEY:
-                        # Print the key event
-                        print(evdev.categorize(event))
+                        # Print the key event for debug
+                        #print(evdev.categorize(event))
                         # we only care about key up events
                         if self.is_event_key_up(event):
                             # if the event is the enter key, we have a complete line
@@ -243,7 +245,7 @@ if __name__ == "__main__":
     #rfid = CubeRfidKeyboardListener()
     rfid = CubeRfidEventListener()
     if rfid.is_setup():
-        print("RFID listener setup successful")
+        print("RFID listener setup successful:", rfid._device_path)
     rfid.run()
     rfid.log.info("RFID listener test. Press Ctrl+C to stop.")
     try:
@@ -254,6 +256,5 @@ if __name__ == "__main__":
                 rfid._completed_lines.clear()
     except KeyboardInterrupt:
         print("Stopping listener...")
-        rfid.stop()
     finally:
         rfid.stop()
