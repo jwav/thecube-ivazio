@@ -25,7 +25,7 @@ class CubeBox:
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
         # self.net.UDP_PORT = 5000 + self.get_cubebox_index()
-        self.rfid = cube_rfid.CubeRfidListener()
+        self.rfid = cube_rfid.CubeRfidKeyboardListener()
         self.button = cube_button.CubeButton()
         self.buzzer = cube_buzzer.CubeBuzzer()
 

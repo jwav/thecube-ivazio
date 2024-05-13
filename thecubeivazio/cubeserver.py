@@ -19,7 +19,7 @@ class CubeServer:
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBESERVER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
         # instanciate the RFID listener
-        self.rfid = cube_rfid.CubeRfidListener()
+        self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
         # params for threading
         self._rfid_thread = None
