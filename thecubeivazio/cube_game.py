@@ -2,8 +2,11 @@
 import time
 from dataclasses import dataclass
 from typing import List, Optional
+import pickle
 
 import cube_identification as cubeid
+from thecubeivazio import cube_utils
+import os
 
 
 @dataclass
@@ -44,7 +47,7 @@ class CubeGame:
         completion_time = self.completion_time()
         if completion_time is None:
             return "N/A"
-        return time.strftime("%H:%M:%S", time.gmtime(completion_time))
+        return cube_utils.seconds_to_hhmmss_string(completion_time)
 
     def calculate_score(self) -> int:
         total_time = self.completion_time()
@@ -82,17 +85,25 @@ class CubeGamesList(List[CubeGame]):
 class CubeTeam:
     """Represents a team playing a CubeGame"""
 
+    SCORESHEETS_FOLDER = "scoresheets"
+
     def __init__(self, rfid_uid: int, name: str, allocated_time: float):
         self.rfid_uid = rfid_uid
         self.name = name
-        self.allocated_time = allocated_time
+        self.max_time_sec = allocated_time
         self.starting_timestamp = None
         self.completed_cubes: List[CubeGame] = []
 
-    def is_time_over(self, current_time: float = None) -> bool:
-        if current_time is None:
-            current_time = time.time()
-        return current_time - self.starting_timestamp > self.allocated_time
+        # if the scoresheet folder is not present, create it
+        if not os.path.exists(self.SCORESHEETS_FOLDER):
+            os.makedirs(self.SCORESHEETS_FOLDER)
+
+
+    def is_time_over(self, current_time: float = None) -> Optional[bool]:
+        try:
+            return current_time - self.starting_timestamp > self.max_time_sec
+        except TypeError:
+            return None
 
     def has_started(self) -> bool:
         return self.starting_timestamp is not None
@@ -100,14 +111,52 @@ class CubeTeam:
     def calculate_score(self) -> int:
         return sum([cube.calculate_score() for cube in self.completed_cubes])
 
-    def generate_score_sheet(self) -> str:
+    def generate_raw_score_sheet(self) -> str:
         ret = f"Équipe {self.name} : {self.calculate_score()} points\n"
         for cube in self.completed_cubes:
             ret += f"Cube {cube.cube_id} : {cube.completion_time_str()} : {cube.calculate_score()} points\n"
         return ret
 
+    def save_markdown_score_sheet(self) -> bool:
+        filename = os.path.join(self.SCORESHEETS_FOLDER, f"{self.name}_scoresheet.md")
+        text = f"# Équipe {self.name}\n\n"
+        text += f"**Total Score:** {self.calculate_score()} points\n\n"
+        text += "## Completed Cubes\n\n"
+        for cube in self.completed_cubes:
+            text += f"- **Cube {cube.cube_id}:** {cube.completion_time_str()} - {cube.calculate_score()} points\n"
+        try:
+            with open(filename, 'w') as f:
+                f.write(text)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def save_html_score_sheet(self) -> bool:
+        filename = os.path.join(self.SCORESHEETS_FOLDER, f"{self.name}_scoresheet.html")
+        content = f"<h1>Équipe {self.name}</h1>\n\n"
+        content += f"<p><strong>Date:</strong> {time.strftime('%Y-%m-%d %H:%M:%S')}</p>\n\n"
+        content += f"<p><strong>Temps alloué:</strong> {cube_utils.seconds_to_hhmmss_string(self.max_time_sec)}</p>\n\n"
+        content += f"<p><strong>Score total:</strong> {self.calculate_score()} points</p>\n\n"
+        content += "<h2>Cubes réussis</h2>\n\n"
+        content += "<ul>\n"
+        for cube in self.completed_cubes:
+            content += f"<li><strong>Cube {cube.cube_id}:</strong> {cube.completion_time_str()} - {cube.calculate_score()} points</li>\n"
+        content += "</ul>\n"
+        html = f"<!DOCTYPE html>\n<html>\n<head>\n<meta charset='utf-8'>\n<title>Ivazio - The Cube</title>\n</head>\n<body>\n{content}\n</body>\n</html>"
+        try:
+            with open(filename, 'w', encoding="utf-8") as f:
+                f.write(html)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+
 class CubeTeamsList(List[CubeTeam]):
     """List of CubeTeam instances, one for each team playing a CubeGame. Meant to be used by the CubeServer and FrontDesk."""
+
+    DEFAULT_PICKLE_FILE = "cube_teams_list.pkl"
 
     def __init__(self):
         super().__init__()
@@ -148,8 +197,100 @@ class CubeTeamsList(List[CubeTeam]):
                     return team
         return None
 
+    # TESTME
+    def save_to_pickle(self, filename=None) -> bool:
+        if filename is None:
+            filename = self.DEFAULT_PICKLE_FILE
+        try:
+            with open(filename, 'wb') as f:
+                pickle.dump(self, f)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    # TESTME
+    def load_from_pickle(self, filename=None) -> bool:
+        if filename is None:
+            filename = self.DEFAULT_PICKLE_FILE
+        try:
+            with open(filename, 'rb') as f:
+                data = pickle.load(f)
+            self.clear()
+            self.extend(data)
+            return True
+        except Exception as e:
+            print(e)
+            self.reset()
+            return False
+
+
+
+
+def test_cube_team():
+    team = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
+    assert team.rfid_uid == 1234567890
+    assert team.name == "Budapest"
+    assert team.max_time_sec == 60.0
+    assert not team.has_started()
+    assert not team.is_time_over()
+    team.starting_timestamp = time.time()
+    assert team.has_started()
+    assert not team.is_time_over()
+    team.max_time_sec = 0.1
+    assert team.is_time_over()
+    team.completed_cubes.append(CubeGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1))
+    assert team.calculate_score() == 300
+    assert team.generate_raw_score_sheet() == "Équipe Budapest : 300 points\nCube 1 : 00:00:01 : 300 points\n"
+    assert team.save_markdown_score_sheet()
+    assert team.save_html_score_sheet()
+
+
+def test_cube_teams_list():
+    teams_list = CubeTeamsList()
+    assert len(teams_list) == 0
+    team1 = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
+    team2 = CubeTeam(rfid_uid=1234567891, name="Paris", allocated_time=60.0)
+    assert teams_list.add_team(team1)
+    assert len(teams_list) == 1
+    assert teams_list.add_team(team2)
+    assert len(teams_list) == 2
+    assert not teams_list.add_team(team1)
+    assert len(teams_list) == 2
+    assert teams_list.find_team_by_rfid_uid(1234567890) == team1
+    assert teams_list.find_team_by_name("Budapest") == team1
+    assert teams_list.find_team_by_rfid_uid(1234567891) == team2
+    assert teams_list.find_team_by_name("Paris") == team2
+    assert teams_list.find_team_by_rfid_uid(1234567892) is None
+    assert teams_list.find_team_by_name("London") is None
+    assert teams_list.remove_team_by_name("Paris")
+    assert len(teams_list) == 1
+    assert not teams_list.remove_team_by_name("Paris")
+    assert len(teams_list) == 1
+    assert teams_list.remove_team_by_name("Budapest")
+    assert len(teams_list) == 0
+    assert not teams_list.remove_team_by_name("Budapest")
+    assert len(teams_list) == 0
+    # test pickle
+    assert teams_list.save_to_pickle()
+    teams_list.append(team1)
+    assert len(teams_list) == 1
+    assert teams_list.load_from_pickle()
+    assert len(teams_list) == 0
+    assert teams_list.find_team_by_rfid_uid(1234567890) == team1
+    assert teams_list.find_team_by_name("Budapest") == team1
+    assert teams_list.remove_team_by_name("Budapest")
+    assert len(teams_list) == 0
+    assert not teams_list.load_from_pickle("foo")
+    assert len(teams_list) == 0
 
 
 if __name__ == "__main__":
+    team = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
+    team.completed_cubes.append(CubeGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1150))
+    team.completed_cubes.append(CubeGame(cube_id=2, starting_timestamp=time.time(), victory_timestamp=time.time() + 200))
+    team.save_html_score_sheet()
+
+    exit(0)
     teams_list = CubeTeamsList()
     teams_list.append(CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0))

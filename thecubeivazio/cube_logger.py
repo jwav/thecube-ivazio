@@ -5,6 +5,7 @@ LOGS_DIR = "logs"
 COMMON_LOG_FILENAME = path.join(LOGS_DIR, "cube_common.log")
 CUBESERVER_LOG_FILENAME = path.join(LOGS_DIR, "cubeserver.log")
 CUBEBOX_LOG_FILENAME =  path.join(LOGS_DIR, "cubebox.log")
+CUBEFRONTDESK_LOG_FILENAME = path.join(LOGS_DIR, "cubefrontdesk.log")
 CUBEGUI_LOG_FILENAME = path.join(LOGS_DIR, "cubegui.log")
 
 def make_logger(name:str, log_filename:str=None) -> logging.Logger:

@@ -6,8 +6,6 @@ import os
 import atexit
 
 
-# aaa
-
 def get_git_branch_version():
     """
     Get the current git branch and commit hash
@@ -84,6 +82,9 @@ class SimpleTimer:
     def timer(self):
         return time.time() - self.start_time
 
+def seconds_to_hhmmss_string(seconds):
+    """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
+    return time.strftime('%H:%M:%S', time.gmtime(seconds))
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())

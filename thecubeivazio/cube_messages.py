@@ -1,5 +1,7 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
 
+import thecubeivazio.cube_game as cube_game
+
 import enum
 import time
 
@@ -172,8 +174,9 @@ class CubeMsgIAm(CubeMessage):
 class CubeMsgNewTeam(CubeMessage):
     """Sent from the Frontdesk to the CubeServer when a new team is registered."""
 
-    def __init__(self, sender, team, max_time_sec):
-        super().__init__(CubeMsgType.FRONTDESK_NEW_TEAM, sender, team=team, max_time_sec=max_time_sec)
+    def __init__(self, sender, team:cube_game.CubeTeam):
+        super().__init__(CubeMsgType.FRONTDESK_NEW_TEAM, sender, name=team.name, rfid_uid=team.rfid_uid, max_time_sec=team.max_time_sec)
+        self.require_ack = True
 
 
 class CubeMsgRfidRead(CubeMessage):

@@ -86,10 +86,10 @@ class CubeNetworking:
             # noinspection PyBroadException
             try:
                 self.incoming_messages.remove(message)
-                self.log.debug(f"Message removed from listen queue: ({message.hash}) : {message}")
+                # self.log.debug(f"Message removed from listen queue: ({message.hash}) : {message}")
                 return True
             except:
-                self.log.error(f"Cannot remove message from listen queue ({message.hash}) :  {message}")
+                # self.log.error(f"Cannot remove message from listen queue ({message.hash}) :  {message}")
                 return False
 
     def acknowledge_message(self, message: cm.CubeMessage):
