@@ -13,7 +13,7 @@ from thecubeivazio.cube_utils import XvfbManager
 
 import threading
 import time
-from typing import Union
+from typing import Union, List
 from collections import deque
 
 import evdev
@@ -89,7 +89,7 @@ class CubeRfidEventListener:
         self._thread = None
         self._keep_running = True
 
-        self._device_path = self.get_input_device_path_from_device_name("RFID")
+        self._device_path = self._get_input_device_path_from_device_name("RFID")
         if self._device_path is None:
             self.log.error("No RFID input device found")
             raise FileNotFoundError("No RFID input device found")
@@ -115,9 +115,13 @@ class CubeRfidEventListener:
         self._keep_running = False
         self._thread.join(timeout=0.5)
 
-    def get_completed_lines(self):
+    def get_completed_lines(self) -> List[CubeRfidLine]:
         with self._lines_lock:
             return list(self._completed_lines)
+
+    def has_new_lines(self):
+        with self._lines_lock:
+            return len(self._completed_lines) > 0
 
     def remove_line(self, rfid_line: CubeRfidLine):
         with self._lines_lock:
@@ -133,9 +137,9 @@ class CubeRfidEventListener:
                         # Print the key event for debug
                         #print(evdev.categorize(event))
                         # we only care about key up events
-                        if self.is_event_key_up(event):
+                        if self._is_event_key_up(event):
                             # if the event is the enter key, we have a complete line
-                            if self.is_event_enter_key(event):
+                            if self._is_event_enter_key(event):
                                 newline = CubeRfidLine(time.time(), "".join(self._current_chars_buffer))
                                 self._current_chars_buffer.clear()
                                 if newline.is_valid():
@@ -145,8 +149,8 @@ class CubeRfidEventListener:
                                 else:
                                     self.log.error(f"Invalid RFID line entered: {newline.uid}")
                             # if the event is a digit key, we add it to the buffer
-                            elif self.is_event_digit_key(event):
-                                digit_str = self.event_to_digit_str(event)
+                            elif self._is_event_digit_key(event):
+                                digit_str = self._event_to_digit_str(event)
                                 self._current_chars_buffer.append(digit_str)
             except Exception as e:
                 self.log.error(f"Error reading RFID events: {e}")
@@ -154,26 +158,26 @@ class CubeRfidEventListener:
 
 
     @staticmethod
-    def is_event_enter_key(event: evdev.InputEvent):
+    def _is_event_enter_key(event: evdev.InputEvent):
         # return event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_ENTER and event.value == evdev.events.KeyEvent.key_up
         return event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_ENTER
 
     @staticmethod
-    def is_event_digit_key(event: evdev.InputEvent):
+    def _is_event_digit_key(event: evdev.InputEvent):
         return event.type == evdev.ecodes.EV_KEY and event.code in CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT
 
     @staticmethod
-    def is_event_key_up(event):
+    def _is_event_key_up(event):
         return event.type == evdev.ecodes.EV_KEY and event.value == evdev.events.KeyEvent.key_up
 
     @staticmethod
-    def event_to_digit_str(event : evdev.InputEvent):
+    def _event_to_digit_str(event : evdev.InputEvent):
         if not event.code in CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT:
             return None
         return CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT[event.code]
 
     @staticmethod
-    def get_input_device_path_from_device_name(name):
+    def _get_input_device_path_from_device_name(name):
         import os
         import fnmatch
         by_id_path = CubeRfidEventListener.BY_ID_PATH

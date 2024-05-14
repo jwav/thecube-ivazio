@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 import pickle
 
-import cube_identification as cubeid
+from thecubeivazio import cube_identification as cubeid
 from thecubeivazio import cube_utils
 import os
 
@@ -138,12 +138,14 @@ class CubeTeam:
         content += f"<p><strong>Date:</strong> {time.strftime('%Y-%m-%d %H:%M:%S')}</p>\n\n"
         content += f"<p><strong>Temps alloué:</strong> {cube_utils.seconds_to_hhmmss_string(self.max_time_sec)}</p>\n\n"
         content += f"<p><strong>Score total:</strong> {self.calculate_score()} points</p>\n\n"
-        content += "<h2>Cubes réussis</h2>\n\n"
+        content += "<h2>Score détaillé</h2>\n\n"
         content += "<ul>\n"
         for cube in self.completed_cubes:
-            content += f"<li><strong>Cube {cube.cube_id}:</strong> {cube.completion_time_str()} - {cube.calculate_score()} points</li>\n"
+            content += f"<li><strong>Cube {cube.cube_id} : </strong> {cube.completion_time_str()} - {cube.calculate_score()} points</li>\n"
         content += "</ul>\n"
-        html = f"<!DOCTYPE html>\n<html>\n<head>\n<meta charset='utf-8'>\n<title>Ivazio - The Cube</title>\n</head>\n<body>\n{content}\n</body>\n</html>"
+        content = "<center>\n" + content + "</center>\n"
+        html = f"<!DOCTYPE html>\n<html>\n<head>\n<meta charset='utf-8'>\n<title>Ivazio - The Cube</title>\n<link rel='stylesheet' type='text/css' href='../resources/scoresheet_style.css'>\n</head>\n<body>\n{content}\n</body>\n</html>"
+
         try:
             with open(filename, 'w', encoding="utf-8") as f:
                 f.write(html)
@@ -153,6 +155,7 @@ class CubeTeam:
             return False
 
 
+# TODO : add ranks for the day, week, mont, all-time
 class CubeTeamsList(List[CubeTeam]):
     """List of CubeTeam instances, one for each team playing a CubeGame. Meant to be used by the CubeServer and FrontDesk."""
 
