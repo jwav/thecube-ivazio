@@ -188,6 +188,38 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="btnIconCreateRfidStatus">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: none;
+    border: none;
+}
+QPushButton:pressed {
+    background-color: none;
+    border: none;
+}
+QPushButton:focus {
+    outline: none;
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="error"/>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <spacer name="horizontalSpacer_17">
             <property name="orientation">
@@ -205,22 +237,6 @@
            <widget class="QLabel" name="lblCreateAllocatedTime">
             <property name="text">
              <string>Temps alloué : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label_3">
-            <property name="maximumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="../resources/resources.qrc">:/icon_error.png</pixmap>
             </property>
            </widget>
           </item>

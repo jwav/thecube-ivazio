@@ -25,36 +25,6 @@ from pynput import keyboard
 
 
 
-AZERTY_DICT = {
-    '&': '1', 'é': '2', '"': '3', "'": '4', '(': '5',
-    '-': '6', 'è': '7', '_': '8', 'ç': '9', 'à': '0'}
-
-
-
-
-
-
-
-
-
-def test_evdev():
-    from evdev import InputDevice, categorize, ecodes
-    device_path = "/dev/input/event258"
-
-    # Create an InputDevice object for the specified device
-    device = InputDevice(device_path)
-
-    try:
-        # Continuously read events from the device
-        for event in device.read_loop():
-            # Check if the event is a key event
-            if event.type == ecodes.EV_KEY:
-                # Print the key event
-                print(categorize(event))
-
-    except KeyboardInterrupt:
-        # Stop the function if KeyboardInterrupt (Ctrl+C) is detected
-        pass
 
 class CubeRfidLine:
     UID_LENGTH = 10
@@ -68,52 +38,26 @@ class CubeRfidLine:
         return len(self.uid) == self.UID_LENGTH and all([char.isdigit() for char in self.uid])
 
 
-class CubeRfidEventListener:
-    """Listens for RFID events and stores the entered lines"""
-    BY_ID_PATH = "/dev/input/by-id/"
-    DEV_INPUT_PATH = "/dev/input/"
-    ECODES_TO_STR_DIGIT_DICT = {
-        evdev.ecodes.KEY_1: '1', evdev.ecodes.KEY_2: '2', evdev.ecodes.KEY_3: '3', evdev.ecodes.KEY_4: '4', evdev.ecodes.KEY_5: '5',
-        evdev.ecodes.KEY_6: '6', evdev.ecodes.KEY_7: '7', evdev.ecodes.KEY_8: '8', evdev.ecodes.KEY_9: '9', evdev.ecodes.KEY_0: '0'
-    }
+class CubeRfidListenerBase:
+    """Base class for RFID listeners. Implementations should override the run, stop, setup methods."""
 
     def __init__(self):
         self._is_setup = False
-        self.log = cube_logger.make_logger("RFID Event Listener")
-        self.log.setLevel(logging.INFO)
-
         self._current_chars_buffer = deque()
         self._completed_lines = deque()  # Store completed lines with their timestamps
         self._lines_lock = threading.Lock()  # Lock for thread-safe access to keycodes
 
-        self._thread = None
-        self._keep_running = True
+    def run(self):
+        raise NotImplementedError
 
-        self._device_path = self._get_input_device_path_from_device_name("RFID")
-        if self._device_path is None:
-            self.log.error("No RFID input device found")
-            raise FileNotFoundError("No RFID input device found")
+    def stop(self):
+        raise NotImplementedError
 
-        # Create an InputDevice object for the specified device
-        try:
-            self._device = evdev.InputDevice(self._device_path)
-        except:
-            self.log.error("Could not create InputDevice object for RFID reader")
-            raise
-
-        self._is_setup = True
+    def setup(self):
+        raise NotImplementedError
 
     def is_setup(self):
         return self._is_setup
-
-    def run(self):
-        self._thread = threading.Thread(target=self._event_read_loop)
-        self._keep_running = True
-        self._thread.start()
-
-    def stop(self):
-        self._keep_running = False
-        self._thread.join(timeout=0.5)
 
     def get_completed_lines(self) -> List[CubeRfidLine]:
         with self._lines_lock:
@@ -127,15 +71,77 @@ class CubeRfidEventListener:
         with self._lines_lock:
             self._completed_lines.remove(rfid_line)
 
+
+class CubeRfidEventListener(CubeRfidListenerBase):
+    """Listens for RFID events and stores the entered lines. Only works on Linux."""
+    BY_ID_PATH = "/dev/input/by-id/"
+    DEV_INPUT_PATH = "/dev/input/"
+    ECODES_TO_STR_DIGIT_DICT = {
+        evdev.ecodes.KEY_1: '1', evdev.ecodes.KEY_2: '2', evdev.ecodes.KEY_3: '3', evdev.ecodes.KEY_4: '4',
+        evdev.ecodes.KEY_5: '5',
+        evdev.ecodes.KEY_6: '6', evdev.ecodes.KEY_7: '7', evdev.ecodes.KEY_8: '8', evdev.ecodes.KEY_9: '9',
+        evdev.ecodes.KEY_0: '0'
+    }
+
+    def __init__(self):
+        super().__init__()
+        self.log = cube_logger.make_logger("RFID Event Listener")
+        self.log.setLevel(logging.INFO)
+
+        self._thread = threading.Thread(target=self._event_read_loop)
+        self._keep_running = True
+
+        self._device_path: str = None
+        self._device = None
+        self._is_setup = False
+
+    def is_setup(self):
+        return self._is_setup
+
+    def setup(self) -> bool:
+        try:
+            self._device_path = self._get_input_device_path_from_device_name("RFID")
+            if self._device_path is None:
+                self.log.error("No RFID input device found")
+                raise FileNotFoundError("No RFID input device found")
+
+            # Create an InputDevice object for the specified device
+
+            self._device = evdev.InputDevice(self._device_path)
+        except Exception as e:
+            self.log.error(f"Could not create InputDevice object for RFID reader : {e}")
+            self._is_setup = False
+            return False
+
+        self.log.info(f"RFID listener setup successful: {self._device_path}")
+        self._is_setup = True
+        return True
+
+    def run(self):
+        self._keep_running = True
+        self._thread.start()
+
+    def stop(self):
+        self.log.info("Stopping RFID Event listener...")
+        self._keep_running = False
+        self._thread.join(timeout=0.5)
+        self.log.info("RFID Event listener stopped")
+
     def _event_read_loop(self):
         while self._keep_running:
             try:
+                if not self.is_setup():
+                    self.log.error("RFID listener not set up. Setting up...")
+                    if not self.setup():
+                        self.log.error("RFID listener setup failed. Retrying in 1 second...")
+                        time.sleep(1)
+                        continue
                 # Continuously read events from the device
                 for event in self._device.read_loop():
                     # Check if the event is a key event
                     if event.type == evdev.ecodes.EV_KEY:
                         # Print the key event for debug
-                        #print(evdev.categorize(event))
+                        # print(evdev.categorize(event))
                         # we only care about key up events
                         if self._is_event_key_up(event):
                             # if the event is the enter key, we have a complete line
@@ -154,27 +160,7 @@ class CubeRfidEventListener:
                                 self._current_chars_buffer.append(digit_str)
             except Exception as e:
                 self.log.error(f"Error reading RFID events: {e}")
-
-
-
-    @staticmethod
-    def _is_event_enter_key(event: evdev.InputEvent):
-        # return event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_ENTER and event.value == evdev.events.KeyEvent.key_up
-        return event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_ENTER
-
-    @staticmethod
-    def _is_event_digit_key(event: evdev.InputEvent):
-        return event.type == evdev.ecodes.EV_KEY and event.code in CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT
-
-    @staticmethod
-    def _is_event_key_up(event):
-        return event.type == evdev.ecodes.EV_KEY and event.value == evdev.events.KeyEvent.key_up
-
-    @staticmethod
-    def _event_to_digit_str(event : evdev.InputEvent):
-        if not event.code in CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT:
-            return None
-        return CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT[event.code]
+                self._is_setup = False
 
     @staticmethod
     def _get_input_device_path_from_device_name(name):
@@ -190,16 +176,57 @@ class CubeRfidEventListener:
                     return full_input_path
         return None
 
+    @staticmethod
+    def _is_event_enter_key(event: evdev.InputEvent):
+        # return event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_ENTER and event.value == evdev.events.KeyEvent.key_up
+        return event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_ENTER
 
-class CubeRfidKeyboardListener:
+    @staticmethod
+    def _is_event_digit_key(event: evdev.InputEvent):
+        return event.type == evdev.ecodes.EV_KEY and event.code in CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT
+
+    @staticmethod
+    def _is_event_key_up(event):
+        return event.type == evdev.ecodes.EV_KEY and event.value == evdev.events.KeyEvent.key_up
+
+    @staticmethod
+    def _event_to_digit_str(event: evdev.InputEvent):
+        if not event.code in CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT:
+            return None
+        return CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT[event.code]
+
+
+
+
+class CubeRfidKeyboardListener(CubeRfidListenerBase):
+    """Reacts to RFID characters entered as if by a keyboard and stores the entered lines"""
+
+    AZERTY_DICT = {
+        '&': '1', 'é': '2', '"': '3', "'": '4', '(': '5',
+        '-': '6', 'è': '7', '_': '8', 'ç': '9', 'à': '0'}
+
     def __init__(self):
+        super().__init__()
         self.log = cube_logger.make_logger("RFID Keyboard Listener")
         self.current_chars_buffer = deque()  # Use deque for efficient pop/append operations
-        self.completed_lines = deque()  # Store completed lines with their timestamps
+        self._completed_lines = deque()  # Store completed lines with their timestamps
         self.lock = threading.Lock()  # Lock for thread-safe access to keycodes
-        self.listener = keyboard.Listener(on_press=self.on_press)
+        self._keyboard_listener = keyboard.Listener(on_press=self._on_press)
+        self.setup()
 
-    def on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
+    def setup(self):
+        self._is_setup = True
+        return True
+
+    def run(self):
+        self._keyboard_listener.start()
+
+    def stop(self):
+        print("Stopping RFID listener...")
+        self._keyboard_listener.stop()
+        print("RFID listener stopped")
+
+    def _on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         try:
             keycode = key.vk  # Get the virtual key code
         except AttributeError:
@@ -214,44 +241,25 @@ class CubeRfidKeyboardListener:
                     newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
                     self.current_chars_buffer.clear()
                     if newline.is_valid():
-                        self.completed_lines.append(newline)
+                        self._completed_lines.append(newline)
                         self.log.info(f"Valid RFID line entered: {newline.uid}")
                     else:
                         self.log.error(f"Invalid RFID line entered: {newline.uid}")
+                # if it's not a newline
                 else:
-
                     # convert azerty to qwerty is need be
-                    char = key.char if key.char not in AZERTY_DICT else AZERTY_DICT[key.char]
-                    self.current_chars_buffer.append(char)
+                    char = key.char if key.char not in self.AZERTY_DICT else self.AZERTY_DICT[key.char]
+                    if char.isdigit():
+                        self.current_chars_buffer.append(char)
             except:
                 pass
 
-    def run(self):
-        self.listener.start()
 
-    def stop(self):
-        print("Stopping RFID listener...")
-        self.listener.stop()
-        print("RFID listener stopped")
-
-    def get_completed_lines(self):
-        with self.lock:
-            return list(self.completed_lines)
-
-    def remove_line(self, rfid_line: CubeRfidLine):
-        with self.lock:
-            self.completed_lines.remove(rfid_line)
-
-
-
-
-if __name__ == "__main__":
-    #rfid = CubeRfidKeyboardListener()
-    rfid = CubeRfidEventListener()
-    if rfid.is_setup():
-        print("RFID listener setup successful:", rfid._device_path)
-    rfid.run()
+def test_rfid_keyboard_listener():
+    rfid = CubeRfidKeyboardListener()
     rfid.log.info("RFID listener test. Press Ctrl+C to stop.")
+    rfid.setup()
+    rfid.run()
     try:
         while True:
             if lines := rfid.get_completed_lines():
@@ -262,3 +270,28 @@ if __name__ == "__main__":
         print("Stopping listener...")
     finally:
         rfid.stop()
+
+
+def test_rfid_event_listener():
+    rfid = CubeRfidEventListener()
+    rfid.log.info("RFID Event listener test. Press Ctrl+C to stop.")
+    if rfid.is_setup():
+        print("RFID listener setup successful:", rfid._device_path)
+    rfid.run()
+    try:
+        while True:
+            if lines := rfid.get_completed_lines():
+                for line in lines:
+                    print(f"Line entered at {line.timestamp}: {line.uid} : {'valid' if line.is_valid() else 'invalid'}")
+                rfid._completed_lines.clear()
+    except KeyboardInterrupt:
+        print("Stopping listener...")
+    finally:
+        rfid.stop()
+
+
+if __name__ == "__main__":
+    print("Testing RFID Keyboard Listener")
+    test_rfid_keyboard_listener()
+    print("Testing RFID Event Listener")
+    test_rfid_event_listener()
