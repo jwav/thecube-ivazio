@@ -23605,3 +23605,1000 @@
 2024-05-15 16:38:56,617 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
 2024-05-15 16:38:56,617 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
 2024-05-15 16:39:49,610 - CubeBox1 - DEBUG - Button pressed now
+2024-05-15 16:40:08,949 - CubeBox1 Networking - DEBUG - Received UDP packet from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,949 - CubeBox1 Networking - DEBUG - Received message: 335733a82d from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,949 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,949 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:40:08,949 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,949 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,950 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,951 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,952 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:08,952 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,956 - CubeBox1 Networking - DEBUG - Received UDP packet from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,956 - CubeBox1 Networking - DEBUG - Received message: 335733a82d from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,956 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,957 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:10,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,964 - CubeBox1 Networking - DEBUG - Received UDP packet from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Received message: 335733a82d from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,965 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,966 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,966 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,966 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,966 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,967 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,967 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,967 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,967 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,967 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,967 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,968 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,968 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,968 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,968 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,968 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,968 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,969 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:12,969 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,387 - CubeBox1 Networking - DEBUG - Received UDP packet from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,387 - CubeBox1 Networking - DEBUG - Received message: 335733a82d from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,387 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,388 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,389 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:18,390 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,390 - CubeBox1 Networking - DEBUG - Received UDP packet from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Received message: 335733a82d from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,391 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,392 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,393 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,393 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,393 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:20,393 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Received UDP packet from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Received message: 335733a82d from ('127.0.0.1', 5005): CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,394 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,395 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:22,396 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:40:59,728 - CubeBox1 - DEBUG - Button pressed now
+2024-05-15 16:41:00,360 - RFID Keyboard Listener - ERROR - Invalid RFID line entered: 
+2024-05-15 16:41:12,122 - RFID Keyboard Listener - ERROR - Invalid RFID line entered: 
+2024-05-15 16:41:16,585 - RFID Keyboard Listener - ERROR - Invalid RFID line entered: 
+2024-05-15 16:41:21,426 - RFID Keyboard Listener - ERROR - Invalid RFID line entered: 
+2024-05-15 16:41:27,635 - FrontDesk Networking - DEBUG - Sending message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:41:27,635 - FrontDesk Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,635 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,636 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,636 - CubeBox1 Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,636 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,636 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:27,636 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,636 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,636 - FrontDesk Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,637 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,636 - FrontDesk Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,638 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:27,639 - CubeBox1 Networking - DEBUG - Handling message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,639 - CubeBox1 Networking - INFO - Added node FrontDesk to the nodes list
+2024-05-15 16:41:27,638 - FrontDesk Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:27,640 - CubeBox1 Networking - INFO - Handled common message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,640 - CubeBox1 Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,640 - FrontDesk Networking - DEBUG - Ignoring message from self : (5a54e5e441) CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,653 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,664 - CubeServer Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,674 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,694 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:27,715 - CubeServer Networking - DEBUG - Handling message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,730 - CubeServer Networking - INFO - Added node FrontDesk to the nodes list
+2024-05-15 16:41:27,730 - CubeServer - DEBUG - Received message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,741 - CubeServer Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,746 - CubeServer Networking - INFO - Handled common message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:27,772 - CubeServer Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:28,641 - FrontDesk Networking - DEBUG - Sending message to CubeServer (): (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0, require_ack: False
+2024-05-15 16:41:28,641 - FrontDesk Networking - DEBUG - Sending message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0 to 192.168.1.255:5005
+2024-05-15 16:41:28,641 - FrontDesk Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,641 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,641 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,641 - FrontDesk Networking - DEBUG - msg require ack? True, require_ack? False
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,642 - FrontDesk Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,642 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,642 - FrontDesk Networking - DEBUG - Waiting for ack of message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0 (nb try: 0/2)
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:28,642 - FrontDesk Networking - DEBUG - Ignoring message from self : (0c9c52db9e) CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - FrontDesk Networking - DEBUG - Waiting for ack of message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0, timeout: 2 s
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,642 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,643 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,644 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,651 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,667 - CubeServer Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,677 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,688 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:28,698 - CubeServer Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,708 - CubeServer Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,733 - CubeServer - DEBUG - Received message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,744 - CubeServer Networking - INFO - Acknowledging message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,759 - CubeServer Networking - DEBUG - Sending message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE to 192.168.1.255:5005
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - FrontDesk Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - FrontDesk Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:28,780 - FrontDesk Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,780 - FrontDesk Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,780 - FrontDesk Networking - INFO - Added node CubeServer to the nodes list
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,780 - FrontDesk Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,780 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,781 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,782 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,785 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,820 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:28,833 - FrontDesk - DEBUG - Received message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,833 - FrontDesk Networking - DEBUG - Removing message from listen queue: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,836 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,841 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:28,862 - CubeServer Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,898 - CubeServer Networking - DEBUG - Sending message to FrontDesk: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE, require_ack: False
+2024-05-15 16:41:28,918 - CubeServer Networking - DEBUG - Ignoring message from self : (21f0cfcb50) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,939 - CubeServer Networking - DEBUG - Sending message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE to 192.168.1.68:5005
+2024-05-15 16:41:28,980 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,980 - FrontDesk Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,980 - FrontDesk Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,980 - FrontDesk Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:28,980 - FrontDesk Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,980 - FrontDesk Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:28,995 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:29,033 - FrontDesk - DEBUG - Received message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:29,034 - FrontDesk Networking - DEBUG - Removing message from listen queue: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:29,041 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:29,056 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:29,072 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:29,098 - CubeServer Networking - DEBUG - Removing message from listen queue: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - FrontDesk Networking - DEBUG - Ack timeout
+2024-05-15 16:41:30,645 - FrontDesk Networking - ERROR - Message not acknowledged after 0 tries. Re-sending (0c9c52db9e).
+2024-05-15 16:41:30,645 - FrontDesk Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - FrontDesk Networking - DEBUG - Waiting for ack of message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0 (nb try: 1/2)
+2024-05-15 16:41:30,645 - CubeBox1 Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - FrontDesk Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,645 - FrontDesk Networking - DEBUG - Waiting for ack of message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0, timeout: 2 s
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:30,646 - FrontDesk Networking - DEBUG - Ignoring message from self : (0c9c52db9e) CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,646 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,647 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,648 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,689 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,750 - CubeServer Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,761 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,776 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:30,776 - CubeServer - DEBUG - Received message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,786 - CubeServer Networking - INFO - Acknowledging message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,792 - CubeServer Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,847 - CubeServer Networking - DEBUG - Sending message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE to 192.168.1.255:5005
+2024-05-15 16:41:30,858 - CubeServer Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,863 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,863 - CubeBox1 Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,863 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,864 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,864 - FrontDesk Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:30,864 - FrontDesk Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - FrontDesk Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - FrontDesk Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - FrontDesk Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,864 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,865 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,866 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,863 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,884 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:30,900 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:30,936 - FrontDesk - DEBUG - Received message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,936 - FrontDesk Networking - DEBUG - Removing message from listen queue: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,936 - CubeServer Networking - DEBUG - Sending message to FrontDesk: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE, require_ack: False
+2024-05-15 16:41:30,951 - CubeServer Networking - DEBUG - Sending message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE to 192.168.1.68:5005
+2024-05-15 16:41:30,984 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,984 - FrontDesk Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,984 - FrontDesk Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,984 - FrontDesk Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:30,984 - FrontDesk Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,985 - FrontDesk Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,989 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:30,999 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:31,014 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:31,037 - FrontDesk - DEBUG - Received message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:31,037 - FrontDesk Networking - DEBUG - Removing message from listen queue: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:31,035 - CubeServer Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:31,045 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:31,061 - CubeServer Networking - DEBUG - Ignoring message from self : (21f0cfcb50) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:31,102 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:31,142 - CubeServer Networking - DEBUG - Removing message from listen queue: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,648 - FrontDesk Networking - DEBUG - Ack timeout
+2024-05-15 16:41:32,649 - FrontDesk Networking - ERROR - Message not acknowledged after 1 tries. Re-sending (0c9c52db9e).
+2024-05-15 16:41:32,649 - FrontDesk Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,649 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,649 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,650 - CubeBox1 Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,650 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,650 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:32,651 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,651 - FrontDesk Networking - DEBUG - Waiting for ack of message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0, timeout: 2 s
+2024-05-15 16:41:32,651 - FrontDesk Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,651 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,651 - FrontDesk Networking - DEBUG - Ignoring message from self : (0c9c52db9e) CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,652 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,653 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,654 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,655 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,664 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,685 - CubeServer Networking - DEBUG - Received message: 0c9c52db9e from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,767 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,808 - CubeServer - DEBUG - Received message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,818 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:32,839 - CubeServer Networking - INFO - Acknowledging message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,849 - CubeServer Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,890 - CubeServer Networking - DEBUG - Sending message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE to 192.168.1.255:5005
+2024-05-15 16:41:32,921 - CubeServer Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,957 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - CubeBox1 Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - FrontDesk Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - FrontDesk Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:32,957 - FrontDesk Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:32,957 - FrontDesk Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,957 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - FrontDesk Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,958 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,959 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:32,960 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,961 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,962 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:32,982 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:32,993 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:33,040 - FrontDesk - DEBUG - Received message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,040 - FrontDesk Networking - DEBUG - Removing message from listen queue: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,072 - CubeServer Networking - DEBUG - Sending message to FrontDesk: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE, require_ack: False
+2024-05-15 16:41:33,093 - CubeServer Networking - DEBUG - Sending message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE to 192.168.1.68:5005
+2024-05-15 16:41:33,132 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,093 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,133 - FrontDesk Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,133 - FrontDesk Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,133 - FrontDesk Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:33,133 - FrontDesk Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,133 - FrontDesk Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,140 - FrontDesk - DEBUG - Received message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,140 - FrontDesk Networking - DEBUG - Removing message from listen queue: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,138 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,164 - CubeServer Networking - DEBUG - Received message: 21f0cfcb50 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,190 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:33,202 - CubeServer Networking - DEBUG - Ignoring message from self : (21f0cfcb50) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,207 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:33,270 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:33,306 - CubeServer Networking - DEBUG - Removing message from listen queue: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:34,654 - FrontDesk Networking - DEBUG - Ack timeout
+2024-05-15 16:41:35,655 - FrontDesk Networking - DEBUG - Sending message to CubeServer (192.168.1.68): (e2f9ae2f9c) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0, require_ack: False
+2024-05-15 16:41:35,656 - FrontDesk Networking - DEBUG - Sending message: (e2f9ae2f9c) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0 to 192.168.1.68:5005
+2024-05-15 16:41:35,656 - FrontDesk Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0
+2024-05-15 16:41:35,656 - FrontDesk Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0
+2024-05-15 16:41:35,656 - FrontDesk Networking - DEBUG - msg require ack? True, require_ack? False
+2024-05-15 16:41:35,656 - FrontDesk Networking - DEBUG - Received message: e2f9ae2f9c from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0
+2024-05-15 16:41:35,657 - FrontDesk Networking - DEBUG - Waiting for ack of message: (e2f9ae2f9c) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0 (nb try: 0/2)
+2024-05-15 16:41:35,657 - FrontDesk Networking - DEBUG - Ignoring message from self : (e2f9ae2f9c) CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0
+2024-05-15 16:41:35,657 - FrontDesk Networking - DEBUG - Waiting for ack of message: (e2f9ae2f9c) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Paris|rfid_uid=1234567891|max_time_sec=160.0, timeout: 2 s
+2024-05-15 16:41:35,910 - FrontDesk Networking - INFO - Stopping networking...
+2024-05-15 16:41:35,957 - FrontDesk Networking - INFO - Networking stopped
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,585 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,585 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,586 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,587 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,588 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:42,589 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:42,590 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:42,590 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:42,590 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:42,590 - CubeBox1 Networking - DEBUG - Handling message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,590 - CubeBox1 Networking - INFO - Handled common message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,591 - CubeBox1 Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,592 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,623 - CubeServer Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,644 - CubeServer - DEBUG - Received message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,639 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,660 - CubeServer Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:41:42,660 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:44,130 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,130 - CubeBox1 Networking - DEBUG - Received message: d6e0197b48 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,131 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,132 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,133 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,134 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,135 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,210 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,226 - CubeServer Networking - DEBUG - Received message: d6e0197b48 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,231 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,241 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:44,251 - CubeServer Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,262 - CubeServer Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,302 - CubeServer - DEBUG - Received message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,313 - CubeServer Networking - INFO - Acknowledging message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,323 - CubeServer Networking - DEBUG - Sending message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE to 192.168.1.255:5005
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Received message: 6466919b60 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,339 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,339 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,340 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,341 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,341 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,341 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,341 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,341 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,341 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,342 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,342 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,342 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,342 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,342 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,342 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,343 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:41:44,344 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,344 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:41:44,344 - CubeBox1 Networking - DEBUG - Handling message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,344 - CubeBox1 Networking - DEBUG - Not a common message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,349 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,375 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:44,390 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,395 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:44,406 - CubeServer Networking - DEBUG - Received message: 6466919b60 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,436 - CubeServer Networking - DEBUG - Sending message to FrontDesk: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE, require_ack: False
+2024-05-15 16:41:44,513 - CubeServer Networking - DEBUG - Ignoring message from self : (6466919b60) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,524 - CubeServer Networking - DEBUG - Sending message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE to 192.168.1.68:5005
+2024-05-15 16:41:44,600 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,615 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:41:44,636 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:41:44,672 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:41:44,703 - CubeServer Networking - DEBUG - Removing message from listen queue: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,288 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,291 - CubeBox1 Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,292 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,292 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,293 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:31,294 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:31,295 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,296 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:31,296 - CubeBox1 Networking - DEBUG - Handling message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:31,296 - CubeBox1 Networking - DEBUG - Not a common message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:31,296 - CubeBox1 Networking - DEBUG - Handling message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,296 - CubeBox1 Networking - INFO - Handled common message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,296 - CubeBox1 Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,317 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,327 - CubeServer Networking - DEBUG - Received message: 5a54e5e441 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,360 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,381 - CubeServer - DEBUG - Received message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,404 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:42:31,406 - CubeServer Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,416 - CubeServer Networking - DEBUG - Handling message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,433 - CubeServer Networking - INFO - Handled common message: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:31,464 - CubeServer Networking - DEBUG - Removing message from listen queue: (5a54e5e441) : CUBEMSG|sender=FrontDesk|msgtype=HEARTBEAT|
+2024-05-15 16:42:32,574 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,574 - CubeBox1 Networking - DEBUG - Received message: d6e0197b48 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,574 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,574 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,575 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,576 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,577 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Handling message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Not a common message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,578 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,585 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,611 - CubeServer Networking - DEBUG - Received message: d6e0197b48 from ('192.168.1.68', 5005): CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,636 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,646 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:42:32,697 - CubeServer - DEBUG - Received message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,703 - CubeServer Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,708 - CubeServer Networking - INFO - Acknowledging message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,723 - CubeServer Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,743 - CubeServer Networking - DEBUG - Sending message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE to 192.168.1.255:5005
+2024-05-15 16:42:32,784 - CubeBox1 Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,784 - CubeBox1 Networking - DEBUG - Received message: 6466919b60 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,784 - CubeBox1 Networking - INFO - Valid message: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,785 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,786 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,786 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,786 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,786 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,786 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,787 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,788 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,788 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,788 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,788 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,788 - CubeBox1 Networking - DEBUG - Handling message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,788 - CubeBox1 Networking - DEBUG - Not a common message: (335733a82d) : CUBEMSG|sender=CubeServer|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Handling message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Not a common message: (0c9c52db9e) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=Budapest|rfid_uid=1234567890|max_time_sec=60.0
+2024-05-15 16:42:32,789 - CubeBox1 Networking - DEBUG - Handling message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,790 - CubeBox1 Networking - DEBUG - Not a common message: (21f0cfcb50) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=0c9c52db9e|info=NONE
+2024-05-15 16:42:32,790 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,791 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,791 - CubeBox1 Networking - DEBUG - Handling message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Not a common message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Handling message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Handling message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Not a common message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,789 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,820 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:42:32,841 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:42:32,867 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,867 - CubeServer Networking - DEBUG - Sending message to FrontDesk: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE, require_ack: False
+2024-05-15 16:42:32,908 - CubeServer Networking - DEBUG - Received message: 6466919b60 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,923 - CubeServer Networking - DEBUG - Sending message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE to 192.168.1.68:5005
+2024-05-15 16:42:32,934 - CubeServer Networking - DEBUG - Ignoring message from self : (6466919b60) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:32,995 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:33,021 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:42:33,037 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:42:33,078 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:42:33,124 - CubeServer Networking - DEBUG - Removing message from listen queue: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
+2024-05-15 16:43:14,833 - RFID Keyboard Listener - ERROR - Invalid RFID line entered: 3

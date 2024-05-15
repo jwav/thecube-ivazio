@@ -9,14 +9,14 @@ from typing import Optional
 NB_CUBEBOXES = 12
 FIRST_CUBEBOX_INDEX = 1
 CUBE_IDS = range(FIRST_CUBEBOX_INDEX, FIRST_CUBEBOX_INDEX + NB_CUBEBOXES)
-FRONTDESK_NAME = "FrontDesk"
+CUBEFRONTDESK_NAME = "FrontDesk"
 CUBESERVER_NAME = "CubeServer"
 CUBEBOX_NAME_PREFIX = "CubeBox"
 EVERYONE_NAME = "CubeEveryone"
 
 
 def is_valid_node_name(name: str) -> bool:
-    return name in [FRONTDESK_NAME, CUBESERVER_NAME] or name.startswith(CUBEBOX_NAME_PREFIX)
+    return name in [CUBEFRONTDESK_NAME, CUBESERVER_NAME] or name.startswith(CUBEBOX_NAME_PREFIX)
 
 
 def is_valid_ip(ip: str) -> bool:
@@ -57,7 +57,7 @@ class NodeInfo:
 
 class NodesList:
     def __init__(self):
-        self.frontDesk = NodeInfo(FRONTDESK_NAME, "")
+        self.frontDesk = NodeInfo(CUBEFRONTDESK_NAME, "")
         self.cubeServer = NodeInfo(CUBESERVER_NAME, "")
         self.cubeBoxes = [NodeInfo(f"{CUBEBOX_NAME_PREFIX}{i}", "") for i in range(1, NB_CUBEBOXES + 1)]
 
@@ -70,7 +70,7 @@ class NodesList:
             "\n".join([f"{cubebox.name}: name={cubebox.name}, ip={cubebox.ip}" for cubebox in self.cubeBoxes])
 
     def set_node_ip_from_node_name(self, node_name:str, ip:str):
-        if node_name == FRONTDESK_NAME:
+        if node_name == CUBEFRONTDESK_NAME:
             self.frontDesk.ip = ip
         elif node_name == CUBESERVER_NAME:
             self.cubeServer.ip = ip
@@ -80,7 +80,7 @@ class NodesList:
                 self.cubeBoxes[cubebox_index - 1].ip = ip
 
     def get_node_ip_from_node_name(self, node_name:str) -> Optional[str]:
-        if node_name == FRONTDESK_NAME:
+        if node_name == CUBEFRONTDESK_NAME:
             return self.frontDesk.ip
         elif node_name == CUBESERVER_NAME:
             return self.cubeServer.ip

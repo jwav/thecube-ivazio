@@ -128,7 +128,7 @@ class CubeGuiForm(QMainWindow):
     def _backend_loop(self):
         """check the FrontDesk events (rfid, messages), and handle them"""
         while self._keep_running:
-            self.log.debug("Backend loop iteration")
+            #self.log.debug("Backend loop iteration")
             self.handle_rfid()
             time.sleep(1)
 
