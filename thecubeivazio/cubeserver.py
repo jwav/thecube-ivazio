@@ -11,6 +11,7 @@ import thecubeivazio.cube_networking as cubenet
 import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
+import thecubeivazio.cube_game as cube_game
 
 class CubeServer:
     def __init__(self):
@@ -73,7 +74,7 @@ class CubeServer:
                     # TODO
                     self.net.acknowledge_message(message)
                 else:
-                    self.net.remove_from_incoming_msg_queue(message)
+                    self.net.remove_msg_from_incoming_queue(message)
                 # TODO: handle other message types
 
     def _rfid_loop(self):
@@ -100,14 +101,58 @@ class CubeServer:
         while self._keep_running:
             pass
 
+class CubeServerWithPrompt:
+    def __init__(self):
+        self.cs = CubeServer()
+
+    @staticmethod
+    def print_help():
+        print("Commands:")
+        print("q, quit: stops the CubeServer")
+        print("h, help: prints this help message")
+        print("ni, netinfo: prints the network information")
+        print("wi, whois: sends WHO_IS message to everyone")
+        print("t, teams: prints the list of teams")
+        print("cg: show cubegames")
+        print("ogs: overall game status")
+
+
+    def stop(self):
+        self.cs.stop()
+
+    def run(self):
+        self.cs.run()
+        while True:
+            cmd = input("CubeServer Command > ")
+            if not cmd:
+                continue
+            elif cmd in ["q", "quit"]:
+                self.stop()
+                break
+            elif cmd in ["h", "help"]:
+                self.print_help()
+            elif cmd in ["g", "games"]:
+                print("Not implemented yet")
+            elif cmd in ["t", "teams"]:
+                print(self.cs.ogs.teams_list.to_string())
+            elif cmd in ["cg", "cubegames"]:
+                print(self.cs.ogs.cubegames_list.to_string())
+            elif cmd in ["ni", "netinfo"]:
+                # display the nodes in the network and their info
+                print(self.cs.net.nodes_list.to_string())
+            elif cmd in ["wi", "whois"]:
+                self.cs.net.send_msg_to_all(cm.CubeMsgWhoIs(self.cs.net.node_name, cubeid.EVERYONE_NAME))
+            else:
+                print("Unknown command")
 
 if __name__ == "__main__":
     import atexit
 
-    cs = CubeServer()
+    cs = CubeServerWithPrompt()
     atexit.register(cs.stop)
     try:
         cs.run()
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeServer...")
+    finally:
         cs.stop()

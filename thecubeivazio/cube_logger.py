@@ -1,6 +1,7 @@
 # TODO: handle the fact that the logs folder doesnt have the same relative path for everyone, like the GUI
 
 import logging
+from colorlog import ColoredFormatter
 from os import path, makedirs
 
 LOGS_DIR = "logs"
@@ -28,7 +29,22 @@ def make_logger(name:str, log_filename:str=None) -> logging.Logger:
 
     # Create a formatter and add it to the handlers
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    stdout_handler.setFormatter(formatter)
+    color_formatter = ColoredFormatter(
+        "%(log_color)s%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt=None,
+        reset=True,
+        log_colors={
+            'DEBUG': 'green',
+            'INFO': 'cyan',
+            'WARNING': 'yellow',
+            'ERROR': 'red',
+            'CRITICAL': 'red,bg_white',
+        },
+        secondary_log_colors={},
+        style='%'
+    )
+
+    stdout_handler.setFormatter(color_formatter)
     common_file_handler.setFormatter(formatter)
 
     logger.addHandler(stdout_handler)

@@ -10,7 +10,7 @@ import os
 
 
 @dataclass
-class CubeGame:
+class CubeBoxGame:
     """Represents a game session, i.e. a team trying to open a CubeBox"""
     cube_id: int
     current_team: Optional[int] = None
@@ -24,6 +24,9 @@ class CubeGame:
     EASY_MIN_TIME = 5 * 60
     MEDIUM_MIN_TIME = 8 * 60
     HARD_MIN_TIME = 12 * 60
+
+    def to_string(self) -> str:
+        return f"CubeBoxGame {self.cube_id}: team={self.current_team}, start={self.starting_timestamp}, victory={self.victory_timestamp}"
 
     def reset(self):
         self.current_team = None
@@ -64,7 +67,7 @@ class CubeGame:
             return 0
 
 
-class CubeGamesList(List[CubeGame]):
+class CubeGamesList(List[CubeBoxGame]):
     """List of CubeGame instances, one for each CubeBox in TheCube game. Meant to be used by the CubeServer and FrontDesk."""
 
     def __init__(self):
@@ -73,7 +76,7 @@ class CubeGamesList(List[CubeGame]):
 
     def reset(self):
         self.clear()
-        self.extend([CubeGame(cube_id) for cube_id in cubeid.CUBE_IDS])
+        self.extend([CubeBoxGame(cube_id) for cube_id in cubeid.CUBE_IDS])
 
     def free_cubes(self) -> List[int]:
         return [cube.cube_id for cube in self if cube.is_free()]
@@ -87,12 +90,18 @@ class CubeTeam:
 
     SCORESHEETS_FOLDER = "scoresheets"
 
+    def to_string(self) -> str:
+        ret = f"CubeTeam {self.name}: rfid={self.rfid_uid}, max_time={self.max_time_sec}, started={self.starting_timestamp}, "
+        ret += f"current_cube={self.current_cube}, won_cubes={len(self.completed_cubes)}"
+        return ret
+
     def __init__(self, rfid_uid: int, name: str, allocated_time: float):
         self.rfid_uid = rfid_uid
         self.name = name
         self.max_time_sec = allocated_time
         self.starting_timestamp = None
-        self.completed_cubes: List[CubeGame] = []
+        self.current_cube = None
+        self.completed_cubes: List[CubeBoxGame] = []
 
         # if the scoresheet folder is not present, create it
         if not os.path.exists(self.SCORESHEETS_FOLDER):
@@ -227,6 +236,17 @@ class CubeTeamsList(List[CubeTeam]):
             self.reset()
             return False
 
+class OverallGameStatus:
+    """Container for the overall game state, i.e. the CubeGamesList and CubeTeamsList instances"""
+
+    def __init__(self):
+        self.cube_games = CubeGamesList()
+        self.cube_teams = CubeTeamsList()
+        self.reset()
+
+    def reset(self):
+        self.cube_games.reset()
+        self.cube_teams.reset()
 
 
 
@@ -242,7 +262,7 @@ def test_cube_team():
     assert not team.is_time_over()
     team.max_time_sec = 0.1
     assert team.is_time_over()
-    team.completed_cubes.append(CubeGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1))
+    team.completed_cubes.append(CubeBoxGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1))
     assert team.calculate_score() == 300
     assert team.generate_raw_score_sheet() == "Équipe Budapest : 300 points\nCube 1 : 00:00:01 : 300 points\n"
     assert team.save_markdown_score_sheet()
@@ -290,8 +310,8 @@ def test_cube_teams_list():
 
 if __name__ == "__main__":
     team = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
-    team.completed_cubes.append(CubeGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1150))
-    team.completed_cubes.append(CubeGame(cube_id=2, starting_timestamp=time.time(), victory_timestamp=time.time() + 200))
+    team.completed_cubes.append(CubeBoxGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1150))
+    team.completed_cubes.append(CubeBoxGame(cube_id=2, starting_timestamp=time.time(), victory_timestamp=time.time() + 200))
     team.save_html_score_sheet()
 
     exit(0)

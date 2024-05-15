@@ -53,17 +53,20 @@ class CubeFrontDesk:
 
             messages = self.net.get_incoming_msg_queue()
             for message in messages:
-                self.log.debug(f"Received message: ({message.hash}) : {message}")
-                if message.msgtype == cm.CubeMsgType.CUBESERVER_SCORESHEET:
+                self.log.info(f"Received message: ({message.hash}) : {message}")
+                if message.msgtype == cm.CubeMsgType.ACK:
+                    continue
+                elif message.msgtype == cm.CubeMsgType.CUBESERVER_SCORESHEET:
                     self.log.info(f"Received scoresheet message from {message.sender}")
                     self.net.acknowledge_message(message)
-                self.net.remove_from_incoming_msg_queue(message)
+                else:
+                    self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
+                    self.net.remove_msg_from_incoming_queue(message)
                 # TODO: handle other message types
 
     def add_new_team(self, team: cube_game.CubeTeam) -> bool:
         msg = cm.CubeMsgNewTeam(self.net.node_name, team)
-        self.net.send_msg_to_cubeserver(msg)
-        return self.net.wait_for_ack(msg)
+        return self.net.send_msg_to_cubeserver(msg, require_ack=True)
 
 
 if __name__ == "__main__":
@@ -74,10 +77,9 @@ if __name__ == "__main__":
     fd.run()
     try:
         while True:
-            time.sleep(1)
             fd.add_new_team(cube_game.CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0))
-            time.sleep(1)
-            fd.add_new_team(cube_game.CubeTeam(rfid_uid=1234567891, name="Paris", allocated_time=160.0))
+            time.sleep(5)
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeFrontDesk...")
+    finally:
         fd.stop()

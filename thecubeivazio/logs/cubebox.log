@@ -5949,3 +5949,7 @@ Networking stopped
 2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Not a common message: (d6e0197b48) : CUBEMSG|sender=FrontDesk|msgtype=FRONTDESK_NEW_TEAM|name=1234567890|rfid_uid=Budapest|max_time_sec=30
 2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Handling message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
 2024-05-15 16:42:32,792 - CubeBox1 Networking - DEBUG - Not a common message: (6466919b60) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=d6e0197b48|info=NONE
+2024-05-15 16:44:42,821 - CubeBox1 - DEBUG - Button pressed now
+2024-05-15 16:45:08,755 - CubeBox1 - DEBUG - Button pressed now
+2024-05-15 17:02:18,829 - CubeBox1 Networking - INFO - Stopping networking...
+2024-05-15 17:02:18,866 - CubeBox1 Networking - INFO - Networking stopped

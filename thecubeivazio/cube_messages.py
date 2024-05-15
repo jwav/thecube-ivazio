@@ -162,6 +162,7 @@ class CubeMsgWhoIs(CubeMessage):
 
     def __init__(self, sender, node_name_to_find):
         super().__init__(CubeMsgType.WHO_IS, sender, node_name_to_find=node_name_to_find)
+        self.require_ack = False
 
 
 class CubeMsgIAm(CubeMessage):
