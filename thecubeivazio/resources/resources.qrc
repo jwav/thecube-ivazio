@@ -12,5 +12,7 @@
     <file>cubegui_banner.png</file>
     <file>icon_error.png</file>
     <file>icon_ok.png</file>
+    <file>team_names.txt</file>
+    <file>game_durations.txt</file>
   </qresource>
 </RCC>

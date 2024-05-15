@@ -59,9 +59,9 @@ class CubeBox:
     def stop(self):
         """Stop the RFID, button, and networking threads"""
         self._keep_running = False
-        self._thread_rfid.join()
-        self._thread_button.join()
-        self._thread_networking.join()
+        self._thread_rfid.join(timeout=0.1)
+        self._thread_button.join(timeout=0.1)
+        self._thread_networking.join(timeout=0.1)
 
     def _networking_loop(self):
         """check the incoming messages and handle them"""

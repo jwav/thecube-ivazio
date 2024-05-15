@@ -34,7 +34,7 @@ class CubeBuzzer:
         self._thread = threading.Thread(target=self._play_file_or_tune, args=(soundfile, tune))
         self._thread.start()
         with self._lock:
-            self._thread.join()
+            self._thread.join(timeout=5)
 
     def _play_file_or_tune(self, soundfile:str, tune:Tuple[Tuple[int, float], ...]):
         if self._is_raspberry_pi:

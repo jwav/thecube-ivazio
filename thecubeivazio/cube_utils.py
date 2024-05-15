@@ -104,7 +104,7 @@ def date_to_french_date_string(date: datetime.datetime):
         locale.setlocale(locale.LC_TIME, current_locale)
     return french_date_string
 
-def hhmmmsss_to_seconds(hhmmss:str) -> Optional[int]:
+def hhmmmsss_string_to_seconds(hhmmss:str) -> Optional[int]:
     """Convert a string like 1h30m15s ,0h30, 01:32:55, 00:21 to the number of seconds it represents"""
     # find which characters are digits, which are not, and split the string using the non-digits as separators
     import itertools
@@ -134,8 +134,8 @@ if __name__ == "__main__":
     print("git branch date:", get_git_branch_date())
     print("seconds_to_hhmmss_string(3600):", seconds_to_hhmmss_string(3600))
     print("date_to_french_date_string(datetime.datetime.now()):", date_to_french_date_string(datetime.datetime.now()))
-    print("hhmmmsss_to_seconds('1h30m15s'):", hhmmmsss_to_seconds('1h30m15s'))
-    print("hhmmmsss_to_seconds('0h30'):", hhmmmsss_to_seconds('0h30'))
-    print("hhmmmsss_to_seconds('01:32:55'):", hhmmmsss_to_seconds('01:32:55'))
-    print("hhmmmsss_to_seconds('00:21'):", hhmmmsss_to_seconds('00:21'))
-    print("hhmmmsss_to_seconds('21'):", hhmmmsss_to_seconds('21'))
+    print("hhmmmsss_to_seconds('1h30m15s'):", hhmmmsss_string_to_seconds('1h30m15s'))
+    print("hhmmmsss_to_seconds('0h30'):", hhmmmsss_string_to_seconds('0h30'))
+    print("hhmmmsss_to_seconds('01:32:55'):", hhmmmsss_string_to_seconds('01:32:55'))
+    print("hhmmmsss_to_seconds('00:21'):", hhmmmsss_string_to_seconds('00:21'))
+    print("hhmmmsss_to_seconds('21'):", hhmmmsss_string_to_seconds('21'))

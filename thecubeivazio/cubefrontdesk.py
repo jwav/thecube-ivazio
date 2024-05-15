@@ -18,7 +18,7 @@ class CubeFrontDesk:
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBESERVER_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # instanciate the RFID listener
-        self.rfid = cube_rfid.CubeRfidEventListener()
+        self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
         # params for threading
         self._networking_thread = None
@@ -29,6 +29,8 @@ class CubeFrontDesk:
         self.enable_heartbeat = False
 
     def run(self):
+        self.rfid.run()
+
         self._networking_thread = threading.Thread(target=self._networking_loop)
         self._keep_running = True
         self._networking_thread.start()

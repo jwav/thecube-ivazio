@@ -11082,3 +11082,917 @@ Networking stopped
 2024-05-12 23:30:06,126 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=f32b909526|info=None
 2024-05-12 23:30:06,151 - CubeServer Networking - DEBUG - Removing message from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
 2024-05-12 23:30:06,162 - CubeServer Networking - DEBUG - Message removed from listen queue: (f32b909526) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_BUTTON_PRESS|
+2024-05-15 13:52:42,868 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 13:52:42,904 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 13:52:42,945 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 13:52:42,966 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 13:52:42,981 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:36:41,229 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:36:41,305 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:36:42,863 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:36:42,877 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 15:36:42,877 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 15:36:42,877 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:36:42,877 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:36:43,789 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:36:43,912 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:36:47,042 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:36:47,073 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 15:36:47,078 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 15:36:47,088 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:36:47,099 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:37:29,561 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:37:29,600 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:37:30,947 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:37:30,991 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 15:37:31,042 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 15:37:31,043 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:37:31,043 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:38:20,224 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:38:20,245 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:38:20,672 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:38:20,702 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 15:38:20,718 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 15:38:20,738 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:38:20,759 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:39:48,928 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:39:49,010 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:39:50,066 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:39:50,102 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 15:39:50,141 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 15:39:50,238 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:39:50,269 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:39:54,194 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:39:54,306 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:50:42,423 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:50:42,679 - CubeServer Networking - ERROR - Failed to send bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 15:50:42,704 - CubeServer Networking - ERROR - 
+2024-05-15 15:50:42,730 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:50:42,730 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:51:24,060 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:51:24,183 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:51:24,554 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:51:24,698 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005
+2024-05-15 15:51:24,734 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:51:24,744 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:52:24,632 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:52:24,683 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:52:25,010 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 0/100)
+2024-05-15 15:52:25,062 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 1/100)
+2024-05-15 15:52:25,068 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:52:25,093 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 0/100)
+2024-05-15 15:52:25,119 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 2/100)
+2024-05-15 15:52:25,139 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 1/100)
+2024-05-15 15:52:25,170 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 3/100)
+2024-05-15 15:52:25,185 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 2/100)
+2024-05-15 15:52:25,195 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 4/100)
+2024-05-15 15:52:25,231 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 5/100)
+2024-05-15 15:52:25,236 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 6/100)
+2024-05-15 15:52:25,241 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 3/100)
+2024-05-15 15:52:25,246 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 7/100)
+2024-05-15 15:52:25,293 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 4/100)
+2024-05-15 15:52:25,308 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 8/100)
+2024-05-15 15:52:25,329 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 5/100)
+2024-05-15 15:52:25,348 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 9/100)
+2024-05-15 15:52:25,349 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 6/100)
+2024-05-15 15:52:25,388 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 10/100)
+2024-05-15 15:52:25,429 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 11/100)
+2024-05-15 15:52:25,429 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 7/100)
+2024-05-15 15:52:25,500 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 12/100)
+2024-05-15 15:52:25,552 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 8/100)
+2024-05-15 15:52:25,562 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 13/100)
+2024-05-15 15:52:25,573 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 9/100)
+2024-05-15 15:52:25,614 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 10/100)
+2024-05-15 15:52:25,614 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 14/100)
+2024-05-15 15:52:25,634 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 11/100)
+2024-05-15 15:52:25,690 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 15/100)
+2024-05-15 15:52:25,716 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 12/100)
+2024-05-15 15:52:25,757 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 16/100)
+2024-05-15 15:52:25,767 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 13/100)
+2024-05-15 15:52:25,773 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 17/100)
+2024-05-15 15:52:25,799 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 14/100)
+2024-05-15 15:52:25,888 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 18/100)
+2024-05-15 15:52:25,919 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 15/100)
+2024-05-15 15:52:25,934 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 19/100)
+2024-05-15 15:52:25,996 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 16/100)
+2024-05-15 15:52:26,011 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 20/100)
+2024-05-15 15:52:26,032 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 17/100)
+2024-05-15 15:52:26,052 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 18/100)
+2024-05-15 15:52:26,052 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 21/100)
+2024-05-15 15:52:26,098 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 22/100)
+2024-05-15 15:52:26,114 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 19/100)
+2024-05-15 15:52:26,139 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 23/100)
+2024-05-15 15:52:26,155 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 20/100)
+2024-05-15 15:52:26,216 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 24/100)
+2024-05-15 15:52:26,238 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 21/100)
+2024-05-15 15:52:26,264 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 25/100)
+2024-05-15 15:52:26,274 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 22/100)
+2024-05-15 15:52:26,300 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 26/100)
+2024-05-15 15:52:26,315 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 27/100)
+2024-05-15 15:52:26,315 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 23/100)
+2024-05-15 15:52:26,331 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 28/100)
+2024-05-15 15:52:26,367 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 24/100)
+2024-05-15 15:52:26,397 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 29/100)
+2024-05-15 15:52:26,433 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 25/100)
+2024-05-15 15:52:26,444 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 30/100)
+2024-05-15 15:52:26,470 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 26/100)
+2024-05-15 15:52:26,495 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 31/100)
+2024-05-15 15:52:26,496 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 27/100)
+2024-05-15 15:52:26,517 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 32/100)
+2024-05-15 15:52:26,623 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 28/100)
+2024-05-15 15:52:26,639 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 33/100)
+2024-05-15 15:52:26,659 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 29/100)
+2024-05-15 15:52:26,675 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 34/100)
+2024-05-15 15:52:26,690 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 30/100)
+2024-05-15 15:52:26,706 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 35/100)
+2024-05-15 15:52:26,782 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 31/100)
+2024-05-15 15:52:26,797 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 36/100)
+2024-05-15 15:52:26,854 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 32/100)
+2024-05-15 15:52:26,880 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 37/100)
+2024-05-15 15:52:26,910 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 33/100)
+2024-05-15 15:52:26,936 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 38/100)
+2024-05-15 15:52:26,936 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 34/100)
+2024-05-15 15:52:26,997 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 39/100)
+2024-05-15 15:52:27,002 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 35/100)
+2024-05-15 15:52:27,028 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 40/100)
+2024-05-15 15:52:27,048 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 36/100)
+2024-05-15 15:52:27,064 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 41/100)
+2024-05-15 15:52:27,095 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 37/100)
+2024-05-15 15:52:27,110 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 42/100)
+2024-05-15 15:52:27,136 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 38/100)
+2024-05-15 15:52:27,151 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 43/100)
+2024-05-15 15:52:27,172 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 39/100)
+2024-05-15 15:52:27,187 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 44/100)
+2024-05-15 15:52:27,207 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 40/100)
+2024-05-15 15:52:27,218 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 45/100)
+2024-05-15 15:52:27,228 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 41/100)
+2024-05-15 15:52:27,248 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 46/100)
+2024-05-15 15:52:27,259 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 42/100)
+2024-05-15 15:52:27,315 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 47/100)
+2024-05-15 15:52:27,345 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 43/100)
+2024-05-15 15:52:27,361 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 48/100)
+2024-05-15 15:52:27,377 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 44/100)
+2024-05-15 15:52:27,412 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 49/100)
+2024-05-15 15:52:27,458 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 45/100)
+2024-05-15 15:52:27,468 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 50/100)
+2024-05-15 15:52:27,489 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 46/100)
+2024-05-15 15:52:27,555 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 47/100)
+2024-05-15 15:52:27,555 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 51/100)
+2024-05-15 15:52:27,698 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 48/100)
+2024-05-15 15:52:27,733 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 52/100)
+2024-05-15 15:52:27,738 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 49/100)
+2024-05-15 15:52:27,744 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 53/100)
+2024-05-15 15:52:27,800 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 50/100)
+2024-05-15 15:52:27,815 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 54/100)
+2024-05-15 15:52:27,820 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 51/100)
+2024-05-15 15:52:27,862 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 55/100)
+2024-05-15 15:52:27,872 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 52/100)
+2024-05-15 15:52:27,938 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 56/100)
+2024-05-15 15:52:27,964 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 53/100)
+2024-05-15 15:52:28,020 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 57/100)
+2024-05-15 15:52:28,055 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 54/100)
+2024-05-15 15:52:28,076 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 58/100)
+2024-05-15 15:52:28,097 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 59/100)
+2024-05-15 15:52:28,097 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 55/100)
+2024-05-15 15:52:28,148 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 60/100)
+2024-05-15 15:52:28,153 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 56/100)
+2024-05-15 15:52:28,163 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 61/100)
+2024-05-15 15:52:28,184 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 57/100)
+2024-05-15 15:52:28,276 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 62/100)
+2024-05-15 15:52:28,291 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 58/100)
+2024-05-15 15:52:28,312 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 63/100)
+2024-05-15 15:52:28,332 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 59/100)
+2024-05-15 15:52:28,343 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 64/100)
+2024-05-15 15:52:28,363 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 60/100)
+2024-05-15 15:52:28,369 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 65/100)
+2024-05-15 15:52:28,384 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 61/100)
+2024-05-15 15:52:28,389 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 66/100)
+2024-05-15 15:52:28,420 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 62/100)
+2024-05-15 15:52:28,435 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 67/100)
+2024-05-15 15:52:28,451 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 63/100)
+2024-05-15 15:52:28,479 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 68/100)
+2024-05-15 15:52:28,530 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 64/100)
+2024-05-15 15:52:28,551 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 69/100)
+2024-05-15 15:52:28,571 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 65/100)
+2024-05-15 15:52:28,587 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 70/100)
+2024-05-15 15:52:28,617 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 66/100)
+2024-05-15 15:52:28,658 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 71/100)
+2024-05-15 15:52:28,760 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 67/100)
+2024-05-15 15:52:28,765 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 72/100)
+2024-05-15 15:52:28,791 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 68/100)
+2024-05-15 15:52:28,801 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 73/100)
+2024-05-15 15:52:28,872 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 69/100)
+2024-05-15 15:52:28,898 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 74/100)
+2024-05-15 15:52:28,924 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 70/100)
+2024-05-15 15:52:28,949 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 75/100)
+2024-05-15 15:52:28,960 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 71/100)
+2024-05-15 15:52:29,031 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 76/100)
+2024-05-15 15:52:29,072 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 72/100)
+2024-05-15 15:52:29,128 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 73/100)
+2024-05-15 15:52:29,128 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 74/100)
+2024-05-15 15:52:29,143 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 77/100)
+2024-05-15 15:52:29,144 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 75/100)
+2024-05-15 15:52:29,174 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 78/100)
+2024-05-15 15:52:29,251 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 76/100)
+2024-05-15 15:52:29,272 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 79/100)
+2024-05-15 15:52:29,302 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 77/100)
+2024-05-15 15:52:29,323 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 78/100)
+2024-05-15 15:52:29,323 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 80/100)
+2024-05-15 15:52:29,460 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 79/100)
+2024-05-15 15:52:29,487 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 81/100)
+2024-05-15 15:52:29,533 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 80/100)
+2024-05-15 15:52:29,554 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 82/100)
+2024-05-15 15:52:29,589 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 81/100)
+2024-05-15 15:52:29,600 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 83/100)
+2024-05-15 15:52:29,615 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 82/100)
+2024-05-15 15:52:29,640 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 84/100)
+2024-05-15 15:52:29,656 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 83/100)
+2024-05-15 15:52:29,672 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 85/100)
+2024-05-15 15:52:29,712 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 84/100)
+2024-05-15 15:52:29,718 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 86/100)
+2024-05-15 15:52:29,723 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 85/100)
+2024-05-15 15:52:29,744 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 87/100)
+2024-05-15 15:52:29,785 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 88/100)
+2024-05-15 15:52:29,785 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 86/100)
+2024-05-15 15:52:29,836 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 89/100)
+2024-05-15 15:52:29,867 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 87/100)
+2024-05-15 15:52:29,921 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 90/100)
+2024-05-15 15:52:29,947 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 88/100)
+2024-05-15 15:52:29,957 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 91/100)
+2024-05-15 15:52:29,972 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 89/100)
+2024-05-15 15:52:29,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 92/100)
+2024-05-15 15:52:30,008 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 90/100)
+2024-05-15 15:52:30,024 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 93/100)
+2024-05-15 15:52:30,034 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 91/100)
+2024-05-15 15:52:30,126 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 94/100)
+2024-05-15 15:52:30,141 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 92/100)
+2024-05-15 15:52:30,192 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 95/100)
+2024-05-15 15:52:30,218 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 93/100)
+2024-05-15 15:52:30,268 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 96/100)
+2024-05-15 15:52:30,279 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 94/100)
+2024-05-15 15:52:30,294 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 97/100)
+2024-05-15 15:52:30,299 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 95/100)
+2024-05-15 15:52:30,335 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 98/100)
+2024-05-15 15:52:30,361 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 96/100)
+2024-05-15 15:52:30,382 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 99/100)
+2024-05-15 15:52:30,403 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 97/100)
+2024-05-15 15:52:30,433 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 0/100)
+2024-05-15 15:52:30,449 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 98/100)
+2024-05-15 15:52:30,485 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 1/100)
+2024-05-15 15:52:30,485 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005 (try 99/100)
+2024-05-15 15:52:30,577 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 2/100)
+2024-05-15 15:52:30,577 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005
+2024-05-15 15:52:30,607 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 3/100)
+2024-05-15 15:52:30,633 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:52:30,659 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 4/100)
+2024-05-15 15:52:30,704 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:52:30,750 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 5/100)
+2024-05-15 15:52:30,798 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 6/100)
+2024-05-15 15:52:30,825 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 7/100)
+2024-05-15 15:52:30,861 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 8/100)
+2024-05-15 15:52:30,886 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 9/100)
+2024-05-15 15:52:30,907 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 10/100)
+2024-05-15 15:52:30,953 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 11/100)
+2024-05-15 15:52:30,994 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 12/100)
+2024-05-15 15:52:31,019 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 13/100)
+2024-05-15 15:52:31,030 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 14/100)
+2024-05-15 15:52:31,076 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 15/100)
+2024-05-15 15:52:31,122 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 16/100)
+2024-05-15 15:52:31,178 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 17/100)
+2024-05-15 15:52:31,194 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 18/100)
+2024-05-15 15:52:31,250 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 19/100)
+2024-05-15 15:52:31,291 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 20/100)
+2024-05-15 15:52:31,317 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 21/100)
+2024-05-15 15:52:31,327 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 22/100)
+2024-05-15 15:52:31,475 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 23/100)
+2024-05-15 15:52:31,505 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 24/100)
+2024-05-15 15:52:31,531 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 25/100)
+2024-05-15 15:52:31,541 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 26/100)
+2024-05-15 15:52:31,552 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 27/100)
+2024-05-15 15:52:31,562 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 28/100)
+2024-05-15 15:52:31,577 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 29/100)
+2024-05-15 15:52:31,628 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 30/100)
+2024-05-15 15:52:31,664 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 31/100)
+2024-05-15 15:52:31,741 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 32/100)
+2024-05-15 15:52:31,792 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 33/100)
+2024-05-15 15:52:31,808 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 34/100)
+2024-05-15 15:52:31,849 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 35/100)
+2024-05-15 15:52:31,859 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 36/100)
+2024-05-15 15:52:31,869 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 37/100)
+2024-05-15 15:52:31,879 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 38/100)
+2024-05-15 15:52:31,890 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 39/100)
+2024-05-15 15:52:31,910 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 40/100)
+2024-05-15 15:52:31,921 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 41/100)
+2024-05-15 15:52:31,936 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 42/100)
+2024-05-15 15:52:31,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 43/100)
+2024-05-15 15:52:32,003 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 44/100)
+2024-05-15 15:52:32,029 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 45/100)
+2024-05-15 15:52:32,060 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 46/100)
+2024-05-15 15:52:32,101 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 47/100)
+2024-05-15 15:52:32,162 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 48/100)
+2024-05-15 15:52:32,172 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 49/100)
+2024-05-15 15:52:32,203 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 50/100)
+2024-05-15 15:52:32,265 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 51/100)
+2024-05-15 15:52:32,285 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 52/100)
+2024-05-15 15:52:32,321 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 53/100)
+2024-05-15 15:52:32,382 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 54/100)
+2024-05-15 15:52:32,458 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 55/100)
+2024-05-15 15:52:32,489 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 56/100)
+2024-05-15 15:52:32,510 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 57/100)
+2024-05-15 15:52:32,545 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 58/100)
+2024-05-15 15:52:32,576 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 59/100)
+2024-05-15 15:52:32,602 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 60/100)
+2024-05-15 15:52:32,643 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 61/100)
+2024-05-15 15:52:32,663 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 62/100)
+2024-05-15 15:52:32,699 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 63/100)
+2024-05-15 15:52:32,806 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 64/100)
+2024-05-15 15:52:32,842 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 65/100)
+2024-05-15 15:52:32,858 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 66/100)
+2024-05-15 15:52:32,883 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 67/100)
+2024-05-15 15:52:32,914 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 68/100)
+2024-05-15 15:52:32,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 69/100)
+2024-05-15 15:52:33,001 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 70/100)
+2024-05-15 15:52:33,022 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 71/100)
+2024-05-15 15:52:33,037 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 72/100)
+2024-05-15 15:52:33,063 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 73/100)
+2024-05-15 15:52:33,078 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 74/100)
+2024-05-15 15:52:33,124 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 75/100)
+2024-05-15 15:52:33,160 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 76/100)
+2024-05-15 15:52:33,196 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 77/100)
+2024-05-15 15:52:33,207 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 78/100)
+2024-05-15 15:52:33,217 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 79/100)
+2024-05-15 15:52:33,263 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 80/100)
+2024-05-15 15:52:33,294 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 81/100)
+2024-05-15 15:52:33,304 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 82/100)
+2024-05-15 15:52:33,314 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 83/100)
+2024-05-15 15:52:33,324 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 84/100)
+2024-05-15 15:52:33,356 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 85/100)
+2024-05-15 15:52:33,387 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 86/100)
+2024-05-15 15:52:33,428 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 87/100)
+2024-05-15 15:52:33,444 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 88/100)
+2024-05-15 15:52:33,454 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 89/100)
+2024-05-15 15:52:33,516 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 90/100)
+2024-05-15 15:52:33,557 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 91/100)
+2024-05-15 15:52:33,618 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 92/100)
+2024-05-15 15:52:33,638 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 93/100)
+2024-05-15 15:52:33,649 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 94/100)
+2024-05-15 15:52:33,664 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 95/100)
+2024-05-15 15:52:33,695 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 96/100)
+2024-05-15 15:52:33,705 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 97/100)
+2024-05-15 15:52:33,726 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 98/100)
+2024-05-15 15:52:33,741 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 99/100)
+2024-05-15 15:52:33,751 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 0/100)
+2024-05-15 15:52:33,783 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 1/100)
+2024-05-15 15:52:33,814 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 2/100)
+2024-05-15 15:52:33,865 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 3/100)
+2024-05-15 15:52:33,901 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 4/100)
+2024-05-15 15:52:33,906 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 5/100)
+2024-05-15 15:52:33,911 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 6/100)
+2024-05-15 15:52:33,922 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 7/100)
+2024-05-15 15:52:33,957 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 8/100)
+2024-05-15 15:52:33,988 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 9/100)
+2024-05-15 15:52:34,014 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 10/100)
+2024-05-15 15:52:34,055 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 11/100)
+2024-05-15 15:52:34,131 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 12/100)
+2024-05-15 15:52:34,152 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 13/100)
+2024-05-15 15:52:34,157 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 14/100)
+2024-05-15 15:52:34,168 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 15/100)
+2024-05-15 15:52:34,183 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 16/100)
+2024-05-15 15:52:34,198 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 17/100)
+2024-05-15 15:52:34,239 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 18/100)
+2024-05-15 15:52:34,285 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 19/100)
+2024-05-15 15:52:34,316 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 20/100)
+2024-05-15 15:52:34,332 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 21/100)
+2024-05-15 15:52:34,358 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 22/100)
+2024-05-15 15:52:34,429 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 23/100)
+2024-05-15 15:52:34,501 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 24/100)
+2024-05-15 15:52:34,542 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 25/100)
+2024-05-15 15:52:34,552 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 26/100)
+2024-05-15 15:52:34,563 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 27/100)
+2024-05-15 15:52:34,598 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 28/100)
+2024-05-15 15:52:34,619 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 29/100)
+2024-05-15 15:52:34,650 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 30/100)
+2024-05-15 15:52:34,691 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 31/100)
+2024-05-15 15:52:34,747 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 32/100)
+2024-05-15 15:52:34,772 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 33/100)
+2024-05-15 15:52:34,818 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 34/100)
+2024-05-15 15:52:34,834 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 35/100)
+2024-05-15 15:52:34,844 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 36/100)
+2024-05-15 15:52:34,880 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 37/100)
+2024-05-15 15:52:34,911 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 38/100)
+2024-05-15 15:52:34,936 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 39/100)
+2024-05-15 15:52:34,952 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 40/100)
+2024-05-15 15:52:34,993 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 41/100)
+2024-05-15 15:52:35,028 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 42/100)
+2024-05-15 15:52:35,080 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 43/100)
+2024-05-15 15:52:35,120 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 44/100)
+2024-05-15 15:52:35,151 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 45/100)
+2024-05-15 15:52:35,197 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 46/100)
+2024-05-15 15:52:35,344 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 47/100)
+2024-05-15 15:52:35,365 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 48/100)
+2024-05-15 15:52:35,375 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 49/100)
+2024-05-15 15:52:35,386 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 50/100)
+2024-05-15 15:52:35,396 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 51/100)
+2024-05-15 15:52:35,406 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 52/100)
+2024-05-15 15:52:35,432 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 53/100)
+2024-05-15 15:52:35,453 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 54/100)
+2024-05-15 15:52:35,478 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 55/100)
+2024-05-15 15:52:35,514 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 56/100)
+2024-05-15 15:52:35,545 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 57/100)
+2024-05-15 15:52:35,575 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 58/100)
+2024-05-15 15:52:35,617 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 59/100)
+2024-05-15 15:52:35,658 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 60/100)
+2024-05-15 15:52:35,678 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 61/100)
+2024-05-15 15:52:35,689 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 62/100)
+2024-05-15 15:52:35,704 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 63/100)
+2024-05-15 15:52:35,730 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 64/100)
+2024-05-15 15:52:35,750 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 65/100)
+2024-05-15 15:52:35,760 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 66/100)
+2024-05-15 15:52:35,791 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 67/100)
+2024-05-15 15:52:35,837 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 68/100)
+2024-05-15 15:52:35,873 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 69/100)
+2024-05-15 15:52:35,894 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 70/100)
+2024-05-15 15:52:35,904 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 71/100)
+2024-05-15 15:52:35,950 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 72/100)
+2024-05-15 15:52:35,976 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 73/100)
+2024-05-15 15:52:35,976 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 74/100)
+2024-05-15 15:52:35,976 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 75/100)
+2024-05-15 15:52:35,976 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 76/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 77/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 78/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 79/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 80/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 81/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 82/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 83/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 84/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 85/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 86/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 87/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 88/100)
+2024-05-15 15:52:35,977 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 89/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 90/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 91/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 92/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 93/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 94/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 95/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 96/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 97/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 98/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 99/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 0/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 1/100)
+2024-05-15 15:52:35,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 2/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 3/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 4/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 5/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 6/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 7/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 8/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 9/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 10/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 11/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 12/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 13/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 14/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 15/100)
+2024-05-15 15:52:35,979 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 16/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 17/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 18/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 19/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 20/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 21/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 22/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 23/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 24/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 25/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 26/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 27/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 28/100)
+2024-05-15 15:52:35,980 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 29/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 30/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 31/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 32/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 33/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 34/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 35/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 36/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 37/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 38/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 39/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 40/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 41/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 42/100)
+2024-05-15 15:52:35,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 43/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 44/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 45/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 46/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 47/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 48/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 49/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 50/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 51/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 52/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 53/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 54/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 55/100)
+2024-05-15 15:52:35,982 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 56/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 57/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 58/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 59/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 60/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 61/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 62/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 63/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 64/100)
+2024-05-15 15:52:35,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 65/100)
+2024-05-15 15:52:36,004 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 66/100)
+2024-05-15 15:52:36,058 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 67/100)
+2024-05-15 15:52:36,099 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 68/100)
+2024-05-15 15:52:36,140 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 69/100)
+2024-05-15 15:52:36,201 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 70/100)
+2024-05-15 15:52:36,217 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 71/100)
+2024-05-15 15:52:36,232 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 72/100)
+2024-05-15 15:52:36,252 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 73/100)
+2024-05-15 15:52:36,268 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 74/100)
+2024-05-15 15:52:36,315 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 75/100)
+2024-05-15 15:52:36,361 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 76/100)
+2024-05-15 15:52:36,376 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 77/100)
+2024-05-15 15:52:36,392 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 78/100)
+2024-05-15 15:52:36,438 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 79/100)
+2024-05-15 15:52:36,474 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 80/100)
+2024-05-15 15:52:36,510 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 81/100)
+2024-05-15 15:52:36,567 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 82/100)
+2024-05-15 15:52:36,633 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 83/100)
+2024-05-15 15:52:36,659 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 84/100)
+2024-05-15 15:52:36,710 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 85/100)
+2024-05-15 15:52:36,741 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 86/100)
+2024-05-15 15:52:36,792 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 87/100)
+2024-05-15 15:52:36,813 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 88/100)
+2024-05-15 15:52:36,843 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 89/100)
+2024-05-15 15:52:36,884 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 90/100)
+2024-05-15 15:52:36,900 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 91/100)
+2024-05-15 15:52:36,926 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 92/100)
+2024-05-15 15:52:36,978 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 93/100)
+2024-05-15 15:52:37,003 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 94/100)
+2024-05-15 15:52:37,060 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 95/100)
+2024-05-15 15:52:37,080 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 96/100)
+2024-05-15 15:52:37,090 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 97/100)
+2024-05-15 15:52:37,106 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 98/100)
+2024-05-15 15:52:37,121 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 99/100)
+2024-05-15 15:52:37,147 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 0/100)
+2024-05-15 15:52:37,193 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 1/100)
+2024-05-15 15:52:37,224 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 2/100)
+2024-05-15 15:52:37,239 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 3/100)
+2024-05-15 15:52:37,270 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 4/100)
+2024-05-15 15:52:37,270 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 5/100)
+2024-05-15 15:52:37,276 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 6/100)
+2024-05-15 15:52:37,296 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 7/100)
+2024-05-15 15:52:37,306 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 8/100)
+2024-05-15 15:52:37,362 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 9/100)
+2024-05-15 15:52:37,398 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 10/100)
+2024-05-15 15:52:37,435 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 11/100)
+2024-05-15 15:52:37,491 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 12/100)
+2024-05-15 15:52:37,512 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 13/100)
+2024-05-15 15:52:37,543 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 14/100)
+2024-05-15 15:52:37,610 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 15/100)
+2024-05-15 15:52:37,737 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 16/100)
+2024-05-15 15:52:37,829 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 17/100)
+2024-05-15 15:52:37,891 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 18/100)
+2024-05-15 15:52:37,911 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 19/100)
+2024-05-15 15:52:37,922 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 20/100)
+2024-05-15 15:52:37,937 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 21/100)
+2024-05-15 15:52:37,952 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 22/100)
+2024-05-15 15:52:37,983 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 23/100)
+2024-05-15 15:52:38,034 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 24/100)
+2024-05-15 15:52:38,056 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 25/100)
+2024-05-15 15:52:38,107 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 26/100)
+2024-05-15 15:52:38,113 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 27/100)
+2024-05-15 15:52:38,118 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 28/100)
+2024-05-15 15:52:38,128 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 29/100)
+2024-05-15 15:52:38,144 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 30/100)
+2024-05-15 15:52:38,179 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 31/100)
+2024-05-15 15:52:38,210 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 32/100)
+2024-05-15 15:52:38,256 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 33/100)
+2024-05-15 15:52:38,287 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 34/100)
+2024-05-15 15:52:38,343 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 35/100)
+2024-05-15 15:52:38,369 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 36/100)
+2024-05-15 15:52:38,471 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 37/100)
+2024-05-15 15:52:38,527 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 38/100)
+2024-05-15 15:52:38,558 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 39/100)
+2024-05-15 15:52:38,593 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 40/100)
+2024-05-15 15:52:38,614 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 41/100)
+2024-05-15 15:52:38,655 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 42/100)
+2024-05-15 15:52:38,665 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 43/100)
+2024-05-15 15:52:38,686 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 44/100)
+2024-05-15 15:52:38,747 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 45/100)
+2024-05-15 15:52:38,773 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 46/100)
+2024-05-15 15:52:38,794 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 47/100)
+2024-05-15 15:52:38,804 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 48/100)
+2024-05-15 15:52:38,824 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 49/100)
+2024-05-15 15:52:38,840 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 50/100)
+2024-05-15 15:52:38,876 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 51/100)
+2024-05-15 15:52:38,906 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 52/100)
+2024-05-15 15:52:38,937 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 53/100)
+2024-05-15 15:52:39,014 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 54/100)
+2024-05-15 15:52:39,101 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 55/100)
+2024-05-15 15:52:39,126 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 56/100)
+2024-05-15 15:52:39,182 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 57/100)
+2024-05-15 15:52:39,324 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 58/100)
+2024-05-15 15:52:39,376 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 59/100)
+2024-05-15 15:52:39,417 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 60/100)
+2024-05-15 15:52:39,447 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 61/100)
+2024-05-15 15:52:39,458 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 62/100)
+2024-05-15 15:52:39,473 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 63/100)
+2024-05-15 15:52:39,484 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 64/100)
+2024-05-15 15:52:39,494 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 65/100)
+2024-05-15 15:52:39,525 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 66/100)
+2024-05-15 15:52:39,591 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 67/100)
+2024-05-15 15:52:39,627 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 68/100)
+2024-05-15 15:52:39,658 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 69/100)
+2024-05-15 15:52:39,673 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 70/100)
+2024-05-15 15:52:39,688 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 71/100)
+2024-05-15 15:52:39,795 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 72/100)
+2024-05-15 15:52:39,832 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 73/100)
+2024-05-15 15:52:39,883 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 74/100)
+2024-05-15 15:52:39,924 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 75/100)
+2024-05-15 15:52:39,949 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 76/100)
+2024-05-15 15:52:39,995 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 77/100)
+2024-05-15 15:52:40,036 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 78/100)
+2024-05-15 15:52:40,077 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 79/100)
+2024-05-15 15:52:40,108 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 80/100)
+2024-05-15 15:52:40,144 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 81/100)
+2024-05-15 15:52:40,205 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 82/100)
+2024-05-15 15:52:40,221 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 83/100)
+2024-05-15 15:52:40,257 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 84/100)
+2024-05-15 15:52:40,293 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 85/100)
+2024-05-15 15:52:40,339 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 86/100)
+2024-05-15 15:52:40,369 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 87/100)
+2024-05-15 15:52:40,400 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 88/100)
+2024-05-15 15:52:40,441 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 89/100)
+2024-05-15 15:52:40,472 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 90/100)
+2024-05-15 15:52:40,498 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 91/100)
+2024-05-15 15:52:40,559 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 92/100)
+2024-05-15 15:52:40,574 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 93/100)
+2024-05-15 15:52:40,630 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 94/100)
+2024-05-15 15:52:40,656 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 95/100)
+2024-05-15 15:52:40,707 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 96/100)
+2024-05-15 15:52:40,728 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 97/100)
+2024-05-15 15:52:40,748 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 98/100)
+2024-05-15 15:52:40,749 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 99/100)
+2024-05-15 15:52:40,789 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 0/100)
+2024-05-15 15:52:40,825 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 1/100)
+2024-05-15 15:52:40,846 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 2/100)
+2024-05-15 15:52:40,897 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 3/100)
+2024-05-15 15:52:40,938 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 4/100)
+2024-05-15 15:52:40,969 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 5/100)
+2024-05-15 15:52:40,984 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 6/100)
+2024-05-15 15:52:41,010 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 7/100)
+2024-05-15 15:52:41,046 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 8/100)
+2024-05-15 15:52:41,076 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 9/100)
+2024-05-15 15:52:41,127 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 10/100)
+2024-05-15 15:52:41,163 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 11/100)
+2024-05-15 15:52:41,199 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 12/100)
+2024-05-15 15:52:41,306 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 13/100)
+2024-05-15 15:52:41,326 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 14/100)
+2024-05-15 15:52:41,347 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 15/100)
+2024-05-15 15:52:41,377 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 16/100)
+2024-05-15 15:52:41,418 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 17/100)
+2024-05-15 15:52:41,439 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 18/100)
+2024-05-15 15:52:41,449 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 19/100)
+2024-05-15 15:52:41,475 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 20/100)
+2024-05-15 15:52:41,495 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 21/100)
+2024-05-15 15:52:41,577 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 22/100)
+2024-05-15 15:52:41,628 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 23/100)
+2024-05-15 15:52:41,649 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 24/100)
+2024-05-15 15:52:41,669 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 25/100)
+2024-05-15 15:52:41,695 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 26/100)
+2024-05-15 15:52:41,725 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 27/100)
+2024-05-15 15:52:41,771 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 28/100)
+2024-05-15 15:52:41,827 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 29/100)
+2024-05-15 15:52:41,853 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 30/100)
+2024-05-15 15:52:41,884 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 31/100)
+2024-05-15 15:52:41,960 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 32/100)
+2024-05-15 15:52:41,981 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 33/100)
+2024-05-15 15:52:42,001 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 34/100)
+2024-05-15 15:52:42,027 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 35/100)
+2024-05-15 15:52:42,068 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 36/100)
+2024-05-15 15:52:42,125 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 37/100)
+2024-05-15 15:52:42,181 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 38/100)
+2024-05-15 15:52:42,202 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 39/100)
+2024-05-15 15:52:42,212 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 40/100)
+2024-05-15 15:52:42,228 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 41/100)
+2024-05-15 15:52:42,279 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 42/100)
+2024-05-15 15:52:42,325 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 43/100)
+2024-05-15 15:52:42,376 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 44/100)
+2024-05-15 15:52:42,498 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 45/100)
+2024-05-15 15:52:42,554 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 46/100)
+2024-05-15 15:52:42,600 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 47/100)
+2024-05-15 15:52:42,620 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 48/100)
+2024-05-15 15:52:42,646 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 49/100)
+2024-05-15 15:52:42,666 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 50/100)
+2024-05-15 15:52:42,676 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 51/100)
+2024-05-15 15:52:42,702 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 52/100)
+2024-05-15 15:52:42,728 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 53/100)
+2024-05-15 15:52:42,734 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 54/100)
+2024-05-15 15:52:42,780 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 55/100)
+2024-05-15 15:52:42,801 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 56/100)
+2024-05-15 15:52:42,826 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 57/100)
+2024-05-15 15:52:42,867 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 58/100)
+2024-05-15 15:52:42,893 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 59/100)
+2024-05-15 15:52:42,903 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 60/100)
+2024-05-15 15:52:42,919 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 61/100)
+2024-05-15 15:52:42,960 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 62/100)
+2024-05-15 15:52:42,996 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 63/100)
+2024-05-15 15:52:43,022 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 64/100)
+2024-05-15 15:52:43,037 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 65/100)
+2024-05-15 15:52:43,047 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 66/100)
+2024-05-15 15:52:43,053 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 67/100)
+2024-05-15 15:52:43,103 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 68/100)
+2024-05-15 15:52:43,134 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 69/100)
+2024-05-15 15:52:43,186 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 70/100)
+2024-05-15 15:52:43,333 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:52:43,334 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 71/100)
+2024-05-15 15:52:43,380 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 72/100)
+2024-05-15 15:52:43,412 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 73/100)
+2024-05-15 15:52:43,448 - CubeServer Networking - ERROR - Failed to bind to 0.0.0.0:5005 (try 74/100)
+2024-05-15 15:52:43,463 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:53:33,315 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:53:51,459 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:53:51,588 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:53:52,953 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:53:56,208 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005
+2024-05-15 15:53:56,218 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:53:56,244 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:54:00,201 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:56:50,701 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:56:53,552 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005
+2024-05-15 15:56:53,583 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:56:53,609 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:57:25,642 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:57:25,778 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 15:57:26,221 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 15:57:26,323 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005
+2024-05-15 15:57:26,354 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 15:57:26,364 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 15:57:56,352 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 15:57:56,382 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:01:00,274 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:01:00,305 - CubeServer Networking - ERROR - Failed to bind to 192.168.1.255:5005
+2024-05-15 16:01:00,320 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:01:00,386 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:03:37,559 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:03:37,615 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:03:39,125 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:03:39,212 - CubeServer Networking - ERROR - [Errno 13] Permission denied
+2024-05-15 16:03:39,263 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:03:39,273 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:03:44,414 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:03:44,455 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:07:13,317 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:07:13,384 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:07:13,399 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:07:13,409 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:08:44,086 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:08:44,123 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:10:52,577 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:10:52,618 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:10:52,639 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:10:52,649 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:12:13,800 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:12:13,810 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:14:02,221 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:14:02,242 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:14:02,325 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:14:02,371 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:14:02,386 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:14:02,412 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:14:02,432 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:14:22,143 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:14:22,188 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:14:25,995 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:14:26,028 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:14:26,155 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:14:26,182 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:14:26,207 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:14:26,253 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:14:26,330 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:14:26,381 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:16:31,056 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:16:31,143 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:21:52,692 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:21:52,708 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:21:52,831 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:21:52,844 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:21:52,844 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:21:52,844 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:21:52,845 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:21:52,845 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:21:52,853 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:21:52,858 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:21:52,864 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:24:05,309 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:24:05,339 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:24:07,506 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:24:07,532 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:24:07,650 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:24:07,667 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:24:07,696 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:24:07,728 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:24:07,750 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:24:07,831 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:24:11,112 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:24:11,127 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:28:39,488 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:28:39,509 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:28:39,639 - CubeServer Networking - DEBUG - Binding to 0.0.0.0:5005...
+2024-05-15 16:28:39,656 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:28:39,661 - CubeServer Networking - DEBUG - Bound. Waiting for UDP packet...
+2024-05-15 16:28:39,702 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:28:39,722 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:28:39,900 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:33:52,623 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:33:52,644 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:35:31,986 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:35:32,027 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:35:32,043 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:35:32,054 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:35:32,074 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:35:32,115 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:35:32,125 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:35:32,712 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): hello
+2024-05-15 16:35:33,715 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): hello
+2024-05-15 16:35:34,713 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): hello
+2024-05-15 16:35:43,388 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,399 - CubeServer Networking - DEBUG - Received message: 67a337cf37 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,409 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,419 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:35:43,440 - CubeServer Networking - DEBUG - Handling message: (67a337cf37) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,450 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-15 16:35:43,460 - CubeServer Networking - DEBUG - Not a common message: (67a337cf37) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,506 - CubeServer - DEBUG - Received message: (67a337cf37) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,532 - CubeServer - INFO - Received RFID read message from CubeBox1
+2024-05-15 16:35:43,548 - CubeServer Networking - INFO - Acknowledging message: (67a337cf37) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:35:43,574 - CubeServer Networking - DEBUG - Sending message: (dd75f398e1) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE to 192.168.1.255:5005
+2024-05-15 16:35:43,640 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE
+2024-05-15 16:35:43,645 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE
+2024-05-15 16:35:43,666 - CubeServer Networking - DEBUG - Received message: dd75f398e1 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE
+2024-05-15 16:35:43,727 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:35:43,747 - CubeServer Networking - DEBUG - Ignoring message from self : (dd75f398e1) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE
+2024-05-15 16:35:43,769 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:35:43,800 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (dd75f398e1) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE, require_ack: False
+2024-05-15 16:35:43,843 - CubeServer Networking - DEBUG - Sending message: (dd75f398e1) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE to 192.168.1.68:5005
+2024-05-15 16:35:43,893 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE
+2024-05-15 16:35:43,929 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:35:43,959 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:35:43,985 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=67a337cf37|info=NONE
+2024-05-15 16:35:43,995 - CubeServer Networking - DEBUG - Removing message from listen queue: (67a337cf37) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783743.3099651
+2024-05-15 16:38:10,652 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,668 - CubeServer Networking - DEBUG - Received message: 468733a2ee from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,714 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,745 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:38:10,776 - CubeServer Networking - DEBUG - Handling message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,802 - CubeServer - DEBUG - Received message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,817 - CubeServer Networking - INFO - Handled common message: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,828 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:10,833 - CubeServer Networking - DEBUG - Removing message from listen queue: (468733a2ee) : CUBEMSG|sender=CubeBox1|msgtype=HEARTBEAT|
+2024-05-15 16:38:11,988 - CubeServer Networking - INFO - Stopping networking...
+2024-05-15 16:38:12,015 - CubeServer Networking - INFO - Networking stopped
+2024-05-15 16:38:13,204 - CubeServer Networking - DEBUG - Sending message: (e0a12f326c) : CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT| to 192.168.1.255:5005
+2024-05-15 16:38:13,251 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:38:13,256 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:38:13,276 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:38:13,292 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:38:13,297 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:38:13,317 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:38:18,217 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,227 - CubeServer Networking - DEBUG - Received message: e8af92bd8a from ('192.168.1.68', 5005): CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,237 - CubeServer Networking - INFO - Valid message: CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,258 - CubeServer Networking - DEBUG - Handling common incoming messages
+2024-05-15 16:38:18,268 - CubeServer Networking - DEBUG - Handling message: (e8af92bd8a) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,289 - CubeServer Networking - INFO - Added node CubeBox1 to the nodes list
+2024-05-15 16:38:18,299 - CubeServer Networking - DEBUG - Not a common message: (e8af92bd8a) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,320 - CubeServer - DEBUG - Received message: (e8af92bd8a) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,335 - CubeServer - INFO - Received RFID read message from CubeBox1
+2024-05-15 16:38:18,345 - CubeServer Networking - INFO - Acknowledging message: (e8af92bd8a) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:18,351 - CubeServer Networking - DEBUG - Sending message: (ad67f05f29) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE to 192.168.1.255:5005
+2024-05-15 16:38:18,422 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.255:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,437 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,448 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:38:18,453 - CubeServer Networking - DEBUG - Received message: ad67f05f29 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,490 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:38:18,509 - CubeServer Networking - DEBUG - Ignoring message from self : (ad67f05f29) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,555 - CubeServer Networking - DEBUG - Sending message to CubeBox1: (ad67f05f29) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE, require_ack: False
+2024-05-15 16:38:18,611 - CubeServer Networking - DEBUG - Sending message: (ad67f05f29) : CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE to 192.168.1.68:5005
+2024-05-15 16:38:18,657 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,667 - CubeServer Networking - DEBUG - Sent bytes to 192.168.1.68:5005: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,683 - CubeServer Networking - DEBUG - Received message: ad67f05f29 from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,698 - CubeServer Networking - DEBUG - msg require ack? False, require_ack? False
+2024-05-15 16:38:18,734 - CubeServer Networking - DEBUG - Ignoring message from self : (ad67f05f29) CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,755 - CubeServer Networking - DEBUG - Not waiting for ack
+2024-05-15 16:38:18,821 - CubeServer Networking - DEBUG - Acknowledgement sent: CUBEMSG|sender=CubeServer|msgtype=ACK|acked_hash=e8af92bd8a|info=NONE
+2024-05-15 16:38:18,836 - CubeServer Networking - DEBUG - Removing message from listen queue: (e8af92bd8a) : CUBEMSG|sender=CubeBox1|msgtype=CUBEBOX_RFID_READ|uid=0002048286|timestamp=1715783898.163621
+2024-05-15 16:38:28,199 - CubeServer Networking - DEBUG - Received UDP packet from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:38:28,223 - CubeServer Networking - DEBUG - Received message: e0a12f326c from ('192.168.1.68', 5005): CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|
+2024-05-15 16:38:28,252 - CubeServer Networking - DEBUG - Ignoring message from self : (e0a12f326c) CUBEMSG|sender=CubeServer|msgtype=HEARTBEAT|

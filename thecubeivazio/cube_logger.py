@@ -1,3 +1,5 @@
+# TODO: handle the fact that the logs folder doesnt have the same relative path for everyone, like the GUI
+
 import logging
 from os import path, makedirs
 

@@ -1,4 +1,5 @@
 """Handles everything related to networking communications"""
+import traceback
 
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_logger as cube_logger
@@ -50,7 +51,10 @@ class CubeNetworking:
         self._udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        self._udp_socket.bind((self.UDP_BROADCAST_IP, self.UDP_PORT))
+        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
+        self._udp_socket.bind((self.UDP_LISTEN_IP, self.UDP_PORT))
+
+
 
         self.nodes_list = cubeid.NodesList()
         # add own IP to the nodes list
@@ -71,7 +75,8 @@ class CubeNetworking:
         """stops the main loop thread"""
         self.log.info("Stopping networking...")
         self._keep_running = False
-        self._listenThread.join(timeout=1)
+        self._udp_socket.close()
+        self._listenThread.join(timeout=0.1)
         self.log.info("Networking stopped")
 
     def get_incoming_msg_queue(self) -> Tuple[CubeMessage, ...]:
@@ -113,9 +118,12 @@ class CubeNetworking:
             data, addr = self._wait_for_udp_packet()
             if not data or not addr:
                 continue
-            message = cm.CubeMessage.make_from_bytes(data)
-            self.log.debug(f"Received message: {message.hash} from {addr}: {message}")
-            message = cm.CubeMessage.make_from_bytes(data)
+            try:
+                message = cm.CubeMessage.make_from_bytes(data)
+                self.log.debug(f"Received message: {message.hash} from {addr}: {message}")
+                message = cm.CubeMessage.make_from_bytes(data)
+            except:
+                continue
             message.sender_ip = addr[0]
             if message.sender == self.node_name:
                 self.log.debug(f"Ignoring message from self : ({message.hash}) {message}")
@@ -243,11 +251,11 @@ class CubeNetworking:
     def _send_bytes_with_udp(self, data: bytes, ip: str, port: int):
         # noinspection PyBroadException
         try:
-            assert self._udp_socket.sendto(data, (ip, port))
+            assert self._udp_socket.sendto(data, (ip, port)), f"Failed to send bytes to {ip}:{port}: {data.decode()}"
             self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
         except Exception as e:
-            self.log.error(f"Failed to send bytes to {ip}:{port}: {data.decode()}")
             self.log.error(e.__str__())
+            #print(traceback.format_exc())
 
     def send_msg_to(self, message: cm.CubeMessage, node_name: str, require_ack=False) -> bool:
         """Sends a message to a node. Returns True if the message was acknowledged, False otherwise."""
