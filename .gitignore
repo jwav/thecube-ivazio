@@ -2,3 +2,4 @@
 /thecubeivazio/logs/
 /thecubeivazio/logs/*
 *.log
+**/*.log
