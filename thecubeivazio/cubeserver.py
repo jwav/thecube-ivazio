@@ -38,7 +38,7 @@ class CubeServer:
 
     def run(self):
         self._rfid_thread = threading.Thread(target=self._rfid_loop)
-        self._networking_thread = threading.Thread(target=self._networking_loop)
+        self._networking_thread = threading.Thread(target=self._message_handling_loop)
         self._webpage_thread = threading.Thread(target=self._webpage_loop)
         self._display_thread = threading.Thread(target=self._display_loop)
         self._keep_running = True
@@ -58,7 +58,7 @@ class CubeServer:
         self._webpage_thread.join(timeout=0.1)
         self._display_thread.join(timeout=0.1)
 
-    def _networking_loop(self):
+    def _message_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
@@ -69,15 +69,18 @@ class CubeServer:
 
             messages = self.net.get_incoming_msg_queue()
             for message in messages:
-                self.log.debug(f"Received message: ({message.hash}) : {message}")
+                # ignore ACK messages. They are to be handled in wait_for_ack_of()
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                # handle RFID read messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_RFID_READ:
                     self.log.info(f"Received RFID read message from {message.sender}")
                     self.net.acknowledge_this_message(message)
+                # handle button press messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self.log.info(f"Received button press message from {message.sender}")
                     self.net.acknowledge_this_message(message)
+                # handle new team messages from the frontdesk
                 elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_NEW_TEAM:
                     self.log.info(f"Received new team message from {message.sender}")
                     ntmsg = cm.CubeMsgNewTeam(copy_msg=message)
@@ -85,15 +88,15 @@ class CubeServer:
                     if self.teams.find_team_by_name(ntmsg.team.name):
                         self.log.error(f"Team already exists: {ntmsg.team.name}")
                         self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OCCUPIED)
-                    if self.teams.add_team(ntmsg.team):
+                    elif self.teams.add_team(ntmsg.team):
                         self.log.info(f"Added new team: {ntmsg.team.name}")
                         self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OK)
                     else:
                         self.log.error(f"Failed to add new team: {ntmsg.team.name}")
                         self.net.acknowledge_this_message(message, cm.CubeMsgReplies.ERROR)
                 else:
+                    self.log.warning(f"Unhandled message : ({message.hash}) : {message}. Removing")
                     self.net.remove_msg_from_incoming_queue(message)
-                # TODO: handle other message types
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""

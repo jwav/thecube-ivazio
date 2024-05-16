@@ -42,7 +42,7 @@ class CubeNetworking:
 
     ACK_WAIT_TIMEOUT = 3  # seconds
     # TODO: set this to a ridiculously high number for production
-    ACK_NB_TRIES = 1
+    ACK_NB_TRIES = 10
 
     def __init__(self, node_name: str, log_filename:str=None):
         self.log = cube_logger.make_logger(name=f"{node_name} Networking", log_filename=log_filename)
@@ -131,7 +131,7 @@ class CubeNetworking:
         Returns True if the message was added, False if it was already in the queue or could not be added"""
         with self._ack_wait_queue_lock:
             if message in self._ack_wait_queue:
-                self.log.error(f"Already waiting for ack of message: ({message.hash}) : {message}")
+                self.log.warning(f"Already waiting for ack of message: ({message.hash}) : {message}")
                 return False
             self._ack_wait_queue.append(message)
             self.log.debug(f"Message added to ack wait queue: ({message.hash}) : {message}")
@@ -182,6 +182,7 @@ class CubeNetworking:
             self.log.debug(f"Received valid message: {message.hash} from {addr}: {message}")
 
             self.add_msg_to_incoming_queue(message)
+            self._remove_useless_ack_messages()
             self._handle_generic_message(message)
 
     def _wait_for_udp_packet(self, ip=None, port=None, timeout=None) -> Tuple[bytes, Tuple[str, int]]:
@@ -206,7 +207,17 @@ class CubeNetworking:
         except:
             return b"", ("", 0)
 
-
+    def _remove_useless_ack_messages(self):
+        """Removes ack messages from the incoming queue which do not match any message in the ack_wait_queue"""
+        messages = self.get_incoming_msg_queue()
+        for msg in messages:
+            if msg.msgtype == cm.CubeMsgTypes.ACK:
+                for msg_to_be_acked in self.get_ack_wait_queue():
+                    if msg.is_ack_of(msg_to_be_acked):
+                        break
+                else:
+                    self.log.warning(f"Removing useless ack message: ({msg.hash}) : {msg}")
+                    self.remove_msg_from_incoming_queue(msg, force_remove=True)
 
     def _handle_generic_message(self, message:cm.CubeMessage) -> bool:
         # if `handled` is set to True, the message will be removed from the incoming queue
@@ -273,9 +284,12 @@ class CubeNetworking:
 
 
 
-
+    # NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip
     def _send_bytes_with_udp(self, data: bytes, ip: str, port: int) -> bool:
+        """NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip
+        Sends bytes with UDP. Returns True if the bytes were sent, False otherwise."""
         # noinspection PyBroadException
+        ip = self.UDP_BROADCAST_IP
         try:
             assert self._udp_socket.sendto(data, (ip, port)), f"Failed to send bytes to {ip}:{port}: {data.decode()}"
             self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
@@ -315,10 +329,10 @@ class CubeNetworking:
             ack_msg = self.wait_for_ack_of(message, timeout=ack_timeout)
             if ack_msg is not None:
                 return SendReport(True, ack_msg)
-            self.log.error(f"Re-sending (try {i+1}/{nb_tries}) : ({message.hash}) : {message}")
+            self.log.warning(f"Re-sending (try {i+1}/{nb_tries}) : ({message.hash}) : {message}")
             if not self._send_bytes_with_udp(message.to_bytes(), ip, port):
                 return SendReport(False, None)
-        self.log.error(f"Failed to get and ack for this message after {nb_tries} tries : ({message.hash}) : {message}")
+        self.log.error(f"Failed to get an ack for this message after {nb_tries} tries : ({message.hash}) : {message}")
         return SendReport(True, None)
 
 
@@ -357,13 +371,14 @@ class CubeNetworking:
         end_time = time.time() + timeout
 
 
-
+        self.log.info(f"Waiting for ack of message: ({msg_to_ack.hash}) : {msg_to_ack}, timeout: {timeout} s ...")
         while self._keep_running:
-            self.log.info(f"Waiting for ack of message: ({msg_to_ack.hash}) : {msg_to_ack}, timeout: {timeout} s")
+            # print(",", end="")
             if timeout != 0 and time.time() > end_time:
-                self.log.error("wait_for_ack_of timeout for : ({message.hash}) : {message}")
+                self.log.error(f"wait_for_ack_of timeout for : ({msg_to_ack.hash}) : {msg_to_ack}")
                 return None
             for msg in self.get_incoming_msg_queue():
+                # print("/", end="")
                 # if it's an ACK message acknowledging the message we're waiting for, success
                 if msg.is_ack_of(msg_to_ack):
                     self.log.info(f"Received ack of message: ({msg_to_ack.hash}) : {msg_to_ack}")

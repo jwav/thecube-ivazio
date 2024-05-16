@@ -57,7 +57,6 @@ class CubeFrontDesk:
 
             messages = self.net.get_incoming_msg_queue()
             for message in messages:
-                self.log.info(f"Received message: ({message.hash}) : {message}")
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
                 elif message.msgtype == cm.CubeMsgTypes.CUBESERVER_SCORESHEET:
