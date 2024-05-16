@@ -315,6 +315,7 @@ if __name__ == "__main__":
     team.completed_cubes.append(CubeBoxGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1150))
     team.completed_cubes.append(CubeBoxGame(cube_id=2, starting_timestamp=time.time(), victory_timestamp=time.time() + 200))
     team.save_html_score_sheet()
+    # aaa
 
     exit(0)
     teams_list = CubeTeamsList()
