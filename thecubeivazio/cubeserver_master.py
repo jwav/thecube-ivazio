@@ -13,12 +13,12 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 
-class CubeServerMaster:
+class CubeMasterMaster:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.make_logger(name=cubeid.CUBEMASTER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
+        self.log = cube_logger.make_logger(name=cubeid.CUBEMASTER_NAME, log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # set up the networking
-        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
+        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NAME, log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
@@ -80,8 +80,39 @@ class CubeServerMaster:
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self.log.info(f"Received button press message from {message.sender}")
                     # update teams and cubegames to reflect the fact that this cubebox was just won by the team currently playing it
-                    cubegame = self.cubeboxes.find_cubebox_by_node_name(message.sender)
-                    self.net.acknowledge_this_message(message)
+                    # first, check if it's a valid button press (i.e. a valid team is currently playing it)
+                    cubebox:cube_game.CubeboxStatus = self.cubeboxes.find_cubebox_by_node_name(message.sender)
+                    team = self.teams.find_team_by_cube_id(cubebox.cube_id)
+                    if not cubebox:
+                        self.log.error(f"WHAT?! Cubebox not found: {message.sender} (this should NOT happen. There's bad code somewhere)")
+                        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.ERROR)
+                        continue
+                    if not team:
+                        self.log.error(f"No team is playing that cubebox: {cubebox.cube_id}")
+                        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.INVALID)
+                        continue
+                    # ok, it's a valid button press, which means a team is playing this cubebox. Let's record that win
+                    cbp_msg = cm.CubeMsgButtonPress(copy_msg=message)
+                    # update the local cubeboxes teams status lists
+                    cubebox.reset()
+                    self.cubeboxes.update_cubebox(cubebox)
+                    team.set_completed_cube(cubebox.cube_id, cbp_msg.start_timestamp, cbp_msg.win_timestamp)
+                    self.teams.update_team(team)
+                    self.log.info(f"Team {team.name} won cubebox {cubebox.cube_id} in {cbp_msg.win_timestamp - cbp_msg.start_timestamp} seconds")
+                    self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OK)
+
+                    # now notify the front desk of the win
+                    win_msg = cm.CubeMsgCubeboxWin(self.net.node_name, team.name, cubebox.cube_id, cbp_msg.start_timestamp, cbp_msg.win_timestamp)
+                    report = self.net.send_msg_to_frontdesk(win_msg, require_ack=True)
+                    if not report:
+                        self.log.error(f"Failed to send cubebox win message to frontdesk")
+                        continue
+                    ack_msg = report.ack_msg
+                    if not ack_msg:
+                        self.log.error(f"Sent cubebox win message to frontdesk but no ack received")
+                        continue
+                    else:
+                        self.log.info(f"Cubebox win message sent to and acked by frontdesk")
                 # handle new team messages from the frontdesk
                 elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_NEW_TEAM:
                     self.log.info(f"Received new team message from {message.sender}")
@@ -111,7 +142,7 @@ class CubeServerMaster:
                 print(f"Line entered at {line.timestamp}: {line.uid} : {'valid' if line.is_valid() else 'invalid'}")
                 if line.is_valid():
                     # TODO: handle the RFID read message
-                    self.log.info("MUST HANDLE CUBESERVER RFID READ MESSAGE")
+                    self.log.info("MUST HANDLE CUBEMASTER RFID READ MESSAGE")
                     self.rfid.remove_line(line)
 
     def _display_loop(self):
@@ -124,14 +155,14 @@ class CubeServerMaster:
         while self._keep_running:
             pass
 
-class CubeServerWithPrompt:
+class CubeMasterWithPrompt:
     def __init__(self):
-        self.cs = CubeServerMaster()
+        self.cs = CubeMasterMaster()
 
     @staticmethod
     def print_help():
         print("Commands:")
-        print("q, quit: stops the CubeServer")
+        print("q, quit: stops the CubeMaster")
         print("h, help: prints this help message")
         print("ni, netinfo: prints the network information")
         print("wi, whois: sends WHO_IS message to everyone")
@@ -146,7 +177,7 @@ class CubeServerWithPrompt:
     def run(self):
         self.cs.run()
         while True:
-            cmd = input("CubeServer Command > ")
+            cmd = input("CubeMaster Command > ")
             if not cmd:
                 continue
             elif cmd in ["q", "quit"]:
@@ -171,11 +202,11 @@ class CubeServerWithPrompt:
 if __name__ == "__main__":
     import atexit
 
-    cs = CubeServerWithPrompt()
+    cs = CubeMasterWithPrompt()
     atexit.register(cs.stop)
     try:
         cs.run()
     except KeyboardInterrupt:
-        print("KeyboardInterrupt received. Stopping CubeServer...")
+        print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
         cs.stop()

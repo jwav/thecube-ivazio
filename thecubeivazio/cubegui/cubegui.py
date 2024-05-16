@@ -30,7 +30,7 @@ class CubeGuiForm(QMainWindow):
             self.log.error("Initial setup failed.")
             exit(1)
 
-        self.fd = cfd.CubeServerFrontdesk()
+        self.fd = cfd.CubeMasterFrontdesk()
         self.fd.run()
         atexit.register(self.fd.stop)
         self.log.info("FrontDesk started.")

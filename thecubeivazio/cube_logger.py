@@ -6,7 +6,7 @@ from os import path, makedirs
 
 LOGS_DIR = "logs"
 COMMON_LOG_FILENAME = path.join(LOGS_DIR, "cube_common.log")
-CUBESERVER_LOG_FILENAME = path.join(LOGS_DIR, "cubeserver.log")
+CUBEMASTER_LOG_FILENAME = path.join(LOGS_DIR, "cubemaster.log")
 CUBEBOX_LOG_FILENAME =  path.join(LOGS_DIR, "cubebox.log")
 CUBEFRONTDESK_LOG_FILENAME = path.join(LOGS_DIR, "cubefrontdesk.log")
 CUBEGUI_LOG_FILENAME = path.join(LOGS_DIR, "cubegui.log")
@@ -51,7 +51,7 @@ def make_logger(name:str, log_filename:str=None) -> logging.Logger:
     logger.addHandler(common_file_handler)
 
     # if a log_filename is provided, add an additional, specific file handler for this logger
-    # used in order to have a log file specific to the CubeServer, the CubeBox, the CubeGui, etc.
+    # used in order to have a log file specific to the CubeMaster, the CubeBox, the CubeGui, etc.
     if log_filename:
         file_handler = logging.FileHandler(log_filename)
         file_handler.setLevel(logging.DEBUG)

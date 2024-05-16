@@ -12,7 +12,7 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 
-class CubeServerFrontdesk:
+class CubeMasterFrontdesk:
     def __init__(self):
         # set up the logger
         self.log = cube_logger.make_logger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
@@ -59,8 +59,14 @@ class CubeServerFrontdesk:
             for message in messages:
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
-                elif message.msgtype == cm.CubeMsgTypes.CUBESERVER_SCORESHEET:
+                elif message.msgtype == cm.CubeMsgTypes.CUBEMASTER_SCORESHEET:
                     self.log.info(f"Received scoresheet message from {message.sender}")
+                    self.net.acknowledge_this_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.CUBEMASTER_TEAM_WIN:
+                    self.log.info(f"Received team win message from {message.sender}")
+                    # TODO: do something with it
+                    # TODO: wait, the Frontdesk can already receive the team win message from the CubeBox if we're on UDP broadcast
+                    #  should i handle it anyway just in case i move to TCP or addressed UDP later on?
                     self.net.acknowledge_this_message(message)
                 else:
                     self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
@@ -68,7 +74,7 @@ class CubeServerFrontdesk:
                 # TODO: handle other message types
 
     def add_new_team(self, team: cube_game.CubeTeamStatus) -> cubenet.SendReport:
-        """Send a message to the CubeServer to add a new team. Return True if the CubeServer added the team, False if not, None if no response."""
+        """Send a message to the CubeMaster to add a new team. Return True if the CubeMaster added the team, False if not, None if no response."""
         msg = cm.CubeMsgNewTeam(self.net.node_name, team)
         report = self.net.send_msg_to_cubeserver(msg, require_ack=True)
         if not report:
@@ -77,11 +83,11 @@ class CubeServerFrontdesk:
         ack_msg = report.ack_msg
         self.log.debug(f"add_new_team ack_msg={ack_msg.to_string() if ack_msg else None}")
         if ack_msg is None:
-            self.log.error(f"The CubeServer did not respond to the new team message : {team.name}")
+            self.log.error(f"The CubeMaster did not respond to the new team message : {team.name}")
         elif ack_msg.info == cm.CubeMsgReplies.OK:
-            self.log.info(f"The CubeServer added the new team : {team.name}")
+            self.log.info(f"The CubeMaster added the new team : {team.name}")
         else:
-            self.log.error(f"The CubeServer did not add the new team : {team.name} ; info={ack_msg.info}")
+            self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")
         return report
 
 
@@ -97,12 +103,12 @@ if __name__ == "__main__":
                   "Debrecen",
                   "Zalaegerszeg",]
 
-    fd = CubeServerFrontdesk()
+    fd = CubeMasterFrontdesk()
     atexit.register(fd.stop)
     fd.run()
     try:
         for team_name in team_names:
-            fd.add_new_team(cube_game.CubeTeamStatus(rfid_uid="1234567890", name=team_name, allocated_time=60.0))
+            fd.add_new_team(cube_game.CubeTeamStatus(rfid_uid="1234567890", name=team_name, max_time_sec=60.0))
             time.sleep(5)
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeFrontDesk...")

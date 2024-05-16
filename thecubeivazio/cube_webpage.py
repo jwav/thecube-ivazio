@@ -1,7 +1,7 @@
 # TODO: figure out framework, display test
 
 
-class CubeServerWebPage:
+class CubeMasterWebPage:
     pass
 
 

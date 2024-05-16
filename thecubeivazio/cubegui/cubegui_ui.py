@@ -488,7 +488,7 @@ class Ui_Form(object):
         self.label_17.setText(_translate("Form", "TextLabel"))
         self.label_18.setText(_translate("Form", "TextLabel"))
         self.pushButton_3.setText(_translate("Form", "PushButton"))
-        self.pushButton.setText(_translate("Form", "Tester connexion CubeServer et CubeBoxes"))
+        self.pushButton.setText(_translate("Form", "Tester connexion CubeMaster et CubeBoxes"))
         self.label_19.setText(_translate("Form", "TextLabel"))
         self.pushButton_2.setText(_translate("Form", "Afficher CubeBoxes en jeu"))
         self.label_20.setText(_translate("Form", "Commande > "))

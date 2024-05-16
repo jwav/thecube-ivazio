@@ -1,5 +1,5 @@
-"""Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
 
+"""Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
 import thecubeivazio.cube_game as cube_game
 
 import enum
@@ -22,12 +22,22 @@ class CubeMsgTypes(enum.Enum):
     CUBEBOX_BUTTON_PRESS = 110
 
     # Cubeserver messages
-    CUBESERVER_SCORESHEET = 200
-    CUBESERVER_TIME_IS_UP = 210
-    CUBESERVER_PLAYING_TEAMS = 220
+    CUBEMASTER_SCORESHEET = 200
+    CUBEMASTER_TIME_IS_UP = 210
+    CUBEMASTER_PLAYING_TEAMS = 220
+    CUBEMASTER_TEAM_WIN = 230
+    CUBEMASTER_TEAM_STATUS = 240
+    CUBEMASTER_CUBEBOX_STATUS = 250
 
     # Frontdesk messages
     FRONTDESK_NEW_TEAM = 300
+    FRONTDESK_REQUEST_TEAM_STATUS = 310
+    FRONTDESK_REQUEST_CUBEBOX_STATUS = 320
+
+    # unneeded by way of empirical evidence, but hey, i needed to do it for CubeMsgReplies and I guess i can't hurt
+    def __eq__(self, other):
+        """This is needed to compare a CubeMsgTypes with a str."""
+        return str(self) == str(other)
 
 
 class CubeMsgReplies(enum.Enum):
@@ -142,36 +152,93 @@ class CubeMessage:
         return self.to_string()
 
 
-# TODO: use the info field in cubeserver to tell the cubebox: "valid or invalid button press", "valid or invalid RFID read"
 class CubeMsgAck(CubeMessage):
-    """Sent from a node to another node to acknowledge a message."""
-
+    """Sent from a node to another node to acknowledge a message.
+    The `info` parameter can be used to give more information about the acknowledgement.
+    See the CubeMsgReplies enumeration for the standard values."""
 
     def __init__(self, sender:str=None, acked_msg:CubeMessage=None, info:CubeMsgReplies=None, copy_msg:CubeMessage=None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
-            return
-        super().__init__(msgtype=CubeMsgTypes.ACK, sender=sender, acked_hash=acked_msg.hash, info=info)
+        else:
+            super().__init__(msgtype=CubeMsgTypes.ACK, sender=sender, acked_hash=acked_msg.hash, info=info)
         self.require_ack = False
 
     @property
-    def info(self):
+    def info(self) -> CubeMsgReplies:
         return self.kwargs.get("info", CubeMsgReplies.NONE)
 
 
 class CubeMsgNewTeam(CubeMessage):
-    """Sent from the Frontdesk to the CubeServer when a new team is registered."""
+    """Sent from the Frontdesk to the CubeMaster when a new team is registered."""
 
     def __init__(self, sender=None, team:cube_game.CubeTeamStatus=None, copy_msg:CubeMessage=None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
-            return
-        super().__init__(CubeMsgTypes.FRONTDESK_NEW_TEAM, sender, name=team.name, rfid_uid=team.rfid_uid, max_time_sec=team.max_time_sec)
+        else:
+            super().__init__(CubeMsgTypes.FRONTDESK_NEW_TEAM, sender, name=team.name, rfid_uid=team.rfid_uid, max_time_sec=team.max_time_sec)
         self.require_ack = True
 
     @property
-    def team(self):
-        return cube_game.CubeTeamStatus(name=self.kwargs["name"], rfid_uid=self.kwargs["rfid_uid"], allocated_time=self.kwargs["max_time_sec"])
+    def team(self) -> cube_game.CubeTeamStatus:
+        return cube_game.CubeTeamStatus(name=self.kwargs.get("name"), rfid_uid=self.kwargs.get("rfid_uid"), max_time_sec=self.kwargs.get("max_time_sec"))
+
+
+
+
+class CubeMsgButtonPress(CubeMessage):
+    """Sent from the CubeBox to the CubeMaster when the button is pressed.
+    The timestamps are those calculated by the CubeBox."""
+
+    def __init__(self, sender=None, start_timestamp=None, win_timestamp=None, copy_msg:CubeMessage=None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.CUBEBOX_BUTTON_PRESS, sender, start_timestamp=start_timestamp, win_timestamp=win_timestamp)
+        self.require_ack = True
+
+    @property
+    def start_timestamp(self) -> float:
+        return float(self.kwargs.get("start_timestamp"))
+
+    @property
+    def win_timestamp(self) -> float:
+        return float(self.kwargs.get("win_timestamp"))
+
+    @property
+    def elapsed_time(self) -> float:
+        return self.win_timestamp - self.start_timestamp
+
+class CubeMsgCubeboxWin(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk when a cubebox is won."""
+    def __init__(self, sender=None, team_name=None, cube_id=None, start_timestamp=None, win_timestamp=None, copy_msg=None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.CUBEMASTER_TEAM_WIN, sender, team_name=team_name, cube_id=cube_id, start_timestamp=start_timestamp, win_timestamp=win_timestamp)
+        self.require_ack = True
+
+    @property
+    def team_name(self) -> str:
+        return str(self.kwargs.get("team_name"))
+
+    @property
+    def cube_id(self) -> int:
+        return int(self.kwargs.get("cube_id"))
+
+    @property
+    def start_timestamp(self) -> float:
+        return float(self.kwargs.get("start_timestamp"))
+
+    @property
+    def win_timestamp(self) -> float:
+        return float(self.kwargs.get("win_timestamp"))
+
+    @property
+    def elapsed_time(self) -> float:
+        return self.win_timestamp - self.start_timestamp
+
+
 
 
 class CubeMsgHeartbeat(CubeMessage):
@@ -211,22 +278,16 @@ class CubeMsgWhoIs(CubeMessage):
 
 
 class CubeMsgRfidRead(CubeMessage):
-    """Sent from the CubeBox to the CubeServer when an RFID tag is read."""
+    """Sent from the CubeBox to the CubeMaster when an RFID tag is read."""
 
     def __init__(self, sender, uid, timestamp):
         super().__init__(CubeMsgTypes.CUBEBOX_RFID_READ, sender, uid=uid, timestamp=timestamp)
 
 
-class CubeMsgButtonPress(CubeMessage):
-    """Sent from the CubeBox to the CubeServer when the button is pressed."""
-
-    def __init__(self, sender):
-        super().__init__(CubeMsgTypes.CUBEBOX_BUTTON_PRESS, sender)
-        self.require_ack = True
 
 
 class CubeMsgScoresheet(CubeMessage):
-    """Sent from the CubeServer to the Frontdesk to update the scoresheet of a team that just finished playing."""
+    """Sent from the CubeMaster to the Frontdesk to update the scoresheet of a team that just finished playing."""
 
     def __init__(self, sender, scoresheet):
         super().__init__(CubeMsgTypes.CUBEBOX_BUTTON_PRESS, sender, scoresheet=scoresheet)
@@ -235,12 +296,12 @@ class CubeMsgScoresheet(CubeMessage):
 
 class CubeMsgTimeIsUp(CubeMessage):
     def __init__(self, sender, team):
-        super().__init__(CubeMsgTypes.CUBESERVER_TIME_IS_UP, sender, team=team)
+        super().__init__(CubeMsgTypes.CUBEMASTER_TIME_IS_UP, sender, team=team)
 
 
 def test_make_from_message():
-    add_team_msg_1 = CubeMsgNewTeam("CubeFrontDesk", cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", allocated_time=1200))
-    ack_msg_1 = CubeMsgAck("CubeServer", add_team_msg_1, info=CubeMsgReplies.OK)
+    add_team_msg_1 = CubeMsgNewTeam("CubeFrontDesk", cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
+    ack_msg_1 = CubeMsgAck("CubeMaster", add_team_msg_1, info=CubeMsgReplies.OK)
     msg_from_ack = CubeMessage(copy_msg=ack_msg_1)
     msg_from_team = CubeMessage(copy_msg=add_team_msg_1)
     ack_msg_2 = CubeMsgAck(copy_msg=msg_from_ack)
@@ -253,13 +314,38 @@ def test_make_from_message():
     print(f"ack_msg_2 ({ack_msg_2.hash}) :", ack_msg_2)
     print(f"add_team_msg_2 ({add_team_msg_2.hash}) :", add_team_msg_2)
 
+    print("test_make_from_message PASSED for CubeMsgNewTeam and CubeMsgAck")
+
     assert ack_msg_1.to_string() == ack_msg_2.to_string()
     assert add_team_msg_1.to_string() == add_team_msg_2.to_string()
+    assert ack_msg_1.info == ack_msg_2.info
+    assert add_team_msg_1.team.name == add_team_msg_2.team.name
+    assert add_team_msg_1.team.rfid_uid == add_team_msg_2.team.rfid_uid
+    assert add_team_msg_1.team.max_time_sec == add_team_msg_2.team.max_time_sec
+
+
+    cbp_msg = CubeMsgButtonPress("CubeBox1", start_timestamp=10, win_timestamp=20)
+    msg = CubeMessage(copy_msg=cbp_msg)
+    cbp_msg_2 = CubeMsgButtonPress(copy_msg=msg)
+    print(f"cbp_msg : {cbp_msg}")
+    print(f"msg : {msg}")
+    print(f"cbp_msg_2 : {cbp_msg_2}")
+
+    assert cbp_msg.to_string() == cbp_msg_2.to_string()
+    assert cbp_msg.start_timestamp == cbp_msg_2.start_timestamp
+    assert cbp_msg.win_timestamp == cbp_msg_2.win_timestamp
+    assert cbp_msg.start_timestamp == 10
+    assert cbp_msg.win_timestamp == 20
+
+    print("test_make_from_message PASSED for CubeMsgButtonPress")
+
     print("test_make_from_message PASSED")
 
 if __name__ == "__main__":
+    test_make_from_message()
+    exit(0)
     print(CubeMsgReplies.OK)
-    ack_msg = CubeMsgAck("CubeServer", CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeMsgReplies.OK)
+    ack_msg = CubeMsgAck("CubeMaster", CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeMsgReplies.OK)
     print(ack_msg.to_string())
     assert ack_msg.info == CubeMsgReplies.OK
     msg = CubeMessage()
@@ -269,11 +355,12 @@ if __name__ == "__main__":
     print("ack_msg_2=", ack_msg_2)
     assert ack_msg_2.info == CubeMsgReplies.OK, f"'{ack_msg_2.info}' != '{CubeMsgReplies.OK}'"
     exit(0)
-    test_make_from_message()
-    exit(0)
+
     # test the CubeMessage class and all its subclasses
     sender_name = "FooSender"
     print(CubeMessage(CubeMsgType.TEST, sender_name, a=1, b=2, c=3))
     print(CubeMsgRfidRead(sender_name, uid="1234567890", timestamp=time.time()))
     print(CubeMsgButtonPress(sender_name))
     print(CubeMsgNewTeam(sender_name, "Team1", 1200))
+
+

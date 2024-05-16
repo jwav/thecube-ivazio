@@ -1,6 +1,6 @@
 # TODO: add imports and test method
 
-class CubeServerLedMatrices:
+class CubeMasterLedMatrices:
     pass
 
 
