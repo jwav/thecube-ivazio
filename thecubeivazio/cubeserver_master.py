@@ -13,12 +13,12 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 
-class CubeServer:
+class CubeServerMaster:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.make_logger(name=cubeid.CUBESERVER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
+        self.log = cube_logger.make_logger(name=cubeid.CUBEMASTER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
         # set up the networking
-        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBESERVER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
+        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NAME, log_filename=cube_logger.CUBESERVER_LOG_FILENAME)
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
@@ -33,8 +33,8 @@ class CubeServer:
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
 
-        self.teams = cube_game.CubeTeamsList()
-        self.cubegames = cube_game.CubeGamesList()
+        self.teams = cube_game.CubeTeamsStatusList()
+        self.cubeboxes = cube_game.CubeboxStatusList()
 
     def run(self):
         self._rfid_thread = threading.Thread(target=self._rfid_loop)
@@ -79,6 +79,8 @@ class CubeServer:
                 # handle button press messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self.log.info(f"Received button press message from {message.sender}")
+                    # update teams and cubegames to reflect the fact that this cubebox was just won by the team currently playing it
+                    cubegame = self.cubeboxes.find_cubebox_by_node_name(message.sender)
                     self.net.acknowledge_this_message(message)
                 # handle new team messages from the frontdesk
                 elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_NEW_TEAM:
@@ -124,7 +126,7 @@ class CubeServer:
 
 class CubeServerWithPrompt:
     def __init__(self):
-        self.cs = CubeServer()
+        self.cs = CubeServerMaster()
 
     @staticmethod
     def print_help():
@@ -157,7 +159,7 @@ class CubeServerWithPrompt:
             elif cmd in ["t", "teams"]:
                 print(self.cs.teams.to_string())
             elif cmd in ["cg", "cubegames"]:
-                print(self.cs.cubegames.to_string())
+                print(self.cs.cubeboxes.to_string())
             elif cmd in ["ni", "netinfo"]:
                 # display the nodes in the network and their info
                 print(self.cs.net.nodes_list.to_string())

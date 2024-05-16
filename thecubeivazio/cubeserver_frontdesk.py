@@ -12,7 +12,7 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 
-class CubeFrontDesk:
+class CubeServerFrontdesk:
     def __init__(self):
         # set up the logger
         self.log = cube_logger.make_logger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
@@ -67,7 +67,7 @@ class CubeFrontDesk:
                     self.net.remove_msg_from_incoming_queue(message)
                 # TODO: handle other message types
 
-    def add_new_team(self, team: cube_game.CubeTeam) -> cubenet.SendReport:
+    def add_new_team(self, team: cube_game.CubeTeamStatus) -> cubenet.SendReport:
         """Send a message to the CubeServer to add a new team. Return True if the CubeServer added the team, False if not, None if no response."""
         msg = cm.CubeMsgNewTeam(self.net.node_name, team)
         report = self.net.send_msg_to_cubeserver(msg, require_ack=True)
@@ -97,12 +97,12 @@ if __name__ == "__main__":
                   "Debrecen",
                   "Zalaegerszeg",]
 
-    fd = CubeFrontDesk()
+    fd = CubeServerFrontdesk()
     atexit.register(fd.stop)
     fd.run()
     try:
         for team_name in team_names:
-            fd.add_new_team(cube_game.CubeTeam(rfid_uid="1234567890", name=team_name, allocated_time=60.0))
+            fd.add_new_team(cube_game.CubeTeamStatus(rfid_uid="1234567890", name=team_name, allocated_time=60.0))
             time.sleep(5)
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeFrontDesk...")

@@ -19,7 +19,7 @@ print(dir(cube_logger))
 
 
 # TODO: put rfid, button, and networking in separate threads
-class CubeBox:
+class CubeServerCubebox:
     def __init__(self, node_name: str):
         self.log = cube_logger.make_logger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
@@ -131,7 +131,7 @@ class CubeBox:
 if __name__ == "__main__":
     import atexit
 
-    box = CubeBox("CubeBox1")
+    box = CubeServerCubebox("CubeBox1")
     atexit.register(box.stop)
     try:
         box.run()

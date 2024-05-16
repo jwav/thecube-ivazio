@@ -162,7 +162,7 @@ class CubeMsgAck(CubeMessage):
 class CubeMsgNewTeam(CubeMessage):
     """Sent from the Frontdesk to the CubeServer when a new team is registered."""
 
-    def __init__(self, sender=None, team:cube_game.CubeTeam=None, copy_msg:CubeMessage=None):
+    def __init__(self, sender=None, team:cube_game.CubeTeamStatus=None, copy_msg:CubeMessage=None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
             return
@@ -171,7 +171,7 @@ class CubeMsgNewTeam(CubeMessage):
 
     @property
     def team(self):
-        return cube_game.CubeTeam(name=self.kwargs["name"], rfid_uid=self.kwargs["rfid_uid"], allocated_time=self.kwargs["max_time_sec"])
+        return cube_game.CubeTeamStatus(name=self.kwargs["name"], rfid_uid=self.kwargs["rfid_uid"], allocated_time=self.kwargs["max_time_sec"])
 
 
 class CubeMsgHeartbeat(CubeMessage):
@@ -239,7 +239,7 @@ class CubeMsgTimeIsUp(CubeMessage):
 
 
 def test_make_from_message():
-    add_team_msg_1 = CubeMsgNewTeam("CubeFrontDesk", cube_game.CubeTeam(name="Team1", rfid_uid="1234567890", allocated_time=1200))
+    add_team_msg_1 = CubeMsgNewTeam("CubeFrontDesk", cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", allocated_time=1200))
     ack_msg_1 = CubeMsgAck("CubeServer", add_team_msg_1, info=CubeMsgReplies.OK)
     msg_from_ack = CubeMessage(copy_msg=ack_msg_1)
     msg_from_team = CubeMessage(copy_msg=add_team_msg_1)

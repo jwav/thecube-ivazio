@@ -400,7 +400,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         net = CubeNetworking(sys.argv[1])
     else:
-        net = CubeNetworking(cubeid.CUBESERVER_NAME)
+        net = CubeNetworking(cubeid.CUBEMASTER_NAME)
 
     net.log.info(f"Starting networking test for {net.node_name}")
     net.run()

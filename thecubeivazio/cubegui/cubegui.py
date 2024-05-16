@@ -8,7 +8,7 @@ from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
-from thecubeivazio import cubefrontdesk as cfd, cube_game, cube_utils
+from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils
 from thecubeivazio import cube_logger as cube_logger
 
 import sys
@@ -30,7 +30,7 @@ class CubeGuiForm(QMainWindow):
             self.log.error("Initial setup failed.")
             exit(1)
 
-        self.fd = cfd.CubeFrontDesk()
+        self.fd = cfd.CubeServerFrontdesk()
         self.fd.run()
         atexit.register(self.fd.stop)
         self.log.info("FrontDesk started.")
@@ -106,7 +106,7 @@ class CubeGuiForm(QMainWindow):
             self.log.error("Missing information to create a new team.")
             return
         self.log.info(f"Creating new team: {team_name} with RFID: {rfid} and {allocated_time} seconds.")
-        team = cube_game.CubeTeam(team_name, rfid, allocated_time)
+        team = cube_game.CubeTeamStatus(team_name, rfid, allocated_time)
         self.ui.lblCreateNewTeamStatusText.setText(f"Création de l'équipe {team_name} en cours...")
         self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("hourglass"))
         QApplication.processEvents()
