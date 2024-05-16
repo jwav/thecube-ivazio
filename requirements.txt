@@ -13,3 +13,4 @@ pygame~=2.5.2
 evdev~=1.7.1
 PyQt5
 pyinstaller
+colorlog

@@ -74,6 +74,12 @@ class CubeGamesList(List[CubeBoxGame]):
         super().__init__()
         self.reset()
 
+    def to_string(self) -> str:
+        ret = f"CubeGamesList : {len(self)} games\n"
+        for game in self:
+            ret += f"  {game.to_string()}\n"
+        return ret
+
     def reset(self):
         self.clear()
         self.extend([CubeBoxGame(cube_id) for cube_id in cubeid.CUBE_IDS])
@@ -91,11 +97,11 @@ class CubeTeam:
     SCORESHEETS_FOLDER = "scoresheets"
 
     def to_string(self) -> str:
-        ret = f"CubeTeam {self.name}: rfid={self.rfid_uid}, max_time={self.max_time_sec}, started={self.starting_timestamp}, "
+        ret = f"CubeTeam name={self.name}: rfid_uid={self.rfid_uid}, max_time={self.max_time_sec}, start_time={self.starting_timestamp}, "
         ret += f"current_cube={self.current_cube}, won_cubes={len(self.completed_cubes)}"
         return ret
 
-    def __init__(self, rfid_uid: int, name: str, allocated_time: float):
+    def __init__(self, name: str, rfid_uid: str, allocated_time: float):
         self.rfid_uid = rfid_uid
         self.name = name
         self.max_time_sec = allocated_time
@@ -177,6 +183,12 @@ class CubeTeamsList(List[CubeTeam]):
     def reset(self):
         self.clear()
 
+    def to_string(self) -> str:
+        ret = f"CubeTeamsList : {len(self)} teams\n"
+        for team in self:
+            ret += f"  {team.to_string()}\n"
+        return ret
+
     def add_team(self, team: CubeTeam) -> bool:
         if self.find_team_by_name(team.name) is not None:
             return False
@@ -190,7 +202,7 @@ class CubeTeamsList(List[CubeTeam]):
                 return True
         return False
 
-    def find_team_by_rfid_uid(self, rfid_uid: int) -> Optional[CubeTeam]:
+    def find_team_by_rfid_uid(self, rfid_uid: str) -> Optional[CubeTeam]:
         for team in self:
             if team.rfid_uid == rfid_uid:
                 return team
@@ -236,23 +248,13 @@ class CubeTeamsList(List[CubeTeam]):
             self.reset()
             return False
 
-class OverallGameStatus:
-    """Container for the overall game state, i.e. the CubeGamesList and CubeTeamsList instances"""
 
-    def __init__(self):
-        self.cube_games = CubeGamesList()
-        self.cube_teams = CubeTeamsList()
-        self.reset()
-
-    def reset(self):
-        self.cube_games.reset()
-        self.cube_teams.reset()
 
 
 
 def test_cube_team():
-    team = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
-    assert team.rfid_uid == 1234567890
+    team = CubeTeam(rfid_uid="1234567890", name="Budapest", allocated_time=60.0)
+    assert team.rfid_uid == "1234567890"
     assert team.name == "Budapest"
     assert team.max_time_sec == 60.0
     assert not team.has_started()
@@ -272,19 +274,19 @@ def test_cube_team():
 def test_cube_teams_list():
     teams_list = CubeTeamsList()
     assert len(teams_list) == 0
-    team1 = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
-    team2 = CubeTeam(rfid_uid=1234567891, name="Paris", allocated_time=60.0)
+    team1 = CubeTeam(rfid_uid="1234567890", name="Budapest", allocated_time=60.0)
+    team2 = CubeTeam(rfid_uid="1234567891", name="Paris", allocated_time=60.0)
     assert teams_list.add_team(team1)
     assert len(teams_list) == 1
     assert teams_list.add_team(team2)
     assert len(teams_list) == 2
     assert not teams_list.add_team(team1)
     assert len(teams_list) == 2
-    assert teams_list.find_team_by_rfid_uid(1234567890) == team1
+    assert teams_list.find_team_by_rfid_uid("1234567890") == team1
     assert teams_list.find_team_by_name("Budapest") == team1
-    assert teams_list.find_team_by_rfid_uid(1234567891) == team2
+    assert teams_list.find_team_by_rfid_uid("1234567891") == team2
     assert teams_list.find_team_by_name("Paris") == team2
-    assert teams_list.find_team_by_rfid_uid(1234567892) is None
+    assert teams_list.find_team_by_rfid_uid("1234567892") is None
     assert teams_list.find_team_by_name("London") is None
     assert teams_list.remove_team_by_name("Paris")
     assert len(teams_list) == 1
@@ -300,7 +302,7 @@ def test_cube_teams_list():
     assert len(teams_list) == 1
     assert teams_list.load_from_pickle()
     assert len(teams_list) == 0
-    assert teams_list.find_team_by_rfid_uid(1234567890) == team1
+    assert teams_list.find_team_by_rfid_uid("1234567890") == team1
     assert teams_list.find_team_by_name("Budapest") == team1
     assert teams_list.remove_team_by_name("Budapest")
     assert len(teams_list) == 0
@@ -309,11 +311,11 @@ def test_cube_teams_list():
 
 
 if __name__ == "__main__":
-    team = CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0)
+    team = CubeTeam(rfid_uid="1234567890", name="Budapest", allocated_time=60.0)
     team.completed_cubes.append(CubeBoxGame(cube_id=1, starting_timestamp=time.time(), victory_timestamp=time.time() + 1150))
     team.completed_cubes.append(CubeBoxGame(cube_id=2, starting_timestamp=time.time(), victory_timestamp=time.time() + 200))
     team.save_html_score_sheet()
 
     exit(0)
     teams_list = CubeTeamsList()
-    teams_list.append(CubeTeam(rfid_uid=1234567890, name="Budapest", allocated_time=60.0))
+    teams_list.append(CubeTeam(rfid_uid="1234567890", name="Budapest", allocated_time=60.0))

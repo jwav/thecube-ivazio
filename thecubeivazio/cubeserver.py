@@ -8,10 +8,10 @@ import time
 import thecubeivazio.cube_logger as cube_logger
 import thecubeivazio.cube_rfid as cube_rfid
 import thecubeivazio.cube_networking as cubenet
-import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
+from thecubeivazio import cube_messages as cm
 
 class CubeServer:
     def __init__(self):
@@ -33,6 +33,9 @@ class CubeServer:
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
 
+        self.teams = cube_game.CubeTeamsList()
+        self.cubegames = cube_game.CubeGamesList()
+
     def run(self):
         self._rfid_thread = threading.Thread(target=self._rfid_loop)
         self._networking_thread = threading.Thread(target=self._networking_loop)
@@ -49,14 +52,17 @@ class CubeServer:
     def stop(self):
         self.net.stop()
         self.rfid.stop()
-        # TODO
+        self._keep_running = False
+        self._networking_thread.join(timeout=0.1)
+        self._rfid_thread.join(timeout=0.1)
+        self._webpage_thread.join(timeout=0.1)
+        self._display_thread.join(timeout=0.1)
 
     def _networking_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
             time.sleep(0.1)
-            #print(":", end="")
             if self.enable_heartbeat and self.heartbeat_timer.is_timeout():
                 self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
                 self.heartbeat_timer.reset()
@@ -64,15 +70,27 @@ class CubeServer:
             messages = self.net.get_incoming_msg_queue()
             for message in messages:
                 self.log.debug(f"Received message: ({message.hash}) : {message}")
-                if message.msgtype == cm.CubeMsgType.CUBEBOX_RFID_READ:
+                if message.msgtype == cm.CubeMsgTypes.ACK:
+                    continue
+                elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_RFID_READ:
                     self.log.info(f"Received RFID read message from {message.sender}")
-                    self.net.acknowledge_message(message)
-                elif message.msgtype == cm.CubeMsgType.CUBEBOX_BUTTON_PRESS:
+                    self.net.acknowledge_this_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self.log.info(f"Received button press message from {message.sender}")
-                    self.net.acknowledge_message(message)
-                elif message.msgtype == cm.CubeMsgType.FRONTDESK_NEW_TEAM:
-                    # TODO
-                    self.net.acknowledge_message(message)
+                    self.net.acknowledge_this_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_NEW_TEAM:
+                    self.log.info(f"Received new team message from {message.sender}")
+                    ntmsg = cm.CubeMsgNewTeam(copy_msg=message)
+                    self.log.info(f"New team: {ntmsg.team.to_string()}")
+                    if self.teams.find_team_by_name(ntmsg.team.name):
+                        self.log.error(f"Team already exists: {ntmsg.team.name}")
+                        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OCCUPIED)
+                    if self.teams.add_team(ntmsg.team):
+                        self.log.info(f"Added new team: {ntmsg.team.name}")
+                        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OK)
+                    else:
+                        self.log.error(f"Failed to add new team: {ntmsg.team.name}")
+                        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.ERROR)
                 else:
                     self.net.remove_msg_from_incoming_queue(message)
                 # TODO: handle other message types
@@ -134,9 +152,9 @@ class CubeServerWithPrompt:
             elif cmd in ["g", "games"]:
                 print("Not implemented yet")
             elif cmd in ["t", "teams"]:
-                print(self.cs.ogs.teams_list.to_string())
+                print(self.cs.teams.to_string())
             elif cmd in ["cg", "cubegames"]:
-                print(self.cs.ogs.cubegames_list.to_string())
+                print(self.cs.cubegames.to_string())
             elif cmd in ["ni", "netinfo"]:
                 # display the nodes in the network and their info
                 print(self.cs.net.nodes_list.to_string())
