@@ -38,7 +38,7 @@ def make_logger(name:str, log_filename:str=None) -> logging.Logger:
             'INFO': 'blue',
             'WARNING': 'purple',
             'ERROR': 'red',
-            'CRITICAL': 'red,bg_white',
+            'CRITICAL': 'bold_yellow',
         },
         secondary_log_colors={},
         style='%'

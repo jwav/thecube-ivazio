@@ -128,24 +128,25 @@ class CubeboxStatusList(List[CubeboxStatus]):
 class CubeTeamStatus:
     """Represents a team playing a CubeGame"""
 
+    # todo: should be moved to common defines
     SCORESHEETS_FOLDER = "scoresheets"
 
     def to_string(self) -> str:
         ret = f"CubeTeam name={self.name}: rfid_uid={self.rfid_uid}, max_time={self.max_time_sec}, start_time={self.starting_timestamp}, "
-        ret += f"current_cube={self.current_cube}, won_cubes={len(self.completed_cubeboxes)}"
+        ret += f"current_cube={self.current_cubebox_id}, won_cubes={len(self.completed_cubeboxes)}"
         return ret
 
-    def __init__(self, name: str, rfid_uid: str, max_time_sec: float):
+    def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds):
         # the name recorded at the front desk
         self.name = name
         # the RFID UID of the team
         self.rfid_uid = rfid_uid
         # the maximum time allowed to play the CubeGame
-        self.max_time_sec = max_time_sec
+        self.max_time_sec:Seconds = max_time_sec
         # the time when the team starts playing its first cubebox
-        self.starting_timestamp:float = None
+        self.starting_timestamp:Seconds = None
         # the cubebox ID currently being played by the team
-        self.current_cube:int = None
+        self.current_cubebox_id:CubeboxId = None
         # the list of the cubeboxes IDs that the team has successfully played, with their completion times
         self.completed_cubeboxes: List[CompletedCubeboxStatus] = []
 
@@ -153,13 +154,23 @@ class CubeTeamStatus:
         if not os.path.exists(self.SCORESHEETS_FOLDER):
             os.makedirs(self.SCORESHEETS_FOLDER)
 
+    @property
+    def completed_cubebox_ids(self) -> List[CubeboxId]:
+        return [box.cube_id for box in self.completed_cubeboxes]
+
+    def __eq__(self, other):
+        return all([self.name == other.name, self.rfid_uid == other.rfid_uid,
+                    self.max_time_sec == other.max_time_sec, self.starting_timestamp == other.starting_timestamp,
+                    self.current_cubebox_id == other.current_cubebox_id,
+                    self.completed_cubeboxes == other.completed_cubeboxes])
+
     def has_completed_cube(self, cube_id: int) -> bool:
         return cube_id in [box.cube_id for box in self.completed_cubeboxes]
 
     def set_completed_cube(self, cube_id: int, start_timestamp: float, win_timestamp: float) -> bool:
         if self.has_completed_cube(cube_id):
             return False
-        self.completed_cubeboxes[cube_id] = CompletedCubeboxStatus(cube_id=cube_id, current_team_name=None, starting_timestamp=start_timestamp, victory_timestamp=win_timestamp)
+        self.completed_cubeboxes.append(CompletedCubeboxStatus(cube_id=cube_id, current_team_name=None, starting_timestamp=start_timestamp, victory_timestamp=win_timestamp))
         return True
 
     def is_time_over(self, current_time: float = None) -> Optional[bool]:
@@ -220,7 +231,18 @@ class CubeTeamStatus:
             return False
 
     def copy(self):
-        return CubeTeamStatus(self.name, self.rfid_uid, self.max_time_sec)
+        ret = CubeTeamStatus(self.name, self.rfid_uid, self.max_time_sec)
+        ret.current_cubebox_id = self.current_cubebox_id
+        ret.starting_timestamp = self.starting_timestamp
+        ret.completed_cubeboxes = [box.copy() for box in self.completed_cubeboxes]
+        return ret
+
+    def resign_current_cube(self):
+        # TODO: do we need to actually do something more here?
+        self.current_cubebox_id = None
+
+    def has_played_cube(self, cubebox_id):
+        return cubebox_id in [box.cube_id for box in self.completed_cubeboxes]
 
 
 # TODO : add ranks for the day, week, mont, all-time
@@ -237,9 +259,9 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         self.clear()
 
     def to_string(self) -> str:
-        ret = f"CubeTeamsList : {len(self)} teams\n"
+        ret = f"CubeTeamsList : {len(self)} teams:\n"
         for team in self:
-            ret += f"  {team.to_string()}\n"
+            ret += f"- {team.to_string()}\n"
         return ret
 
     def add_team(self, team: CubeTeamStatus) -> bool:
@@ -267,11 +289,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 return team
         return None
 
-    def find_team_by_cube_id(self, cube_id: int) -> Optional[CubeTeamStatus]:
+    def find_team_by_current_cube_id(self, cube_id: int) -> Optional[CubeTeamStatus]:
         for team in self:
-            for cube in team.completed_cubeboxes:
-                if cube.cube_id == cube_id:
-                    return team
+            if team.current_cubebox_id == cube_id:
+                return team
         return None
 
     # TESTME

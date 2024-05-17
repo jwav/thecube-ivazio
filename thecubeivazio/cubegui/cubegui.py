@@ -30,7 +30,7 @@ class CubeGuiForm(QMainWindow):
             self.log.error("Initial setup failed.")
             exit(1)
 
-        self.fd = cfd.CubeMasterFrontdesk()
+        self.fd = cfd.CubeServerFrontdesk()
         self.fd.run()
         atexit.register(self.fd.stop)
         self.log.info("FrontDesk started.")
@@ -98,7 +98,7 @@ class CubeGuiForm(QMainWindow):
     def create_new_team(self):
         team_name = self.ui.comboCreateTeamName.currentText()
         rfid = self.ui.lineCreateRfid.text()
-        allocated_time = cube_utils.hhmmmsss_string_to_seconds(self.ui.comboCreateDuration.currentText())
+        allocated_time = cube_utils.hhmmss_string_to_seconds(self.ui.comboCreateDuration.currentText())
         if any([not team_name, not rfid, not allocated_time]):
             self.ui.lblCreateNewTeamStatusText.setText(f"Informations manquantes ou erronées")
             self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("error"))

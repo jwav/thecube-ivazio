@@ -4,7 +4,7 @@ import time
 import subprocess
 import os
 import atexit
-from typing import Optional
+from typing import Optional, Union
 
 
 def get_git_branch_version():
@@ -83,9 +83,6 @@ class SimpleTimer:
     def timer(self):
         return time.time() - self.start_time
 
-def seconds_to_hhmmss_string(seconds):
-    """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
-    return time.strftime('%H:%M:%S', time.gmtime(seconds))
 
 def date_to_french_date_string(date: datetime.datetime):
     """Convert a datetime object to a string in a format like 'lundi 1 janvier 2021'"""
@@ -104,7 +101,7 @@ def date_to_french_date_string(date: datetime.datetime):
         locale.setlocale(locale.LC_TIME, current_locale)
     return french_date_string
 
-def hhmmmsss_string_to_seconds(hhmmss:str) -> Optional[int]:
+def hhmmss_string_to_seconds(hhmmss:str) -> Optional[int]:
     """Convert a string like 1h30m15s ,0h30, 01:32:55, 00:21 to the number of seconds it represents"""
     # find which characters are digits, which are not, and split the string using the non-digits as separators
     import itertools
@@ -128,14 +125,25 @@ def hhmmmsss_string_to_seconds(hhmmss:str) -> Optional[int]:
         print(f"Error while converting {hhmmss} to seconds: {e}")
         return None
 
+def seconds_to_hhmmss_string(seconds: Union[float,int], separators="hms") -> str:
+    """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
+    sep1 = separators[0] if len(separators) > 0 else ""
+    sep2 = separators[1] if len(separators) > 1 else ""
+    sep3 = separators[2] if len(separators) > 2 else ""
+    return time.strftime(f'%H{sep1}%M{sep2}%S{sep3}', time.gmtime(seconds))
+
+
+
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())
     print("git branch date:", get_git_branch_date())
     print("seconds_to_hhmmss_string(3600):", seconds_to_hhmmss_string(3600))
     print("date_to_french_date_string(datetime.datetime.now()):", date_to_french_date_string(datetime.datetime.now()))
-    print("hhmmmsss_to_seconds('1h30m15s'):", hhmmmsss_string_to_seconds('1h30m15s'))
-    print("hhmmmsss_to_seconds('0h30'):", hhmmmsss_string_to_seconds('0h30'))
-    print("hhmmmsss_to_seconds('01:32:55'):", hhmmmsss_string_to_seconds('01:32:55'))
-    print("hhmmmsss_to_seconds('00:21'):", hhmmmsss_string_to_seconds('00:21'))
-    print("hhmmmsss_to_seconds('21'):", hhmmmsss_string_to_seconds('21'))
+    print("hhmmmsss_to_seconds('1h30m15s'):", hhmmss_string_to_seconds('1h30m15s'))
+    print("hhmmmsss_to_seconds('0h30'):", hhmmss_string_to_seconds('0h30'))
+    print("hhmmmsss_to_seconds('01:32:55'):", hhmmss_string_to_seconds('01:32:55'))
+    print("hhmmmsss_to_seconds('00:21'):", hhmmss_string_to_seconds('00:21'))
+    print("hhmmmsss_to_seconds('21'):", hhmmss_string_to_seconds('21'))
+    print("seconds_to_hhmmss_string(3661):", seconds_to_hhmmss_string(3661))
+    print("seconds_to_hhmmss_string(3661, separators='::'):", seconds_to_hhmmss_string(3661, separators='::'))

@@ -12,7 +12,7 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 
-class CubeMasterFrontdesk:
+class CubeServerFrontdesk:
     def __init__(self):
         # set up the logger
         self.log = cube_logger.make_logger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
@@ -36,7 +36,7 @@ class CubeMasterFrontdesk:
         self._keep_running = True
         self._msg_handling_thread.start()
 
-        self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
+        #self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
         self._keep_running = False
@@ -103,7 +103,7 @@ if __name__ == "__main__":
                   "Debrecen",
                   "Zalaegerszeg",]
 
-    fd = CubeMasterFrontdesk()
+    fd = CubeServerFrontdesk()
     atexit.register(fd.stop)
     fd.run()
     try:

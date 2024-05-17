@@ -21,7 +21,7 @@ from pynput import keyboard
 # TODO: use an interrupt?
 class CubeButton:
     DEBOUNCE_TIME = 1
-    PERIOD = 0.01
+    PRESS_CHECK_PERIOD = 0.01
     BUTTON_PIN = 18
 
     def __init__(self):
@@ -37,7 +37,7 @@ class CubeButton:
             self._is_raspberry_pi = True
         except ModuleNotFoundError:
             self.GPIO = None
-            self.keyboard_listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
+            self.keyboard_listener = keyboard.Listener(on_press=self._on_press, on_release=self._on_release)
             self.keyboard_listener.start()
             self.log.info("Not on a Raspberry Pi, using 'v' key to simulate button press")
             self._is_raspberry_pi = False
@@ -47,6 +47,7 @@ class CubeButton:
         self._pressed_long_enough = False
         self._thread = None
         self._keep_running = True
+        self._simulating_long_press = False
 
     def run(self):
         self._thread = threading.Thread(target=self._loop)
@@ -68,6 +69,7 @@ class CubeButton:
         self._timer_started = False
         self._press_timer.reset()
         self._pressed_long_enough = False
+        self._simulating_long_press = False
 
     def has_been_pressed_long_enough(self) -> bool:
         """Returns True if the button has been pressed long enough (debounce time)
@@ -75,9 +77,14 @@ class CubeButton:
         """
         return self._pressed_long_enough
 
+    def simulate_long_press(self):
+        """Simulate a long press of the button by altering the state of this object"""
+        self._simulating_long_press = True
+
     def wait_until_released(self):
+        """Sleeps while self.is_pressed_now() is True"""
         while self.is_pressed_now():
-            time.sleep(self.PERIOD)
+            time.sleep(self.PRESS_CHECK_PERIOD)
 
     def _loop(self):
         while self._keep_running:
@@ -91,9 +98,11 @@ class CubeButton:
                 if self._timer_started and self._press_timer.is_timeout():
                     self.log.debug("Button pressed long enough")
                     self._pressed_long_enough = True
+            elif self._simulating_long_press:
+                self._pressed_long_enough = True
             else:  # if not pressed
                 self.reset()
-            time.sleep(self.PERIOD)
+            time.sleep(self.PRESS_CHECK_PERIOD)
 
     def is_pressed_now(self) -> bool:
         if self.GPIO:
@@ -104,12 +113,12 @@ class CubeButton:
         # print("Button pressed" if self._pressed else "Button not pressed")
         return self._pressed
 
-    def on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
+    def _on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         if hasattr(key, 'char') and key.char == 'v':  # Check if 'v' key is pressed
             # print("v key pressed")
             self._pressed = True
 
-    def on_release(self, key: Union[keyboard.KeyCode, keyboard.Key]):
+    def _on_release(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         if hasattr(key, 'char') and key.char == 'v':
             # print("v key released")
             self._pressed = False

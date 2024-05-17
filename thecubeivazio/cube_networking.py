@@ -287,27 +287,6 @@ class CubeNetworking:
         """Returns the IP of the current node"""
         return socket.gethostbyname(socket.gethostname())
 
-    # TODO: redo with WHO_IS and I_AM messages
-    def discovery_loop(self):
-        """Main loop of the discovery thread"""
-        while self._keep_running and not self.nodes_list.is_complete():
-            self.discover_servers()
-            time.sleep(1)
-
-    # TODO: redo with WHO_IS and I_AM messages
-    def discover_servers(self, timeout=None) -> bool:
-        if timeout is None:
-            timeout = self.DISCOVERY_LOOP_TIMEOUT
-        self.log.info("Discovering cube nodes...")
-        # TODO: redo with WHO_IS and I_AM messages
-        return False
-
-    # TODO: redo with WHO_IS and I_AM messages
-    def discovery_response_loop(self):
-        """Listens for discovery requests and responds with the node name"""
-        # TODO: redo with WHO_IS and I_AM messages
-        pass
-
 
 
     # NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip

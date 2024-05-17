@@ -6,6 +6,11 @@ import time
 from typing import Tuple
 
 from thecubeivazio import cube_logger
+from thecubeivazio.cube_common_defines import *
+import os
+
+import pygame.mixer as mixer
+import pygame.time as pgtime
 
 try:
     # noinspection PyUnresolvedReferences
@@ -44,11 +49,11 @@ class CubeBuzzer:
             self.play_sound_file(soundfile)
 
     def play_sound_file(self, soundfile:str):
+        if not os.path.exists(soundfile):
+            soundfile = os.path.join(SOUNDS_DIR, soundfile)
         self.log.debug(f"Playing sound file: {soundfile}")
         if self._is_raspberry_pi:
             return
-        import pygame.mixer as mixer
-        import pygame.time as pgtime
         mixer.init()
         #soundfile = self.get_sound_file_path(soundfile)
         mixer.music.load(soundfile)
@@ -76,16 +81,16 @@ class CubeBuzzer:
             time.sleep(delay)
 
     def play_rfid_ok_sound(self):
-        self.play_file_or_tune("sounds/rfid_ok.mp3", ((523, 0.5), (800, 0.5)))
+        self.play_file_or_tune("rfid_ok.mp3", ((523, 0.5), (800, 0.5)))
 
     def play_rfid_error_sound(self):
-        self.play_file_or_tune("sounds/rfid_error.mp3", ((523, 0.5), (400, 1.0)))
+        self.play_file_or_tune("rfid_error.mp3", ((523, 0.5), (400, 1.0)))
 
     def play_victory_sound(self):
-        self.play_file_or_tune("sounds/victory.mp3", ((400, 0.5), (500, 0.5), (600, 0.5), (700, 1.0)))
+        self.play_file_or_tune("victory.mp3", ((400, 0.5), (500, 0.5), (600, 0.5), (700, 1.0)))
 
     def play_game_over_sound(self):
-        self.play_file_or_tune("sounds/game_over.mp3", ((400, 0.5), (300, 0.5), (200, 0.5), (100, 1.0)))
+        self.play_file_or_tune("game_over.mp3", ((400, 0.5), (300, 0.5), (200, 0.5), (100, 1.0)))
 
 
 if __name__ == "__main__":

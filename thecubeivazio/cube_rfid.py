@@ -24,8 +24,6 @@ if not XvfbManager.has_x_server():
 from pynput import keyboard
 
 
-
-
 class CubeRfidLine:
     UID_LENGTH = 10
     """Represents a line of RFID data entered by the user with a timestamp"""
@@ -36,6 +34,12 @@ class CubeRfidLine:
 
     def is_valid(self):
         return len(self.uid) == self.UID_LENGTH and all([char.isdigit() for char in self.uid])
+
+    def to_string(self):
+        return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
+
+    def __repr__(self):
+        return self.to_string()
 
 
 class CubeRfidListenerBase:
@@ -63,6 +67,10 @@ class CubeRfidListenerBase:
         with self._lines_lock:
             return list(self._completed_lines)
 
+    def add_completed_line(self, rfid_line: CubeRfidLine):
+        with self._lines_lock:
+            self._completed_lines.append(rfid_line)
+
     def has_new_lines(self):
         with self._lines_lock:
             return len(self._completed_lines) > 0
@@ -70,6 +78,10 @@ class CubeRfidListenerBase:
     def remove_line(self, rfid_line: CubeRfidLine):
         with self._lines_lock:
             self._completed_lines.remove(rfid_line)
+
+    def simulate_read(self, uid: str):
+        self.add_completed_line(CubeRfidLine(time.time(), uid))
+
 
 
 class CubeRfidEventListener(CubeRfidListenerBase):
@@ -102,20 +114,16 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         try:
             self._device_path = self._get_input_device_path_from_device_name("RFID")
             if self._device_path is None:
-                self.log.error("No RFID input device found")
-                raise FileNotFoundError("No RFID input device found")
-
+                raise Exception("No RFID input device found")
             # Create an InputDevice object for the specified device
-
             self._device = evdev.InputDevice(self._device_path)
+            self.log.info(f"RFID listener setup successful: {self._device_path}")
+            self._is_setup = True
+            return True
         except Exception as e:
             self.log.error(f"Could not create InputDevice object for RFID reader : {e}")
             self._is_setup = False
             return False
-
-        self.log.info(f"RFID listener setup successful: {self._device_path}")
-        self._is_setup = True
-        return True
 
     def run(self):
         self._keep_running = True
@@ -149,8 +157,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
                                 newline = CubeRfidLine(time.time(), "".join(self._current_chars_buffer))
                                 self._current_chars_buffer.clear()
                                 if newline.is_valid():
-                                    with self._lines_lock:
-                                        self._completed_lines.append(newline)
+                                    self.add_completed_line(newline)
                                     self.log.info(f"Valid RFID line entered: {newline.uid}")
                                 else:
                                     self.log.error(f"Invalid RFID line entered: {newline.uid}")
@@ -196,8 +203,6 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         return CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT[event.code]
 
 
-
-
 class CubeRfidKeyboardListener(CubeRfidListenerBase):
     """Reacts to RFID characters entered as if by a keyboard and stores the entered lines"""
 
@@ -207,10 +212,9 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.make_logger("RFID Keyboard Listener")
+        self.log = cube_logger.make_logger(name="RFID Keyboard Listener")
         self.current_chars_buffer = deque()  # Use deque for efficient pop/append operations
         self._completed_lines = deque()  # Store completed lines with their timestamps
-        self.lock = threading.Lock()  # Lock for thread-safe access to keycodes
         self._keyboard_listener = keyboard.Listener(on_press=self._on_press)
         self.setup()
 
@@ -222,9 +226,9 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
         self._keyboard_listener.start()
 
     def stop(self):
-        print("Stopping RFID listener...")
+        self.log.info("Stopping RFID listener...")
         self._keyboard_listener.stop()
-        print("RFID listener stopped")
+        self.log.info("RFID listener stopped")
 
     def _on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         try:
@@ -233,26 +237,25 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
             keycode = key.value.vk if key.value else None  # Handle special keys
         if keycode is None:
             return
-        with self.lock:  # Ensure thread-safe modification of the deque
-            # noinspection PyBroadException
-            try:
-                # Signal that a new line has been entered
-                if key == keyboard.Key.enter:
-                    newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
-                    self.current_chars_buffer.clear()
-                    if newline.is_valid():
-                        self._completed_lines.append(newline)
-                        self.log.info(f"Valid RFID line entered: {newline.uid}")
-                    else:
-                        self.log.error(f"Invalid RFID line entered: {newline.uid}")
-                # if it's not a newline
+        # noinspection PyBroadException
+        try:
+            # Signal that a new line has been entered
+            if key == keyboard.Key.enter:
+                newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
+                self.current_chars_buffer.clear()
+                if newline.is_valid():
+                    self.add_completed_line(newline)
+                    self.log.info(f"Valid RFID line entered: {newline.uid}")
                 else:
-                    # convert azerty to qwerty is need be
-                    char = key.char if key.char not in self.AZERTY_DICT else self.AZERTY_DICT[key.char]
-                    if char.isdigit():
-                        self.current_chars_buffer.append(char)
-            except:
-                pass
+                    self.log.error(f"Invalid RFID line entered: {newline.uid}")
+            # if it's not a newline
+            else:
+                # convert azerty to qwerty is need be
+                char = key.char if key.char not in self.AZERTY_DICT else self.AZERTY_DICT[key.char]
+                if char.isdigit():
+                    self.current_chars_buffer.append(char)
+        except:
+            pass
 
 
 def test_rfid_keyboard_listener():
@@ -290,7 +293,23 @@ def test_rfid_event_listener():
         rfid.stop()
 
 
+def test_rfid_read_simulation():
+    print("Testing RFID read simulation for CubeRfidKeyboardListener")
+    rfid = CubeRfidKeyboardListener()
+    rfid.simulate_read("1234567890")
+    print(rfid.get_completed_lines())
+
+    print("Testing RFID read simulation for CubeRfidEventListener")
+    rfid = CubeRfidEventListener()
+    rfid.simulate_read("1234567891")
+    print(rfid.get_completed_lines())
+
+
 if __name__ == "__main__":
+    print("Testing RFID Line Simulation")
+    test_rfid_read_simulation()
+    exit(0)
+
     print("Testing RFID Keyboard Listener")
     test_rfid_keyboard_listener()
     print("Testing RFID Event Listener")

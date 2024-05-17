@@ -1,5 +1,7 @@
 
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
+from typing import Optional
+
 import thecubeivazio.cube_game as cube_game
 
 import enum
@@ -190,24 +192,41 @@ class CubeMsgButtonPress(CubeMessage):
     """Sent from the CubeBox to the CubeMaster when the button is pressed.
     The timestamps are those calculated by the CubeBox."""
 
-    def __init__(self, sender=None, start_timestamp=None, win_timestamp=None, copy_msg:CubeMessage=None):
+    def __init__(self, sender=None, start_timestamp=None, press_timestamp=None, copy_msg:CubeMessage=None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.CUBEBOX_BUTTON_PRESS, sender, start_timestamp=start_timestamp, win_timestamp=win_timestamp)
+            super().__init__(CubeMsgTypes.CUBEBOX_BUTTON_PRESS, sender, start_timestamp=start_timestamp, press_timestamp=press_timestamp)
         self.require_ack = True
 
     @property
-    def start_timestamp(self) -> float:
-        return float(self.kwargs.get("start_timestamp"))
+    def start_timestamp(self) -> Optional[float]:
+        try:
+            return float(self.kwargs.get("start_timestamp"))
+        except ValueError:
+            return None
 
     @property
-    def win_timestamp(self) -> float:
-        return float(self.kwargs.get("win_timestamp"))
+    def press_timestamp(self) -> Optional[float]:
+        try:
+            return float(self.kwargs.get("press_timestamp"))
+        except ValueError:
+            return None
 
     @property
-    def elapsed_time(self) -> float:
-        return self.win_timestamp - self.start_timestamp
+    def elapsed_time(self) -> Optional[float]:
+        try:
+            return self.press_timestamp - self.start_timestamp
+        except TypeError:
+            return None
+
+    def has_valid_times(self):
+        """Returns True if the timestamps are valid (not None and press > start)"""
+        try:
+            return self.press_timestamp > self.start_timestamp
+        except TypeError:
+            return False
+
 
 class CubeMsgCubeboxWin(CubeMessage):
     """Sent from the CubeMaster to the Frontdesk when a cubebox is won."""
@@ -238,6 +257,25 @@ class CubeMsgCubeboxWin(CubeMessage):
     def elapsed_time(self) -> float:
         return self.win_timestamp - self.start_timestamp
 
+
+
+class CubeMsgRfidRead(CubeMessage):
+    """Sent from the CubeBox to the CubeMaster when an RFID tag is read."""
+
+    def __init__(self, sender=None, uid=None, timestamp=None, copy_msg=None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.CUBEBOX_RFID_READ, sender, uid=uid, timestamp=timestamp)
+        self.require_ack = True
+
+    @property
+    def uid(self) -> str:
+        return str(self.kwargs.get("uid"))
+
+    @property
+    def timestamp(self) -> float:
+        return float(self.kwargs.get("timestamp"))
 
 
 
@@ -275,13 +313,6 @@ class CubeMsgWhoIs(CubeMessage):
 
 
 
-
-
-class CubeMsgRfidRead(CubeMessage):
-    """Sent from the CubeBox to the CubeMaster when an RFID tag is read."""
-
-    def __init__(self, sender, uid, timestamp):
-        super().__init__(CubeMsgTypes.CUBEBOX_RFID_READ, sender, uid=uid, timestamp=timestamp)
 
 
 
@@ -324,7 +355,7 @@ def test_make_from_message():
     assert add_team_msg_1.team.max_time_sec == add_team_msg_2.team.max_time_sec
 
 
-    cbp_msg = CubeMsgButtonPress("CubeBox1", start_timestamp=10, win_timestamp=20)
+    cbp_msg = CubeMsgButtonPress("CubeBox1", start_timestamp=10, press_timestamp=20)
     msg = CubeMessage(copy_msg=cbp_msg)
     cbp_msg_2 = CubeMsgButtonPress(copy_msg=msg)
     print(f"cbp_msg : {cbp_msg}")
