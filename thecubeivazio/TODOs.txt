@@ -1,0 +1,4 @@
+- display on led screens
+- display webpage
+- setup automatic tests
+- build a hardware install on a wooden board

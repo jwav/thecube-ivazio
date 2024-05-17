@@ -115,7 +115,6 @@ class CubeButton:
             self._pressed = False
 
 
-# TODO: perform test read
 if __name__ == "__main__":
     btn = CubeButton()
     btn.log.setLevel(logging.DEBUG)
