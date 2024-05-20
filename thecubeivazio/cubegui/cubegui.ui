@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -250,7 +250,8 @@ QPushButton:focus {
              <string/>
             </property>
             <property name="icon">
-             <iconset theme="edit-clear"/>
+             <iconset theme="edit-clear">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -392,9 +393,9 @@ QPushButton:focus {
       </widget>
       <widget class="QWidget" name="tabFinishedGames">
        <attribute name="title">
-        <string>Parties terminées</string>
+        <string>Gérer les équipes</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_11">
           <item>
@@ -441,7 +442,7 @@ QPushButton:focus {
              </font>
             </property>
             <property name="text">
-             <string>GÉRER LES PARTIES TERMINÉES</string>
+             <string>GÉRER LES ÉQUIPES</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -588,26 +589,6 @@ QPushButton:focus {
           <property name="sizeConstraint">
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Infos de l'équipe sélectionnée</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Liste des équipes correspondantes</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QTableWidget" name="tableFinishedDisplayTeam">
             <property name="sizePolicy">
@@ -662,6 +643,11 @@ QPushButton:focus {
             </row>
             <row>
              <property name="text">
+              <string>Nom custom</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
               <string>Date</string>
              </property>
             </row>
@@ -712,44 +698,69 @@ QPushButton:focus {
             </item>
             <item row="1" column="0">
              <property name="text">
-              <string>lundi 14 mai</string>
+              <string>Fred &amp; Laure</string>
              </property>
             </item>
             <item row="2" column="0">
              <property name="text">
-              <string>266</string>
+              <string>lundi 14 mai</string>
              </property>
             </item>
             <item row="3" column="0">
              <property name="text">
-              <string>7</string>
+              <string>640</string>
              </property>
             </item>
             <item row="4" column="0">
              <property name="text">
-              <string>1h00</string>
+              <string>7</string>
              </property>
             </item>
             <item row="5" column="0">
              <property name="text">
-              <string>17:25</string>
+              <string>1h00</string>
              </property>
             </item>
             <item row="6" column="0">
              <property name="text">
-              <string>17:38</string>
+              <string>17:19</string>
              </property>
             </item>
             <item row="7" column="0">
              <property name="text">
-              <string>18:38</string>
+              <string>17:25</string>
              </property>
             </item>
             <item row="8" column="0">
              <property name="text">
+              <string>18:25</string>
+             </property>
+            </item>
+            <item row="9" column="0">
+             <property name="text">
               <string>1234567890</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Liste des équipes correspondantes</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Infos de l'équipe sélectionnée</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -768,12 +779,12 @@ QPushButton:focus {
             </property>
             <item>
              <property name="text">
-              <string>BUDAPEST à 17:25 lundi 14 mai</string>
+              <string>Budapest - &quot;Fred &amp; Laure&quot; : lundi 14 mai : 17h25 -&gt; 18h25 : 640 points</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>STOCKHOLM à 17:25 dimanche 13 mai</string>
+              <string>Stockholm - &quot;Afterwork Ubisoft&quot; : dimanche 13 mai : 19h12 -&gt; 20h42 : 910 points</string>
              </property>
             </item>
            </widget>
@@ -794,6 +805,70 @@ QPushButton:focus {
          </spacer>
         </item>
         <item>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Ajouter un trophée</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_19">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboManageAddTrophy"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="btnManageAddTrophy">
+            <property name="text">
+             <string>Ajouter tophée</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableManageTrophyList">
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <row>
+           <property name="text">
+            <string>New Row</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>Trophée</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Points</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Description</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
            <spacer name="horizontalSpacer_9">
@@ -811,7 +886,7 @@ QPushButton:focus {
           <item>
            <widget class="QPushButton" name="btnFinishedPrint">
             <property name="text">
-             <string>Imprimer</string>
+             <string>Imprimer la feuille de score</string>
             </property>
             <property name="icon">
              <iconset theme="print">
