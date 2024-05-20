@@ -1,0 +1,51 @@
+{
+  "game_durations": [
+    "0h30",
+    "1h00",
+    "1h30",
+    "2h00"
+  ],
+  "team_names": [
+    "Budapest",
+    "Stockholm",
+    "Madrid",
+    "Naples",
+    "Berlin"
+  ],
+  "trophies": [
+    {
+      "name": "Post sur média social",
+      "description": "Partager son expérience TheCube sur un média social",
+      "points": 10,
+      "image_path": "trophy_social_media.png"
+    },
+    {
+      "name": "12 cubes terminés",
+      "description": "Terminer tous les 12 cubes de TheCube",
+      "points": 100,
+      "image_path": "trophy_12_cubes_done.png"
+    },
+    {
+      "name": "Moins de 5 minutes",
+      "description": "Terminer un cube en moins de 5 minutes",
+      "points": 20,
+      "image_path": "trophy_under_5_minutes.png"
+    }
+  ],
+  "valid_node_names": [
+    "CubeMaster",
+    "CubeFrontdesk",
+    "CubeBox1",
+    "CubeBox2",
+    "CubeBox3",
+    "CubeBox4",
+    "CubeBox5",
+    "CubeBox6",
+    "CubeBox7",
+    "CubeBox8",
+    "CubeBox9",
+    "CubeBox10",
+    "CubeBox11",
+    "CubeBox12"
+  ]
+}

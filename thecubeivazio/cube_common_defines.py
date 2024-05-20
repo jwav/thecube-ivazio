@@ -14,6 +14,10 @@ SOUNDS_DIR = os.path.join(PROJECT_ROOT_PATH, "sounds")
 LOGS_DIR = os.path.join(PROJECT_ROOT_PATH, "logs")
 RESOURCES_DIR = os.path.join(PROJECT_ROOT_PATH, "resources")
 CUBEGUI_DIR = os.path.join(PROJECT_ROOT_PATH, "cubegui")
+CONFIG_DIR = os.path.join(PROJECT_ROOT_PATH, "config")
+GLOBAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json")
+LOCAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "local_config.json")
+
 
 # used in looping functions to induce a little delay
 # TODO: implement in existing loops
