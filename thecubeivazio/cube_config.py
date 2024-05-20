@@ -30,7 +30,7 @@ class CubeConfig:
     """Class to hold configuration values."""
 
     def __init__(self):
-        self.log = cube_logger.make_logger(name="CubeConfig")
+        self.log = cube_logger.CubeLogger(name="CubeConfig")
         self.log.setLevel(logging.INFO)
         self.config_dict = {}
         self._trophies = []

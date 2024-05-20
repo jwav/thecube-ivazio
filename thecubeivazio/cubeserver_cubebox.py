@@ -23,7 +23,7 @@ print(dir(cube_logger))
 
 class CubeServerCubebox:
     def __init__(self, node_name: str):
-        self.log = cube_logger.make_logger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
+        self.log = cube_logger.cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
         self.rfid = cube_rfid.CubeRfidKeyboardListener()

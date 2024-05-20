@@ -97,7 +97,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.make_logger("RFID Event Listener")
+        self.log = cube_logger.cube_logger.CubeLogger"RFID Event Listener")
         self.log.setLevel(logging.INFO)
 
         self._thread = threading.Thread(target=self._event_read_loop)
@@ -212,7 +212,7 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.make_logger(name="RFID Keyboard Listener")
+        self.log = cube_logger.cube_logger.CubeLogger(name="RFID Keyboard Listener")
         self.current_chars_buffer = deque()  # Use deque for efficient pop/append operations
         self._completed_lines = deque()  # Store completed lines with their timestamps
         self._keyboard_listener = keyboard.Listener(on_press=self._on_press)

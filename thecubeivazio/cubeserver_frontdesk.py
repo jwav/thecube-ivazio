@@ -15,7 +15,7 @@ import thecubeivazio.cube_game as cube_game
 class CubeServerFrontdesk:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.make_logger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
+        self.log = cube_logger.cube_logger.CubeLogger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # instanciate the RFID listener

@@ -18,7 +18,7 @@ from thecubeivazio.cube_common_defines import *
 class CubeServerMaster:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.make_logger(name=cubeid.CUBEMASTER_NAME,
+        self.log = cube_logger.cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NAME,
                                            log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NAME,

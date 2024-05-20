@@ -45,7 +45,7 @@ class CubeNetworking:
     ACK_NB_TRIES = 10
 
     def __init__(self, node_name: str, log_filename:str=None):
-        self.log = cube_logger.make_logger(name=f"{node_name} Networking", log_filename=log_filename)
+        self.log = cube_logger.CubeLogger(name=f"{node_name} Networking", log_filename=log_filename)
 
         # check if the node name is valid. If not, raise an exception
         if not cubeid.is_valid_node_name(node_name):

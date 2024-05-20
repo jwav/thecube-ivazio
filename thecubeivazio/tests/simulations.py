@@ -16,7 +16,7 @@ from thecubeivazio.cube_common_defines import *
 
 COMM_DELAY_SEC = 3
 CUBE_ID = 1
-LOGGER = cube_logger.make_logger("Simulations")
+LOGGER = cube_logger.cube_logger.CubeLogger"Simulations")
 CUBEBOX = cubeserver_cubebox.CubeServerCubebox(node_name=cubeid.cubebox_index_to_node_name(CUBE_ID))
 FRONTDESK = cubeserver_frontdesk.CubeServerFrontdesk()
 MASTER = cubeserver_master.CubeServerMaster()
