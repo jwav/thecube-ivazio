@@ -1,4 +1,0 @@
-- TODO: display on led screens
-- TODO: display webpage
-- TODO: setup automatic tests
-- TODO: build a hardware install on a wooden board
