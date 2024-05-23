@@ -14,6 +14,7 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 
+
 class CubeServerFrontdesk:
     def __init__(self):
         # set up the logger
