@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -56,7 +56,7 @@
           <item>
            <widget class="QLabel" name="lblTopBanner">
             <property name="pixmap">
-             <pixmap resource="../resources/resources.qrc">:/logo_thecube-125x150.png</pixmap>
+             <pixmap resource="resources.qrc">:/images/images/logo_thecube-125x150.png</pixmap>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -447,7 +447,7 @@ QPushButton:focus {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../resources/resources.qrc">:/logo_thecube-125x150.png</pixmap>
+             <pixmap resource="resources.qrc">:/images/images/logo_thecube-125x150.png</pixmap>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -999,7 +999,7 @@ QPushButton:focus {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../resources/resources.qrc">:/logo_thecube-125x150.png</pixmap>
+             <pixmap resource="resources.qrc">:/images/images/logo_thecube-125x150.png</pixmap>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1275,7 +1275,7 @@ QPushButton:focus {
   </widget>
  </widget>
  <resources>
-  <include location="../resources/resources.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

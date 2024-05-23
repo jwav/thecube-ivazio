@@ -24,16 +24,16 @@ class CubeGuiForm(QMainWindow):
 
         self.log = cube_logger.CubeLogger(name="CubeGui", log_filename=cube_logger.CUBEGUI_LOG_FILENAME)
 
+        self.fd = cfd.CubeServerFrontdesk()
+        self.fd.run()
+        atexit.register(self.fd.stop)
+        self.log.info("FrontDesk Server started.")
+
         if self.initial_setup():
             self.log.info("Initial setup done.")
         else:
             self.log.error("Initial setup failed.")
             exit(1)
-
-        self.fd = cfd.CubeServerFrontdesk()
-        self.fd.run()
-        atexit.register(self.fd.stop)
-        self.log.info("FrontDesk started.")
 
         self._backend_thread = threading.Thread(target=self._backend_loop)
         self._keep_running = True
@@ -41,55 +41,38 @@ class CubeGuiForm(QMainWindow):
 
     def initial_setup(self):
 
-
-        self.setup_create_tab()
-        self.setup_manage_tab()
+        self.setup_team_creation_tab()
+        self.setup_team_management_tab()
         self.setup_admin_tab()
 
         return True
 
-    def setup_create_tab(self):
+    def setup_team_creation_tab(self):
         """Sets up the widgets of the tab 'Créer une nouvelle équipe'"""
-        # read the resource file "team_names.txt" and fill the combo box with its lines
+
+        # fill the team names combo box
+        team_names = self.fd.config.team_names
         self.ui.comboCreateTeamName.clear()
-        # use pyqt resource system to get the filename
-        filename = ":team_names.txt"
-        file = QFile(filename)
+        self.ui.comboCreateTeamName.addItems(team_names)
 
-        if not file.open(QFile.ReadOnly | QFile.Text):
-            self.log.error(f"Unable to open the file {filename}")
-            return False
-
-        text_stream = QTextStream(file)
-        while not text_stream.atEnd():
-            line = text_stream.readLine()
-            self.ui.comboCreateTeamName.addItem(line.strip())
-        file.close()
-
-        # fill the duration combo box
-
+        # fill the game durations combo box
+        game_durations_str = self.fd.config.game_durations_str
         self.ui.comboCreateDuration.clear()
-        # use pyqt resource system to get the filename
-        filename = ":game_durations.txt"
-        file = QFile(filename)
+        self.ui.comboCreateDuration.addItems(game_durations_str)
 
-        if not file.open(QFile.ReadOnly | QFile.Text):
-            self.log.error(f"Unable to open the file {filename}")
-            return False
-
-        text_stream = QTextStream(file)
-        while not text_stream.atEnd():
-            line = text_stream.readLine()
-            self.ui.comboCreateDuration.addItem(line.strip())
-        file.close()
-
-        self.ui.btnCreateNewTeam.clicked.connect(self.create_new_team)
-        self.ui.btnCreateRfidClear.clicked.connect(lambda: (self.ui.lineCreateRfid.clear(), self.log.info("RFID cleared")))
-
+        # set up the buttons
         self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon())
+        self.ui.btnCreateNewTeam.clicked.connect(self.create_new_team)
+        self.ui.btnCreateRfidClear.clicked.connect(
+            lambda: (self.ui.lineCreateRfid.clear(), self.log.info("RFID cleared")))
+
+        # set up the status label
         self.ui.lblCreateNewTeamStatusText.setText("")
 
-    def setup_manage_tab(self):
+    def update_team_creation_tab(self):
+
+
+    def setup_team_management_tab(self):
         pass
 
     def setup_admin_tab(self):
@@ -128,11 +111,9 @@ class CubeGuiForm(QMainWindow):
     def _backend_loop(self):
         """check the FrontDesk events (rfid, messages), and handle them"""
         while self._keep_running:
-            #self.log.debug("Backend loop iteration")
+            # self.log.debug("Backend loop iteration")
             self.handle_rfid()
             time.sleep(1)
-
-
 
     def handle_rfid(self):
         try:
@@ -154,12 +135,6 @@ class CubeGuiForm(QMainWindow):
         except Exception as e:
             self.log.error(f"Error in handle_rfid: {e}")
             print(tb.format_exc())
-
-
-
-
-
-
 
 
 if __name__ == "__main__":

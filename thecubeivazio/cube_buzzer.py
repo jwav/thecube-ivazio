@@ -7,6 +7,7 @@ from typing import Tuple
 
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio import cube_config
 import os
 
 import pygame.mixer as mixer
@@ -25,14 +26,15 @@ class CubeBuzzer:
         self.log.setLevel(logging.INFO)
         self._thread = None
         self._lock = threading.Lock()
+        self._use_buzzer = False
         # check if on RaspberryPi
-        if GPIO is not None:
+        if self._use_buzzer:
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.BUZZER_PIN, GPIO.OUT)
-            self._is_raspberry_pi = True
+            self.log.info("Set to use the buzzer and not play sound files")
         else:
-            self.log.info("Not on a Raspberry Pi, using sound files to simulate buzzer")
-            self._is_raspberry_pi = False
+            self.log.info("Set to play sound files and not the buzzer")
+            self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
 
     def play_file_or_tune(self, soundfile:str, tune:Tuple[Tuple[int, float], ...]):
         """Play a sound file or a tune on the buzzer."""
@@ -42,7 +44,7 @@ class CubeBuzzer:
             self._thread.join(timeout=5)
 
     def _play_file_or_tune(self, soundfile:str, tune:Tuple[Tuple[int, float], ...]):
-        if self._is_raspberry_pi:
+        if self._use_buzzer:
             for pitch, duration in tune:
                 self.buzz(pitch, duration)
         else:
@@ -52,7 +54,7 @@ class CubeBuzzer:
         if not os.path.exists(soundfile):
             soundfile = os.path.join(SOUNDS_DIR, soundfile)
         self.log.debug(f"Playing sound file: {soundfile}")
-        if self._is_raspberry_pi:
+        if self._use_buzzer:
             return
         mixer.init()
         #soundfile = self.get_sound_file_path(soundfile)
@@ -65,7 +67,7 @@ class CubeBuzzer:
     def buzz(self, pitch:int, duration:float):
         """Play a tone on the buzzer."""
         self.log.info(f"Playing tone: {pitch} Hz for {duration} seconds")
-        if not self._is_raspberry_pi:
+        if not self._use_buzzer:
             return
         if pitch == 0:
             time.sleep(duration)

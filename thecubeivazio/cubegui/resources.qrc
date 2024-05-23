@@ -1,0 +1,17 @@
+<RCC>
+  <qresource prefix="images">
+    <file>images/icons_credits.txt</file>
+    <file>images/icon_ok.png</file>
+    <file>images/icon_error.png</file>
+    <file>images/icon_printer.png</file>
+    <file>images/icon_thecube_32x32.png</file>
+    <file>images/icon_thecube_396x395.png</file>
+    <file>images/icon_loading_32x32.gif</file>
+    <file>images/icon_loading.gif</file>
+    <file>images/logo_thecube-125x150.png</file>
+    <file>images/logo_thecube-459x550.png</file>
+    <file>images/logo_thecube.png</file>
+    <file>images/cubegui_status_none.png</file>
+    <file>images/cubegui_banner.png</file>
+  </qresource>
+</RCC>

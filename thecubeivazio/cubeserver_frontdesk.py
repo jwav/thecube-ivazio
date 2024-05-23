@@ -4,6 +4,8 @@ import threading
 import time
 from typing import Optional
 
+from thecubeivazio import cube_config
+
 import thecubeivazio.cube_logger as cube_logger
 import thecubeivazio.cube_rfid as cube_rfid
 import thecubeivazio.cube_networking as cubenet
@@ -28,6 +30,12 @@ class CubeServerFrontdesk:
         # heartbeat setup
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
+
+        self.config = cube_config.CubeConfig()
+
+        # holds the information about the teams
+        self.teams = cube_game.CubeTeamsStatusList()
+        self.cubeboxes = cube_game.CubeboxStatusList()
 
     def run(self):
         self.rfid.run()

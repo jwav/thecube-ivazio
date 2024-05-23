@@ -254,9 +254,11 @@ class CubeTeamStatus:
         ret += f"current_cube={self.current_cubebox_id}, won_cubes={len(self.completed_cubeboxes)}"
         return ret
 
-    def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds):
-        # the name recorded at the front desk
+    def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, custom_name: str = ""):
+        # the team's code name (a city name)
         self.name = name
+        # the custom names chosen by the customers
+        self.custom_name = custom_name
         # the RFID UID of the team
         self.rfid_uid = rfid_uid
         # the maximum time allowed to play the CubeGame

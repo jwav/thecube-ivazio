@@ -1,8 +1,10 @@
+LICENSE_en.txt
 setup.py
 thecubeivazio/__init__.py
 thecubeivazio/cube_button.py
 thecubeivazio/cube_buzzer.py
 thecubeivazio/cube_common_defines.py
+thecubeivazio/cube_config.py
 thecubeivazio/cube_game.py
 thecubeivazio/cube_identification.py
 thecubeivazio/cube_led_matrices.py
@@ -21,9 +23,9 @@ thecubeivazio.egg-info/SOURCES.txt
 thecubeivazio.egg-info/dependency_links.txt
 thecubeivazio.egg-info/top_level.txt
 thecubeivazio/tests/__init__.py
-thecubeivazio/tests/pytest_simulations.py
 thecubeivazio/tests/simulations.py
 thecubeivazio/tests/test_common_defines.py
 thecubeivazio/tests/test_udp_listen_and_send.py
 thecubeivazio/tests/udp_client_test.py
 thecubeivazio/tests/udp_server_test.py
+thecubeivazio/tests/unittest_simulations.py
