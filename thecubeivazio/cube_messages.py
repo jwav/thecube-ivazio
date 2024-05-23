@@ -316,12 +316,19 @@ class CubeMsgRequestTeamStatus(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.FRONTDESK_REQUEST_TEAM_STATUS, sender, team_name=team_name)
+            super().__init__(CubeMsgTypes.REQUEST_TEAM_STATUS, sender, team_name=team_name)
         self.require_ack = True
 
     @property
     def team_name(self) -> str:
         return str(self.kwargs.get("team_name"))
+
+class CubeMsgRequestCubemasterStatus(CubeMessage):
+    """Sent from a node to the CubeMaster to ask for its status."""
+
+    def __init__(self, sender):
+        super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_STATUS, sender)
+        self.require_ack = False
 
 class CubeMsgHeartbeat(CubeMessage):
     """Sent from a node to everyone to signal its presence."""

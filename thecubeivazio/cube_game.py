@@ -250,8 +250,8 @@ class CubeTeamStatus:
     SCORESHEETS_FOLDER = "scoresheets"
 
     def to_string(self) -> str:
-        ret = f"CubeTeam name={self.name}: rfid_uid={self.rfid_uid}, max_time={self.max_time_sec}, start_time={self.starting_timestamp}, "
-        ret += f"current_cube={self.current_cubebox_id}, won_cubes={len(self.completed_cubeboxes)}"
+        ret = f"CubeTeam name={self.name}, custom_name={self.custom_name}, rfid_uid={self.rfid_uid}, max_time={self.max_time_sec}, start_time={self.starting_timestamp}, "
+        ret += f"current_cube={self.current_cubebox_id}, won_cubes={len(self.completed_cubeboxes)}, trophies={[trophy.name for trophy in self.trophies]}\n"
         return ret
 
     def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, custom_name: str = ""):
@@ -376,6 +376,12 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def __init__(self):
         super().__init__()
         self.reset()
+
+    def __str__(self):
+        return self.to_string()
+
+    def __repr__(self):
+        return self.to_string()
 
     def reset(self):
         self.clear()
@@ -511,15 +517,22 @@ def test_cube_teams_list():
     assert len(teams_list) == 0
 
 
-if __name__ == "__main__":
+def save_scoresheet():
     team = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
     team.completed_cubeboxes.append(
         CubeboxStatus(cube_id=1, starting_timestamp=time.time(), win_timestamp=time.time() + 1150))
     team.completed_cubeboxes.append(
         CubeboxStatus(cube_id=2, starting_timestamp=time.time(), win_timestamp=time.time() + 200))
     team.save_html_score_sheet()
-    # aaa
 
-    exit(0)
-    teams_list = CubeTeamsList()
-    teams_list.append(CubeTeam(rfid_uid="1234567890", name="Budapest", allocated_time=60.0))
+
+if __name__ == "__main__":
+    teams_list = CubeTeamsStatusList()
+    teams_list.append(CubeTeamStatus(name="Budapest", custom_name="FooCustomName",
+                                        rfid_uid="123456789", max_time_sec=60.0))
+    teams_list.append(CubeTeamStatus(name="Paris", custom_name="BarCustomName",
+                                        rfid_uid="987654321", max_time_sec=60.0))
+    team1 = teams_list.find_team_by_name("Budapest")
+    team1.trophies.append(CubeTeamTrophy(name="FooTrophy", description="FooDescription", points=100, image_path="foo.png"))
+    team1.trophies.append(CubeTeamTrophy(name="BarTrophy", description="BarDescription", points=200, image_path="bar.png"))
+    print(teams_list)

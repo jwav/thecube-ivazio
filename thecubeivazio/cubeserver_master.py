@@ -255,26 +255,33 @@ class CubeServerMaster:
             pass
 
 
-class CubeServerMasterWithPrompt:
+class CubeServerMasterWithPrompt(CubeServerMaster):
     def __init__(self):
-        self.csm = CubeServerMaster()
+        super().__init__()
 
     @staticmethod
     def print_help():
         print("Commands:")
-        print("q, quit: stops the CubeMaster")
-        print("h, help: prints this help message")
-        print("ni, netinfo: prints the network information")
-        print("wi, whois: sends WHO_IS message to everyone")
-        print("t, teams: prints the list of teams")
-        print("cg: show cubegames")
-        print("ogs: overall game status")
+        print("q, quit : stop the CubeMaster and exit the program")
+        print("h, help : display this help")
+        print("t, teams : display the list of teams")
+        print("cb, cubeboxes : display the list of cubeboxes")
+        print("ni, netinfo : display the network nodes info")
+        print("wi, whois : send a WhoIs message to all nodes")
+
 
     def stop(self):
-        self.csm.stop()
+        super().stop()
 
     def run(self):
-        self.csm.run()
+        super().run()
+        try:
+            self.prompt_loop()
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt. Stopping the CubeMaster")
+            self.stop()
+
+    def prompt_loop(self):
         while True:
             cmd = input("CubeMaster Command > ")
             if not cmd:
@@ -284,17 +291,15 @@ class CubeServerMasterWithPrompt:
                 break
             elif cmd in ["h", "help"]:
                 self.print_help()
-            elif cmd in ["g", "games"]:
-                print("Not implemented yet")
             elif cmd in ["t", "teams"]:
-                print(self.csm.teams.to_string())
-            elif cmd in ["cg", "cubegames"]:
-                print(self.csm.cubeboxes.to_string())
+                print(self.teams.to_string())
+            elif cmd in ["cb", "cubeboxes"]:
+                print(self.cubeboxes.to_string())
             elif cmd in ["ni", "netinfo"]:
                 # display the nodes in the network and their info
-                print(self.csm.net.nodes_list.to_string())
+                print(self.net.nodes_list.to_string())
             elif cmd in ["wi", "whois"]:
-                self.csm.net.send_msg_to_all(cm.CubeMsgWhoIs(self.csm.net.node_name, cubeid.EVERYONE_NAME))
+                self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NAME))
             else:
                 print("Unknown command")
 

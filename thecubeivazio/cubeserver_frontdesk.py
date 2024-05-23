@@ -2,7 +2,7 @@
 
 import threading
 import time
-from typing import Optional
+from typing import Optional, Iterable, Sized
 
 from thecubeivazio import cube_config
 
@@ -13,14 +13,20 @@ import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
+from thecubeivazio.cube_common_defines import Seconds
 
 
 class CubeServerFrontdesk:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.CubeLogger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
+        self.log = cube_logger.CubeLogger(name=cubeid.CUBEFRONTDESK_NAME,
+                                          log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
+        # load the config
+        self.config = cube_config.CubeConfig()
+
         # set up the networking
-        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
+        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEFRONTDESK_NAME,
+                                          log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
@@ -32,9 +38,8 @@ class CubeServerFrontdesk:
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
 
-        self.config = cube_config.CubeConfig()
-
         # holds the information about the teams
+        # TODO: do something with them. update them, request updates, etc
         self.teams = cube_game.CubeTeamsStatusList()
         self.cubeboxes = cube_game.CubeboxStatusList()
 
@@ -45,7 +50,7 @@ class CubeServerFrontdesk:
         self._keep_running = True
         self._msg_handling_thread.start()
 
-        #self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
+        # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
         self._keep_running = False
@@ -53,13 +58,12 @@ class CubeServerFrontdesk:
         self.rfid.stop()
         self._msg_handling_thread.join(timeout=0.1)
 
-
     def _msg_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
             time.sleep(0.1)
-            #print(":", end="")
+            # print(":", end="")
             if self.enable_heartbeat and self.heartbeat_timer.is_timeout():
                 self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
                 self.heartbeat_timer.reset()
@@ -100,26 +104,133 @@ class CubeServerFrontdesk:
         return report
 
 
+class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
+    def __init__(self):
+        super().__init__()
 
-if __name__ == "__main__":
+    @staticmethod
+    def print_help():
+        print("Commands:")
+        print("q, quit : stop the CubeFrontdesk and exit the program")
+        print("h, help : display this help")
+        print("t, teams : display the list of teams")
+        print("cb, cubeboxes : display the list of cubeboxes")
+        print("ni, netinfo : display the network nodes info")
+        print("wi, whois : send a WhoIs message to all nodes")
+        print("at, addteam (name [, custom_name, uid, max_time_sec]) : add a new team")
+        print("atr, addtrophy (team_name, name [, points, description, image_path]) : add a new trophy")
+        print("rcms, requestcubemasterstatus : request the CubeMaster status")
+
+    def stop(self):
+        super().stop()
+
+    def run(self, no_prompt=False):
+        super().run()
+        # stop the rfid listener since we're gonna press the enter key a lot while using the prompt
+        self.rfid.stop()
+        if no_prompt:
+            return
+        try:
+            self.prompt_loop()
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt. Stopping the CubeFrontdesk")
+            self.stop()
+
+    @staticmethod
+    def pad_args(argslist: Sized, *defaults):
+        ret = list(argslist) + list(defaults)
+        print(f"pad_args: {ret}")
+        return ret
+
+    def prompt_loop(self):
+        while True:
+            line = input("CubeFrontdesk Command > ")
+            self.handle_input(line)
+
+    def handle_input(self, line: str) -> bool:
+        cmd = line.split()[0] if line else None
+        args = line.split()[1:]
+        if not cmd:
+            return True
+        elif cmd in ["q", "quit"]:
+            self.stop()
+            return True
+        elif cmd in ["h", "help"]:
+            self.print_help()
+        elif cmd in ["t", "teams"]:
+            print(self.teams.to_string())
+        elif cmd in ["cb", "cubeboxes"]:
+            print(self.cubeboxes.to_string())
+        elif cmd in ["ni", "netinfo"]:
+            # display the nodes in the network and their info
+            print(self.net.nodes_list.to_string())
+        elif cmd in ["wi", "whois"]:
+            self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NAME))
+        elif cmd in ["at", "addteam"]:
+            if len(args) < 3:
+                print("Usage: addteam (name [, custom_name, uid, max_time_sec])")
+                return False
+            # if there are less than 4 args, pad the rest with default values until there are 4 args
+            args = self.pad_args(args, "CustomName", "1234567890", 60.0)
+            name, custom_name, uid, max_time_sec = args
+
+            max_time_sec = Seconds(max_time_sec)
+            team = cube_game.CubeTeamStatus(rfid_uid=uid, name=name, custom_name=custom_name, max_time_sec=max_time_sec)
+            self.add_new_team(team)
+        elif cmd in ["atr", "addtrophy"]:
+            if len(args) < 2:
+                print("Usage: ddtrophy (team_name, name [, points, description, image_path])")
+                return False
+            args = self.pad_args(args, 100, "FooDescription", "foo.png")
+            team_name, name, points, description, image_path = args
+            team = self.teams.find_team_by_name(team_name)
+            if team is None:
+                print(f"Team {team_name} not found")
+                return False
+            points = int(points)
+            trophy = cube_game.CubeTeamTrophy(name=name, description=description, points=points, image_path=image_path)
+            team.trophies.append(trophy)
+            self.log.info(f"Added trophy {trophy.name} to team {team.name}:")
+            self.log.info(f"{team}")
+        elif cmd in ["rcms", "requestcubemasterstatus"]:
+            self.net.send_msg_to_cubeserver(cm.CubeMsgRequestCubemasterStatus())
+        else:
+            print("Unknown command")
+            return False
+
+
+def test():
     import atexit
+    fd = CubeServerFrontdesk()
+    atexit.register(fd.stop)
 
     team_names = ["Budapest",
                   "Debrecen",
                   "Budapest",
-                    "Szeged",
-                    "Pécs",
+                  "Szeged",
+                  "Pécs",
                   "Debrecen",
-                  "Zalaegerszeg",]
+                  "Zalaegerszeg", ]
+    for team_name in team_names:
+        fd.add_new_team(cube_game.CubeTeamStatus(rfid_uid="1234567890", name=team_name, max_time_sec=60.0))
+    time.sleep(5)
 
-    fd = CubeServerFrontdesk()
+
+def test_prompt_commands():
+    import atexit
+    fd = CubeServerFrontdeskWithPrompt()
+    atexit.register(fd.stop)
+
+    fd.run(no_prompt=True)
+    fd.handle_input("at London")
+
+
+def run_prompt():
+    import atexit
+    fd = CubeServerFrontdeskWithPrompt()
     atexit.register(fd.stop)
     fd.run()
-    try:
-        for team_name in team_names:
-            fd.add_new_team(cube_game.CubeTeamStatus(rfid_uid="1234567890", name=team_name, max_time_sec=60.0))
-            time.sleep(5)
-    except KeyboardInterrupt:
-        print("KeyboardInterrupt received. Stopping CubeFrontDesk...")
-    finally:
-        fd.stop()
+
+
+if __name__ == "__main__":
+    run_prompt()
