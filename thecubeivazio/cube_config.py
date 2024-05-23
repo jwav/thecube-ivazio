@@ -28,6 +28,8 @@ class CubeTrophy:
 
 class CubeConfig:
     """Class to hold configuration values."""
+    # singleton instance of CubeConfig
+    _instance = None
 
     def __init__(self):
         self.log = cube_logger.CubeLogger(name="CubeConfig")
@@ -42,6 +44,12 @@ class CubeConfig:
             self.log.info("CubeConfig fully loaded and valid")
         else:
             self.log.error("CubeConfig not fully loaded or invalid")
+
+    @staticmethod
+    def get_config():
+        if CubeConfig._instance is None:
+            CubeConfig._instance = CubeConfig()
+        return CubeConfig._instance
 
     def is_valid(self):
         try:

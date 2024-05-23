@@ -13,16 +13,18 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
 import thecubeivazio.cube_buzzer as cube_buzzer
-from thecubeivazio import cube_game
+from thecubeivazio import cube_game, cube_config
 from thecubeivazio.cube_common_defines import *
 
 
-# TODO: what happens if a team badges in, and just gives up? The box will be locked forever.
-#  we could say: if another team badges in, the first team is automatically badged out.
-
 class CubeServerCubebox:
-    def __init__(self, node_name: str):
+    def __init__(self, node_name: str=None):
         self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
+        self.config = cube_config.CubeConfig()
+
+        if not node_name:
+            node_name = self.determine_node_name()
+
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
@@ -41,6 +43,14 @@ class CubeServerCubebox:
         self._thread_networking = None
 
         self._keep_running = False
+
+    def determine_node_name(self) -> str:
+        """if no node name is specified, check the local config file for the node name.
+        If no node name is in the config file, determine the node name from the hostname"""
+        if self.config.local_node_name:
+            return self.config.local_node_name
+        else:
+            return cubeid.hostname_to_valid_cubebox_name()
 
     @property
     def cubebox_index(self):

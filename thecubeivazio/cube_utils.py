@@ -150,6 +150,14 @@ def timestamp_to_french_date(timestamp: Union[float,int], weekday=True, day_numb
     return date_to_french_date_string(datetime.datetime.fromtimestamp(timestamp),
                                       weekday=weekday, day_number=day_number, month=month, year=year)
 
+def get_system_hostname() -> str:
+    """Get the hostname of the running machine"""
+    # noinspection PyBroadException
+    try:
+        import socket
+        return socket.gethostname()
+    except Exception:
+        return "hostnameNone"
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())
@@ -163,3 +171,5 @@ if __name__ == "__main__":
     print("hhmmmsss_to_seconds('21'):", hhmmss_string_to_seconds('21'))
     print("seconds_to_hhmmss_string(3661):", seconds_to_hhmmss_string(3661))
     print("seconds_to_hhmmss_string(3661, separators='::'):", seconds_to_hhmmss_string(3661, separators='::'))
+    print("timestamp_to_french_date(time.time()):", timestamp_to_french_date(time.time()))
+    print("get_system_hostname():", get_system_hostname())

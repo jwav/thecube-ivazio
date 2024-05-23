@@ -5,6 +5,7 @@
 """
 
 from typing import Optional
+from thecubeivazio import cube_utils
 
 NB_CUBEBOXES = 12
 FIRST_CUBEBOX_INDEX = 1
@@ -36,6 +37,21 @@ def node_name_to_cubebox_index(name: str) -> Optional[int]:
 
 def cubebox_index_to_node_name(index: int) -> str:
     return f"{CUBEBOX_NAME_PREFIX}{index}"
+
+
+def hostname_to_valid_cubebox_name(username: str=None) -> Optional[str]:
+    """checks the system username. if there's a number in it,
+    returns the corresponding cubebox name, else returns CubeEveryone"""
+    try:
+        if username is None:
+            username = cube_utils.get_system_hostname()
+        # get the number in the username
+        number_str = "".join([c for c in username if c.isdigit()])
+        if int(number_str) in CUBEBOX_IDS:
+            return f"{CUBEBOX_NAME_PREFIX}{number_str}"
+    except Exception as e:
+        print(f"Error while converting system username to cubebox name: {e}")
+        return None
 
 
 class NodeInfo:
@@ -96,3 +112,10 @@ if __name__ == "__main__":
     nodes_list = NodesList()
     # display the list of all nodes, names and ips
     print(nodes_list.to_string())
+    print("cubebox username test:")
+    print(f"username=cubebox1 -> {hostname_to_valid_cubebox_name('cubebox1')}")
+    print(f"username=cubebox2 -> {hostname_to_valid_cubebox_name('cubebox2')}")
+    print(f"username=cubebox100 -> {hostname_to_valid_cubebox_name('cubebox100')}")
+    print(f"username=cubebox -> {hostname_to_valid_cubebox_name('cubebox')}")
+    print(f"username=box1 -> {hostname_to_valid_cubebox_name('box1')}")
+
