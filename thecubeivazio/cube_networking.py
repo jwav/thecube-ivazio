@@ -89,6 +89,10 @@ class CubeNetworking:
         self._keep_running = True
         self._listenThread.start()
 
+    def is_running(self):
+        """Returns True if the networking is running, False otherwise"""
+        return self._keep_running
+
     def stop(self):
         """stops the main loop thread"""
         self.log.info("Stopping networking...")
@@ -170,14 +174,14 @@ class CubeNetworking:
             self.log.debug(f"Message added to incoming queue: ({message.hash}) : {message}")
             return True
 
-    def acknowledge_this_message(self, message: cm.CubeMessage, info:cm.CubeMsgReplies=None):
+    def acknowledge_this_message(self, message: cm.CubeMessage, info:cm.CubeAckInfos=None):
         """Sends an acknowledgement message for the given message"""
-        self.log.info(f"Acknowledging message: ({message.hash}) : {message}")
+        self.log.debug(f"Acknowledging message: ({message.hash}) : {message}")
         ack_msg = cm.CubeMsgAck(self.node_name, message, info=info)
         ack_msg.require_ack = False
         self.send_msg_with_udp(ack_msg)
         if self.send_msg_to(ack_msg, message.sender):
-            self.log.debug(f"Acknowledgement sent. Removing acked message: {ack_msg}")
+            self.log.infoplus(f"Acknowledgement sent. Removing acked message: {ack_msg}")
             self.remove_msg_from_incoming_queue(message)
         else:
             self.log.error(f"Failed to send ack: {ack_msg}")

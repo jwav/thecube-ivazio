@@ -84,7 +84,8 @@ class SimpleTimer:
         return time.time() - self.start_time
 
 
-def date_to_french_date_string(date: datetime.datetime):
+def date_to_french_date_string(date: datetime.datetime,
+                               weekday=True, day_number=True,month=True, year=True) -> Optional[str]:
     """Convert a datetime object to a string in a format like 'lundi 1 janvier 2021'"""
     # we need to specify the locale when calling strftimeto get the french version of the date. Don't modify the locale of the system
     import locale
@@ -95,7 +96,19 @@ def date_to_french_date_string(date: datetime.datetime):
         # Set the locale to French
         locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
         # Format the date
-        french_date_string = date.strftime('%A %d %B %Y')
+        fmt_str = ""
+        if weekday:
+            fmt_str += '%A '
+        if day_number:
+            fmt_str += '%d '
+        if month:
+            fmt_str += '%B '
+        if year:
+            fmt_str += '%Y'
+        french_date_string = date.strftime(fmt_str)
+    except Exception as e:
+        print(f"Error while converting {date} to french date string: {e}")
+        return None
     finally:
         # Restore the original locale
         locale.setlocale(locale.LC_TIME, current_locale)
@@ -132,7 +145,10 @@ def seconds_to_hhmmss_string(seconds: Union[float,int], separators="hms") -> str
     sep3 = separators[2] if len(separators) > 2 else ""
     return time.strftime(f'%H{sep1}%M{sep2}%S{sep3}', time.gmtime(seconds))
 
-
+def timestamp_to_french_date(timestamp: Union[float,int], weekday=True, day_number=True, month=True, year=True) -> str:
+    """Convert a timestamp to a string in a format like 'lundi 1 janvier 2021'"""
+    return date_to_french_date_string(datetime.datetime.fromtimestamp(timestamp),
+                                      weekday=weekday, day_number=day_number, month=month, year=year)
 
 
 if __name__ == "__main__":

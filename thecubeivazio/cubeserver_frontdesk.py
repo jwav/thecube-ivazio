@@ -15,7 +15,7 @@ import thecubeivazio.cube_game as cube_game
 class CubeServerFrontdesk:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.cube_logger.CubeLogger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
+        self.log = cube_logger.CubeLogger(name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEFRONTDESK_NAME, log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # instanciate the RFID listener
@@ -84,7 +84,7 @@ class CubeServerFrontdesk:
         self.log.debug(f"add_new_team ack_msg={ack_msg.to_string() if ack_msg else None}")
         if ack_msg is None:
             self.log.error(f"The CubeMaster did not respond to the new team message : {team.name}")
-        elif ack_msg.info == cm.CubeMsgReplies.OK:
+        elif ack_msg.info == cm.CubeAckInfos.OK:
             self.log.info(f"The CubeMaster added the new team : {team.name}")
         else:
             self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")

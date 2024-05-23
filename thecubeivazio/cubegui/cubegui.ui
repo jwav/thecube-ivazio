@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>859</width>
-    <height>836</height>
+    <width>952</width>
+    <height>981</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -121,27 +121,7 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="1" column="5">
-           <spacer name="horizontalSpacer_18">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="2" column="3">
-           <widget class="QComboBox" name="comboCreateDuration">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
            <widget class="QLineEdit" name="lineCreateRfid">
             <property name="maximumSize">
              <size>
@@ -170,35 +150,37 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="lblCreateAllocatedTime">
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Temps alloué : </string>
+             <string>Nom personnalisé : </string>
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <widget class="QComboBox" name="comboCreateTeamName">
-            <property name="maxVisibleItems">
-             <number>20</number>
+          <item row="1" column="3" colspan="3">
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="lblCreateTeamName">
             <property name="text">
-             <string>Nom de l'équipe : </string>
+             <string>Nom de code :</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="lblCreateRfid">
-            <property name="text">
-             <string>Badge RFID : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <spacer name="horizontalSpacer_17">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -211,7 +193,7 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QPushButton" name="btnIconCreateRfidStatus">
             <property name="enabled">
              <bool>true</bool>
@@ -244,7 +226,7 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
+          <item row="2" column="4">
            <widget class="QPushButton" name="btnCreateRfidClear">
             <property name="text">
              <string/>
@@ -254,6 +236,67 @@ QPushButton:focus {
               <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="lblCreateRfid">
+            <property name="text">
+             <string>Badge RFID : </string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="lblCreateAllocatedTime">
+            <property name="text">
+             <string>Temps alloué : </string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QComboBox" name="comboCreateDuration">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>0h10</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>0h20</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="comboCreateTeamName">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>NomDeVille1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>NomDeVille2</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="6">
+           <spacer name="horizontalSpacer_20">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -469,27 +512,57 @@ QPushButton:focus {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="2" column="1">
-           <widget class="QRadioButton" name="radioButton">
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblCreateRfid_3">
             <property name="text">
-             <string>aujourd'hui</string>
+             <string>Badge RFID : </string>
             </property>
-            <property name="checked">
-             <bool>true</bool>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <spacer name="horizontalSpacer_15">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboCreateTeamName_3">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblCreateTeamName_3">
+            <property name="text">
+             <string>Nom de l'équipe : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QRadioButton" name="radioButton_4">
+            <property name="text">
+             <string>sans date</string>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
            <widget class="QRadioButton" name="radioButton_2">
             <property name="text">
-             <string>cette semaine</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QRadioButton" name="radioButton_3">
-            <property name="text">
-             <string>sans date</string>
+             <string>aujourd'hui</string>
             </property>
            </widget>
           </item>
@@ -500,6 +573,16 @@ QPushButton:focus {
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="radioButton">
+            <property name="text">
+             <string>en cours de jeu</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -529,45 +612,12 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="comboCreateTeamName_3">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="lblCreateRfid_3">
+          <item row="2" column="3">
+           <widget class="QRadioButton" name="radioButton_3">
             <property name="text">
-             <string>Badge RFID : </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <string>cette semaine</string>
             </property>
            </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lblCreateTeamName_3">
-            <property name="text">
-             <string>Nom de l'équipe : </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <spacer name="horizontalSpacer_15">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -767,7 +817,7 @@ QPushButton:focus {
            <widget class="QListWidget" name="listFinishedMatchingTeams">
             <property name="minimumSize">
              <size>
-              <width>400</width>
+              <width>600</width>
               <height>0</height>
              </size>
             </property>
@@ -809,7 +859,7 @@ QPushButton:focus {
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Ajouter un trophée</string>
+             <string>Ajouter un trophée pour cette équipe : </string>
             </property>
            </widget>
           </item>
@@ -836,6 +886,13 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="btnManageAddTrophy_2">
+            <property name="text">
+             <string>Supprimer le trophée sélectrionné</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -854,6 +911,11 @@ QPushButton:focus {
           <column>
            <property name="text">
             <string>Trophée</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Image</string>
            </property>
           </column>
           <column>
@@ -1001,57 +1063,144 @@ QPushButton:focus {
          </spacer>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_17">
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>0</height>
-             </size>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QTableWidget" name="tableAdminNodesStatusLeft">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="text">
-             <string>TextLabel</string>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="rowCount">
+             <number>15</number>
+            </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <row>
+             <property name="text">
+              <string>CubeFrontdesk</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>CubeMaster</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>CubeBox1</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>CubeBox2</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>CubeBox3</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>CubeBox4</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>New Row</string>
+             </property>
+            </row>
+            <row/>
+            <column>
+             <property name="text">
+              <string>Heartbeat</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>IP</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Statut</string>
+             </property>
+            </column>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_18">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="text">
-             <string>PushButton</string>
-            </property>
-           </widget>
-          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="1">
            <widget class="QPushButton" name="pushButton">
             <property name="text">
-             <string>Tester connexion CubeMaster et CubeBoxes</string>
+             <string>Mise à jour infos serveurs</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>TextLabel</string>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_21">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="text">
-             <string>Afficher CubeBoxes en jeu</string>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-           </widget>
+           </spacer>
           </item>
-          <item row="1" column="0">
-           <spacer name="horizontalSpacer_16">
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_22">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>

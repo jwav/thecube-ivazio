@@ -22,7 +22,7 @@ class CubeGuiForm(QMainWindow):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
-        self.log = cube_logger.cube_logger.CubeLogger(name="CubeGui", log_filename=cube_logger.CUBEGUI_LOG_FILENAME)
+        self.log = cube_logger.CubeLogger(name="CubeGui", log_filename=cube_logger.CUBEGUI_LOG_FILENAME)
 
         if self.initial_setup():
             self.log.info("Initial setup done.")

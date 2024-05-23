@@ -18,7 +18,7 @@ from thecubeivazio.cube_common_defines import *
 class CubeServerMaster:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NAME,
+        self.log = cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NAME,
                                            log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NAME,
@@ -97,7 +97,11 @@ class CubeServerMaster:
         """Register a team to a cubebox. This means updating the team's current cubebox id
         and the cubebox's current team name and starting timestamp"""
 
-        # check if the team is already playing a cubebox. If not, just go ahead and register them to this cubebox
+        # check if the team is already registered as playing a cubebox.
+        # If yes, it means that they resigned their previous cubebox and have moved onto another one.
+        # We need to do 2 things :
+        # 1. update self.cubebox to record the fact that they've resigned their previous cubebox,
+        #    and signal this fact to the cubebox and the frontdesk
         current_cubebox = self.cubeboxes.find_cubebox_by_cube_id(team.current_cubebox_id)
         if current_cubebox:
             # Ok, so this team is currently registered to another cubebox.
@@ -108,7 +112,7 @@ class CubeServerMaster:
             # then this previous cubebox should be configured so as to have team2 as its playing team
             # so if we're here, it means that the previous cubebox is not being played by another team
             team.resign_current_cube()
-            current_cubebox.reset()
+            current_cubebox.set_state_waiting_for_reset()
             self.cubeboxes.update_cubebox(current_cubebox)
         # now, whatever the case, we just register this team to the cubebox they badged onto
         # update the local cubeboxes teams status lists
@@ -137,14 +141,14 @@ class CubeServerMaster:
         sending_cubebox_id = cubeid.node_name_to_cubebox_index(message.sender)
         if not sending_cubebox_id in cubeid.CUBEBOX_IDS:
             self.log.error(f"Invalid sender: {message.sender}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.INVALID)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
         # check if the rfid uid matches one of the registered teams
         team = self.teams.find_team_by_rfid_uid(rfid_msg.uid)
 
         if not team:
             self.log.error(f"RFID UID not matching any known team: {rfid_msg.uid}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.INVALID)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
 
         self.log.info(f"RFID UID found: {rfid_msg.uid} for team {team.name}")
@@ -152,11 +156,11 @@ class CubeServerMaster:
         # check if the team has already played this cubebox
         if team.has_played_cube(sending_cubebox_id):
             self.log.error(f"Team {team.name} has already played cubebox {sending_cubebox_id}. Denying.")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.DENIED)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.DENIED)
             return
 
         self.register_team_to_cubebox(team, sending_cubebox_id)
-        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OK)
+        self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
     def _handle_cubebox_button_press_message(self, message: cm.CubeMessage):
         self.log.info(f"Received button press message from {message.sender} : {message}")
@@ -166,25 +170,25 @@ class CubeServerMaster:
         if not cubebox:
             self.log.error(
                 f"WHAT?! Cubebox not found: {message.sender} (this should NOT happen. There's bad code somewhere)")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.ERROR)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
             return
         self.log.info(cubebox.to_string())
         self.log.info(self.teams.to_string())
         team = self.teams.find_team_by_current_cube_id(cubebox.cube_id)
         if not team:
             self.log.error(f"No team is playing that cubebox: {cubebox.cube_id}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.INVALID)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
         cbp_msg = cm.CubeMsgButtonPress(copy_msg=message)
         self.log.info(f"CubeMsgButtonPress : {cbp_msg.to_string()}")
         if not cbp_msg.has_valid_times():
             self.log.error(f"Invalid button press message: {cbp_msg}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.INVALID)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
         # ok, it's a valid button press, which means a team is playing this cubebox.
         # Let's record that win. But first, acknowledge the message to the cubebox
         self.log.info(f"Team {team.name} won cubebox {cubebox.cube_id} in {cbp_msg.press_timestamp - cbp_msg.start_timestamp} seconds. Acknowledging.")
-        self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OK)
+        self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
         # update the team's status
         team.set_completed_cube(cubebox.cube_id, cbp_msg.start_timestamp, cbp_msg.press_timestamp)
@@ -193,8 +197,8 @@ class CubeServerMaster:
 
         self.log.info(f"Teams after win update : {self.teams.to_string()}")
 
-        # reset this cubebox to mean: no team playing it now
-        cubebox.reset()
+        # indicate that the cubebox needs to be reset by a staff member
+        cubebox.set_state_waiting_for_reset()
         # and update the local cubeboxes teams status lists
         self.cubeboxes.update_cubebox(cubebox)
 
@@ -218,13 +222,13 @@ class CubeServerMaster:
         self.log.info(f"New team: {ntmsg.team.to_string()}")
         if self.teams.find_team_by_name(ntmsg.team.name):
             self.log.error(f"Team already exists: {ntmsg.team.name}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OCCUPIED)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.OCCUPIED)
         elif self.teams.add_team(ntmsg.team):
             self.log.info(f"Added new team: {ntmsg.team.name}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.OK)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
         else:
             self.log.error(f"Failed to add new team: {ntmsg.team.name}")
-            self.net.acknowledge_this_message(message, cm.CubeMsgReplies.ERROR)
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
@@ -251,9 +255,9 @@ class CubeServerMaster:
             pass
 
 
-class CubeMasterWithPrompt:
+class CubeServerMasterWithPrompt:
     def __init__(self):
-        self.cs = CubeServerMaster()
+        self.csm = CubeServerMaster()
 
     @staticmethod
     def print_help():
@@ -267,10 +271,10 @@ class CubeMasterWithPrompt:
         print("ogs: overall game status")
 
     def stop(self):
-        self.cs.stop()
+        self.csm.stop()
 
     def run(self):
-        self.cs.run()
+        self.csm.run()
         while True:
             cmd = input("CubeMaster Command > ")
             if not cmd:
@@ -283,14 +287,14 @@ class CubeMasterWithPrompt:
             elif cmd in ["g", "games"]:
                 print("Not implemented yet")
             elif cmd in ["t", "teams"]:
-                print(self.cs.teams.to_string())
+                print(self.csm.teams.to_string())
             elif cmd in ["cg", "cubegames"]:
-                print(self.cs.cubeboxes.to_string())
+                print(self.csm.cubeboxes.to_string())
             elif cmd in ["ni", "netinfo"]:
                 # display the nodes in the network and their info
-                print(self.cs.net.nodes_list.to_string())
+                print(self.csm.net.nodes_list.to_string())
             elif cmd in ["wi", "whois"]:
-                self.cs.net.send_msg_to_all(cm.CubeMsgWhoIs(self.cs.net.node_name, cubeid.EVERYONE_NAME))
+                self.csm.net.send_msg_to_all(cm.CubeMsgWhoIs(self.csm.net.node_name, cubeid.EVERYONE_NAME))
             else:
                 print("Unknown command")
 
@@ -298,11 +302,11 @@ class CubeMasterWithPrompt:
 if __name__ == "__main__":
     import atexit
 
-    cs = CubeMasterWithPrompt()
-    atexit.register(cs.stop)
+    master = CubeServerMasterWithPrompt()
+    atexit.register(master.stop)
     try:
-        cs.run()
+        master.run()
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
-        cs.stop()
+        master.stop()

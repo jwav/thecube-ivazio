@@ -25,7 +25,7 @@ class CubeButton:
     BUTTON_PIN = 18
 
     def __init__(self):
-        self.log = cube_logger.cube_logger.CubeLogger(name="Button")
+        self.log = cube_logger.CubeLogger(name="Button")
         self.log.setLevel(logging.INFO)
         # test if we're on a Raspberry Pi or not
         try:

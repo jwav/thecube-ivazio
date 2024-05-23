@@ -3,6 +3,7 @@ The CubeBox module handles everything in CubeBoxes, i.e. the raspberrypis embedd
 """
 import threading
 import time
+from typing import Optional
 
 import thecubeivazio.cube_logger as cube_logger
 import thecubeivazio.cube_rfid as cube_rfid
@@ -12,10 +13,8 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
 import thecubeivazio.cube_buzzer as cube_buzzer
+from thecubeivazio import cube_game
 from thecubeivazio.cube_common_defines import *
-
-print("cube logger contents:")
-print(dir(cube_logger))
 
 
 # TODO: what happens if a team badges in, and just gives up? The box will be locked forever.
@@ -23,7 +22,7 @@ print(dir(cube_logger))
 
 class CubeServerCubebox:
     def __init__(self, node_name: str):
-        self.log = cube_logger.cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
+        self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
@@ -32,7 +31,7 @@ class CubeServerCubebox:
         self.buzzer = cube_buzzer.CubeBuzzer()
 
         # the last valid RFID and acknowledged line read
-        self.last_rfid_line: cube_rfid.CubeRfidLine = None
+        self.status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)
 
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
@@ -44,27 +43,31 @@ class CubeServerCubebox:
         self._keep_running = False
 
     @property
-    def is_box_being_played(self):
-        return self.last_rfid_line is not None
+    def cubebox_index(self):
+        return cubeid.node_name_to_cubebox_index(self.net.node_name)
 
-    def set_as_not_playing(self):
-        self.last_rfid_line = None
+    def is_box_being_played(self):
+        return self.status.is_playing()
+
 
     def to_string(self):
         ret = f"CubeServerCubebox({self.net.node_name})\n"
-        ret += f"- last_rfid_line: {self.last_rfid_line}\n"
-        ret += f"- is_box_being_played: {self.is_box_being_played}\n"
-        ret += f"- play_start_timestamp: {self.play_start_timestamp}\n"
+        ret += f"- last_rfid_line: {self.status.last_valid_rfid_line}\n"
+        ret += f"- Status: {self.status}\n"
         return ret
 
-    @property
-    def play_start_timestamp(self):
-        if self.last_rfid_line is not None:
-            return self.last_rfid_line.timestamp
+    def __repr__(self):
+        return self.to_string()
 
-    def get_cubebox_index(self):
-        """Extract the cubebox index from the node name"""
-        return cubeid.node_name_to_cubebox_index(self.net.node_name)
+    def __str__(self):
+        return self.to_string()
+
+    @property
+    def play_start_timestamp(self) -> Optional[Seconds]:
+        if self.status.last_valid_rfid_line is not None:
+            return self.status.last_valid_rfid_line.timestamp
+        else:
+            return None
 
     def run(self):
         """Start the RFID, button, and networking threads"""
@@ -93,8 +96,11 @@ class CubeServerCubebox:
                 self.heartbeat_timer.reset()
 
             for message in self.net.get_incoming_msg_queue():
-                # TODO: does the cubebox need to handle any incoming messages?
-                pass
+                if message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET:
+                    self.log.info("Received order to wait for reset")
+                    self.badge_out_current_team()
+                    self.status.set_state_waiting_for_reset()
+                    self.net.send_msg_to_all(cm.CubeMsgCubeboxStatusReply(self.net.node_name, self.status))
         self.net.stop()
 
     def _rfid_loop(self):
@@ -108,8 +114,8 @@ class CubeServerCubebox:
                 if rfid_line.is_valid():
                     # if the box is already being played, check if the same team is trying to play it again.
                     # if so, ignore the read. If not, badge out the previous team and badge in the new team.
-                    if self.is_box_being_played:
-                        if rfid_line.uid == self.last_rfid_line.uid:
+                    if self.is_box_being_played():
+                        if rfid_line.uid == self.status.last_valid_rfid_line.uid:
                             self.log.info("This box is already being played by this team. Ignoring RFID read.")
                         else:
                             self.log.info(
@@ -121,35 +127,40 @@ class CubeServerCubebox:
                         self.badge_in_new_team(rfid_line)
                 self.rfid.remove_line(rfid_line)
 
-    def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine):
+    def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine) -> bool:
         self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
-        if self.last_rfid_line is not None:
+        if self.status.last_valid_rfid_line is not None:
             self.log.warning("Trying to badge in the same team that's already playing. Ignoring.")
-            return
+            return False
         report = self.net.send_msg_to_cubeserver(
             cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp), require_ack=True)
         if not report.success:
             self.log.error("Failed to send RFID read message to CubeMaster")
             self.buzzer.play_rfid_error_sound()
+            return False
         if not report.ack_msg:
             self.log.error("Sent RFID messages but the CubeMaster did not acknowledge it")
             self.buzzer.play_rfid_error_sound()
+            return False
         else:
             self.log.info("RFID read message sent to and okayed by the CubeMaster")
-            self.last_rfid_line = rfid_line
-            self.log.info(f"is_box_being_played={self.is_box_being_played}, last_rfid_line={self.last_rfid_line}")
+            self.status.last_valid_rfid_line = rfid_line
+            self.status.set_state_playing()
+            self.log.info(f"is_box_being_played()={self.is_box_being_played()}, last_rfid_line={self.status.last_valid_rfid_line}")
+            # self.log.critical(f"{self.status}")
             self.buzzer.play_rfid_ok_sound()
+            return True
 
     def badge_out_current_team(self, play_game_over_sound=False):
         # TODO: send a message to the CubeMaster to badge out the team?
         #  i dont think it's needed. The CubeMaster handles this on itw own.
-        if self.last_rfid_line is None:
+        if self.status.last_valid_rfid_line is None:
             self.log.warning("Trying to badge out a team but there is no team to badge out")
         else:
-            self.log.info(f"Badging out team with RFID {self.last_rfid_line.uid}")
+            self.log.info(f"Badging out team with RFID {self.status.last_valid_rfid_line.uid}")
             if play_game_over_sound:
                 self.buzzer.play_game_over_sound()
-        self.set_as_not_playing()
+        self.status.set_state_waiting_for_reset()
 
     def _button_loop(self):
         """check the button state and handle it"""
@@ -174,7 +185,7 @@ class CubeServerCubebox:
                 if self.net.send_msg_to_cubeserver(cbp_msg, require_ack=True):
                     self.log.info("Button press message sent to and acked by CubeMaster")
                     self.badge_out_current_team()
-                    self.set_as_not_playing()
+                    self.status.set_state_waiting_for_reset()
                     self.buzzer.play_victory_sound()
 
                 else:
@@ -187,10 +198,41 @@ class CubeServerCubebox:
         self.button.stop()
 
 
+class CubeServerCubeboxWithPrompt:
+    def __init__(self, node_name: str):
+        self.csc = CubeServerCubebox(node_name)
+
+    @staticmethod
+    def print_help():
+        print("Commands:")
+        print("  h: print this help")
+        print("  q: quit")
+        print("  s: print the status of the CubeBox")
+        print("  p: simulate a long press of the button")
+
+    def stop(self):
+        self.csc.stop()
+
+    def run(self):
+        self.csc.run()
+        while True:
+            cmd = input("Enter a command (h for help): ")
+            if cmd == "q":
+                print("Quitting...")
+                break
+            elif cmd == "h":
+                self.print_help()
+            elif cmd == "s":
+                print(self.csc.status)
+            elif cmd == "p":
+                self.csc.button.simulate_long_press()
+            else:
+                print("Unknown command. Try again.")
+
 if __name__ == "__main__":
     import atexit
 
-    box = CubeServerCubebox("CubeBox1")
+    box = CubeServerCubeboxWithPrompt("CubeBox1")
     atexit.register(box.stop)
     try:
         box.run()

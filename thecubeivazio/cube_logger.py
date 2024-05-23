@@ -11,12 +11,23 @@ CUBEBOX_LOG_FILENAME =  path.join(LOGS_DIR, "cubebox.log")
 CUBEFRONTDESK_LOG_FILENAME = path.join(LOGS_DIR, "cubefrontdesk.log")
 CUBEGUI_LOG_FILENAME = path.join(LOGS_DIR, "cubegui.log")
 
-SUCCESS_LEVEL = logging.INFO - 1
-SUCCESS_LEVEL_NAME = "SUCCESS"
+LEVEL_SUCCESS = logging.INFO - 1
+LEVELNAME_SUCCESS = "SUCCESS"
+LEVEL_INFOPLUS = logging.INFO + 1
+LEVELNAME_INFOPLUS = "INFOPLUS"
+LEVEL_DEBUGPLUS = logging.DEBUG + 1
+LEVELNAME_DEBUGPLUS = "DEBUGPLUS"
 
-logging.addLevelName(SUCCESS_LEVEL, SUCCESS_LEVEL_NAME)
+logging.addLevelName(LEVEL_SUCCESS, LEVELNAME_SUCCESS)
+logging.addLevelName(LEVEL_INFOPLUS, LEVELNAME_INFOPLUS)
+logging.addLevelName(LEVEL_DEBUGPLUS, LEVELNAME_DEBUGPLUS)
 
 class CubeLogger(logging.Logger):
+    # convenient aliases
+    LEVEL_SUCCESS = LEVEL_SUCCESS
+    LEVEL_INFOPLUS = LEVEL_INFOPLUS
+    LEVEL_DEBUGPLUS = LEVEL_DEBUGPLUS
+
     def __init__(self, name:str, log_filename:str=None):
         super().__init__(name)
         self.setLevel(logging.DEBUG)
@@ -43,7 +54,9 @@ class CubeLogger(logging.Logger):
                 'WARNING': 'purple',
                 'ERROR': 'red',
                 'CRITICAL': 'bold_yellow',
-                'SUCCESS': 'yellow'
+                LEVELNAME_SUCCESS: 'bold_cyan',
+                LEVELNAME_INFOPLUS: 'bold_blue',
+                LEVELNAME_DEBUGPLUS: 'green'
             },
             secondary_log_colors={},
             style='%'
@@ -64,10 +77,19 @@ class CubeLogger(logging.Logger):
             file_handler.setFormatter(formatter)
             self.addHandler(file_handler)
 
-
     def success(self, msg, *args, **kwargs):
-        if self.isEnabledFor(SUCCESS_LEVEL):
-            self._log(SUCCESS_LEVEL, msg, args, **kwargs)
+        if self.isEnabledFor(LEVEL_SUCCESS):
+            self._log(LEVEL_SUCCESS, msg, args, **kwargs)
+
+    def infoplus(self, msg, *args, **kwargs):
+        if self.isEnabledFor(LEVEL_INFOPLUS):
+            self._log(LEVEL_INFOPLUS, msg, args, **kwargs)
+
+    def debugplus(self, msg, *args, **kwargs):
+        if self.isEnabledFor(LEVEL_DEBUGPLUS):
+            self._log(LEVEL_DEBUGPLUS, msg, args, **kwargs)
+
+
 
 # obsolete
 # def make_logger(name:str, log_filename:str=None) -> logging.Logger:
@@ -127,7 +149,9 @@ if __name__ == "__main__":
     log = CubeLogger("test")
     log.debug("This is a debug message")
     log.info("This is an info message")
-    log.success("This is a success message")
     log.warning("This is a warning message")
     log.error("This is an error message")
     log.critical("This is a critical message")
+    log.success("This is a success message")
+    log.infoplus("This is an infoplus message")
+    log.debugplus("This is a debugplus message")

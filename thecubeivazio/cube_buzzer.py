@@ -21,7 +21,7 @@ except ModuleNotFoundError:
 class CubeBuzzer:
     BUZZER_PIN = 15
     def __init__(self):
-        self.log = cube_logger.cube_logger.CubeLogger"Buzzer")
+        self.log = cube_logger.CubeLogger("Buzzer")
         self.log.setLevel(logging.INFO)
         self._thread = None
         self._lock = threading.Lock()

@@ -9,6 +9,7 @@ import re
 import subprocess
 
 import thecubeivazio.cube_logger as cube_logger
+from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import XvfbManager
 
 import threading
@@ -25,21 +26,30 @@ from pynput import keyboard
 
 
 class CubeRfidLine:
-    UID_LENGTH = 10
-    """Represents a line of RFID data entered by the user with a timestamp"""
+    VALID_UID_LENGTH = 10
+    """Represents a line of RFID data entered by the user with a timestamp:
+    timestamp: float, the time the line was entered
+    uid: str, the RFID data entered by the user
+    """
 
-    def __init__(self, timestamp: float, uid: str):
+    def __init__(self, timestamp: Seconds=None, uid: str=None):
         self.timestamp = timestamp
         self.uid = uid
 
     def is_valid(self):
-        return len(self.uid) == self.UID_LENGTH and all([char.isdigit() for char in self.uid])
+        return len(self.uid) == self.VALID_UID_LENGTH and all([char.isdigit() for char in self.uid])
 
     def to_string(self):
         return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
 
     def __repr__(self):
         return self.to_string()
+
+    def copy(self):
+        return CubeRfidLine(self.timestamp, self.uid)
+
+    def __copy__(self):
+        return self.copy()
 
 
 class CubeRfidListenerBase:
@@ -97,7 +107,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.cube_logger.CubeLogger"RFID Event Listener")
+        self.log = cube_logger.CubeLogger("RFID Event Listener")
         self.log.setLevel(logging.INFO)
 
         self._thread = threading.Thread(target=self._event_read_loop)
@@ -212,7 +222,7 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.cube_logger.CubeLogger(name="RFID Keyboard Listener")
+        self.log = cube_logger.CubeLogger(name="RFID Keyboard Listener")
         self.current_chars_buffer = deque()  # Use deque for efficient pop/append operations
         self._completed_lines = deque()  # Store completed lines with their timestamps
         self._keyboard_listener = keyboard.Listener(on_press=self._on_press)
@@ -306,6 +316,7 @@ def test_rfid_read_simulation():
 
 
 if __name__ == "__main__":
+
     print("Testing RFID Line Simulation")
     test_rfid_read_simulation()
     exit(0)
