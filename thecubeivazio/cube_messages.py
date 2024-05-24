@@ -1,61 +1,58 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
-from typing import Optional
+import time
+from typing import Optional, Dict, Type
 
 import thecubeivazio.cube_game as cube_game
 import thecubeivazio.cube_rfid as cube_rfid
 
 import enum
 
+from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_logger import CubeLogger
+
 
 class CubeMsgTypes(enum.Enum):
     """Enumeration of the different types of messages that can be sent."""
-    TEST = 0
+    TEST = "TEST"
 
     # sent from a node to another node to acknowledge that the message has been received and handled.
     # can include an info, see the MsgAck class for standard values for `info`
-    HEARTBEAT = 10
-    ACK = 40
-    WHO_IS = 45
-    I_AM = 50
+    HEARTBEAT = "HEARTBEAT"
+    ACK = "ACK"
+    WHO_IS = "WHO_IS"
+    I_AM = "I_AM"
 
-    VERSION_REPLY = 100
-    VERSION_REQUEST = 110
-    REQUEST_CUBEBOX_STATUS = 210
-    REQUEST_ALL_CUBEBOXES_STATUS = 215
-    REQUEST_CUBEMASTER_STATUS = 220
-    # REQUEST_FRONTDESK_STATUS = 230
-    REQUEST_TEAM_STATUS = 240
-    REQUEST_ALL_TEAMS_STATUS = 250
-    REQUEST_CUBEMASTER_STATUS_HASH = 260
-    REQUEST_TEAMS_STATUS_HASHES = 270
-    REQUEST_CUBEBOXES_STATUS_HASHES = 280
+    REQUEST_VISION = "REQUEST_VISION"
+    REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
+    REQUEST_CUBEMASTER_STATUS_HASH = "REQUEST_CUBEMASTER_STATUS_HASH"
+    REQUEST_CUBEMASTER_CUBEBOX_STATUS = "REQUEST_CUBEMASTER_CUBEBOX_STATUS"
+    REQUEST_ALL_CUBEBOXES_STATUSES = "REQUEST_ALL_CUBEBOXES_STATUS"
+    REQUEST_TEAM_STATUS = "REQUEST_TEAM_STATUS"
+    REQUEST_ALL_TEAMS_STATUSES = "REQUEST_ALL_TEAMS_STATUS"
+    REQUEST_ALL_TEAMS_STATUS_HASHES = "REQUEST_ALL_TEAMS_STATUS_HASHES"
+    REQUEST_ALL_CUBEBOXES_STATUS_HASHES = "REQUEST_ALL_CUBEBOXES_STATUS_HASHES"
 
-    ORDER_CUBEBOX_TO_WAIT_FOR_RESET = 500
+    REPLY_VERSION = "REPLY_VERSION"
+    REPLY_CUBEMASTER_STATUS = "REPLY_CUBEMASTER_STATUS"
+    REPLY_CUBEMASTER_STATUS_HASH = "REPLY_CUBEMASTER_STATUS_HASH"
+    REPLY_CUBEMASTER_CUBEBOX_STATUS = "REPLY_CUBEMASTER_CUBEBOX_STATUS"
+    REPLY_ALL_CUBEBOXES_STATUSES = "REPLY_ALL_CUBEBOXES_STATUSES"
+    REPLY_TEAM_STATUS = "REPLY_TEAM_STATUS"
+    REPLY_ALL_TEAMS_STATUSES = "REPLY_ALL_TEAMS_STATUSES"
+    REPLY_ALL_TEAMS_STATUS_HASHES = "REPLY_ALL_TEAMS_STATUS_HASHES"
+    REPLY_ALL_CUBEBOXES_STATUS_HASHES = "CUBEMASTER_ALL_CUBEBOXES_STATUS_HASHES_REPLY"
 
-    # Messages sent by the CubeBox
-    CUBEBOX_RFID_READ = 1000
-    CUBEBOX_BUTTON_PRESS = 1100
-    # TODO
-    CUBEBOX_STATUS_REPLY = 1200
-    # TODO
-    CUBEBOX_NOTIFY_RESIGNATION = 1300
+    ORDER_CUBEBOX_TO_WAIT_FOR_RESET = "ORDER_CUBEBOX_TO_WAIT_FOR_RESET"
 
-    # Messages sent by the CubeMaster
+    # Messages sent by the CubeBox besides status messages
+    CUBEBOX_RFID_READ = "CUBEBOX_RFID_READ"
+    CUBEBOX_BUTTON_PRESS = "CUBEBOX_BUTTON_PRESS"
 
-    CUBEMASTER_TIME_IS_UP = 2100
-    CUBEMASTER_PLAYING_TEAMS = 2200
-    CUBEMASTER_TEAM_WIN = 2300
-    CUBEMASTER_TEAM_STATUS_REPLY = 2400
-    CUBEMASTER_ALL_TEAMS_STATUS_REPLY = 2450
-    # TODO: needed?
-    CUBEMASTER_CUBEBOX_STATUS = 2500
-    CUBEMASTER_ALL_CUBEBOXES_STATUS = 2505
-    CUBEMASTER_STATUS_REPLY = 2600
+    # Messages sent by the CubeMaster besides status messages
 
     # Messages sent by the Frontdesk
-    FRONTDESK_NEW_TEAM = 3000
-
-    # FRONTDESK_STATUS_REPLY = 3300
+    FRONTDESK_NEW_TEAM = "FRONTDESK_NEW_TEAM"
+    FRONTDESK_REMOVE_TEAM = "FRONTDESK_REMOVE_TEAM"
 
     # unneeded by way of empirical evidence, but hey, i needed to do it for CubeMsgReplies and I guess i can't hurt
     def __eq__(self, other):
@@ -97,6 +94,9 @@ class CubeMessage:
         # must be manually set to False if no acknowledgement is required
         self.require_ack = True
 
+    def __eq__(self, other):
+        return self.to_string() == other.to_string()
+
     @property
     def hash(self):
         """Returns an alphanumeric hash of the message, using SHA256"""
@@ -137,6 +137,12 @@ class CubeMessage:
     def build_from_bytes(self, msg_bytes: bytes):
         self.build_from_string(msg_bytes.decode())
 
+    @classmethod
+    def make_from_string(cls, msg_str: str):
+        ret = cls()
+        ret.build_from_string(msg_str)
+        return ret
+
     def build_from_string(self, msg_str: str):
         sep = CubeMessage.SEPARATOR
         if not msg_str.startswith(CubeMessage.PREFIX):
@@ -175,25 +181,9 @@ class CubeMessage:
         return self.to_string()
 
 
-class CubeMsgAck(CubeMessage):
-    """Sent from a node to another node to acknowledge a message.
-    The `info` parameter can be used to give more information about the acknowledgement.
-    See the CubeMsgReplies enumeration for the standard values."""
+# messages sent by the Frontdesk besides status messages
 
-    def __init__(self, sender: str = None, acked_msg: CubeMessage = None, info: CubeAckInfos = None,
-                 copy_msg: CubeMessage = None):
-        if copy_msg is not None:
-            super().__init__(copy_msg=copy_msg)
-        else:
-            super().__init__(msgtype=CubeMsgTypes.ACK, sender=sender, acked_hash=acked_msg.hash, info=info)
-        self.require_ack = False
-
-    @property
-    def info(self) -> CubeAckInfos:
-        return self.kwargs.get("info", CubeAckInfos.NONE)
-
-
-class CubeMsgNewTeam(CubeMessage):
+class CubeMsgFrontdeskNewTeam(CubeMessage):
     """Sent from the Frontdesk to the CubeMaster when a new team is registered."""
 
     def __init__(self, sender=None, team: cube_game.CubeTeamStatus = None, copy_msg: CubeMessage = None):
@@ -209,6 +199,24 @@ class CubeMsgNewTeam(CubeMessage):
         return cube_game.CubeTeamStatus(name=self.kwargs.get("name"), rfid_uid=self.kwargs.get("rfid_uid"),
                                         max_time_sec=self.kwargs.get("max_time_sec"))
 
+
+# TODO: handle in cubemaster
+class CubeMsgFrontdeskRemoveTeam(CubeMessage):
+    """Sent from the Frontdesk to the CubeMaster when a team is removed."""
+
+    def __init__(self, sender=None, team_name=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.FRONTDESK_REMOVE_TEAM, sender, team_name=team_name)
+        self.require_ack = True
+
+    @property
+    def team_name(self) -> str:
+        return str(self.kwargs.get("team_name"))
+
+
+# messages sent by the CubeBox besides status messages
 
 class CubeMsgButtonPress(CubeMessage):
     """Sent from the CubeBox to the CubeMaster when the button is pressed.
@@ -251,43 +259,10 @@ class CubeMsgButtonPress(CubeMessage):
             return False
 
 
-class CubeMsgCubeboxWin(CubeMessage):
-    """Sent from the CubeMaster to the Frontdesk when a cubebox is won."""
-
-    def __init__(self, sender=None, team_name=None, cube_id=None, start_timestamp=None, win_timestamp=None,
-                 copy_msg=None):
-        if copy_msg is not None:
-            super().__init__(copy_msg=copy_msg)
-        else:
-            super().__init__(CubeMsgTypes.CUBEMASTER_TEAM_WIN, sender, team_name=team_name, cube_id=cube_id,
-                             start_timestamp=start_timestamp, win_timestamp=win_timestamp)
-        self.require_ack = True
-
-    @property
-    def team_name(self) -> str:
-        return str(self.kwargs.get("team_name"))
-
-    @property
-    def cube_id(self) -> int:
-        return int(self.kwargs.get("cube_id"))
-
-    @property
-    def start_timestamp(self) -> float:
-        return float(self.kwargs.get("start_timestamp"))
-
-    @property
-    def win_timestamp(self) -> float:
-        return float(self.kwargs.get("win_timestamp"))
-
-    @property
-    def elapsed_time(self) -> float:
-        return self.win_timestamp - self.start_timestamp
-
-
 class CubeMsgRfidRead(CubeMessage):
     """Sent from the CubeBox to the CubeMaster when an RFID tag is read."""
 
-    def __init__(self, sender=None, uid=None, timestamp=None, copy_msg=None):
+    def __init__(self, sender=None, uid=None, timestamp=None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
@@ -303,15 +278,101 @@ class CubeMsgRfidRead(CubeMessage):
         return float(self.kwargs.get("timestamp"))
 
 
-class CubeMsgCubeboxStatusReply(CubeMessage):
-    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_CUBEBOX_STATUS message."""
+# status requests and replies
 
-    def __init__(self, sender=None, status: cube_game.CubeboxStatus = None, copy_msg=None):
+REQUEST_VISION = "REQUEST_VISION"
+REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
+REQUEST_CUBEMASTER_STATUS_HASH = "REQUEST_CUBEMASTER_STATUS_HASH"
+REQUEST_CUBEMASTER_CUBEBOX_STATUS = "REQUEST_CUBEMASTER_CUBEBOX_STATUS"
+REQUEST_ALL_CUBEBOXES_STATUSES = "REQUEST_ALL_CUBEBOXES_STATUS"
+REQUEST_TEAM_STATUS = "REQUEST_TEAM_STATUS"
+REQUEST_ALL_TEAMS_STATUSES = "REQUEST_ALL_TEAMS_STATUS"
+REQUEST_ALL_TEAMS_STATUS_HASHES = "REQUEST_ALL_TEAMS_STATUS_HASHES"
+REQUEST_ALL_CUBEBOXES_STATUS_HASHES = "REQUEST_ALL_CUBEBOXES_STATUS_HASHES"
+
+
+# version request & reply
+
+class CubeMsgRequestVersion(CubeMessage):
+    """Sent from a node to another node to ask for its version."""
+
+    def __init__(self, sender):
+        super().__init__(CubeMsgTypes.REQUEST_VISION, sender)
+        self.require_ack = False
+
+
+class CubeMsgReplyVersion(CubeMessage):
+    """Sent from a node to another node in response to a VERSION_REQUEST message."""
+
+    def __init__(self, sender):
+        from cube_utils import get_git_branch_date
+        super().__init__(CubeMsgTypes.REPLY_VERSION, sender, version=get_git_branch_date())
+
+
+# cubemaster status request & reply
+
+class CubeMsgRequestCubemasterStatus(CubeMessage):
+    """Sent from a node to the CubeMaster to ask for its status."""
+
+    def __init__(self, sender):
+        super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_STATUS, sender)
+        self.require_ack = False
+
+
+class CubeMsgReplyCubemasterStatus(CubeMessage):
+    pass
+
+
+class CubeMsgRequestCubeMasterStatusHash(CubeMessage):
+    """Sent from a node to the CubeMaster to ask for its status hash."""
+
+    def __init__(self, sender):
+        super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_STATUS_HASH, sender)
+        self.require_ack = False
+
+
+# noinspection PyShadowingBuiltins
+class CubeMsgReplyCubeMasterStatusHash(CubeMessage):
+    """Sent from the CubeMaster to a node in response to a REQUEST_CUBEMASTER_STATUS_HASH message."""
+
+    def __init__(self, sender=None, hash: Hash = None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            kwargs = status.to_kwargs()
-            super().__init__(CubeMsgTypes.CUBEBOX_STATUS_REPLY, sender, **kwargs)
+            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_STATUS_HASH, sender, hash=hash)
+        self.require_ack = False
+
+    @property
+    def hash(self) -> str:
+        return str(self.kwargs.get("hash"))
+
+
+# cubebox status request & reply
+
+class CubeMsgRequestCubeboxStatus(CubeMessage):
+    """Sent from the Frontdesk to the CubeMaster to ask for the status of a cubebox."""
+
+    def __init__(self, sender=None, cube_id=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_CUBEBOX_STATUS, sender, cube_id=cube_id)
+        self.require_ack = True
+
+    @property
+    def cube_id(self) -> int:
+        return int(self.kwargs.get("cube_id"))
+
+
+class CubeMsgReplyCubeboxStatus(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_CUBEBOX_STATUS message."""
+
+    def __init__(self, sender=None, status: cube_game.CubeboxStatus = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            kwargs = status.to_dict()
+            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS, sender, **kwargs)
         self.require_ack = False
 
     @property
@@ -319,58 +380,65 @@ class CubeMsgCubeboxStatusReply(CubeMessage):
         return cube_game.CubeboxStatus.make_from_kwargs(**self.kwargs)
 
 
-class CubeMsgRequestAllCubeboxesStatus(CubeMessage):
+class CubeMsgRequestAllCubeboxesStatuses(CubeMessage):
     """Sent from the Frontdesk to the CubeMaster to ask for the status of all cubeboxes."""
 
     def __init__(self, sender):
-        super().__init__(CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUS, sender)
+        super().__init__(CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUSES, sender)
         self.require_ack = False
 
 
-class CubeMsgRequestAllTeamsStatus(CubeMessage):
-    """Sent from the Frontdesk to the CubeMaster to ask for the status of all teams."""
+class CubeMsgReplyAllCubeboxesStatuses(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_ALL_CUBEBOXES_STATUSES message."""
+
+    def __init__(self, sender=None, statuses: cube_game.CubeboxesStatusList = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES, sender, statuses=statuses)
+        self.require_ack = False
+
+    @property
+    def statuses(self) -> Optional[cube_game.CubeboxesStatusList]:
+        # parse self.kwargs.get("statuses") to a dict
+        try:
+            return cube_game.CubeboxesStatusList.make_from_string(self.kwargs.get("statuses"))
+        except Exception as e:
+            CubeLogger.static_error(f"Error parsing CubeboxesStatusList from CubeMsgReplyAllCubeboxesStatuses: {e}")
+            return None
+
+
+
+class CubeMsgRequestAllCubeboxesStatusHashes(CubeMessage):
+    """Sent from a node to the CubeMaster to ask for the hashes of the status of all cubeboxes."""
 
     def __init__(self, sender):
-        super().__init__(CubeMsgTypes.REQUEST_ALL_TEAMS_STATUS, sender)
+        super().__init__(CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUS_HASHES, sender)
         self.require_ack = False
 
 
-# TODO: implement
-class CubeMsgReplyAllTeamsStatus(CubeMessage):
-    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_ALL_TEAMS_STATUS message."""
+class CubeMsgReplyAllCubeboxesStatusHashes(CubeMessage):
+    """Sent from the CubeMaster to a node in response to a REQUEST_ALL_CUBEBOXES_STATUS_HASHES message."""
 
-    def __init__(self, sender=None, teams: cube_game.CubeTeamsStatusList = None, copy_msg=None):
+    def __init__(self, sender=None, hashes: Dict[CubeId, Hash] = None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.CUBEMASTER_ALL_TEAMS_STATUS_REPLY, sender, teams=teams)
+            super().__init__(CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES, sender, hashes=hashes)
         self.require_ack = False
 
     @property
-    def teams(self) -> cube_game.CubeTeamsStatusList:
-        return cube_game.CubeTeamsStatusList.make_from_kwargs(self.kwargs)
+    def hashes(self) -> dict:
+        # parse self.kwargs.get("hashes") to a dict
+        return self.kwargs.get("hashes")
 
 
-# TODO:implement
-class CubeMsgReplyAllCubeboxesStatus(CubeMessage):
-    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_ALL_CUBEBOXES_STATUS message."""
-
-    def __init__(self, sender=None, cubeboxes: cube_game.CubeboxStatusList = None, copy_msg=None):
-        if copy_msg is not None:
-            super().__init__(copy_msg=copy_msg)
-        else:
-            super().__init__(CubeMsgTypes.CUBEMASTER_ALL_CUBEBOXES_STATUS, sender, cubeboxes=cubeboxes)
-        self.require_ack = False
-
-    @property
-    def cubeboxes(self) -> cube_game.CubeboxStatusList:
-        return cube_game.CubeboxStatusList.make_from_kwargs(self.kwargs)
-
+# team status request & reply
 
 class CubeMsgRequestTeamStatus(CubeMessage):
     """Sent from the Frontdesk to the CubeMaster to ask for the status of a team."""
 
-    def __init__(self, sender=None, team_name=None, copy_msg=None):
+    def __init__(self, sender=None, team_name=None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
@@ -382,27 +450,72 @@ class CubeMsgRequestTeamStatus(CubeMessage):
         return str(self.kwargs.get("team_name"))
 
 
-class CubeMsgRequestCubemasterStatus(CubeMessage):
-    """Sent from a node to the CubeMaster to ask for its status."""
+class CubeMsgReplyTeamStatus(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_TEAM_STATUS message."""
 
-    def __init__(self, sender):
-        super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_STATUS, sender)
-        self.require_ack = False
-
-
-class CubeMsgRequestCubeboxStatus(CubeMessage):
-    """Sent from the Frontdesk to the CubeMaster to ask for the status of a cubebox."""
-
-    def __init__(self, sender=None, cube_id=None, copy_msg=None):
+    def __init__(self, sender=None, status: cube_game.CubeTeamStatus = None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REQUEST_CUBEBOX_STATUS, sender, cube_id=cube_id)
-        self.require_ack = True
+            kwargs = status.to_dict()
+            super().__init__(CubeMsgTypes.REPLY_TEAM_STATUS, sender, **kwargs)
+        self.require_ack = False
 
     @property
-    def cube_id(self) -> int:
-        return int(self.kwargs.get("cube_id"))
+    def status(self) -> cube_game.CubeTeamStatus:
+        return cube_game.CubeTeamStatus.make_from_kwargs(**self.kwargs)
+
+
+class CubeMsgRequestAllTeamsStatusHashes(CubeMessage):
+    """Sent from a node to the CubeMaster to ask for the hashes of the status of all teams."""
+
+    def __init__(self, sender):
+        super().__init__(CubeMsgTypes.REQUEST_ALL_TEAMS_STATUS_HASHES, sender)
+        self.require_ack = False
+
+
+class CubeMsgReplyAllTeamsStatusHashes(CubeMessage):
+    """Sent from the CubeMaster to a node in response to a REQUEST_ALL_TEAMS_STATUS_HASHES message."""
+
+    def __init__(self, sender=None, hashes: Dict[TeamName, Hash] = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES, sender, hashes=hashes)
+        self.require_ack = False
+
+    @property
+    def hashes(self) -> dict:
+        # parse self.kwargs.get("hashes") to a dict
+        return self.kwargs.get("hashes")
+
+
+class CubeMsgRequestAllTeamsStatuses(CubeMessage):
+    """Sent from the Frontdesk to the CubeMaster to ask for the status of all teams."""
+
+    def __init__(self, sender):
+        super().__init__(CubeMsgTypes.REQUEST_ALL_TEAMS_STATUSES, sender)
+        self.require_ack = False
+
+
+# common messages
+
+class CubeMsgAck(CubeMessage):
+    """Sent from a node to another node to acknowledge a message.
+    The `info` parameter can be used to give more information about the acknowledgement.
+    See the CubeMsgReplies enumeration for the standard values."""
+
+    def __init__(self, sender: str = None, acked_msg: CubeMessage = None, info: CubeAckInfos = None,
+                 copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(msgtype=CubeMsgTypes.ACK, sender=sender, acked_hash=acked_msg.hash, info=info)
+        self.require_ack = False
+
+    @property
+    def info(self) -> CubeAckInfos:
+        return self.kwargs.get("info", CubeAckInfos.NONE)
 
 
 class CubeMsgHeartbeat(CubeMessage):
@@ -413,22 +526,6 @@ class CubeMsgHeartbeat(CubeMessage):
         self.require_ack = False
 
 
-class CubeMsgVersionRequest(CubeMessage):
-    """Sent from a node to another node to ask for its version."""
-
-    def __init__(self, sender):
-        super().__init__(CubeMsgTypes.VERSION_REQUEST, sender)
-        self.require_ack = False
-
-
-class CubeMsgVersionReply(CubeMessage):
-    """Sent from a node to another node in response to a VERSION_REQUEST message."""
-
-    def __init__(self, sender):
-        from cube_utils import get_git_branch_date
-        super().__init__(CubeMsgTypes.VERSION_REPLY, sender, version=get_git_branch_date())
-
-
 class CubeMsgWhoIs(CubeMessage):
     """Sent from whatever node to everyone to ask who is a specific node (asking for IP)."""
 
@@ -437,20 +534,17 @@ class CubeMsgWhoIs(CubeMessage):
         self.require_ack = False
 
 
-# TODO: implement in CubeServerMaster
-class CubeMsgTimeIsUp(CubeMessage):
-    def __init__(self, sender, team):
-        super().__init__(CubeMsgTypes.CUBEMASTER_TIME_IS_UP, sender, team=team)
-
+# test functions
 
 def test_make_from_message():
-    add_team_msg_1 = CubeMsgNewTeam("CubeFrontDesk",
-                                    cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
+    add_team_msg_1 = CubeMsgFrontdeskNewTeam("CubeFrontDesk",
+                                             cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890",
+                                                                      max_time_sec=1200))
     ack_msg_1 = CubeMsgAck("CubeMaster", add_team_msg_1, info=CubeAckInfos.OK)
     msg_from_ack = CubeMessage(copy_msg=ack_msg_1)
     msg_from_team = CubeMessage(copy_msg=add_team_msg_1)
     ack_msg_2 = CubeMsgAck(copy_msg=msg_from_ack)
-    add_team_msg_2 = CubeMsgNewTeam(copy_msg=msg_from_team)
+    add_team_msg_2 = CubeMsgFrontdeskNewTeam(copy_msg=msg_from_team)
 
     print(f"add_team_msg_1 ({add_team_msg_1.hash}) :", add_team_msg_1)
     print(f"ack_msg_1 ({ack_msg_1.hash}) :", ack_msg_1)
@@ -488,11 +582,11 @@ def test_make_from_message():
                                      last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10),
                                      state=cube_game.CubeboxState.STATE_READY_TO_PLAY)
 
-    cmcsr = CubeMsgCubeboxStatusReply(sender="CubeMaster", status=status)
+    cmcsr = CubeMsgReplyCubeboxStatus(sender="CubeMaster", status=status)
     print(f"cmcsr={cmcsr}")
     print(f"cmcsr.status={cmcsr.status}")
     msg = CubeMessage(copy_msg=cmcsr)
-    cmcsr_2 = CubeMsgCubeboxStatusReply(copy_msg=msg)
+    cmcsr_2 = CubeMsgReplyCubeboxStatus(copy_msg=msg)
     print(f"cmcsr_2={cmcsr_2}")
     print(f"cmcsr_2.status={cmcsr_2.status}")
 
@@ -504,8 +598,138 @@ def test_make_from_message():
     print("test_make_from_message PASSED")
 
 
+def test_message_to_and_from_string(msg_class: Type[CubeMessage], sender: str, **kwargs):
+    """test that the message can be converted to a string and back"""
+    log = CubeLogger("test_message_to_and_from_string")
+    log.setLevel(log.LEVEL_DEBUG +1)
+    # noinspection PyBroadException
+    try:
+        # assert kwargs is not None
+        for k in kwargs:
+            value_str = str(kwargs[k])
+            if kwargs[k] is None:
+                continue
+            log.debug(f"- kwargs[{k}] : {type(kwargs[k]).__name__} = '{value_str}'")
+        kwargs_str = f", ".join([f"{k}={v}" for k, v in kwargs.items()])
+    except Exception as e:
+        # log.warning(f"Error parsing kwargs: {e}", exc_info=True)
+        log.warning(f"Error parsing kwargs (this might be expected): {e}")
+        kwargs = {}
+        kwargs_str = ""
+
+    classname = msg_class.__name__
+    log.debug(f"constructing {classname}(sender={sender}, {kwargs_str})")
+    # noinspection PyTypeChecker
+    msg = msg_class(sender, **kwargs)
+    msg_str = msg.to_string()
+    log.debug(f"msg={msg}")
+
+    try:
+        msg2 = CubeMessage.make_from_string(msg_str)
+        assert msg2 == msg
+        log.success(f"Passed test_to_and_from_string: {classname}(sender={sender}, {kwargs_str}")
+    except Exception as e:
+        log.error(f"Failed test_to_and_from_string: {classname}(sender={sender}, {kwargs_str}")
+        log.debug(f"msg={msg}")
+        log.debug(f"msg.to_string()={msg.to_string()}")
+        log.debug(f"msg.make_from_string(msg.to_string())={msg.make_from_string(msg.to_string())}")
+        log.debug(f"{e}")
+
+
+# @formatter:off
+def test_all_message_classes_to_and_from_string():
+    """for each subclass of CubeMessage, test that the message can be converted to a string and back"""
+    test_message_to_and_from_string(CubeMsgFrontdeskNewTeam, "CubeFrontDesk", team=cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
+    test_message_to_and_from_string(CubeMsgFrontdeskRemoveTeam, "CubeFrontDesk", team_name="Team1")
+    test_message_to_and_from_string(CubeMsgButtonPress, "CubeBox1", start_timestamp=10, press_timestamp=20)
+    test_message_to_and_from_string(CubeMsgRfidRead, "CubeBox1", uid="1234567890", timestamp=10)
+    test_message_to_and_from_string(CubeMsgRequestAllCubeboxesStatuses, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgRequestAllTeamsStatuses, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgRequestCubeMasterStatusHash, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgRequestAllTeamsStatusHashes, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgRequestAllCubeboxesStatusHashes, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgReplyAllCubeboxesStatusHashes, "CubeMaster", hashes={"CubeBox1": "hash1", "CubeBox2": "hash2"})
+    test_message_to_and_from_string(CubeMsgReplyAllTeamsStatusHashes, "CubeMaster", hashes={"Team1": "hash1", "Team2": "hash2"})
+    test_message_to_and_from_string(CubeMsgRequestTeamStatus, "CubeFrontDesk", team_name="Team1")
+    test_message_to_and_from_string(CubeMsgRequestCubemasterStatus, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgRequestCubeboxStatus, "CubeFrontDesk", cube_id=1)
+    test_message_to_and_from_string(CubeMsgAck, "CubeMaster", acked_msg=CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeAckInfos.OK)
+    test_message_to_and_from_string(CubeMsgHeartbeat, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgRequestVersion, "CubeFrontDesk")
+    test_message_to_and_from_string(CubeMsgReplyVersion, "CubeMaster")
+    test_message_to_and_from_string(CubeMsgWhoIs, "CubeFrontDesk", node_name_to_find="CubeMaster")
+    test_message_to_and_from_string(CubeMsgReplyCubeboxStatus, "CubeMaster", status=cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", starting_timestamp=11, win_timestamp=20, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10), state=cube_game.CubeboxState.STATE_READY_TO_PLAY))
+    test_message_to_and_from_string(CubeMsgReplyTeamStatus, "CubeMaster", status=cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
+    test_message_to_and_from_string(CubeMsgReplyAllCubeboxesStatuses, "CubeMaster", statuses={"CubeBox1": cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", starting_timestamp=11, win_timestamp=20, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10), state=cube_game.CubeboxState.STATE_READY_TO_PLAY)})
+    test_message_to_and_from_string(CubeMsgReplyCubeMasterStatusHash, "CubeMaster", hash="hash1")
+
+
+
+# @formatter:on
+def test_all_request_and_reply_messages():
+    """test that all request and reply messages match the objects they are supposed to represent"""
+    defined_cubeboxes = [
+        cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", starting_timestamp=11, win_timestamp=20,
+                                last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10),
+                                state=cube_game.CubeboxState.STATE_READY_TO_PLAY),
+        cube_game.CubeboxStatus(cube_id=2, current_team_name="Team2", starting_timestamp=12, win_timestamp=21,
+                                last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="2345678901", timestamp=11),
+                                state=cube_game.CubeboxState.STATE_READY_TO_PLAY),
+        cube_game.CubeboxStatus(cube_id=3, current_team_name=None, starting_timestamp=None, win_timestamp=None
+                                , last_valid_rfid_line=None, state=cube_game.CubeboxState.STATE_READY_TO_PLAY),
+    ]
+    defined_teams = [
+        cube_game.CubeTeamStatus(
+            name="Team1", custom_name="CustomTeam1", rfid_uid="1234567890", max_time_sec=1100,
+            starting_timestamp=0,
+            completed_cubeboxes=[
+                cube_game.CompletedCubeboxStatus(cube_id=1, starting_timestamp=10, win_timestamp=20),
+                cube_game.CompletedCubeboxStatus(cube_id=2, starting_timestamp=11, win_timestamp=21)
+            ],
+            current_cubebox_id=3,
+            trophies=[cube_game.CubeTeamTrophy(name="Trophy1", description="Description1", points=100),
+                      cube_game.CubeTeamTrophy(name="Trophy2", description="Description2", points=200),
+                      ]
+        ),
+        cube_game.CubeTeamStatus(
+            name="Team2", custom_name="CustomTeam2", rfid_uid="2345678901", max_time_sec=1200,
+            starting_timestamp=0,
+            completed_cubeboxes=[
+                cube_game.CompletedCubeboxStatus(cube_id=5, starting_timestamp=10, win_timestamp=20),
+            ],
+            current_cubebox_id=3,
+            trophies=[cube_game.CubeTeamTrophy(name="Trophy1", description="Description1", points=100),
+                      ]
+        ),
+        cube_game.CubeTeamStatus(
+            name="Team3", custom_name="CustomTeam3", rfid_uid="3456789012", max_time_sec=1300,
+            starting_timestamp=None,
+            completed_cubeboxes=[],
+            current_cubebox_id=None,
+            trophies=[]
+        ),
+    ]
+
+    cubeboxes = cube_game.CubeboxesStatusList()
+    for cubebox in defined_cubeboxes:
+        cubeboxes.update_cubebox(cubebox)
+
+    teams = cube_game.CubeTeamsStatusList()
+    for team in defined_teams:
+        teams.add_team(team)
+
+    msg_request = CubeMsgRequestAllCubeboxesStatuses("CubeFrontDesk")
+    msg_reply = CubeMsgReplyAllCubeboxesStatuses("CubeMaster", cubeboxes)
+    try:
+        assert msg_reply.statuses
+        for cube_id in msg_reply.statuses:
+            assert msg_reply.statuses[cube_id] == cubeboxes.get_cubebox(cube_id)
+
+
+
 if __name__ == "__main__":
-    test_make_from_message()
+    # test_all_message_classes_to_and_from_string()
+    test_all_request_and_reply_messages()
     exit(0)
     print(CubeMsgReplies.OK)
     ack_msg = CubeMsgAck("CubeMaster", CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeMsgReplies.OK)

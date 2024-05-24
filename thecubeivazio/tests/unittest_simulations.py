@@ -140,7 +140,7 @@ class CubeUnitTester(ut.TestCase):
         LOGGER.infoplus("Frontdesk Adding a new team")
         FRONTDESK.add_new_team(team)
         # wait(COMM_DELAY_SEC, "waiting for the team to be added to the master")
-        wait_until(lambda: MASTER.teams.find_team_by_name(team_name) is not None,
+        wait_until(lambda: MASTER.teams.get_team_by_name(team_name) is not None,
                    message="waiting for the team to be added to the master",
                    timeout=COMM_DELAY_SEC)
         LOGGER.infoplus("Simulating RFID read on Cubebox")
@@ -154,14 +154,14 @@ class CubeUnitTester(ut.TestCase):
             self.assertTrue(CUBEBOX.is_box_being_played())
             self.assertEquals(CUBEBOX.status.last_valid_rfid_line.uid, rfid_uid)
         test(lambda: CUBEBOX.status.last_valid_rfid_line.uid == rfid_uid, "Cubebox should have the correct RFID UID")
-        test(lambda: MASTER.teams.find_team_by_name(team_name).current_cubebox_id == cube_id,
+        test(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id == cube_id,
              "Team should be associated with the cubebox")
-        test(lambda: MASTER.teams.find_team_by_name(team_name).completed_cubeboxes == [],
+        test(lambda: MASTER.teams.get_team_by_name(team_name).completed_cubeboxes == [],
              "Team should not have completed any cubeboxes")
-        test(lambda: str(MASTER.teams.find_team_by_name(team_name).max_time_sec) == str(max_time),
+        test(lambda: str(MASTER.teams.get_team_by_name(team_name).max_time_sec) == str(max_time),
              "Team should have the correct max time")
         LOGGER.info(f"Master teams status: {MASTER.teams.to_string()}")
-        test(lambda: MASTER.teams.find_team_by_name(team_name).starting_timestamp is not None,
+        test(lambda: MASTER.teams.get_team_by_name(team_name).starting_timestamp is not None,
              "Team should have a starting timestamp")
         wait(0.5, "waiting a bit...")
         LOGGER.infoplus("Simulating a new RFID read with the same UID")
@@ -169,7 +169,7 @@ class CubeUnitTester(ut.TestCase):
 
         test(lambda: CUBEBOX.is_box_being_played() is True, "Cubebox should still be playing")
         test(lambda: CUBEBOX.status.last_valid_rfid_line.uid == rfid_uid, "Cubebox should have retained the same RFID UID")
-        test(lambda: MASTER.teams.find_team_by_name(team_name).current_cubebox_id == cube_id,
+        test(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id == cube_id,
              "Team should still be associated with the cubebox")
 
         wait(1, "simulating game time...")
@@ -177,7 +177,7 @@ class CubeUnitTester(ut.TestCase):
         LOGGER.infoplus("Simulating long press")
         CUBEBOX.button.simulate_long_press()
 
-        wait_until(lambda: MASTER.teams.find_team_by_name(team_name).current_cubebox_id \
+        wait_until(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id \
                            and CUBEBOX.is_box_being_played() is False,
                    message="waiting for cubemaster and cubebox to update their status",
                    timeout=COMM_DELAY_SEC)
@@ -185,7 +185,7 @@ class CubeUnitTester(ut.TestCase):
         LOGGER.info(f"Master teams status: {MASTER.teams.to_string()}")
         test(lambda: CUBEBOX.is_box_being_played() is False, "Cubebox should not be playing")
         test(lambda: CUBEBOX.status.is_waiting_for_reset() is True, "Cubebox should be waiting for reset")
-        team_from_cubemaster = MASTER.teams.find_team_by_name(team_name)
+        team_from_cubemaster = MASTER.teams.get_team_by_name(team_name)
         test(lambda: team_from_cubemaster is not None, "Team should still be in the master")
         test(lambda: team_from_cubemaster.current_cubebox_id is None, "Team should not be associated with a cubebox")
         test(lambda: team_from_cubemaster.completed_cubebox_ids == [cube_id], "Team should have completed cubebox 1")
@@ -200,7 +200,7 @@ def unregistered_rfid():
     team = cube_game.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=3650)
     FRONTDESK.add_new_team(team)
     # wait(COMM_DELAY_SEC, "waiting for the team to be added to the master")
-    wait_until(lambda: MASTER.teams.find_team_by_name(team_name) is not None,
+    wait_until(lambda: MASTER.teams.get_team_by_name(team_name) is not None,
                message="waiting for the team to be added to the master",
                timeout=5)
 

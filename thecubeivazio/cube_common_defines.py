@@ -1,10 +1,14 @@
 import os
 from pathlib import Path
+from typing import Union
 
 # type aliases
-Seconds = float
-Timestamp = float
-CubeboxId = int
+Seconds = Union[float, int]
+Timestamp = Seconds
+CubeId = int
+TeamName = str
+NodeName = str
+Hash = str
 
 # constants
 
@@ -17,6 +21,9 @@ CONFIG_DIR = os.path.join(PROJECT_ROOT_PATH, "config")
 GLOBAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json")
 LOCAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "local_config.json")
 SCORESHEETS_DIR = os.path.join(PROJECT_ROOT_PATH, "scoresheets")
+IMAGES_DIR = os.path.join(CUBEGUI_DIR, "images")
+DEFAULT_TROPHY_IMAGE_FILENAME = "default_trophy_image.png"
+DEFAULT_TROPHY_IMAGE_FILEPATH = os.path.join(IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILENAME)
 
 # used in looping functions to induce a little delay
 # TODO: implement in existing loops

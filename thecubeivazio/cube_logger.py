@@ -28,17 +28,36 @@ logging.addLevelName(LEVEL_DEBUGPLUS, LEVELNAME_DEBUGPLUS)
 class CubeLogger(logging.Logger):
     # singleton instance for classes for whom instanciating a dedicated logger is not justified
     # (ex: classes that are often created and destroyed)
-    _common_logger: 'CubeLogger' = None
+    _static_logger: 'CubeLogger' = None
     # convenient aliases
     LEVEL_SUCCESS = LEVEL_SUCCESS
     LEVEL_INFOPLUS = LEVEL_INFOPLUS
     LEVEL_DEBUGPLUS = LEVEL_DEBUGPLUS
+    LEVEL_INFO = logging.INFO
+    LEVEL_DEBUG = logging.DEBUG
+    LEVEL_WARNING = logging.WARNING
+    LEVEL_ERROR = logging.ERROR
+    LEVEL_CRITICAL = logging.CRITICAL
+
 
     @classmethod
-    def get_common_logger(cls) -> 'CubeLogger':
-        if cls._common_logger is None:
-            cls._common_logger = cls("CubeDefaultLogger", COMMON_LOG_FILENAME)
-        return cls._common_logger
+    def get_static_logger(cls) -> 'CubeLogger':
+        if cls._static_logger is None:
+            cls._static_logger = cls("CubeDefaultLogger", COMMON_LOG_FILENAME)
+        return cls._static_logger
+
+    @classmethod
+    def static_info(cls, msg, *args, **kwargs):
+        cls.get_static_logger().info(msg, *args, **kwargs)
+
+    @classmethod
+    def static_debug(cls, msg, *args, **kwargs):
+        cls.get_static_logger().debug(msg, *args, **kwargs)
+
+    @classmethod
+    def static_error(cls, msg, *args, **kwargs):
+        cls.get_static_logger().error(msg, *args, **kwargs)
+
 
     def __init__(self, name: str, log_filename: str = None):
         super().__init__(name)
@@ -102,62 +121,10 @@ class CubeLogger(logging.Logger):
             self._log(LEVEL_DEBUGPLUS, msg, args, **kwargs)
 
 
-# obsolete
-# def make_logger(name:str, log_filename:str=None) -> logging.Logger:
-#     # Instantiate a logger
-#     logger = logging.getLogger(name)
-#     logger.setLevel(logging.DEBUG)
-#
-#     # handler for stdout logging
-#     stdout_handler = logging.StreamHandler()
-#     stdout_handler.setLevel(logging.DEBUG)
-#
-#     # if the logs directory does not exist, create it
-#     if not path.exists(LOGS_DIR):
-#         makedirs(LOGS_DIR)
-#     # handler for common file logging : all instances of logger will log to this file
-#     common_file_handler = logging.FileHandler(COMMON_LOG_FILENAME)
-#     common_file_handler.setLevel(logging.DEBUG)
-#
-#     # Create a formatter and add it to the handlers
-#     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#     color_formatter = ColoredFormatter(
-#         "%(log_color)s%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#         datefmt=None,
-#         reset=True,
-#         log_colors={
-#             'DEBUG': 'green',
-#             'INFO': 'blue',
-#             'WARNING': 'purple',
-#             'ERROR': 'red',
-#             'CRITICAL': 'bold_yellow',
-#             'SUCCESS': 'yellow'
-#         },
-#         secondary_log_colors={},
-#         style='%'
-#     )
-#
-#     stdout_handler.setFormatter(color_formatter)
-#     common_file_handler.setFormatter(formatter)
-#
-#     logger.addHandler(stdout_handler)
-#     logger.addHandler(common_file_handler)
-#
-#     # if a log_filename is provided, add an additional, specific file handler for this logger
-#     # used in order to have a log file specific to the CubeMaster, the CubeBox, the CubeGui, etc.
-#     if log_filename:
-#         file_handler = logging.FileHandler(log_filename)
-#         file_handler.setLevel(logging.DEBUG)
-#         logger.addHandler(file_handler)
-#         file_handler.setFormatter(formatter)
-#         logger.addHandler(file_handler)
-#
-#     return logger
-
 if __name__ == "__main__":
     # test the logger
     # log = make_logger("test")
-    log = CubeLogger("test")
+    log = CubeLogger("Test")
     log.debug("This is a debug message")
     log.info("This is an info message")
     log.warning("This is a warning message")
@@ -167,7 +134,7 @@ if __name__ == "__main__":
     log.infoplus("This is an infoplus message")
     log.debugplus("This is a debugplus message")
     # test common instance
-    common_log = CubeLogger.get_common_logger()
+    common_log = CubeLogger.get_static_logger()
     common_log.debug("This is a common instance debug message")
     common_log.info("This is a common instance info message")
     common_log.warning("This is a common instance warning message")
@@ -176,5 +143,10 @@ if __name__ == "__main__":
     common_log.success("This is a common instance success message")
     common_log.infoplus("This is a common instance infoplus message")
     common_log.debugplus("This is a common instance debugplus message")
+    # test static log methods
+    CubeLogger.static_debug("This is a static debug message")
+    CubeLogger.static_info("This is a static info message")
+    CubeLogger.static_error("This is a static error message")
+
 
 

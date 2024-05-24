@@ -173,3 +173,25 @@ if __name__ == "__main__":
     print("seconds_to_hhmmss_string(3661, separators='::'):", seconds_to_hhmmss_string(3661, separators='::'))
     print("timestamp_to_french_date(time.time()):", timestamp_to_french_date(time.time()))
     print("get_system_hostname():", get_system_hostname())
+
+
+def timestamps_are_in_same_day(timestamp1: float, timestamp2: float) -> bool:
+    """Check if two timestamps are in the same day"""
+    # use datetime to get the date of the timestamps
+    date1 = datetime.datetime.fromtimestamp(timestamp1)
+    date2 = datetime.datetime.fromtimestamp(timestamp2)
+    return date1.date() == date2.date()
+
+def timestamps_are_in_same_week(timestamp1: float, timestamp2: float) -> bool:
+    """Check if two timestamps are in the same week"""
+    # use datetime to get the date of the timestamps
+    date1 = datetime.datetime.fromtimestamp(timestamp1)
+    date2 = datetime.datetime.fromtimestamp(timestamp2)
+    return date1.isocalendar()[1] == date2.isocalendar()[1]
+
+def timestamps_are_in_same_month(timestamp1: float, timestamp2: float) -> bool:
+    """Check if two timestamps are in the same month"""
+    # use datetime to get the date of the timestamps
+    date1 = datetime.datetime.fromtimestamp(timestamp1)
+    date2 = datetime.datetime.fromtimestamp(timestamp2)
+    return date1.month == date2.month

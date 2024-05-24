@@ -18,10 +18,10 @@ from thecubeivazio.cube_common_defines import *
 class CubeServerMaster:
     def __init__(self):
         # set up the logger
-        self.log = cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NAME,
-                                           log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
+        self.log = cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NODENAME,
+                                          log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # set up the networking
-        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NAME,
+        self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NODENAME,
                                           log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
@@ -38,7 +38,7 @@ class CubeServerMaster:
         self.enable_heartbeat = False
 
         self.teams = cube_game.CubeTeamsStatusList()
-        self.cubeboxes = cube_game.CubeboxStatusList()
+        self.cubeboxes = cube_game.CubeboxesStatusList()
 
     def run(self):
         self._rfid_thread = threading.Thread(target=self._rfid_loop)
@@ -93,7 +93,7 @@ class CubeServerMaster:
                     self.log.warning(f"Unhandled message : ({message.hash}) : {message}. Removing")
                     self.net.remove_msg_from_incoming_queue(message)
 
-    def register_team_to_cubebox(self, team: cube_game.CubeTeamStatus, cubebox_id: CubeboxId):
+    def register_team_to_cubebox(self, team: cube_game.CubeTeamStatus, cubebox_id: CubeId):
         """Register a team to a cubebox. This means updating the team's current cubebox id
         and the cubebox's current team name and starting timestamp"""
 
@@ -102,7 +102,7 @@ class CubeServerMaster:
         # We need to do 2 things :
         # 1. update self.cubebox to record the fact that they've resigned their previous cubebox,
         #    and signal this fact to the cubebox and the frontdesk
-        current_cubebox = self.cubeboxes.find_cubebox_by_cube_id(team.current_cubebox_id)
+        current_cubebox = self.cubeboxes.get_cubebox_by_cube_id(team.current_cubebox_id)
         if current_cubebox:
             # Ok, so this team is currently registered to another cubebox.
             # Record the fact that they've resigned their previous cubebox
@@ -116,7 +116,7 @@ class CubeServerMaster:
             self.cubeboxes.update_cubebox(current_cubebox)
         # now, whatever the case, we just register this team to the cubebox they badged onto
         # update the local cubeboxes teams status lists
-        new_cubebox = self.cubeboxes.find_cubebox_by_cube_id(cubebox_id)
+        new_cubebox = self.cubeboxes.get_cubebox_by_cube_id(cubebox_id)
         new_cubebox.current_team_name = team.name
         # TODO: time.time() or the timestamp from the RFID reader?
         #  I don't think it matters since the timestamps used to compute the scores
@@ -131,7 +131,7 @@ class CubeServerMaster:
         self.teams.update_team(team)
         # just checking if the update was successful (it should always be)
         self.log.info(team.to_string())
-        team = self.teams.find_team_by_name(team.name)
+        team = self.teams.get_team_by_name(team.name)
         self.log.info(f"Team {team.name} is registered as playing cubebox {team.current_cubebox_id}")
         self.log.info(team.to_string())
 
@@ -144,7 +144,7 @@ class CubeServerMaster:
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
         # check if the rfid uid matches one of the registered teams
-        team = self.teams.find_team_by_rfid_uid(rfid_msg.uid)
+        team = self.teams.get_team_by_rfid_uid(rfid_msg.uid)
 
         if not team:
             self.log.error(f"RFID UID not matching any known team: {rfid_msg.uid}")
@@ -159,6 +159,12 @@ class CubeServerMaster:
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.DENIED)
             return
 
+        # check if the team is out of time
+        if team.is_time_up():
+            self.log.error(f"Team {team.name} is out of time. Denying.")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.DENIED)
+            return
+
         self.register_team_to_cubebox(team, sending_cubebox_id)
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
@@ -166,15 +172,15 @@ class CubeServerMaster:
         self.log.info(f"Received button press message from {message.sender} : {message}")
         # update teams and cubegames to reflect the fact that this cubebox was just won by the team currently playing it
         # first, check if it's a valid button press (i.e. a valid team is currently playing it)
-        cubebox: cube_game.CubeboxStatus = self.cubeboxes.find_cubebox_by_node_name(message.sender)
+        cubebox: cube_game.CubeboxStatus = self.cubeboxes.get_cubebox_by_node_name(message.sender)
         if not cubebox:
             self.log.error(
-                f"WHAT?! Cubebox not found: {message.sender} (this should NOT happen. There's bad code somewhere)")
+                f"WHAT?! Cubebox not found: {message.sender} (THIS SHOULD NEVER HAPPEN. There's bad code somewhere)")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
             return
         self.log.info(cubebox.to_string())
         self.log.info(self.teams.to_string())
-        team = self.teams.find_team_by_current_cube_id(cubebox.cube_id)
+        team = self.teams.get_team_by_current_cube_id(cubebox.cube_id)
         if not team:
             self.log.error(f"No team is playing that cubebox: {cubebox.cube_id}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
@@ -218,9 +224,9 @@ class CubeServerMaster:
 
     def _handle_frontdesk_new_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received new team message from {message.sender}")
-        ntmsg = cm.CubeMsgNewTeam(copy_msg=message)
+        ntmsg = cm.CubeMsgFrontdeskNewTeam(copy_msg=message)
         self.log.info(f"New team: {ntmsg.team.to_string()}")
-        if self.teams.find_team_by_name(ntmsg.team.name):
+        if self.teams.get_team_by_name(ntmsg.team.name):
             self.log.error(f"Team already exists: {ntmsg.team.name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.OCCUPIED)
         elif self.teams.add_team(ntmsg.team):
@@ -229,6 +235,52 @@ class CubeServerMaster:
         else:
             self.log.error(f"Failed to add new team: {ntmsg.team.name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+
+    def _handle_frontdest_remove_team_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received remove team message from {message.sender}")
+        rtmsg = cm.CubeMsgFrontdeskRemoveTeam(copy_msg=message)
+        self.log.info(f"Remove team: {rtmsg.team_name}")
+        team = self.teams.get_team_by_name(rtmsg.team_name)
+        if not team:
+            self.log.error(f"Team not found: {rtmsg.team_name}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
+        elif self.teams.remove_team(team.name):
+            self.log.info(f"Removed team: {rtmsg.team_name}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+        else:
+            self.log.error(f"Failed to remove team: {rtmsg.team_name}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+
+    def _handle_frontdesk_request_cubemaster_status_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request cubemaster status message from {message.sender}")
+        self.net.send_msg_to_frontdesk(cm.CubeMsgCubemasterStatusReply(self.net.node_name))
+
+    def _handle_frontdesk_request_team_status_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request team status message from {message.sender}")
+        rts_msg = cm.CubeMsgRequestTeamStatus(copy_msg=message)
+        team = self.teams.get_team_by_name(rts_msg.team_name)
+        if not team:
+            self.log.error(f"Team not found: {rts_msg.team_name}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
+            return
+        self.net.send_msg_to_frontdesk(cm.CubeMsgTeamStatusReply(self.net.node_name, team))
+
+    def _handle_frontdesk_request_cubebox_status_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request cubebox status message from {message.sender}")
+        rcs_msg = cm.CubeMsgRequestCubeboxStatus(copy_msg=message)
+        cubebox = self.cubeboxes.get_cubebox_by_cube_id(rcs_msg.cube_id)
+        if not cubebox:
+            self.log.error(f"Cubebox not found: {rcs_msg.cube_id}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
+            return
+        self.net.send_msg_to_frontdesk(cm.CubeMsgCubeboxStatusReply(self.net.node_name, cubebox))
+
+    def _handle_frontdesk_request_all_teams_status_hashes_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request all teams status hashes message from {message.sender}")
+
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllTeamsStatusHashes(self.net.node_name, self.teams.get_all_teams_status_hashes()))
+
+
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
@@ -299,7 +351,7 @@ class CubeServerMasterWithPrompt(CubeServerMaster):
                 # display the nodes in the network and their info
                 print(self.net.nodes_list.to_string())
             elif cmd in ["wi", "whois"]:
-                self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NAME))
+                self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NODENAME))
             else:
                 print("Unknown command")
 

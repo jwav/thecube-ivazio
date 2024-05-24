@@ -4,6 +4,7 @@ import traceback
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_logger as cube_logger
 import thecubeivazio.cube_messages as cm
+from thecubeivazio.cube_common_defines import *
 
 import threading
 import time
@@ -32,7 +33,7 @@ class CubeNetworking:
     UDP_BROADCAST_IP = "192.168.1.255"
     UDP_LISTEN_IP = "0.0.0.0"
     UDP_PORT = 5005
-    UDP_BUFSIZE = 1024
+    UDP_BUFSIZE = 10000
     UDP_LISTEN_TIMEOUT = 0.1  # seconds
 
     DISCOVERY_PORT = UDP_PORT
@@ -190,7 +191,7 @@ class CubeNetworking:
         """Continuously listens for incoming messages and puts them in the incoming_messages queue if they're valid.
         Do not override"""
         while self._keep_running:
-            time.sleep(0.1)
+            time.sleep(LOOP_PERIOD_SEC)
             # wait for a udp message
             data, addr = self._wait_for_udp_packet()
             if not data or not addr:
@@ -266,12 +267,12 @@ class CubeNetworking:
             self.heartbeats[message.sender] = time.time()
             handled = True
         # if it's a version request, reply with a version reply message
-        elif message.msgtype == cm.CubeMsgTypes.VERSION_REQUEST:
-            handled = self.send_msg_with_udp(cm.CubeMsgVersionReply(self.node_name))
+        elif message.msgtype == cm.CubeMsgTypes.REQUEST_VISION:
+            handled = self.send_msg_with_udp(cm.CubeMsgReplyVersion(self.node_name))
         # if it's a WHO_IS message, reply with an I_AM message
         elif message.msgtype == cm.CubeMsgTypes.WHO_IS:
             target_node = message.kwargs.get("node_name_to_find")
-            if target_node == self.node_name or target_node == cubeid.EVERYONE_NAME:
+            if target_node == self.node_name or target_node == cubeid.EVERYONE_NODENAME:
                 handled = self.send_msg_with_udp(cm.CubeMessage(cm.CubeMsgTypes.I_AM, self.node_name))
         # if it's an I_AM message, update the nodes list with the sender's IP
         elif message.msgtype == cm.CubeMsgTypes.I_AM:
@@ -358,7 +359,7 @@ class CubeNetworking:
         self.log.info(f"Sending message to all nodes: ({message.hash}) : {message}, require_ack: {require_ack}")
         return self.send_msg_with_udp(message, self.UDP_BROADCAST_IP, require_ack=require_ack)
 
-    def send_msg_to_cubeserver(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
+    def send_msg_to_cubemaster(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the CubeMaster. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(f"Sending message to CubeMaster ({self.nodes_list.cubeServer.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
         return self.send_msg_with_udp(message, self.nodes_list.cubeServer.ip, require_ack=require_ack)
@@ -402,10 +403,29 @@ class CubeNetworking:
                     self.remove_msg_from_ack_wait_queue(msg_to_ack)
                     ack_msg = cm.CubeMsgAck(copy_msg=msg)
                     return ack_msg
-            time.sleep(0.1)
+            time.sleep(LOOP_PERIOD_SEC)
         return None
 
+    def wait_for_message(self, msgtype:cm.CubeMsgTypes, timeout:int=None) -> Optional[CubeMessage]:
+        """Waits for a message of a specific type. Returns the message if it was received, None otherwise.
+        If timeout is None, uses the default timeout.
+        If timeout is 0, wait forever."""
+        if timeout is None:
+            timeout = self.ACK_WAIT_TIMEOUT
+        end_time = time.time() + timeout
 
+        self.log.info(f"Waiting for message of type {msgtype} ...")
+        while self._keep_running:
+            if timeout != 0 and time.time() > end_time:
+                self.log.error(f"wait_for_message timeout for message of type {msgtype}")
+                return None
+            for msg in self.get_incoming_msg_queue():
+                if msg.msgtype == msgtype:
+                    self.log.info(f"Received message of type {msgtype}: {msg}")
+                    self.remove_msg_from_incoming_queue(msg)
+                    return msg
+            time.sleep(LOOP_PERIOD_SEC)
+        return None
 
 
 if __name__ == "__main__":
@@ -415,7 +435,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         net = CubeNetworking(sys.argv[1])
     else:
-        net = CubeNetworking(cubeid.CUBEMASTER_NAME)
+        net = CubeNetworking(cubeid.CUBEMASTER_NODENAME)
 
     net.log.info(f"Starting networking test for {net.node_name}")
     net.run()

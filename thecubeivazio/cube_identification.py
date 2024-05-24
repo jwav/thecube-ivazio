@@ -7,17 +7,19 @@
 from typing import Optional
 from thecubeivazio import cube_utils
 
+CUBEFRONTDESK_NODENAME = "CubeFrontdesk"
+CUBEMASTER_NODENAME = "CubeMaster"
+CUBEBOX_NODENAME_PREFIX = "CubeBox"
+EVERYONE_NODENAME = "CubeEveryone"
+
 NB_CUBEBOXES = 12
 FIRST_CUBEBOX_INDEX = 1
 CUBEBOX_IDS = range(FIRST_CUBEBOX_INDEX, FIRST_CUBEBOX_INDEX + NB_CUBEBOXES)
-CUBEFRONTDESK_NAME = "CubeFrontdesk"
-CUBEMASTER_NAME = "CubeMaster"
-CUBEBOX_NAME_PREFIX = "CubeBox"
-EVERYONE_NAME = "CubeEveryone"
+CUBEBOX_NODENAMES = tuple(f"{CUBEBOX_NODENAME_PREFIX}{i}" for i in CUBEBOX_IDS)
 
 
 def is_valid_node_name(name: str) -> bool:
-    return name in [CUBEFRONTDESK_NAME, CUBEMASTER_NAME] or name.startswith(CUBEBOX_NAME_PREFIX)
+    return name in [CUBEFRONTDESK_NODENAME, CUBEMASTER_NODENAME] or name.startswith(CUBEBOX_NODENAME_PREFIX)
 
 
 def is_valid_ip(ip: str) -> bool:
@@ -26,9 +28,9 @@ def is_valid_ip(ip: str) -> bool:
 
 
 def node_name_to_cubebox_index(name: str) -> Optional[int]:
-    if name.startswith(CUBEBOX_NAME_PREFIX):
+    if name.startswith(CUBEBOX_NODENAME_PREFIX):
         try:
-            return int(name[len(CUBEBOX_NAME_PREFIX):])
+            return int(name[len(CUBEBOX_NODENAME_PREFIX):])
         except ValueError:
             return None
     else:
@@ -36,7 +38,7 @@ def node_name_to_cubebox_index(name: str) -> Optional[int]:
 
 
 def cubebox_index_to_node_name(index: int) -> str:
-    return f"{CUBEBOX_NAME_PREFIX}{index}"
+    return f"{CUBEBOX_NODENAME_PREFIX}{index}"
 
 
 def hostname_to_valid_cubebox_name(username: str=None) -> Optional[str]:
@@ -48,7 +50,7 @@ def hostname_to_valid_cubebox_name(username: str=None) -> Optional[str]:
         # get the number in the username
         number_str = "".join([c for c in username if c.isdigit()])
         if int(number_str) in CUBEBOX_IDS:
-            return f"{CUBEBOX_NAME_PREFIX}{number_str}"
+            return f"{CUBEBOX_NODENAME_PREFIX}{number_str}"
     except Exception as e:
         print(f"Error while converting system username to cubebox name: {e}")
         return None
@@ -65,7 +67,7 @@ class NodeInfo:
         return is_valid_node_name(self.name) and is_valid_ip(self.ip)
 
     def is_cubebox(self) -> bool:
-        return self.name.startswith(CUBEBOX_NAME_PREFIX)
+        return self.name.startswith(CUBEBOX_NODENAME_PREFIX)
 
     def to_string(self) -> str:
         return f"{self.name}: name={self.name}, ip={self.ip}"
@@ -73,9 +75,9 @@ class NodeInfo:
 
 class NodesList:
     def __init__(self):
-        self.frontDesk = NodeInfo(CUBEFRONTDESK_NAME, "")
-        self.cubeServer = NodeInfo(CUBEMASTER_NAME, "")
-        self.cubeBoxes = [NodeInfo(f"{CUBEBOX_NAME_PREFIX}{i}", "") for i in range(1, NB_CUBEBOXES + 1)]
+        self.frontDesk = NodeInfo(CUBEFRONTDESK_NODENAME, "")
+        self.cubeServer = NodeInfo(CUBEMASTER_NODENAME, "")
+        self.cubeBoxes = [NodeInfo(f"{CUBEBOX_NODENAME_PREFIX}{i}", "") for i in range(1, NB_CUBEBOXES + 1)]
 
     def is_complete(self) -> bool:
         return all([is_valid_ip(node.ip) for node in [self.frontDesk, self.cubeServer] + self.cubeBoxes])
@@ -86,21 +88,21 @@ class NodesList:
             "\n".join([f"{cubebox.name}: name={cubebox.name}, ip={cubebox.ip}" for cubebox in self.cubeBoxes])
 
     def set_node_ip_from_node_name(self, node_name:str, ip:str):
-        if node_name == CUBEFRONTDESK_NAME:
+        if node_name == CUBEFRONTDESK_NODENAME:
             self.frontDesk.ip = ip
-        elif node_name == CUBEMASTER_NAME:
+        elif node_name == CUBEMASTER_NODENAME:
             self.cubeServer.ip = ip
-        elif node_name.startswith(CUBEBOX_NAME_PREFIX):
+        elif node_name.startswith(CUBEBOX_NODENAME_PREFIX):
             cubebox_index = node_name_to_cubebox_index(node_name)
             if cubebox_index is not None:
                 self.cubeBoxes[cubebox_index - 1].ip = ip
 
     def get_node_ip_from_node_name(self, node_name:str) -> Optional[str]:
-        if node_name == CUBEFRONTDESK_NAME:
+        if node_name == CUBEFRONTDESK_NODENAME:
             return self.frontDesk.ip
-        elif node_name == CUBEMASTER_NAME:
+        elif node_name == CUBEMASTER_NODENAME:
             return self.cubeServer.ip
-        elif node_name.startswith(CUBEBOX_NAME_PREFIX):
+        elif node_name.startswith(CUBEBOX_NODENAME_PREFIX):
             cubebox_index = node_name_to_cubebox_index(node_name)
             if cubebox_index is not None:
                 return self.cubeBoxes[cubebox_index - 1].ip

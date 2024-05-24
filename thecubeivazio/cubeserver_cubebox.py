@@ -142,7 +142,7 @@ class CubeServerCubebox:
         if self.status.last_valid_rfid_line is not None:
             self.log.warning("Trying to badge in the same team that's already playing. Ignoring.")
             return False
-        report = self.net.send_msg_to_cubeserver(
+        report = self.net.send_msg_to_cubemaster(
             cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp), require_ack=True)
         if not report.success:
             self.log.error("Failed to send RFID read message to CubeMaster")
@@ -192,7 +192,7 @@ class CubeServerCubebox:
                                                 press_timestamp=press_timestamp)
                 self.log.info(f"Button pressed long enough. Sending msg to CubeMaster : {cbp_msg.to_string()}")
 
-                if self.net.send_msg_to_cubeserver(cbp_msg, require_ack=True):
+                if self.net.send_msg_to_cubemaster(cbp_msg, require_ack=True):
                     self.log.info("Button press message sent to and acked by CubeMaster")
                     self.badge_out_current_team()
                     self.status.set_state_waiting_for_reset()
