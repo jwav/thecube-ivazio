@@ -14,7 +14,7 @@ from thecubeivazio.cube_utils import XvfbManager
 
 import threading
 import time
-from typing import Union, List
+from typing import Union, List, Optional
 from collections import deque
 
 import evdev
@@ -33,17 +33,30 @@ class CubeRfidLine:
     """
 
     def __init__(self, timestamp: Seconds=None, uid: str=None):
-        self.timestamp = timestamp
-        self.uid = uid
+        self.timestamp:Seconds = timestamp
+        self.uid:str = uid
 
     def is_valid(self):
         return len(self.uid) == self.VALID_UID_LENGTH and all([char.isdigit() for char in self.uid])
 
+    # TODO: testme
     def to_string(self):
         return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
 
+    #TODO: testme
+    @staticmethod
+    def make_from_string(string: str) -> Optional['CubeRfidLine']:
+        """Create a CubeRfidLine object from a string"""
+        try:
+            # Extract the timestamp and uid from the string
+            timestamp, uid = re.findall(r"\d+\.\d+|\d+", string)
+            return CubeRfidLine(Seconds(timestamp), uid)
+        except Exception as e:
+            logging.error(f"Error creating CubeRfidLine from string: {e}")
+            return None
+
     def __repr__(self):
-        return self.to_string()
+        return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
 
     def copy(self):
         return CubeRfidLine(self.timestamp, self.uid)

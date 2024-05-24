@@ -7,6 +7,7 @@ import pickle
 import os
 
 from thecubeivazio import cube_identification as cubeid
+from thecubeivazio import cube_messages as cm
 from thecubeivazio import cube_utils
 import thecubeivazio.cube_rfid as cube_rfid
 
@@ -15,6 +16,8 @@ from thecubeivazio.cube_common_defines import *
 
 
 class CubeboxState(enum.Enum):
+    # TODO: implement the unknown state, useful for the frontdesk
+    STATE_UNKNOWN = "UNKNOWN"
     STATE_READY_TO_PLAY = "READY_TO_PLAY"
     STATE_PLAYING = "PLAYING"
     STATE_WAITING_FOR_RESET = "WAITING_FOR_RESET"
@@ -32,6 +35,7 @@ class CubeboxState(enum.Enum):
             else "État inconnu"
 
 
+# TODO safeguard methods liable to raise exceptions
 class CubeboxStatus:
     """Represents a game session, i.e. a team trying to open a CubeBox"""
     EASY_CUBES = (1, 2, 3, 4)
@@ -42,18 +46,16 @@ class CubeboxStatus:
     MEDIUM_MIN_TIME = 8 * 60
     HARD_MIN_TIME = 12 * 60
 
-    def __init__(self, cube_id: int, current_team_name: str = None, starting_timestamp: Seconds = None,
+    # TODO: set unknown state as the default
+    def __init__(self, cube_id: int = None, current_team_name: str = None, starting_timestamp: Seconds = None,
                  win_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
                  state: CubeboxState = CubeboxState.STATE_READY_TO_PLAY):
-        self.cube_id = cube_id
-        self.current_team_name: str = None
-        self.starting_timestamp: Seconds = None
-        self.win_timestamp: Seconds = None
-        self.last_valid_rfid_line: cube_rfid.CubeRfidLine = None
+        self.cube_id: Optional[int] = cube_id
+        self.current_team_name: Optional[str] = None
+        self.starting_timestamp: Optional[Seconds] = None
+        self.win_timestamp: Optional[Seconds] = None
+        self.last_valid_rfid_line: Optional[cube_rfid.CubeRfidLine] = None
         self._state = state
-
-    def __repr__(self):
-        return self.to_string()
 
     def __str__(self):
         return self.to_string()
@@ -61,12 +63,17 @@ class CubeboxStatus:
     def __eq__(self, other):
         return self.to_kwargs() == other.to_kwargs()
 
+    @property
+    def hash(self):
+        import hashlib
+        return hashlib.sha256(self.to_string().encode()).hexdigest()
+
+    def __repr__(self):
+        ret = f"CubeboxStatus({self.to_string()}, last_valid_rfid_line={self.last_valid_rfid_line})"
+
     def to_string(self) -> str:
-        ret = f"CubeboxStatus :\n"
-        # use kwargs and join into a list
-        for k, v in self.to_kwargs().items():
-            ret += f"  {k}={v}\n"
-        return ret
+        sep = ","
+        return sep.join([f"{k}={v}" for k, v in self.to_kwargs().items()])
 
     def to_kwargs(self) -> Dict:
         return {
@@ -74,7 +81,7 @@ class CubeboxStatus:
             "current_team_name": self.current_team_name,
             "starting_timestamp": self.starting_timestamp,
             "win_timestamp": self.win_timestamp,
-            "last_valid_rfid_line": self.last_valid_rfid_line,
+            "last_valid_rfid_line": self.last_valid_rfid_line.to_string(),
             "state": self.get_state()
         }
 
@@ -82,13 +89,27 @@ class CubeboxStatus:
     def make_from_kwargs(**kwargs) -> Optional['CubeboxStatus']:
         try:
             ret = CubeboxStatus(kwargs.get("cube_id"))
-            ret.cube_id = kwargs.get("cube_id")
+            ret.cube_id = int(kwargs.get("cube_id"))
             ret.current_team_name = kwargs.get("current_team_name")
-            ret.starting_timestamp = kwargs.get("starting_timestamp")
-            ret.win_timestamp = kwargs.get("win_timestamp")
-            ret.last_valid_rfid_line = kwargs.get("last_valid_rfid_line")
-            ret._state = kwargs.get("state")
+            ret.starting_timestamp = Seconds(kwargs.get("starting_timestamp"))
+            ret.win_timestamp = Seconds(kwargs.get("win_timestamp"))
+            # skip the rfid line. it will not be useful for whomever asks for it
+            # ret.last_valid_rfid_line = cube_rfid.CubeRfidLine.make_from_string(kwargs.get("last_valid_rfid_line"))
+            ret._state = CubeboxState(kwargs.get("state"))
             return ret
+        except Exception as e:
+            print(e)
+            return None
+
+    @staticmethod
+    def make_from_string(string: str) -> Optional['CubeboxStatus']:
+        try:
+            kwargs = {}
+            for line in string.split("\n"):
+                if line:
+                    key, value = line.split("=")
+                    kwargs[key.strip()] = value.strip()
+            return CubeboxStatus.make_from_kwargs(**kwargs)
         except Exception as e:
             print(e)
             return None
@@ -116,7 +137,7 @@ class CubeboxStatus:
         self.win_timestamp = None
         self._state = CubeboxState.STATE_READY_TO_PLAY
 
-    def set_state_playing(self, team_name: str=None, start_timestamp: Seconds=None):
+    def set_state_playing(self, team_name: str = None, start_timestamp: Seconds = None):
         self.current_team_name = team_name
         self.starting_timestamp = start_timestamp
         self.win_timestamp = None
@@ -141,7 +162,6 @@ class CubeboxStatus:
         self.win_timestamp = other.win_timestamp
         self.last_valid_rfid_line = other.last_valid_rfid_line
         self._state = other.get_state()
-
 
     @property
     def completion_time_sec(self) -> Optional[Seconds]:
@@ -183,16 +203,21 @@ CompletedCubeboxStatus.__doc__ = "Represents a CubeBox that has been successfull
 
 class CubeboxStatusList(List[CubeboxStatus]):
     """List of CubeGame instances, one for each CubeBox in TheCube game. Meant to be used by the CubeMaster and FrontDesk."""
+    SEPARATOR = ";"
 
     def __init__(self):
         super().__init__()
         self.reset()
 
-    def to_string(self) -> str:
+    def __repr__(self) -> str:
         ret = f"CubeboxStatusList : {len(self)} boxes\n"
         for box in self:
             ret += f"  {box.to_string()}\n"
         return ret
+
+    def to_string(self):
+        sep = self.SEPARATOR
+        return sep.join([box.to_string() for box in self])
 
     def update_cubebox(self, cubebox: CubeboxStatus) -> bool:
         for box in self:
@@ -246,14 +271,6 @@ class CubeTeamTrophy:
 class CubeTeamStatus:
     """Represents a team playing a CubeGame"""
 
-    # todo: should be moved to common defines
-    SCORESHEETS_FOLDER = "scoresheets"
-
-    def to_string(self) -> str:
-        ret = f"CubeTeam name={self.name}, custom_name={self.custom_name}, rfid_uid={self.rfid_uid}, max_time={self.max_time_sec}, start_time={self.starting_timestamp}, "
-        ret += f"current_cube={self.current_cubebox_id}, won_cubes={len(self.completed_cubeboxes)}, trophies={[trophy.name for trophy in self.trophies]}\n"
-        return ret
-
     def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, custom_name: str = ""):
         # the team's code name (a city name)
         self.name = name
@@ -272,19 +289,67 @@ class CubeTeamStatus:
         # the trophies collected by the team, awarded by the frontdesk
         self.trophies: List[CubeTeamTrophy] = []
 
-        # if the scoresheet folder is not present, create it
-        if not os.path.exists(self.SCORESHEETS_FOLDER):
-            os.makedirs(self.SCORESHEETS_FOLDER)
+    def __eq__(self, other):
+        return self.to_kwargs() == other.to_kwargs()
+
+    def __repr__(self):
+        ret = f"CubeTeam name={self.name}, custom_name={self.custom_name}, rfid_uid={self.rfid_uid}, max_time={self.max_time_sec}, start_time={self.starting_timestamp}, "
+        ret += f"current_cube={self.current_cubebox_id}, won_cubes={len(self.completed_cubeboxes)}, trophies={[trophy.name for trophy in self.trophies]}\n"
+        return ret
+
+    def to_kwargs(self) -> Dict:
+        return {
+            "name": self.name,
+            "custom_name": self.custom_name,
+            "rfid_uid": self.rfid_uid,
+            "max_time_sec": self.max_time_sec,
+            "starting_timestamp": self.starting_timestamp,
+            "current_cubebox_id": self.current_cubebox_id,
+            "completed_cubeboxes": [box.to_kwargs() for box in self.completed_cubeboxes]
+        }
+
+    @staticmethod
+    def make_from_kwargs(**kwargs) -> Optional['CubeTeamStatus']:
+        try:
+            ret = CubeTeamStatus(kwargs.get("name"), kwargs.get("rfid_uid"), kwargs.get("max_time_sec"))
+            ret.custom_name = kwargs.get("custom_name")
+            ret.starting_timestamp = Seconds(kwargs.get("starting_timestamp"))
+            ret.current_cubebox_id = kwargs.get("current_cubebox_id")
+            ret.completed_cubeboxes = [CompletedCubeboxStatus.make_from_kwargs(**box) for box in
+                                       kwargs.get("completed_cubeboxes")]
+            return ret
+        except Exception as e:
+            print(e)
+            return None
+
+    def to_string(self) -> Optional[str]:
+        sep = ","
+        try:
+            return sep.join([f"{k}={v}" for k, v in self.to_kwargs().items()])
+        except Exception as e:
+            print(e)
+            return None
+
+    @staticmethod
+    def make_from_string(line) -> Optional['CubeTeamStatus']:
+        try:
+            kwargs = {}
+            for part in line.split(","):
+                key, value = part.split("=")
+                kwargs[key.strip()] = value.strip()
+            return CubeTeamStatus.make_from_kwargs(**kwargs)
+        except Exception as e:
+            print(e)
+            return None
 
     @property
     def completed_cubebox_ids(self) -> List[CubeboxId]:
         return [box.cube_id for box in self.completed_cubeboxes]
 
-    def __eq__(self, other):
-        return all([self.name == other.name, self.rfid_uid == other.rfid_uid,
-                    self.max_time_sec == other.max_time_sec, self.starting_timestamp == other.starting_timestamp,
-                    self.current_cubebox_id == other.current_cubebox_id,
-                    self.completed_cubeboxes == other.completed_cubeboxes])
+    @property
+    def hash(self):
+        import hashlib
+        return hashlib.sha256(self.to_string().encode()).hexdigest()
 
     def has_completed_cube(self, cube_id: int) -> bool:
         return cube_id in [box.cube_id for box in self.completed_cubeboxes]
@@ -316,7 +381,10 @@ class CubeTeamStatus:
         return ret
 
     def save_markdown_score_sheet(self) -> bool:
-        filename = os.path.join(self.SCORESHEETS_FOLDER, f"{self.name}_scoresheet.md")
+        # if the scoresheet folder is not present, create it
+        if not os.path.exists(SCORESHEETS_DIR):
+            os.makedirs(SCORESHEETS_DIR)
+        filename = os.path.join(SCORESHEETS_DIR, f"{self.name}_scoresheet.md")
         text = f"# Équipe {self.name}\n\n"
         text += f"**Total Score:** {self.calculate_score()} points\n\n"
         text += "## Completed Cubes\n\n"
@@ -331,7 +399,10 @@ class CubeTeamStatus:
             return False
 
     def save_html_score_sheet(self) -> bool:
-        filename = os.path.join(self.SCORESHEETS_FOLDER, f"{self.name}_scoresheet.html")
+        # if the scoresheet folder is not present, create it
+        if not os.path.exists(SCORESHEETS_DIR):
+            os.makedirs(SCORESHEETS_DIR)
+        filename = os.path.join(SCORESHEETS_DIR, f"{self.name}_scoresheet.html")
         content = f"<h1>Équipe {self.name}</h1>\n\n"
         content += f"<p><strong>Date:</strong> {time.strftime('%Y-%m-%d %H:%M:%S')}</p>\n\n"
         content += f"<p><strong>Temps alloué:</strong> {cube_utils.seconds_to_hhmmss_string(self.max_time_sec)}</p>\n\n"
@@ -372,6 +443,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     """List of CubeTeam instances, one for each team playing a CubeGame. Meant to be used by the CubeMaster and FrontDesk."""
 
     DEFAULT_PICKLE_FILE = "cube_teams_list.pkl"
+    SEPARATOR = ";"
 
     def __init__(self):
         super().__init__()
@@ -381,16 +453,35 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         return self.to_string()
 
     def __repr__(self):
-        return self.to_string()
+        ret = f"CubeTeamsList : {len(self)} teams:\n"
+        for team in self:
+            ret += f"- {team.to_string()}\n"
+        return ret
+
+    @property
+    def hash(self):
+        import hashlib
+        return hashlib.sha256(self.to_string().encode()).hexdigest()
 
     def reset(self):
         self.clear()
 
     def to_string(self) -> str:
-        ret = f"CubeTeamsList : {len(self)} teams:\n"
-        for team in self:
-            ret += f"- {team.to_string()}\n"
-        return ret
+        sep = self.SEPARATOR
+        return sep.join([team.to_string() for team in self])
+
+    @staticmethod
+    def make_from_string(string: str) -> Optional['CubeTeamsStatusList']:
+        try:
+            ret = CubeTeamsStatusList()
+            for part in string.split(CubeTeamsStatusList.SEPARATOR):
+                team = CubeTeamStatus.make_from_string(part)
+                if team is not None:
+                    ret.append(team)
+            return ret
+        except Exception as e:
+            print(e)
+            return None
 
     def add_team(self, team: CubeTeamStatus) -> bool:
         if self.find_team_by_name(team.name) is not None:
@@ -456,6 +547,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 self[i] = team.copy()
                 return True
         return False
+
+    @classmethod
+    def make_from_kwargs(cls, kwargs):
+        pass
 
 
 def test_cube_team():
@@ -526,13 +621,28 @@ def save_scoresheet():
     team.save_html_score_sheet()
 
 
+def test_hashes():
+    import hashlib
+    team1 = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
+    msg = cm.CubeMsgButtonPress(sender="Cube1", start_timestamp=10, press_timestamp=20)
+    print(f"msg.to_string={msg.to_string()}")
+    print(f"msg.hash={msg.hash}")
+    print(f"native hash={hash(msg.to_string())}")
+    print(f"sha256 hash={hashlib.sha256(msg.to_string().encode()).hexdigest()}")
+
+
 if __name__ == "__main__":
+    test_hashes()
+    exit(0)
+
     teams_list = CubeTeamsStatusList()
     teams_list.append(CubeTeamStatus(name="Budapest", custom_name="FooCustomName",
-                                        rfid_uid="123456789", max_time_sec=60.0))
+                                     rfid_uid="123456789", max_time_sec=60.0))
     teams_list.append(CubeTeamStatus(name="Paris", custom_name="BarCustomName",
-                                        rfid_uid="987654321", max_time_sec=60.0))
+                                     rfid_uid="987654321", max_time_sec=60.0))
     team1 = teams_list.find_team_by_name("Budapest")
-    team1.trophies.append(CubeTeamTrophy(name="FooTrophy", description="FooDescription", points=100, image_path="foo.png"))
-    team1.trophies.append(CubeTeamTrophy(name="BarTrophy", description="BarDescription", points=200, image_path="bar.png"))
+    team1.trophies.append(
+        CubeTeamTrophy(name="FooTrophy", description="FooDescription", points=100, image_path="foo.png"))
+    team1.trophies.append(
+        CubeTeamTrophy(name="BarTrophy", description="BarDescription", points=200, image_path="bar.png"))
     print(teams_list)
