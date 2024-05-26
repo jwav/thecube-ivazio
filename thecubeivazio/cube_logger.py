@@ -2,6 +2,7 @@
 
 import logging
 import threading
+from logging.handlers import RotatingFileHandler
 
 from colorlog import ColoredFormatter
 from os import path, makedirs
@@ -39,11 +40,15 @@ class CubeLogger(logging.Logger):
     LEVEL_ERROR = logging.ERROR
     LEVEL_CRITICAL = logging.CRITICAL
 
+    @classmethod
+    def set_static_level(cls, level:int):
+        cls.get_static_logger().setLevel(level)
 
     @classmethod
     def get_static_logger(cls) -> 'CubeLogger':
         if cls._static_logger is None:
             cls._static_logger = cls("CubeDefaultLogger", COMMON_LOG_FILENAME)
+            cls._static_logger.setLevel(logging.DEBUG)
         return cls._static_logger
 
     @classmethod
@@ -70,7 +75,8 @@ class CubeLogger(logging.Logger):
         if not path.exists(LOGS_DIR):
             makedirs(LOGS_DIR)
         # handler for common file logging : all instances of logger will log to this file
-        self.common_file_handler = logging.FileHandler(COMMON_LOG_FILENAME)
+        # self.common_file_handler = logging.FileHandler(COMMON_LOG_FILENAME)
+        self.common_file_handler = RotatingFileHandler(COMMON_LOG_FILENAME, maxBytes=5*1024*1024, backupCount=100)
         self.common_file_handler.setLevel(logging.DEBUG)
 
         # Create a formatter and add it to the handlers

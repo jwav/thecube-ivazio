@@ -9,6 +9,7 @@ CubeId = int
 TeamName = str
 NodeName = str
 Hash = str
+HashDict = dict[str, Hash]
 
 # constants
 

@@ -43,6 +43,18 @@ class CubeRfidLine:
     def to_string(self):
         return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
 
+    def to_dict(self):
+        return {"timestamp": self.timestamp, "uid": self.uid}
+
+    @classmethod
+    def make_from_dict(cls, d: dict) -> Optional['CubeRfidLine']:
+        """Create a CubeRfidLine object from a dictionary"""
+        try:
+            return CubeRfidLine(float(d["timestamp"]), d["uid"])
+        except Exception as e:
+            logging.error(f"Error creating CubeRfidLine from dict: {e}")
+            return None
+
     #TODO: testme
     @staticmethod
     def make_from_string(string: str) -> Optional['CubeRfidLine']:

@@ -1,4 +1,5 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
+import json
 import time
 from typing import Optional, Dict, Type
 
@@ -40,7 +41,7 @@ class CubeMsgTypes(enum.Enum):
     REPLY_TEAM_STATUS = "REPLY_TEAM_STATUS"
     REPLY_ALL_TEAMS_STATUSES = "REPLY_ALL_TEAMS_STATUSES"
     REPLY_ALL_TEAMS_STATUS_HASHES = "REPLY_ALL_TEAMS_STATUS_HASHES"
-    REPLY_ALL_CUBEBOXES_STATUS_HASHES = "CUBEMASTER_ALL_CUBEBOXES_STATUS_HASHES_REPLY"
+    REPLY_ALL_CUBEBOXES_STATUS_HASHES = "REPLY_ALL_CUBEBOXES_STATUS_HASHES"
 
     ORDER_CUBEBOX_TO_WAIT_FOR_RESET = "ORDER_CUBEBOX_TO_WAIT_FOR_RESET"
 
@@ -120,9 +121,10 @@ class CubeMessage:
         return self.to_string().encode()
 
     # NOTE: DO NOT USE THIS METHOD
+    # NOTE: uh, why?
     @classmethod
     def make_from_message(cls, msg: 'CubeMessage'):
-        print("make_from_message : cls=", cls)
+        # print("make_from_message : cls=", cls)
         ret = cls()
         ret.build_from_message(msg)
         return ret
@@ -148,6 +150,7 @@ class CubeMessage:
         if not msg_str.startswith(CubeMessage.PREFIX):
             return None
         parts = msg_str.split(sep)
+        # print(f"build_from_string() : parts={parts}")
         if len(parts) < 3:
             return None
         sender = None
@@ -308,6 +311,10 @@ class CubeMsgReplyVersion(CubeMessage):
         from cube_utils import get_git_branch_date
         super().__init__(CubeMsgTypes.REPLY_VERSION, sender, version=get_git_branch_date())
 
+    @property
+    def version(self) -> str:
+        return self.kwargs.get("version")
+
 
 # cubemaster status request & reply
 
@@ -318,10 +325,9 @@ class CubeMsgRequestCubemasterStatus(CubeMessage):
         super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_STATUS, sender)
         self.require_ack = False
 
-
+# TODO
 class CubeMsgReplyCubemasterStatus(CubeMessage):
     pass
-
 
 class CubeMsgRequestCubeMasterStatusHash(CubeMessage):
     """Sent from a node to the CubeMaster to ask for its status hash."""
@@ -363,6 +369,7 @@ class CubeMsgRequestCubeboxStatus(CubeMessage):
     def cube_id(self) -> int:
         return int(self.kwargs.get("cube_id"))
 
+# TODO: testme
 
 class CubeMsgReplyCubeboxStatus(CubeMessage):
     """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_CUBEBOX_STATUS message."""
@@ -371,13 +378,15 @@ class CubeMsgReplyCubeboxStatus(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            kwargs = status.to_dict()
-            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS, sender, **kwargs)
+            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS, sender)
+            if status:
+                self.kwargs["cubebox_status"] = status.to_json()
+
         self.require_ack = False
 
     @property
-    def status(self) -> cube_game.CubeboxStatus:
-        return cube_game.CubeboxStatus.make_from_kwargs(**self.kwargs)
+    def cubebox(self) -> cube_game.CubeboxStatus:
+        return cube_game.CubeboxStatus.make_from_json(self.kwargs.get("cubebox_status"))
 
 
 class CubeMsgRequestAllCubeboxesStatuses(CubeMessage):
@@ -396,17 +405,26 @@ class CubeMsgReplyAllCubeboxesStatuses(CubeMessage):
             super().__init__(copy_msg=copy_msg)
         else:
             super().__init__(CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES, sender, statuses=statuses)
+            if statuses:
+                self.kwargs[cube_game.CubeboxesStatusList.JSON_ROOT_OBJECT_NAME] = statuses.to_json()
+                # print(f"CubeMsgReplyAllCubeboxesStatuses : self.kwargs={self.kwargs}")
         self.require_ack = False
 
     @property
     def statuses(self) -> Optional[cube_game.CubeboxesStatusList]:
         # parse self.kwargs.get("statuses") to a dict
         try:
-            return cube_game.CubeboxesStatusList.make_from_string(self.kwargs.get("statuses"))
+            json_statuses = self.kwargs.get(cube_game.CubeboxesStatusList.JSON_ROOT_OBJECT_NAME)
+            # print(f"json_statuses={json_statuses}")
+            # print(f"self.kwargs={self.kwargs}")
+            # print(f"list_of_dicts={list_of_dicts}")
+            # print(f"dict_of_dicts={dict_of_dicts}")
+            csl = cube_game.CubeboxesStatusList.make_from_json(json_statuses)
+            # print(f"csl={csl}")
+            return csl
         except Exception as e:
             CubeLogger.static_error(f"Error parsing CubeboxesStatusList from CubeMsgReplyAllCubeboxesStatuses: {e}")
             return None
-
 
 
 class CubeMsgRequestAllCubeboxesStatusHashes(CubeMessage):
@@ -420,17 +438,19 @@ class CubeMsgRequestAllCubeboxesStatusHashes(CubeMessage):
 class CubeMsgReplyAllCubeboxesStatusHashes(CubeMessage):
     """Sent from the CubeMaster to a node in response to a REQUEST_ALL_CUBEBOXES_STATUS_HASHES message."""
 
-    def __init__(self, sender=None, hashes: Dict[CubeId, Hash] = None, copy_msg: CubeMessage = None):
+    def __init__(self, sender=None, hashes: Dict[NodeName, Hash] = None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES, sender, hashes=hashes)
+            super().__init__(CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES, sender)
+            if hashes:
+                self.kwargs["hashes"] = json.dumps(hashes)
         self.require_ack = False
 
     @property
-    def hashes(self) -> dict:
+    def hash_dict(self) -> dict:
         # parse self.kwargs.get("hashes") to a dict
-        return self.kwargs.get("hashes")
+        return json.loads(self.kwargs.get("hashes"))
 
 
 # team status request & reply
@@ -457,13 +477,16 @@ class CubeMsgReplyTeamStatus(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            kwargs = status.to_dict()
-            super().__init__(CubeMsgTypes.REPLY_TEAM_STATUS, sender, **kwargs)
+            super().__init__(CubeMsgTypes.REPLY_TEAM_STATUS, sender)
+            if status:
+                self.kwargs["cubebox_status"] = status.to_json()
         self.require_ack = False
 
     @property
-    def status(self) -> cube_game.CubeTeamStatus:
-        return cube_game.CubeTeamStatus.make_from_kwargs(**self.kwargs)
+    def team_status(self) -> cube_game.CubeTeamStatus:
+        json_status = self.kwargs.get("cubebox_status", None)
+        # CubeLogger.static_debug(f"CubeMsgReplyTeamStatus : json_status={json_status}")
+        return cube_game.CubeTeamStatus.make_from_json(json_status)
 
 
 class CubeMsgRequestAllTeamsStatusHashes(CubeMessage):
@@ -481,13 +504,15 @@ class CubeMsgReplyAllTeamsStatusHashes(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES, sender, hashes=hashes)
+            super().__init__(CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES, sender)
+            if hashes:
+                self.kwargs["hashes"] = json.dumps(hashes)
         self.require_ack = False
 
     @property
-    def hashes(self) -> dict:
+    def hash_dict(self) -> dict:
         # parse self.kwargs.get("hashes") to a dict
-        return self.kwargs.get("hashes")
+        return json.loads(self.kwargs.get("hashes"))
 
 
 class CubeMsgRequestAllTeamsStatuses(CubeMessage):
@@ -497,6 +522,28 @@ class CubeMsgRequestAllTeamsStatuses(CubeMessage):
         super().__init__(CubeMsgTypes.REQUEST_ALL_TEAMS_STATUSES, sender)
         self.require_ack = False
 
+class CubeMsgReplyAllTeamsStatuses(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_ALL_TEAMS_STATUSES message."""
+
+    def __init__(self, sender=None, statuses: cube_game.CubeTeamsStatusList = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REPLY_ALL_TEAMS_STATUSES, sender, statuses=statuses)
+            if statuses:
+                self.kwargs[cube_game.CubeTeamsStatusList.JSON_ROOT_OBJECT_NAME] = statuses.to_json()
+        self.require_ack = False
+
+    @property
+    def statuses(self) -> Optional[cube_game.CubeTeamsStatusList]:
+        # parse self.kwargs.get("statuses") to a dict
+        try:
+            json_statuses = self.kwargs.get(cube_game.CubeTeamsStatusList.JSON_ROOT_OBJECT_NAME)
+            tsl = cube_game.CubeTeamsStatusList.make_from_json(json_statuses)
+            return tsl
+        except Exception as e:
+            CubeLogger.static_error(f"Error parsing TeamsStatusList from CubeMsgReplyAllTeamsStatuses: {e}")
+            return None
 
 # common messages
 
@@ -584,14 +631,14 @@ def test_make_from_message():
 
     cmcsr = CubeMsgReplyCubeboxStatus(sender="CubeMaster", status=status)
     print(f"cmcsr={cmcsr}")
-    print(f"cmcsr.status={cmcsr.status}")
+    print(f"cmcsr.status={cmcsr.cubebox}")
     msg = CubeMessage(copy_msg=cmcsr)
     cmcsr_2 = CubeMsgReplyCubeboxStatus(copy_msg=msg)
     print(f"cmcsr_2={cmcsr_2}")
-    print(f"cmcsr_2.status={cmcsr_2.status}")
+    print(f"cmcsr_2.status={cmcsr_2.cubebox}")
 
     assert cmcsr.to_string() == cmcsr_2.to_string()
-    assert cmcsr.status == cmcsr_2.status
+    assert cmcsr.cubebox == cmcsr_2.cubebox
 
     print("test_make_from_message PASSED for CubeMsgButtonPress")
 
@@ -662,12 +709,15 @@ def test_all_message_classes_to_and_from_string():
     test_message_to_and_from_string(CubeMsgReplyTeamStatus, "CubeMaster", status=cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
     test_message_to_and_from_string(CubeMsgReplyAllCubeboxesStatuses, "CubeMaster", statuses={"CubeBox1": cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", starting_timestamp=11, win_timestamp=20, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10), state=cube_game.CubeboxState.STATE_READY_TO_PLAY)})
     test_message_to_and_from_string(CubeMsgReplyCubeMasterStatusHash, "CubeMaster", hash="hash1")
+    test_message_to_and_from_string(CubeMsgReplyAllTeamsStatuses, "CubeMaster", statuses={"Team1": cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200)})
+
 
 
 
 # @formatter:on
-def test_all_request_and_reply_messages():
+def test_all_reply_messages():
     """test that all request and reply messages match the objects they are supposed to represent"""
+    log = CubeLogger("test_all_request_and_reply_messages")
     defined_cubeboxes = [
         cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", starting_timestamp=11, win_timestamp=20,
                                 last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10),
@@ -710,26 +760,78 @@ def test_all_request_and_reply_messages():
         ),
     ]
 
-    cubeboxes = cube_game.CubeboxesStatusList()
-    for cubebox in defined_cubeboxes:
-        cubeboxes.update_cubebox(cubebox)
+    cubeboxes = cube_game.CubeboxesStatusList(cubeboxes=defined_cubeboxes)
+    cubebox = cubeboxes[0]
+    teams = cube_game.CubeTeamsStatusList(teams=defined_teams)
+    team = teams[0]
 
-    teams = cube_game.CubeTeamsStatusList()
-    for team in defined_teams:
-        teams.add_team(team)
-
-    msg_request = CubeMsgRequestAllCubeboxesStatuses("CubeFrontDesk")
     msg_reply = CubeMsgReplyAllCubeboxesStatuses("CubeMaster", cubeboxes)
-    try:
-        assert msg_reply.statuses
-        for cube_id in msg_reply.statuses:
-            assert msg_reply.statuses[cube_id] == cubeboxes.get_cubebox(cube_id)
+    msg_reply_copy = CubeMsgReplyAllCubeboxesStatuses(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyAllCubeboxesStatuses.make_from_string(msg_reply.to_string())
+    assert cubeboxes == msg_reply.statuses, f"{cubeboxes} != {msg_reply.statuses}"
+    assert cubeboxes == msg_reply_copy.statuses, f"{cubeboxes} != {msg_reply_copy.statuses}"
+    assert cubeboxes == msg_reply_from_string.statuses, f"{cubeboxes} != {msg_reply_from_string.statuses}"
+    log.success("CubeMsgReplyAllCubeboxesStatuses PASSED")
+
+    msg_reply = CubeMsgReplyAllTeamsStatuses("CubeMaster", teams)
+    msg_reply_copy = CubeMsgReplyAllTeamsStatuses(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyAllTeamsStatuses.make_from_string(msg_reply.to_string())
+    assert teams == msg_reply.statuses, f"{teams} != {msg_reply.statuses}"
+    assert teams == msg_reply_copy.statuses, f"{teams} != {msg_reply_copy.statuses}"
+    assert teams == msg_reply_from_string.statuses, f"{teams} != {msg_reply_from_string.statuses}"
+    log.success("CubeMsgReplyAllTeamsStatuses PASSED")
+
+    msg_reply = CubeMsgReplyCubeboxStatus("CubeMaster", cubebox)
+    msg_reply_copy = CubeMsgReplyCubeboxStatus(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyCubeboxStatus.make_from_string(msg_reply.to_string())
+    assert cubebox == msg_reply.cubebox, f"{cubebox} != {msg_reply.cubebox}"
+    assert cubebox == msg_reply_copy.cubebox, f"{cubebox} != {msg_reply_copy.cubebox}"
+    assert cubebox == msg_reply_from_string.cubebox, f"{cubebox} != {msg_reply_from_string.cubebox}"
+    log.success("CubeMsgReplyCubeboxStatus PASSED")
+
+    msg_reply = CubeMsgReplyTeamStatus("CubeMaster", team)
+    msg_reply_copy = CubeMsgReplyTeamStatus(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyTeamStatus.make_from_string(msg_reply.to_string())
+    assert team == msg_reply.team_status, f"{team} != {msg_reply.team_status}"
+    assert team == msg_reply_copy.team_status, f"{team} != {msg_reply_copy.team_status}"
+    assert team == msg_reply_from_string.team_status, f"{team} != {msg_reply_from_string.team_status}"
+    log.success("CubeMsgReplyTeamStatus PASSED")
+
+    msg_reply = CubeMsgReplyAllCubeboxesStatusHashes("CubeMaster", hashes=cubeboxes.hash_dict)
+    msg_reply_copy = CubeMsgReplyAllCubeboxesStatusHashes(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyAllCubeboxesStatusHashes.make_from_string(msg_reply.to_string())
+    assert msg_reply.hash_dict == msg_reply_copy.hash_dict, f"{msg_reply.hash_dict} != {msg_reply_copy.hash_dict}"
+    assert msg_reply_copy.hash_dict == msg_reply.hash_dict, f"{msg_reply_copy.hash_dict} != {msg_reply.hash_dict}"
+    assert msg_reply_from_string.hash_dict == msg_reply.hash_dict, f"{msg_reply_from_string.hash_dict} != {msg_reply.hash_dict}"
+    log.success("CubeMsgReplyAllCubeboxesStatusHashes PASSED")
+
+    msg_reply = CubeMsgReplyAllTeamsStatusHashes("CubeMaster", hashes=teams.hash_dict)
+    msg_reply_copy = CubeMsgReplyAllTeamsStatusHashes(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyAllTeamsStatusHashes.make_from_string(msg_reply.to_string())
+    assert msg_reply.hash_dict == msg_reply_copy.hash_dict, f"{msg_reply.hash_dict} != {msg_reply_copy.hash_dict}"
+    assert msg_reply_copy.hash_dict == msg_reply.hash_dict, f"{msg_reply_copy.hash_dict} != {msg_reply.hash_dict}"
+    assert msg_reply_from_string.hash_dict == msg_reply.hash_dict, f"{msg_reply_from_string.hash_dict} != {msg_reply.hash_dict}"
+    log.success("CubeMsgReplyAllTeamsStatusHashes PASSED")
+
+    msg_reply = CubeMsgReplyCubeMasterStatusHash("CubeMaster", hash="hash1")
+    msg_reply_copy = CubeMsgReplyCubeMasterStatusHash(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyCubeMasterStatusHash.make_from_string(msg_reply.to_string())
+    assert msg_reply.hash == msg_reply_copy.hash, f"{msg_reply.hash} != {msg_reply_copy.hash}"
+    assert msg_reply_copy.hash == msg_reply.hash, f"{msg_reply_copy.hash} != {msg_reply.hash}"
+    assert msg_reply_from_string.hash == msg_reply.hash, f"{msg_reply_from_string.hash} != {msg_reply.hash}"
+    log.success("CubeMsgReplyCubeMasterStatusHash PASSED")
+
+    log.success("test_all_reply_messages PASSED")
+
+
+
+
 
 
 
 if __name__ == "__main__":
     # test_all_message_classes_to_and_from_string()
-    test_all_request_and_reply_messages()
+    test_all_reply_messages()
     exit(0)
     print(CubeMsgReplies.OK)
     ack_msg = CubeMsgAck("CubeMaster", CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeMsgReplies.OK)

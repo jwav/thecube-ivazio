@@ -2,7 +2,7 @@
 import enum
 import json
 import time
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict, Tuple, Iterable
 import pickle
 
 from thecubeivazio.cube_common_defines import *
@@ -23,7 +23,11 @@ class CubeboxState(enum.Enum):
     STATE_WAITING_FOR_RESET = "WAITING_FOR_RESET"
 
     def __eq__(self, other):
-        return str(self.value) == str(other.value)
+        try:
+            return str(self.value) == str(other.value)
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxState.__eq__ {e}")
+            return False
 
     def __str__(self):
         return self.value
@@ -61,7 +65,12 @@ class CubeboxStatus:
         return self.to_string()
 
     def __eq__(self, other):
-        return self.to_dict() == other.to_dict()
+        try:
+            return self.to_dict() == other.to_dict()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxStatus.__eq__ {e}")
+            return False
+
 
     def is_valid(self):
         """if this function returns False, then it might have been made from corrupted data"""
@@ -85,10 +94,9 @@ class CubeboxStatus:
     @classmethod
     def make_from_json(cls, json_str:str):
         try:
-            kwargs = json.loads(json_str)
-            return cls.make_from_kwargs(**kwargs)
+            return cls.make_from_dict(json.loads(json_str))
         except Exception as e:
-            print(e)
+            CubeLogger.static_error(f"CubeboxStatus.make_from_json {e.with_traceback()}")
             return None
 
     def to_dict(self) -> Dict:
@@ -97,24 +105,30 @@ class CubeboxStatus:
             "current_team_name": self.current_team_name,
             "starting_timestamp": self.starting_timestamp,
             "win_timestamp": self.win_timestamp,
-            "last_valid_rfid_line": self.last_valid_rfid_line.to_string() if self.last_valid_rfid_line is not None else None,
-            "state": self.get_state()
+            "last_valid_rfid_line": self.last_valid_rfid_line.to_dict() if self.last_valid_rfid_line else None,
+            "state": self.get_state().value
         }
 
     @classmethod
     def make_from_dict(cls, d: Dict) -> Optional['CubeboxStatus']:
+        # print(f"CubeboxStatus.make_from_dict {d}")
         try:
-            ret = CubeboxStatus(d.get("cube_id"))
-            ret.cube_id = int(d.get("cube_id"))
-            ret.current_team_name = d.get("current_team_name")
-            ret.starting_timestamp = Seconds(d.get("starting_timestamp"))
-            ret.win_timestamp = Seconds(d.get("win_timestamp"))
+            assert type(d) == dict
+            cube_id = int(d.get("cube_id"))
+            ret = CubeboxStatus(cube_id)
+            ret.current_team_name = d.get("current_team_name", None)
+            ret.starting_timestamp = d.get("starting_timestamp",None)
+            if ret.starting_timestamp is not None:
+                ret.starting_timestamp = float(ret.starting_timestamp)
+            ret.win_timestamp = d.get("win_timestamp", None)
+            if ret.win_timestamp is not None:
+                ret.win_timestamp = float(ret.win_timestamp)
             # skip the rfid line. it will not be useful for whomever asks for it
             # ret.last_valid_rfid_line = cube_rfid.CubeRfidLine.make_from_string(kwargs.get("last_valid_rfid_line"))
-            ret._state = cls(d.get("state"))
+            ret._state = CubeboxState(d.get("state"))
             return ret
         except Exception as e:
-            print(e)
+            CubeLogger.static_error(f"CubeboxStatus.make_from_dict {e.with_traceback()}")
             return None
 
 
@@ -226,12 +240,47 @@ CompletedCubeboxStatus.__doc__ = "Represents a CubeBox that has been successfull
 class CubeboxesStatusList(List[CubeboxStatus]):
     """List of CubeGame instances, one for each CubeBox in TheCube game. Meant to be used by the CubeMaster and FrontDesk."""
     SEPARATOR = ";"
+    JSON_ROOT_OBJECT_NAME = "cubeboxes"
 
     def __init__(self, cubeboxes:Optional[List[CubeboxStatus]]=None):
         super().__init__()
         self.reset()
         if cubeboxes:
-            self.extend(cubeboxes)
+            self.update_from_cubeboxes(cubeboxes)
+
+    def update_from_cubeboxes(self, cubeboxes: Iterable[CubeboxStatus]):
+        for box in cubeboxes:
+            self.update_cubebox(box)
+
+    def extend(self, cubeboxes_list:Iterable[CubeboxStatus]):
+        self.update_from_cubeboxes(cubeboxes_list)
+
+    def append(self, box:CubeboxStatus):
+        self.update_cubebox(box)
+
+    @property
+    def hash_dict(self) -> Dict[NodeName, Hash]:
+        return {cubeid.cubebox_index_to_node_name(box.cube_id): box.hash for box in self}
+
+    def compare_with_hashlist(self, hash_dict: Dict[NodeName, Hash]) -> Optional[Tuple[NodeName,...]]:
+        """Returns the names of the teams whose hash is different from the one in the hash_dict.
+        If the returned tuple is empty, it means that the hash_dict is up-to-date with the teams list.
+        If None is returned, it means that there was an error."""
+        try:
+            return tuple([node_name for node_name, hash in hash_dict.items() if hash != self.get_cubebox_by_node_name(node_name).hash])
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxesStatusList.compare_with_hashlist {e}")
+            return None
+
+    def matches_hashlist(self, hash_dict: Dict[NodeName, Hash]) -> bool:
+        return self.compare_with_hashlist(hash_dict) == ()
+
+    def __eq__(self, other):
+        try:
+            return self.to_dict() == other.to_dict()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxesStatusList.__eq__ {e}")
+            return False
 
     def __repr__(self) -> str:
         ret = f"CubeboxStatusList : {len(self)} boxes\n"
@@ -244,29 +293,35 @@ class CubeboxesStatusList(List[CubeboxStatus]):
         return sep.join([box.to_string() for box in self])
 
     def to_json(self) -> str:
-        return json.dumps([box.to_dict() for box in self])
+        return json.dumps(self.to_dict())
 
     def to_dict(self) -> Dict:
         return {
-            "cubeboxes" : [box.to_dict() for box in self]
+            self.JSON_ROOT_OBJECT_NAME : [box.to_dict() for box in self]
         }
 
     @classmethod
     def make_from_dict(cls, d: Dict) -> Optional['CubeboxesStatusList']:
         try:
-            return cls(d.get("cubeboxes", []))
+            # print(f"CubeboxesStatusList.make_from_dict d={d}")
+            assert type(d) == dict
+            assert cls.JSON_ROOT_OBJECT_NAME in d
+            ret = cls()
+            # print(f"d (type={type(d)}: {d}")
+            for box_data in d[cls.JSON_ROOT_OBJECT_NAME]:
+                # print(f"box_data (type={type(box_data)}) : {box_data}")
+                ret.update_cubebox(CubeboxStatus.make_from_dict(box_data))
+            return ret
         except Exception as e:
-            print(e)
+            CubeLogger.static_error(f"CubeboxesStatusList.make_from_dict {e.with_traceback()}")
             return None
-
 
     @classmethod
     def make_from_json(cls, json_str:str):
         try:
-            d = json.loads(json_str)
-            return cls.make_from_dict(d)
+            return cls.make_from_dict(json.loads(json_str))
         except Exception as e:
-            print(e)
+            CubeLogger.static_error(f"CubeboxesStatusList.make_from_json {e}")
             return None
 
     @classmethod
@@ -296,7 +351,7 @@ class CubeboxesStatusList(List[CubeboxStatus]):
 
     def reset(self):
         self.clear()
-        self.extend([CubeboxStatus(cube_id) for cube_id in cubeid.CUBEBOX_IDS])
+        super().extend([CubeboxStatus(cube_id) for cube_id in cubeid.CUBEBOX_IDS])
 
     def free_cubes(self) -> List[CubeId]:
         return [box.cube_id for box in self if box.is_ready_to_play()]
@@ -327,7 +382,11 @@ class CubeTeamTrophy:
         return f"CubeTrophy({self.to_string()})"
 
     def __eq__(self, other):
-        return self.to_dict() == other.to_dict()
+        try:
+            return self.to_dict() == other.to_dict()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamTrophy.__eq__ {e}")
+            return False
 
     def to_dict(self) -> Dict:
         return {
@@ -398,20 +457,24 @@ class CubeTeamStatus:
         }
 
     @classmethod
-    def make_from_dict(cls, d: Dict) -> Optional['CubeTeamStatus']:
+    def make_from_dict(cls, d: Optional[Dict]) -> Optional['CubeTeamStatus']:
+        # CubeLogger.static_debug(f"CubeTeamStatus.make_from_dict {d}")
         try:
             ret = cls(d.get("name"), d.get("rfid_uid"), d.get("max_time_sec"))
             ret.custom_name = d.get("custom_name", "")
             ret.starting_timestamp = d.get("starting_timestamp", None)
             if ret.starting_timestamp is not None:
                 ret.starting_timestamp = float(ret.starting_timestamp)
-            ret.current_cubebox_id = CubeId(d.get("current_cubebox_id"))
-            ret.completed_cubeboxes = [CompletedCubeboxStatus.make_from_dict(box) for box in
-                                       d.get("completed_cubeboxes")]
-            ret.trophies = [CubeTeamTrophy.make_from_dict(trophy) for trophy in d.get("trophies", [])]
+            ret.current_cubebox_id = d.get("current_cubebox_id", None)
+            if ret.current_cubebox_id is not None:
+                ret.current_cubebox_id = int(ret.current_cubebox_id)
+            ret.completed_cubeboxes = [
+                CompletedCubeboxStatus.make_from_dict(box) for box in d.get("completed_cubeboxes", [])]
+            ret.trophies = [
+                CubeTeamTrophy.make_from_dict(trophy) for trophy in d.get("trophies", [])]
             return ret
         except Exception as e:
-            CubeLogger.static_error(f"CubeTeamStatus.make_from_kwargs {e}")
+            CubeLogger.static_error(f"CubeTeamStatus.make_from_dict {e}")
             return None
 
 
@@ -424,12 +487,12 @@ class CubeTeamStatus:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def make_from_json(cls, json_str:str):
+    def make_from_json(cls, json_str:Optional[str]):
         try:
             d = json.loads(json_str)
             return cls.make_from_dict(d)
         except Exception as e:
-            CubeLogger.static_error("CubeTeamStatus.make_from_json", e)
+            CubeLogger.static_error(f"CubeTeamStatus.make_from_json {e}")
             return None
 
     def to_string(self) -> Optional[str]:
@@ -437,11 +500,11 @@ class CubeTeamStatus:
         try:
             return sep.join([f"{k}={v}" for k, v in self.to_dict().items()])
         except Exception as e:
-            CubeLogger.static_error("CubeTeamStatus.make_from_string", e)
+            CubeLogger.static_error(f"CubeTeamStatus.make_from_string {e}")
             return None
 
     @staticmethod
-    def make_from_string(line) -> Optional['CubeTeamStatus']:
+    def make_from_string(line:Optional[str]) -> Optional['CubeTeamStatus']:
         try:
             kwargs = {}
             for part in line.split(","):
@@ -449,7 +512,7 @@ class CubeTeamStatus:
                 kwargs[key.strip()] = value.strip()
             return CubeTeamStatus.make_from_kwargs(**kwargs)
         except Exception as e:
-            CubeLogger.static_error("CubeTeamStatus.make_from_string", e)
+            CubeLogger.static_error(f"CubeTeamStatus.make_from_string {e}")
             return None
 
     @property
@@ -457,7 +520,7 @@ class CubeTeamStatus:
         return [box.cube_id for box in self.completed_cubeboxes]
 
     @property
-    def hash(self):
+    def hash(self) -> Hash:
         import hashlib
         return hashlib.sha256(self.to_string().encode()).hexdigest()
 
@@ -582,7 +645,7 @@ class CubeTeamStatus:
         return all((self.name == team.name, self.custom_name == team.custom_name, self.rfid_uid == team.rfid_uid,
                     self.starting_timestamp == team.starting_timestamp))
 
-    def update_from(self, team):
+    def update_from_team(self, team):
         """If this team is the same as the other team, update its data with the other team's data,
         preserving the completed cubeboxes and trophies
         If this is another team, return False"""
@@ -611,67 +674,73 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     """List of CubeTeam instances, one for each team playing a CubeGame. Meant to be used by the CubeMaster and FrontDesk."""
 
     DEFAULT_PICKLE_FILE = "cube_teams_list.pkl"
-    SEPARATOR = ";"
+    DEFAULT_JSON_FILE = "cube_teams_list.json"
+    JSON_ROOT_OBJECT_NAME = "teams"
 
-    def __init__(self):
+    def __init__(self, teams:Optional[List[CubeTeamStatus]]=None):
         super().__init__()
-        self.reset()
+        if teams:
+            self.extend(teams)
 
     def __str__(self):
         return self.to_string()
 
     def __repr__(self):
-        ret = f"CubeTeamsList : {len(self)} teams:\n"
-        for team in self:
-            ret += f"- {team.to_string()}\n"
-        return ret
+        return self.to_string()
+
+    def __eq__(self, other):
+        try:
+            return self.to_dict() == other.to_dict()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.__eq__ {e}")
+            return False
 
     @property
-    def hash(self):
-        import hashlib
-        return hashlib.sha256(self.to_string().encode()).hexdigest()
+    def hash_dict(self) -> Dict[TeamName, Hash]:
+        return {team.name: team.hash for team in self}
+
+    def compare_with_hashlist(self, hash_dict: Dict[TeamName, Hash]) -> Optional[Tuple[TeamName,...]]:
+        """Returns the names of the teams whose hash is different from the one in the hash_dict.
+        If the returned tuple is empty, it means that the hash_dict is up-to-date with the teams list.
+        If None is returned, it means that there was an error."""
+        try:
+            return tuple([team_name for team_name, hash in hash_dict.items() if self.get_team_by_name(team_name).hash != hash])
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.compare_with_hashlist {e}")
+            return None
+
+    def matches_hashlist(self, hash_dict: Dict[TeamName, Hash]) -> bool:
+        return self.compare_with_hashlist(hash_dict) == ()
 
     def reset(self):
         self.clear()
 
     def to_string(self) -> str:
-        sep = self.SEPARATOR
-        return sep.join([team.to_string() for team in self])
+        return self.to_json()
 
     def to_json(self) -> str:
-        return json.dumps([team.to_dict() for team in self])
+        return json.dumps(self.to_dict())
 
     def to_dict(self) -> Dict:
         return {
-            "teams": [team.to_dict() for team in self]
+            self.JSON_ROOT_OBJECT_NAME: [team.to_dict() for team in self]
         }
 
     @classmethod
     def make_from_dict(cls, d: Dict) -> Optional['CubeTeamsStatusList']:
         try:
-            return cls([CubeTeamStatus.make_from_dict(team) for team in d.get("teams", [])])
+            team_list = cls()
+            for team_data in d[cls.JSON_ROOT_OBJECT_NAME]:
+                team_list.append(CubeTeamStatus.make_from_dict(team_data))
+            return team_list
         except Exception as e:
-            print(e)
+            print(f"Error in make_from_dict: {e}")
             return None
 
     @classmethod
     def make_from_json(cls, json_str:str):
         try:
-            d = json.loads(json_str)
-            return cls.make_from_dict(d)
-        except Exception as e:
-            print(e)
-            return None
-
-    @staticmethod
-    def make_from_string(string: str) -> Optional['CubeTeamsStatusList']:
-        try:
-            ret = CubeTeamsStatusList()
-            for part in string.split(CubeTeamsStatusList.SEPARATOR):
-                team = CubeTeamStatus.make_from_string(part)
-                if team is not None:
-                    ret.append(team)
-            return ret
+            return cls.make_from_dict(json.loads(json_str))
         except Exception as e:
             print(e)
             return None
@@ -735,11 +804,35 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             return False
 
     # TODO: testme
+    def save_to_json_file(self, filename:str=None) -> bool:
+        filename = filename or self.DEFAULT_JSON_FILE
+        try:
+            with open(filename, 'w') as f:
+                f.write(self.to_json())
+            return True
+        except Exception as e:
+            CubeLogger.static_error(e)
+            return False
+
+    # TODO: testme
+    def load_from_json_file(self, filename:str=None) -> bool:
+        filename = filename or self.DEFAULT_JSON_FILE
+        try:
+            with open(filename, 'r') as f:
+                data = f.read()
+            self.clear()
+            self.extend(CubeTeamsStatusList.make_from_json(data))
+            return True
+        except Exception as e:
+            CubeLogger.static_error(e)
+            return False
+
+
+    # TODO: testme
     def update_team(self, team: CubeTeamStatus) -> bool:
         for i, t in enumerate(self):
             if t.is_same_team_as(team):
-                self[i].update_from(team)
-                return True
+                return self[i].update_from_team(team)
             else:
                 self.append(team)
                 return True
@@ -848,45 +941,56 @@ def test_json():
     log = CubeLogger("test_json")
     team1 = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
     team1_2 = CubeTeamStatus.make_from_json(team1.to_json())
+    log.debug(f"team1.to_json()={team1.to_json()}")
+    log.debug(f"team1_2.to_json()={team1_2.to_json()}")
     assert team1 == team1_2
-    print(team1.to_json())
-    print(team1_2.to_json())
+    log.success("team1 == team1_2")
 
     box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", starting_timestamp=1.0, win_timestamp=2.0)
+    log.debug(f"box1.to_dict()={box1.to_dict()}")
+    log.debug(f"box1.to_json()={box1.to_json()}")
     box1_2 = CubeboxStatus.make_from_json(box1.to_json())
+    log.debug(f"box1_2.to_json()={box1_2.to_json()}")
     assert box1 == box1_2
-    print(box1.to_json())
-    print(box1_2.to_json())
+    log.success("box1 == box1_2")
 
     teams_list = CubeTeamsStatusList()
     teams_list.append(team1)
     teams_list.append(CubeTeamStatus(rfid_uid="1234567891", name="Paris", max_time_sec=60.0))
     teams_list_2 = CubeTeamsStatusList.make_from_json(teams_list.to_json())
+    log.debug(f"teams_list.to_json()={teams_list.to_json()}")
+    log.debug(f"teams_list_2.to_json()={teams_list_2.to_json()}")
     assert teams_list == teams_list_2
-    print(teams_list.to_json())
-    print(teams_list_2.to_json())
 
     boxes_list = CubeboxesStatusList()
-    boxes_list.append(CubeboxStatus(cube_id=1, current_team_name="Budapest", starting_timestamp=1.0, win_timestamp=2.0))
-    boxes_list.append(CubeboxStatus(cube_id=2, current_team_name="Paris", starting_timestamp=1.0, win_timestamp=2.0))
+    boxes_list.update_cubebox(CubeboxStatus(cube_id=1, current_team_name="Budapest", starting_timestamp=1.0, win_timestamp=2.0))
+    boxes_list.update_cubebox(CubeboxStatus(cube_id=2, current_team_name="Paris", starting_timestamp=1.0, win_timestamp=2.0))
     boxes_list_2 = CubeboxesStatusList.make_from_json(boxes_list.to_json())
+    log.debug("-------------------")
+    log.debug(f"boxes_list.to_json()={boxes_list.to_json()}")
+    log.debug("-------------------")
+    log.debug(f"boxes_list_2.to_json()={boxes_list_2.to_json()}")
+    for cid in cubeid.CUBEBOX_IDS:
+        if boxes_list.get_cubebox_by_cube_id(cid) != boxes_list_2.get_cubebox_by_cube_id(cid):
+            log.error(f"boxes_list.get_cubebox_by_cube_id({cid}) != boxes_list_2.get_cubebox_by_cube_id({cid}):")
+            log.error(f"boxes_list.get_cubebox_by_cube_id({cid})={boxes_list.get_cubebox_by_cube_id(cid)}")
+            log.error(f"boxes_list_2.get_cubebox_by_cube_id({cid})={boxes_list_2.get_cubebox_by_cube_id(cid)}")
+        else:
+            log.success(f"boxes_list.get_cubebox_by_cube_id({cid}) == boxes_list_2.get_cubebox_by_cube_id({cid})")
+    d1 = boxes_list.to_dict()
+    d2 = boxes_list_2.to_dict()
+    log.debug(f"d1.keys()={list(d1.keys())}")
+    log.debug(f"d2.keys()={list(d2.keys())}")
+    log.debug(f"d1.values() : len={len(d1.values())} ={list(d1.values())}")
+    log.debug(f"d2.values() : len={len(d2.values())} ={list(d2.values())}")
+    log.debug(f"d1.cubeboxes : len={len(d1['cubeboxes'])} ={d1['cubeboxes']}")
+    log.debug(f"d2.cubeboxes : len={len(d2['cubeboxes'])} ={d2['cubeboxes']}")
+    log.debug(f"dicts equal? {d1 == d2}")
+
+
     assert boxes_list == boxes_list_2
-    print(boxes_list.to_json())
-    print(boxes_list_2.to_json())
 
-    print(boxes_list)
-    print(boxes_list_2)
-
-    print(teams_list)
-    print(teams_list_2)
-
-    print(team1)
-    print(team1_2)
-
-    print(box1)
-    print(box1_2)
-
-    print("OK")
+    log.success("All tests passed")
 
 
 if __name__ == "__main__":

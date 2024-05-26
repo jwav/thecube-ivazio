@@ -81,7 +81,7 @@ class CubeServerFrontdesk:
                     self.net.acknowledge_this_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS:
                     self.log.info(f"Received cubebox status reply message from {message.sender}")
-                    new_cubebox_status = cm.CubeMsgCubeboxStatusReply(copy_msg=message).status
+                    new_cubebox_status = cm.CubeMsgCubeboxStatusReply(copy_msg=message).cubebox
                     if new_cubebox_status.is_valid():
                         self.cubeboxes.update_cubebox(new_cubebox_status)
                         self.log.info(f"Updated cubebox status: {new_cubebox_status}")
@@ -91,7 +91,7 @@ class CubeServerFrontdesk:
                         self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.INVALID)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_TEAM_STATUS:
                     self.log.info(f"Received team status reply message from {message.sender}")
-                    new_team_status = cm.CubeMsgTeamStatusReply(copy_msg=message).status
+                    new_team_status = cm.CubeMsgTeamStatusReply(copy_msg=message).cubebox
                     if new_team_status.is_valid():
                         self.teams.update_team(new_team_status)
                         self.log.info(f"Updated team status: {new_team_status}")
