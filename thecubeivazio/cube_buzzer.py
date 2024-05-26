@@ -7,7 +7,6 @@ from typing import Tuple
 
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
-from thecubeivazio import cube_config
 import os
 
 import pygame.mixer as mixer

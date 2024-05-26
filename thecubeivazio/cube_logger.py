@@ -41,7 +41,7 @@ class CubeLogger(logging.Logger):
     LEVEL_CRITICAL = logging.CRITICAL
 
     @classmethod
-    def set_static_level(cls, level:int):
+    def set_static_level(cls, level: int):
         cls.get_static_logger().setLevel(level)
 
     @classmethod
@@ -63,6 +63,13 @@ class CubeLogger(logging.Logger):
     def static_error(cls, msg, *args, **kwargs):
         cls.get_static_logger().error(msg, *args, **kwargs)
 
+    @classmethod
+    def static_warning(cls, msg, *args, **kwargs):
+        cls.get_static_logger().warning(msg, *args, **kwargs)
+
+    @classmethod
+    def static_debugplus(cls, msg, *args, **kwargs):
+        cls.get_static_logger().debugplus(msg, *args, **kwargs)
 
     def __init__(self, name: str, log_filename: str = None):
         super().__init__(name)
@@ -76,7 +83,7 @@ class CubeLogger(logging.Logger):
             makedirs(LOGS_DIR)
         # handler for common file logging : all instances of logger will log to this file
         # self.common_file_handler = logging.FileHandler(COMMON_LOG_FILENAME)
-        self.common_file_handler = RotatingFileHandler(COMMON_LOG_FILENAME, maxBytes=5*1024*1024, backupCount=100)
+        self.common_file_handler = RotatingFileHandler(COMMON_LOG_FILENAME, maxBytes=5 * 1024 * 1024, backupCount=100)
         self.common_file_handler.setLevel(logging.DEBUG)
 
         # Create a formatter and add it to the handlers
@@ -153,6 +160,3 @@ if __name__ == "__main__":
     CubeLogger.static_debug("This is a static debug message")
     CubeLogger.static_info("This is a static info message")
     CubeLogger.static_error("This is a static error message")
-
-
-

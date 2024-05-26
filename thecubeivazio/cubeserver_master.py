@@ -66,7 +66,7 @@ class CubeServerMaster:
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
-            time.sleep(0.1)
+            time.sleep(LOOP_PERIOD_SEC)
             if self.enable_heartbeat and self.heartbeat_timer.is_timeout():
                 self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
                 self.heartbeat_timer.reset()
@@ -79,21 +79,33 @@ class CubeServerMaster:
                 # handle RFID read messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_RFID_READ:
                     self._handle_cubebox_rfid_read_message(message)
-                    continue
                 # handle button press messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self._handle_cubebox_button_press_message(message)
-                    continue
                 # handle new team messages from the frontdesk
                 elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_NEW_TEAM:
                     self._handle_frontdesk_new_team_message(message)
-                    continue
-
+                elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_REMOVE_TEAM:
+                    self._handle_frontdest_remove_team_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEMASTER_STATUS:
+                    self._handle_request_cubemaster_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_TEAMS_STATUSES:
+                    self._handle_request_all_teams_statuses_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUSES:
+                    self._handle_request_all_cubeboxes_statuses_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_TEAM_STATUS:
+                    self._handle_request_team_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEMASTER_CUBEBOX_STATUS:
+                    self._handle_request_cubebox_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_TEAMS_STATUS_HASHES:
+                    self._handle_request_all_teams_status_hashes_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUS_HASHES:
+                    self._handle_request_all_cubeboxes_status_hashes_message(message)
                 else:
                     self.log.warning(f"Unhandled message : ({message.hash}) : {message}. Removing")
-                    self.net.remove_msg_from_incoming_queue(message)
+                self.net.remove_msg_from_incoming_queue(message)
 
-    def register_team_to_cubebox(self, team: cube_game.CubeTeamStatus, cubebox_id: CubeId):
+    def register_team_to_cubebox(self, team: cube_game.CubeTeamStatus, new_cubebox_id: CubeId):
         """Register a team to a cubebox. This means updating the team's current cubebox id
         and the cubebox's current team name and starting timestamp"""
 
@@ -107,7 +119,7 @@ class CubeServerMaster:
             # Ok, so this team is currently registered to another cubebox.
             # Record the fact that they've resigned their previous cubebox
             self.log.info(
-                f"Team {team.name} is registered to another cubebox : {team.current_cubebox_id}. Abandoning it and switching to cubebox {new_cubebox.cube_id}")
+                f"Team {team.name} is registered to another cubebox : {team.current_cubebox_id}. Abandoning it and switching to cubebox {new_cubebox_id}")
             # NOTE : if another team (team2) is playing this team's (team1) previous cubebox,
             # then this previous cubebox should be configured so as to have team2 as its playing team
             # so if we're here, it means that the previous cubebox is not being played by another team
@@ -116,7 +128,7 @@ class CubeServerMaster:
             self.cubeboxes.update_cubebox(current_cubebox)
         # now, whatever the case, we just register this team to the cubebox they badged onto
         # update the local cubeboxes teams status lists
-        new_cubebox = self.cubeboxes.get_cubebox_by_cube_id(cubebox_id)
+        new_cubebox = self.cubeboxes.get_cubebox_by_cube_id(new_cubebox_id)
         new_cubebox.current_team_name = team.name
         # TODO: time.time() or the timestamp from the RFID reader?
         #  I don't think it matters since the timestamps used to compute the scores
@@ -154,7 +166,7 @@ class CubeServerMaster:
         self.log.info(f"RFID UID found: {rfid_msg.uid} for team {team.name}")
 
         # check if the team has already played this cubebox
-        if team.has_played_cube(sending_cubebox_id):
+        if team.has_completed_cube(sending_cubebox_id):
             self.log.error(f"Team {team.name} has already played cubebox {sending_cubebox_id}. Denying.")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.DENIED)
             return
@@ -208,20 +220,6 @@ class CubeServerMaster:
         # and update the local cubeboxes teams status lists
         self.cubeboxes.update_cubebox(cubebox)
 
-        # now notify the front desk of the win
-        win_msg = cm.CubeMsgCubeboxWin(self.net.node_name, team.name, cubebox.cube_id,
-                                       cbp_msg.start_timestamp, cbp_msg.press_timestamp)
-        report = self.net.send_msg_to_frontdesk(win_msg, require_ack=True)
-        if not report:
-            self.log.error(f"Failed to send cubebox win message to frontdesk")
-            return
-        ack_msg = report.ack_msg
-        if not ack_msg:
-            self.log.error(f"Sent cubebox win message to frontdesk but no ack received")
-            return
-        else:
-            self.log.info(f"Cubebox win message sent to and acked by frontdesk")
-
     def _handle_frontdesk_new_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received new team message from {message.sender}")
         ntmsg = cm.CubeMsgFrontdeskNewTeam(copy_msg=message)
@@ -251,11 +249,20 @@ class CubeServerMaster:
             self.log.error(f"Failed to remove team: {rtmsg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
 
-    def _handle_frontdesk_request_cubemaster_status_message(self, message: cm.CubeMessage):
+    def _handle_request_cubemaster_status_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request cubemaster status message from {message.sender}")
-        self.net.send_msg_to_frontdesk(cm.CubeMsgCubemasterStatusReply(self.net.node_name))
+        self._handle_request_all_teams_statuses_message(message)
+        self._handle_request_all_cubeboxes_statuses_message(message)
 
-    def _handle_frontdesk_request_team_status_message(self, message: cm.CubeMessage):
+    def _handle_request_all_cubeboxes_statuses_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request all cubeboxes status message from {message.sender}")
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllCubeboxesStatuses(self.net.node_name, self.cubeboxes))
+
+    def _handle_request_all_teams_statuses_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request all teams status message from {message.sender}")
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllTeamsStatuses(self.net.node_name, self.teams))
+
+    def _handle_request_team_status_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request team status message from {message.sender}")
         rts_msg = cm.CubeMsgRequestTeamStatus(copy_msg=message)
         team = self.teams.get_team_by_name(rts_msg.team_name)
@@ -263,9 +270,9 @@ class CubeServerMaster:
             self.log.error(f"Team not found: {rts_msg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
-        self.net.send_msg_to_frontdesk(cm.CubeMsgTeamStatusReply(self.net.node_name, team))
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyTeamStatus(self.net.node_name, team))
 
-    def _handle_frontdesk_request_cubebox_status_message(self, message: cm.CubeMessage):
+    def _handle_request_cubebox_status_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request cubebox status message from {message.sender}")
         rcs_msg = cm.CubeMsgRequestCubeboxStatus(copy_msg=message)
         cubebox = self.cubeboxes.get_cubebox_by_cube_id(rcs_msg.cube_id)
@@ -273,12 +280,17 @@ class CubeServerMaster:
             self.log.error(f"Cubebox not found: {rcs_msg.cube_id}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
             return
-        self.net.send_msg_to_frontdesk(cm.CubeMsgCubeboxStatusReply(self.net.node_name, cubebox))
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, cubebox))
 
-    def _handle_frontdesk_request_all_teams_status_hashes_message(self, message: cm.CubeMessage):
+    def _handle_request_all_teams_status_hashes_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request all teams status hashes message from {message.sender}")
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllTeamsStatusHashes(self.net.node_name, self.teams.hash_dict))
 
-        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllTeamsStatusHashes(self.net.node_name, self.teams.get_all_teams_status_hashes()))
+    def _handle_request_all_cubeboxes_status_hashes_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received request all cubeboxes status hashes message from {message.sender}")
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllCubeboxesStatusHashes(self.net.node_name, self.cubeboxes.hash_dict))
+
+
 
 
 

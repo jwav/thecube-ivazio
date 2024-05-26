@@ -138,7 +138,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         self._thread = threading.Thread(target=self._event_read_loop)
         self._keep_running = True
 
-        self._device_path: str = None
+        self._device_path: Optional[str] = None
         self._device = None
         self._is_setup = False
 

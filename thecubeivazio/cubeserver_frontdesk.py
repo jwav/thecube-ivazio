@@ -1,5 +1,5 @@
 """The backend of the cube front desk system. Meant to be implemented by cubegui"""
-
+import logging
 import threading
 import time
 from typing import Optional, Iterable, Sized
@@ -40,16 +40,29 @@ class CubeServerFrontdesk:
 
         # holds the information about the teams
         # TODO: do something with them. update them, request updates, etc
-        self.teams = cube_game.CubeTeamsStatusList()
-        self.cubeboxes = cube_game.CubeboxesStatusList()
+        self.game_status = cube_game.CubeGameStatus()
+
+    @property
+    def teams(self) -> cube_game.CubeTeamsStatusList:
+        return self.game_status.teams
+
+    @property
+    def cubeboxes(self) -> cube_game.CubeboxesStatusList:
+        return self.game_status.cubeboxes
+
+    @teams.setter
+    def teams(self, value: cube_game.CubeTeamsStatusList):
+        self.game_status.teams = value
+
+    @cubeboxes.setter
+    def cubeboxes(self, value: cube_game.CubeboxesStatusList):
+        self.game_status.cubeboxes = value
 
     def run(self):
         self.rfid.run()
-
         self._msg_handling_thread = threading.Thread(target=self._msg_handling_loop)
         self._keep_running = True
         self._msg_handling_thread.start()
-
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
@@ -73,37 +86,100 @@ class CubeServerFrontdesk:
                 # ignore ack messages, they're handled in the networking module
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
-                elif message.msgtype == cm.CubeMsgTypes.CUBEMASTER_TEAM_WIN:
-                    self.log.info(f"Received team win message from {message.sender}")
-                    # TODO: do something with it
-                    # TODO: wait, the Frontdesk can already receive the team win message from the CubeBox if we're on UDP broadcast
-                    #  should i handle it anyway just in case i move to TCP or addressed UDP later on?
-                    self.net.acknowledge_this_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
+                    self._handle_cubebox_button_press_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS:
-                    self.log.info(f"Received cubebox status reply message from {message.sender}")
-                    new_cubebox_status = cm.CubeMsgCubeboxStatusReply(copy_msg=message).cubebox
-                    if new_cubebox_status.is_valid():
-                        self.cubeboxes.update_cubebox(new_cubebox_status)
-                        self.log.info(f"Updated cubebox status: {new_cubebox_status}")
-                        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-                    else:
-                        self.log.error(f"Invalid cubebox status: {new_cubebox_status}")
-                        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.INVALID)
+                    self._handle_cubemaster_cubebox_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_TEAM_STATUS:
-                    self.log.info(f"Received team status reply message from {message.sender}")
-                    new_team_status = cm.CubeMsgTeamStatusReply(copy_msg=message).cubebox
-                    if new_team_status.is_valid():
-                        self.teams.update_team(new_team_status)
-                        self.log.info(f"Updated team status: {new_team_status}")
-                        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-                    else:
-                        self.log.error(f"Invalid team status: {new_team_status}")
-                        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.INVALID)
-
+                    self._handle_reply_team_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES:
+                    self._handle_reply_all_cubeboxes_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUSES:
+                    self._handle_reply_all_teams_status(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES:
+                    self._handle_reply_all_teams_status_hashes(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES:
+                    self._handle_reply_all_cubeboxes_status_hashes(message)
+                # TODO: handle other message types
                 else:
                     self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
-                    self.net.remove_msg_from_incoming_queue(message)
-                # TODO: handle other message types
+                self.net.remove_msg_from_incoming_queue(message)
+
+
+    def _handle_reply_all_cubeboxes_status_hashes(self, message: cm.CubeMessage):
+        raise NotImplementedError
+
+    def _handle_reply_all_teams_status_hashes(self, message: cm.CubeMessage):
+        raise NotImplementedError
+
+    def _handle_cubemaster_cubebox_status_message(self, message: cm.CubeMessage):
+        raise NotImplementedError
+
+    def _handle_reply_all_teams_status(self, message: cm.CubeMessage) -> bool:
+        try:
+            self.log.info(f"Received reply all teams status message from {message.sender}")
+            alsr_msg = cm.CubeMsgReplyAllTeamsStatuses(copy_msg=message)
+            new_teams = alsr_msg.teams_statuses
+            assert new_teams, "_handle_reply_all_teams_status: new_teams is None"
+            assert self.teams.update_from_teams_list(new_teams), "_handle_reply_all_teams_status: update_from_teams_list failed"
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            return True
+        except Exception as e:
+            self.log.error(f"Error handling reply all teams status message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            return False
+
+
+    def _handle_reply_team_status_message(self, message: cm.CubeMessage):
+        try:
+            self.log.info(f"Received team status reply message from {message.sender}")
+            rts_msg = cm.CubeMsgReplyTeamStatus(copy_msg=message)
+            new_team_status = rts_msg.team_status
+            assert new_team_status.is_valid(), "_handle_team_status_reply: new_team_status is invalid"
+            assert self.teams.update_team(new_team_status), "_handle_team_status_reply: update_team failed"
+            self.log.info(f"Updated team status: {new_team_status}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        except Exception as e:
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.INVALID)
+
+    def _handle_reply_all_cubeboxes_status_message(self, message: cm.CubeMessage):
+        try:
+            self.log.info(f"Received reply all cubeboxes status message from {message.sender}")
+            acsr_msg = cm.CubeMsgReplyAllCubeboxesStatuses(copy_msg=message)
+            new_cubeboxes = acsr_msg.cubeboxes_statuses
+            assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
+            assert self.cubeboxes.update_from_cubeboxes(new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        except Exception as e:
+            self.log.error(f"Error handling reply all cubeboxes status message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+
+    def _handle_reply_cubebox_status(self, message: cm.CubeMessage):
+        try:
+            self.log.info(f"Received reply cubebox status message from {message.sender}")
+            acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
+            new_cubebox = acsr_msg.cubebox
+            assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
+            assert self.cubeboxes.update_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        except Exception as e:
+            self.log.error(f"Error handling reply cubebox status message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+
+    def _handle_cubebox_button_press_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received team win message from {message.sender}")
+        try:
+            cbp_msg = cm.CubeMsgButtonPress(copy_msg=message)
+            assert cbp_msg.is_valid(), "Invalid CubeMsgButtonPress message"
+            cube_id = cbp_msg.cube_id
+            team_name = self.teams.get_team_by_current_cube_id(cube_id).name
+            assert team_name, f"Team not found for cube_id {cube_id}"
+            win_timestamp = cbp_msg.press_timestamp
+            self.game_status.register_win(cube_id, team_name, win_timestamp)
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        except Exception as e:
+            self.log.error(f"Error handling cubebox button press message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
 
     def add_new_team(self, team: cube_game.CubeTeamStatus) -> cubenet.SendReport:
         """Send a message to the CubeMaster to add a new team. Return True if the CubeMaster added the team, False if not, None if no response."""
@@ -174,7 +250,7 @@ class CubeServerFrontdesk:
             if not reply_msg:
                 self.log.error(f"Failed to receive the team status reply for team {team_name}")
                 return False
-            return self._handle_team_status_reply(reply_msg)
+            return self._handle_reply_team_status_message(reply_msg)
 
     def request_all_teams_status(self, reply_timeout:Seconds=None) -> bool:
         """Send a message to the CubeMaster to request the status of all teams.
@@ -190,7 +266,7 @@ class CubeServerFrontdesk:
             if not reply_msg:
                 self.log.error("Failed to receive the all teams status reply")
                 return False
-            return self._handle_all_teams_status_reply(reply_msg)
+            return self._handle_reply_all_teams_status(reply_msg)
 
     def request_all_teams_status_hashes(self, reply_timeout:Seconds=None) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all teams.
@@ -202,11 +278,11 @@ class CubeServerFrontdesk:
             self.log.error("Failed to send the request all teams status hashes message")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.CUBEMASTER_TEAM_STATUS_HASHES_REPLY, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES, timeout=reply_timeout)
             if not reply_msg:
                 self.log.error("Failed to receive the all teams status hashes reply")
                 return False
-            return self._handle_all_teams_status_hashes_reply(reply_msg)
+            return self._handle_reply_all_teams_status_hashes(reply_msg)
 
     def request_cubebox_status(self, cubebox_id:int, reply_timeout:Seconds=None) -> bool:
         """Send a message to a CubeBox to request its status.
@@ -222,7 +298,7 @@ class CubeServerFrontdesk:
             if not reply_msg:
                 self.log.error(f"Failed to receive the cubebox status reply for cubebox {cubebox_id}")
                 return False
-            return self._handle_cubebox_status_reply(reply_msg)
+            return self._handle_reply_cubebox_status(reply_msg)
 
     def request_all_cubeboxes_status(self, reply_timeout:Seconds=None) -> bool:
         """Send a message to the CubeMaster to request the status of all cubeboxes.
@@ -238,7 +314,7 @@ class CubeServerFrontdesk:
             if not reply_msg:
                 self.log.error("Failed to receive the all cubeboxes status reply")
                 return False
-            return self._handle_all_cubeboxes_status_reply(reply_msg)
+            return self._handle_reply_all_cubeboxes_status_message(reply_msg)
 
     def request_all_cubeboxes_status_hashes(self, reply_timeout:Seconds=None) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all cubeboxes.
@@ -254,7 +330,7 @@ class CubeServerFrontdesk:
             if not reply_msg:
                 self.log.error("Failed to receive the all cubeboxes status hashes reply")
                 return False
-            return self._handle_all_cubeboxes_status_hashes_reply(reply_msg)
+            return self._handle_reply_all_cubeboxes_status_hashes(reply_msg)
 
 
 class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
@@ -359,6 +435,8 @@ class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
             self.request_team_status(team_name)
         elif cmd in ["rats", "requestallteamsstatus"]:
             self.request_all_teams_status()
+        elif cmd in ["rabs", "requestallcubeboxstatus"]:
+            self.request_all_cubeboxes_status()
         else:
             print("Unknown command")
             return False
