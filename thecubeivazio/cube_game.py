@@ -452,7 +452,8 @@ class CubeTeamStatus:
             "max_time_sec": self.max_time_sec,
             "start_timestamp": self.start_timestamp,
             "current_cubebox_id": self.current_cubebox_id,
-            "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes]
+            "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes],
+            "trophies": [trophy.to_dict() for trophy in self.trophies],
         }
 
     @classmethod
@@ -698,7 +699,6 @@ class CubeTeamStatus:
 class CubeTeamsStatusList(List[CubeTeamStatus]):
     """List of CubeTeam instances, one for each team playing a CubeGame. Meant to be used by the CubeMaster and FrontDesk."""
 
-    DEFAULT_PICKLE_FILE = "cube_teams_list.pkl"
     DEFAULT_JSON_FILE = "cube_teams_list.json"
     JSON_ROOT_OBJECT_NAME = "teams"
 
@@ -801,33 +801,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             if team.current_cubebox_id == cube_id:
                 return team
         return None
-
-    # TODO: testme
-    def save_to_pickle(self, filename=None) -> bool:
-        if filename is None:
-            filename = self.DEFAULT_PICKLE_FILE
-        try:
-            with open(filename, 'wb') as f:
-                pickle.dump(self, f)
-            return True
-        except Exception as e:
-            print(e)
-            return False
-
-    # TODO: testme
-    def load_from_pickle(self, filename=None) -> bool:
-        if filename is None:
-            filename = self.DEFAULT_PICKLE_FILE
-        try:
-            with open(filename, 'rb') as f:
-                data = pickle.load(f)
-            self.clear()
-            self.extend(data)
-            return True
-        except Exception as e:
-            print(e)
-            self.reset()
-            return False
 
     # TODO: testme
     def save_to_json_file(self, filename: str = None) -> bool:

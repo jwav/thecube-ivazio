@@ -128,14 +128,15 @@ class CubeGuiTabTeamsMixin:
                 team.start_timestamp, separators=":", secs=False)
             end_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
                 team.end_timestamp, separators=":", secs=False)
-            trophies_names = [t.name for t in team.trophies]
+            trophies_str = "".join(["🏆" for t in team.trophies])
+            trophies_str = ",".join([t.name for t in team.trophies])
             print(f"team: {team}")
             self.ui.tableTeamsResults.setItem(i, 0, QTableWidgetItem(french_date))
             self.ui.tableTeamsResults.setItem(i, 1, QTableWidgetItem(team.name))
             self.ui.tableTeamsResults.setItem(i, 2, QTableWidgetItem(team.custom_name))
             self.ui.tableTeamsResults.setItem(i, 3, QTableWidgetItem(str(team.calculate_score())))
             self.ui.tableTeamsResults.setItem(i, 4, QTableWidgetItem(str(team.completed_cubebox_ids)))
-            self.ui.tableTeamsResults.setItem(i, 5, QTableWidgetItem(", ".join(trophies_names)))
+            self.ui.tableTeamsResults.setItem(i, 5, QTableWidgetItem(trophies_str))
             self.ui.tableTeamsResults.setItem(i, 6, QTableWidgetItem(start_tod))
             self.ui.tableTeamsResults.setItem(i, 7, QTableWidgetItem(end_tod))
             self.ui.tableTeamsResults.setItem(i, 8, QTableWidgetItem(team.rfid_uid))
