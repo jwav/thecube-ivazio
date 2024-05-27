@@ -26,7 +26,10 @@ from pynput import keyboard
 
 
 class CubeRfidLine:
-    VALID_UID_LENGTH = 10
+    # valid length for the "Windows" RFID reader
+    #VALID_UID_LENGTH = 10
+    # valid length for the "Prison Island" RFID reader
+    VALID_UID_LENGTH = 8
     """Represents a line of RFID data entered by the user with a timestamp:
     timestamp: float, the time the line was entered
     uid: str, the RFID data entered by the user
