@@ -25,6 +25,22 @@ class SendReport:
         if self.reply_msg is not None and self.reply_msg.msgtype == cm.CubeMsgTypes.ACK:
             return cm.CubeMsgAck(copy_msg=self.reply_msg)
 
+    @property
+    def ack_info(self):
+        # noinspection PyBroadException
+        try:
+            return self.ack_msg.info
+        except:
+            return None
+
+    @property
+    def ok(self):
+        # noinspection PyBroadException
+        try:
+            return self.ack_info == cm.CubeAckInfos.OK
+        except:
+            return False
+
     def __bool__(self):
         """enables the use of SendReport as a boolean, like `if send_report:`"""
         return self.success

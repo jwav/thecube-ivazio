@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>952</width>
+    <width>1001</width>
     <height>981</height>
    </rect>
   </property>
@@ -84,7 +84,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QLabel" name="lblCreateStatusText_2">
+           <widget class="QLabel" name="lblNewteamStatusText_2">
             <property name="font">
              <font>
               <family>Noto Serif</family>
@@ -122,7 +122,7 @@
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="2" column="3">
-           <widget class="QLineEdit" name="lineCreateRfid">
+           <widget class="QLineEdit" name="lineNewteamRfid">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -158,7 +158,7 @@
            </widget>
           </item>
           <item row="1" column="3" colspan="3">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="lineNewteamTeamCustomName">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -174,7 +174,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QLabel" name="lblCreateTeamName">
+           <widget class="QLabel" name="lblNewteamTeamName">
             <property name="text">
              <string>Nom de code :</string>
             </property>
@@ -194,7 +194,7 @@
            </spacer>
           </item>
           <item row="2" column="1">
-           <widget class="QPushButton" name="btnIconCreateRfidStatus">
+           <widget class="QPushButton" name="btnIconNewteamRfidStatus">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -227,7 +227,7 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="2" column="4">
-           <widget class="QPushButton" name="btnCreateRfidClear">
+           <widget class="QPushButton" name="btnNewteamRfidClear">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -244,21 +244,21 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLabel" name="lblCreateRfid">
+           <widget class="QLabel" name="lblNewteamRfid">
             <property name="text">
              <string>Badge RFID : </string>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QLabel" name="lblCreateAllocatedTime">
+           <widget class="QLabel" name="lblNewteamAllocatedTime">
             <property name="text">
              <string>Temps alloué : </string>
             </property>
            </widget>
           </item>
           <item row="3" column="3">
-           <widget class="QComboBox" name="comboCreateDuration">
+           <widget class="QComboBox" name="comboNewteamDuration">
             <property name="maxVisibleItems">
              <number>20</number>
             </property>
@@ -275,7 +275,7 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QComboBox" name="comboCreateTeamName">
+           <widget class="QComboBox" name="comboNewteamTeamName">
             <property name="maxVisibleItems">
              <number>20</number>
             </property>
@@ -338,7 +338,7 @@ QPushButton:focus {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btnCreateNewTeam">
+           <widget class="QPushButton" name="btnNewteamNewTeam">
             <property name="text">
              <string>Créer une nouvelle équipe</string>
             </property>
@@ -375,7 +375,7 @@ QPushButton:focus {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btnIconCreateNewTeamStatus">
+           <widget class="QPushButton" name="btnIconNewteamNewTeamStatus">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -404,7 +404,7 @@ QPushButton:focus {
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lblCreateNewTeamStatusText">
+           <widget class="QLabel" name="lblNewteamNewTeamStatusText">
             <property name="text">
              <string>-- statut de la création d'équipe --</string>
             </property>
@@ -481,7 +481,7 @@ QPushButton:focus {
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
-           <widget class="QLabel" name="lblCreateStatusText_6">
+           <widget class="QLabel" name="lblNewteamStatusText_6">
             <property name="font">
              <font>
               <family>Noto Serif</family>
@@ -519,7 +519,7 @@ QPushButton:focus {
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="0">
-           <widget class="QLabel" name="lblCreateRfid_3">
+           <widget class="QLabel" name="lblNewteamRfid_3">
             <property name="text">
              <string>Badge RFID : </string>
             </property>
@@ -542,14 +542,14 @@ QPushButton:focus {
            </spacer>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="comboCreateTeamName_3">
+           <widget class="QComboBox" name="comboNewteamTeamName_3">
             <property name="maxVisibleItems">
              <number>20</number>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="lblCreateTeamName_3">
+           <widget class="QLabel" name="lblNewteamTeamName_3">
             <property name="text">
              <string>Nom de l'équipe : </string>
             </property>
@@ -1033,7 +1033,7 @@ QPushButton:focus {
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QLabel" name="lblCreateStatusText_5">
+           <widget class="QLabel" name="lblNewteamStatusText_5">
             <property name="font">
              <font>
               <family>Noto Serif</family>
@@ -1166,7 +1166,7 @@ QPushButton:focus {
             <row/>
             <column>
              <property name="text">
-              <string>Heartbeat</string>
+              <string>Dernier msg</string>
              </property>
             </column>
             <column>

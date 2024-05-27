@@ -52,25 +52,37 @@ class CubeGuiForm(QMainWindow):
 
         # fill the team names combo box
         team_names = self.fd.config.team_names
-        self.ui.comboCreateTeamName.clear()
-        self.ui.comboCreateTeamName.addItems(team_names)
+        self.ui.comboNewteamTeamName.clear()
+        self.ui.comboNewteamTeamName.addItems(team_names)
 
         # fill the game durations combo box
         game_durations_str = self.fd.config.game_durations_str
-        self.ui.comboCreateDuration.clear()
-        self.ui.comboCreateDuration.addItems(game_durations_str)
+        self.ui.comboNewteamDuration.clear()
+        self.ui.comboNewteamDuration.addItems(game_durations_str)
 
         # set up the buttons
-        self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon())
-        self.ui.btnCreateNewTeam.clicked.connect(self.create_new_team)
-        self.ui.btnCreateRfidClear.clicked.connect(
-            lambda: (self.ui.lineCreateRfid.clear(), self.log.info("RFID cleared")))
+        self.ui.btnIconNewteamNewTeamStatus.setIcon(QtGui.QIcon())
+        self.ui.btnNewteamNewTeam.clicked.connect(self.create_new_team)
+        self.ui.btnNewteamRfidClear.clicked.connect(
+            lambda: (self.ui.lineNewteamRfid.clear(), self.log.info("RFID cleared")))
 
         # set up the status label
-        self.ui.lblCreateNewTeamStatusText.setText("")
+        self.update_new_team_status_label("", None)
+
+
+    def update_new_team_status_label(self, text: str, icon_name: str=None):
+        try:
+            self.ui.lblNewteamNewTeamStatusText.setText(text)
+            if icon_name:
+                self.ui.btnIconNewteamNewTeamStatus.setIcon(QtGui.QIcon.fromTheme(icon_name))
+            QApplication.processEvents()
+        except Exception as e:
+            self.log.error(f"Error in update_new_team_status_label: {e}")
+            self.ui.btnIconNewteamNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("error"))
+            self.ui.lblNewteamNewTeamStatusText.setText("{e}")
 
     def update_team_creation_tab(self):
-
+        raise NotImplementedError
 
     def setup_team_management_tab(self):
         pass
@@ -79,26 +91,23 @@ class CubeGuiForm(QMainWindow):
         pass
 
     def create_new_team(self):
-        team_name = self.ui.comboCreateTeamName.currentText()
-        rfid = self.ui.lineCreateRfid.text()
-        allocated_time = cube_utils.hhmmss_string_to_seconds(self.ui.comboCreateDuration.currentText())
+        team_name = self.ui.comboNewteamTeamName.currentText()
+        team_custom_name = self.ui.lineNewteamTeamCustomName.text()
+        rfid = self.ui.lineNewteamRfid.text()
+        allocated_time = cube_utils.hhmmss_string_to_seconds(self.ui.comboNewteamDuration.currentText())
         if any([not team_name, not rfid, not allocated_time]):
-            self.ui.lblCreateNewTeamStatusText.setText(f"Informations manquantes ou erronées")
-            self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("error"))
-            QApplication.processEvents()
+            self.update_new_team_status_label(f"Informations manquantes ou erronées", "error")
             self.log.error("Missing information to create a new team.")
             return
-        self.log.info(f"Creating new team: {team_name} with RFID: {rfid} and {allocated_time} seconds.")
         team = cube_game.CubeTeamStatus(team_name, rfid, allocated_time)
-        self.ui.lblCreateNewTeamStatusText.setText(f"Création de l'équipe {team_name} en cours...")
-        self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("hourglass"))
-        QApplication.processEvents()
-        if self.fd.add_new_team(team):
-            self.ui.lblCreateNewTeamStatusText.setText(f"Équipe {team_name} créée avec succès.")
-            self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("ok"))
+        self.log.info(f"Creating new team: {team.to_string()}")
+        self.update_new_team_status_label(f"Création de l'équipe {team_name} en cours...", "hourglass")
+        # send the new team creation message to the cubemaster and check that the ack is ok
+        report = self.fd.add_new_team(team)
+        if report.ok:
+            self.update_new_team_status_label(f"Équipe {team_name} créée avec succès.", "ok")
         else:
-            self.ui.lblCreateNewTeamStatusText.setText(f"Échec de la création de l'équipe {team_name}.")
-            self.ui.btnIconCreateNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("error"))
+            self.update_new_team_status_label(f"Échec de la création de l'équipe {team_name} : {report.ack_info}", "error")
 
     def closeEvent(self, event):
         self.log.info("Closing CubeGui...")
@@ -118,18 +127,18 @@ class CubeGuiForm(QMainWindow):
     def handle_rfid(self):
         try:
             if self.fd.rfid.is_setup():
-                self.ui.btnIconCreateRfidStatus.setIcon(QtGui.QIcon())
-                self.ui.btnIconCreateRfidStatus.setToolTip("")
+                self.ui.btnIconNewteamRfidStatus.setIcon(QtGui.QIcon())
+                self.ui.btnIconNewteamRfidStatus.setToolTip("")
             else:
                 icon = QtGui.QIcon.fromTheme("error")
-                self.ui.btnIconCreateRfidStatus.setIcon(icon)
-                self.ui.btnIconCreateRfidStatus.setToolTip("Le lecteur RFID n'est pas connecté.")
+                self.ui.btnIconNewteamRfidStatus.setIcon(icon)
+                self.ui.btnIconNewteamRfidStatus.setToolTip("Le lecteur RFID n'est pas connecté.")
                 self.fd.rfid.setup()
             if self.fd.rfid.has_new_lines():
                 lines = self.fd.rfid.get_completed_lines()
                 for line in lines:
                     self.log.info(f"RFID line: {line}")
-                    self.ui.lineCreateRfid.setText(f"{line.uid}")
+                    self.ui.lineNewteamRfid.setText(f"{line.uid}")
                     self.ui.lineManageRfid.setText(f"{line.uid}")
                     self.fd.rfid.remove_line(line)
         except Exception as e:
