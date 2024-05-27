@@ -66,7 +66,7 @@ class CubeGuiTabTeamsMixin:
         self.ui.btnTeamsPrintScoresheet.clicked.connect(self.print_scoresheet)
 
         # update the tab
-        self.update_team_info_table()
+        self.update_teams_info_table()
 
     def print_scoresheet(self: 'CubeGuiForm'):
         pass
@@ -134,12 +134,38 @@ class CubeGuiTabTeamsMixin:
         # if there are results, select the first one
         if matching_teams:
             self.ui.listTeamsSearchResults.setCurrentRow(0)
+            self.ui.tableTeamsResults.clearContents()
+            self.ui.tableTeamsResults.setColumnCount(9)
+            # columns : date, name, custom_name, score, completed cubes, trophies, start time, end time, rfid uid
+            self.ui.tableTeamsResults.setHorizontalHeaderLabels([
+                "Date", "Nom", "Nom personnalisé", "Score", "Cubes faits", "Trophées", "Début", "Fin", "RFID UID"])
+
+
+            self.ui.tableTeamsResults.setRowCount(len(matching_teams))
+
+            for i, team in enumerate(matching_teams):
+                french_date = cube_utils.timestamp_to_french_date(team.start_timestamp)
+                start_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(team.start_timestamp, separators=":", secs=False)
+                end_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(team.end_timestamp, separators=":", secs=False)
+                trophies_names = [t.name for t in team.trophies]
+                self.ui.tableTeamsResults.setItem(i, 0, QTableWidgetItem(french_date))
+                self.ui.tableTeamsResults.setItem(i, 1, QTableWidgetItem(team.name))
+                self.ui.tableTeamsResults.setItem(i, 2, QTableWidgetItem(team.custom_name))
+                self.ui.tableTeamsResults.setItem(i, 3, QTableWidgetItem(str(team.calculate_score())))
+                self.ui.tableTeamsResults.setItem(i, 4, QTableWidgetItem(str(team.completed_cubebox_ids)))
+                self.ui.tableTeamsResults.setItem(i, 5, QTableWidgetItem(", ".join(trophies_names)))
+                self.ui.tableTeamsResults.setItem(i, 6, QTableWidgetItem(start_tod))
+                self.ui.tableTeamsResults.setItem(i, 7, QTableWidgetItem(end_tod))
+                self.ui.tableTeamsResults.setItem(i, 8, QTableWidgetItem(team.rfid_uid))
+
+
+
 
         # update this tab so as to display the selected team's info in the table
-        self.update_team_info_table()
+        self.update_teams_info_table()
 
 
-    def update_team_info_table(self: 'CubeGuiForm'):
+    def update_teams_info_table(self: 'CubeGuiForm'):
         # get the selected team in the list
         selected_row = self.ui.listTeamsSearchResults.currentRow()
         print(f"selected_row: {selected_row}")
