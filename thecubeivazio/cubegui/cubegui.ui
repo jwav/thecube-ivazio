@@ -684,302 +684,66 @@ QPushButton:focus {
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer_13">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
+         <widget class="QTableWidget" name="tableTeamsResults">
+          <property name="minimumSize">
            <size>
-            <width>20</width>
-            <height>40</height>
+            <width>800</width>
+            <height>0</height>
            </size>
           </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
+          <property name="editTriggers">
+           <set>QAbstractItemView::DoubleClicked</set>
           </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Liste des équipes correspondantes</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTableWidget" name="tableTeamsTeamInfo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>30</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>300</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>300</width>
-              <height>400</height>
-             </size>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustToContents</enum>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="showGrid">
-             <bool>true</bool>
-            </property>
-            <property name="columnCount">
-             <number>1</number>
-            </property>
-            <attribute name="horizontalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderStretchLastSection">
-             <bool>false</bool>
-            </attribute>
-            <row>
-             <property name="text">
-              <string>Nom</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Nom custom</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Date</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Score</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Cubes faits</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Durée</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Heure création</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Heure début</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Heure fin</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>RFID</string>
-             </property>
-            </row>
-            <column>
-             <property name="text">
-              <string>Clé</string>
-             </property>
-            </column>
-            <item row="0" column="0">
-             <property name="text">
-              <string>Budapest</string>
-             </property>
-            </item>
-            <item row="1" column="0">
-             <property name="text">
-              <string>Fred &amp; Laure</string>
-             </property>
-            </item>
-            <item row="2" column="0">
-             <property name="text">
-              <string>lundi 14 mai</string>
-             </property>
-            </item>
-            <item row="3" column="0">
-             <property name="text">
-              <string>640</string>
-             </property>
-            </item>
-            <item row="4" column="0">
-             <property name="text">
-              <string>7</string>
-             </property>
-            </item>
-            <item row="5" column="0">
-             <property name="text">
-              <string>1h00</string>
-             </property>
-            </item>
-            <item row="6" column="0">
-             <property name="text">
-              <string>17:19</string>
-             </property>
-            </item>
-            <item row="7" column="0">
-             <property name="text">
-              <string>17:25</string>
-             </property>
-            </item>
-            <item row="8" column="0">
-             <property name="text">
-              <string>18:25</string>
-             </property>
-            </item>
-            <item row="9" column="0">
-             <property name="text">
-              <string>1234567890</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Infos de l'équipe sélectionnée</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QListWidget" name="listTeamsSearchResults">
-            <property name="minimumSize">
-             <size>
-              <width>600</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>400</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>Budapest - &quot;Fred &amp; Laure&quot; : lundi 14 mai : 17h25 -&gt; 18h25 : 640 points</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Stockholm - &quot;Afterwork Ubisoft&quot; : dimanche 13 mai : 19h12 -&gt; 20h42 : 910 points</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableTeamsResults">
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string>Date</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Nom</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Nom personnalisé</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Score</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Cubes faits</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Trophées</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Début</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Fin</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>RFID UID</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Date</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Nom</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Nom personnalisé</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Score</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Cubes faits</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Début</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Fin</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>RFID UID</string>
+           </property>
+          </column>
+         </widget>
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Ajouter un trophée pour cette équipe : </string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="3">
            <spacer name="horizontalSpacer_19">
             <property name="orientation">
@@ -992,6 +756,13 @@ QPushButton:focus {
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Ajouter un trophée pour cette équipe : </string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="comboTeamsAddTrophy"/>
