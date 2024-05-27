@@ -6,6 +6,8 @@ import os
 import atexit
 from typing import Optional, Union
 
+from thecubeivazio.cube_common_defines import *
+
 
 def get_git_branch_version():
     """
@@ -138,12 +140,32 @@ def hhmmss_string_to_seconds(hhmmss:str) -> Optional[int]:
         print(f"Error while converting {hhmmss} to seconds: {e}")
         return None
 
-def seconds_to_hhmmss_string(seconds: Union[float,int], separators="hms") -> str:
+# TODO: test
+def seconds_to_hhmmss_string(seconds: Seconds, separators="hms",
+                             hours=True, mins=True, secs=True) -> str:
     """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
     sep1 = separators[0] if len(separators) > 0 else ""
     sep2 = separators[1] if len(separators) > 1 else ""
     sep3 = separators[2] if len(separators) > 2 else ""
-    return time.strftime(f'%H{sep1}%M{sep2}%S{sep3}', time.gmtime(seconds))
+    h = "%H" if hours else ""
+    m = "%M" if mins else ""
+    s = "%S" if secs else ""
+    return time.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}', time.gmtime(seconds))
+
+# TODO: test
+def timestamp_to_hhmmss_time_of_day_string(timestamp: Timestamp, separators="hms",
+                                           hours=True, mins=True, secs=True) -> str:
+    """Convert a timestamp to a time of day string in the format HH:MM:SS using datetime
+    (i.e. it cannot go beyond 23:59:59)"""
+    # use datetime to get the time of the timestamp
+    time_of_day = datetime.datetime.fromtimestamp(timestamp).time()
+    sep1 = separators[0] if len(separators) > 0 else ""
+    sep2 = separators[1] if len(separators) > 1 else ""
+    sep3 = separators[2] if len(separators) > 2 else ""
+    h = "%H" if hours else ""
+    m = "%M" if mins else ""
+    s = "%S" if secs else ""
+    return time_of_day.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}')
 
 def timestamp_to_french_date(timestamp: Union[float,int], weekday=True, day_number=True, month=True, year=True) -> str:
     """Convert a timestamp to a string in a format like 'lundi 1 janvier 2021'"""
@@ -195,3 +217,37 @@ def timestamps_are_in_same_month(timestamp1: float, timestamp2: float) -> bool:
     date1 = datetime.datetime.fromtimestamp(timestamp1)
     date2 = datetime.datetime.fromtimestamp(timestamp2)
     return date1.month == date2.month
+
+def today_start_timestamp(timestamp:float=None):
+    """Get the timestamp of the start of the day of the timestamp"""
+    if timestamp is None:
+        timestamp = time.time()
+    # use datetime to get the date of the timestamp
+    date = datetime.datetime.fromtimestamp(timestamp)
+    # create a new datetime object with the same year, month and day, but at 00:00:00
+    start_date = datetime.datetime(date.year, date.month, date.day)
+    return start_date.timestamp()
+
+def this_week_start_timestamp(timestamp:float=None):
+    """Get the timestamp of the start of the week of the timestamp"""
+    if timestamp is None:
+        timestamp = time.time()
+    # use datetime to get the date of the timestamp
+    date = datetime.datetime.fromtimestamp(timestamp)
+    # get the number of the week
+    week_number = date.isocalendar()[1]
+    # get the year
+    year = date.year
+    # create a new datetime object with the same year, month and day, but at 00:00:00
+    start_date = datetime.datetime.strptime(f"{year}-{week_number}-1", "%Y-%W-%w")
+    return start_date.timestamp()
+
+def this_month_start_timestamp(timestamp:float=None):
+    """Get the timestamp of the start of the month of the timestamp"""
+    if timestamp is None:
+        timestamp = time.time()
+    # use datetime to get the date of the timestamp
+    date = datetime.datetime.fromtimestamp(timestamp)
+    # create a new datetime object with the same year and month, but at 00:00:00 on the first day of the month
+    start_date = datetime.datetime(date.year, date.month, 1)
+    return start_date.timestamp()

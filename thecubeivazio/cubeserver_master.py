@@ -51,7 +51,7 @@ class CubeServerMaster:
         self._webpage_thread.start()
         self._display_thread.start()
 
-        #self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
+        # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
         self.net.stop()
@@ -133,13 +133,13 @@ class CubeServerMaster:
         # TODO: time.time() or the timestamp from the RFID reader?
         #  I don't think it matters since the timestamps used to compute the scores
         #  are those from the CubeBox, not the CubeMaster
-        new_cubebox.starting_timestamp = time.time()
+        new_cubebox.start_timestamp = time.time()
         self.cubeboxes.update_cubebox(new_cubebox)
         # update the local teams and cubeboxes status lists
         team.current_cubebox_id = new_cubebox.cube_id
         # if this is the first assignment for this team, also record the start time
-        if team.starting_timestamp is None:
-            team.starting_timestamp = new_cubebox.starting_timestamp
+        if team.start_timestamp is None:
+            team.start_timestamp = new_cubebox.start_timestamp
         self.teams.update_team(team)
         # just checking if the update was successful (it should always be)
         self.log.info(team.to_string())
@@ -205,7 +205,8 @@ class CubeServerMaster:
             return
         # ok, it's a valid button press, which means a team is playing this cubebox.
         # Let's record that win. But first, acknowledge the message to the cubebox
-        self.log.info(f"Team {team.name} won cubebox {cubebox.cube_id} in {cbp_msg.press_timestamp - cbp_msg.start_timestamp} seconds. Acknowledging.")
+        self.log.info(
+            f"Team {team.name} won cubebox {cubebox.cube_id} in {cbp_msg.press_timestamp - cbp_msg.start_timestamp} seconds. Acknowledging.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
         # update the team's status
@@ -213,7 +214,7 @@ class CubeServerMaster:
         team.current_cubebox_id = None
         self.teams.update_team(team)
 
-        self.log.info(f"Teams after win update : {self.teams.to_string()}")
+        self.log.info(f"Teams after button press update : {self.teams.to_string()}")
 
         # indicate that the cubebox needs to be reset by a staff member
         cubebox.set_state_waiting_for_reset()
@@ -288,11 +289,8 @@ class CubeServerMaster:
 
     def _handle_request_all_cubeboxes_status_hashes_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request all cubeboxes status hashes message from {message.sender}")
-        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllCubeboxesStatusHashes(self.net.node_name, self.cubeboxes.hash_dict))
-
-
-
-
+        self.net.send_msg_to_frontdesk(
+            cm.CubeMsgReplyAllCubeboxesStatusHashes(self.net.node_name, self.cubeboxes.hash_dict))
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
@@ -333,7 +331,6 @@ class CubeServerMasterWithPrompt(CubeServerMaster):
         print("ni, netinfo : display the network nodes info")
         print("wi, whois : send a WhoIs message to all nodes")
 
-
     def stop(self):
         super().stop()
 
@@ -366,6 +363,8 @@ class CubeServerMasterWithPrompt(CubeServerMaster):
                 self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NODENAME))
             else:
                 print("Unknown command")
+
+
 
 
 if __name__ == "__main__":

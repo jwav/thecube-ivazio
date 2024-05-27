@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from cubegui import CubeGuiForm
 
 class CubeGuiTabNewTeamMixin:
-    def setup_newteam_tab(self: 'CubeGuiForm'):
+    def setup_tab_newteam(self: 'CubeGuiForm'):
         """Sets up the widgets of the tab 'Créer une nouvelle équipe'"""
 
         # fill the team names combo box

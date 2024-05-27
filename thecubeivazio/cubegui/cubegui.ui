@@ -518,61 +518,14 @@ QPushButton:focus {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QLabel" name="lblNewteamRfid_3">
+          <item row="4" column="1" colspan="2">
+           <widget class="QPushButton" name="btnTeamsSearch">
             <property name="text">
-             <string>Badge RFID : </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <string>Rechercher équipes</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="5">
-           <spacer name="horizontalSpacer_15">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="comboNewteamTeamName_3">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lblNewteamTeamName_3">
-            <property name="text">
-             <string>Nom de l'équipe : </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QRadioButton" name="radioButton_4">
-            <property name="text">
-             <string>sans date</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QRadioButton" name="radioButton_2">
-            <property name="text">
-             <string>aujourd'hui</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Date de jeu : </string>
@@ -583,17 +536,7 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QRadioButton" name="radioButton">
-            <property name="text">
-             <string>en cours de jeu</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="lineManageRfid">
+           <widget class="QLineEdit" name="lineTeamsRfid">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -618,10 +561,123 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="2" column="3">
-           <widget class="QRadioButton" name="radioButton_3">
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblNewteamTeamName_4">
+            <property name="text">
+             <string>Nom personnalisé :</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <widget class="QLineEdit" name="lineTeamsCustomName">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>DejaVu Sans Mono</family>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
+            <property name="placeholderText">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="lblNewteamRfid_3">
+            <property name="text">
+             <string>Badge RFID : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QRadioButton" name="radioTeamsToday">
+            <property name="text">
+             <string>aujourd'hui</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="6">
+           <spacer name="horizontalSpacer_15">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboTeamsTeamName">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblNewteamTeamName_3">
+            <property name="text">
+             <string>Nom de l'équipe : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="5">
+           <widget class="QRadioButton" name="radioTeamsNoDate">
+            <property name="text">
+             <string>sans date</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QRadioButton" name="radioTeamsCurrentlyPlaying">
+            <property name="text">
+             <string>en cours de jeu</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QRadioButton" name="radioTeamsThisWeek">
             <property name="text">
              <string>cette semaine</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QRadioButton" name="radioTeamsThisMonth">
+            <property name="text">
+             <string>ce mois</string>
             </property>
            </widget>
           </item>
@@ -645,8 +701,18 @@ QPushButton:focus {
           <property name="sizeConstraint">
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Liste des équipes correspondantes</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
-           <widget class="QTableWidget" name="tableFinishedDisplayTeam">
+           <widget class="QTableWidget" name="tableTeamsTeamInfo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -799,16 +865,6 @@ QPushButton:focus {
             </item>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Liste des équipes correspondantes</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_7">
             <property name="text">
@@ -820,7 +876,7 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QListWidget" name="listFinishedMatchingTeams">
+           <widget class="QListWidget" name="listTeamsSearchResults">
             <property name="minimumSize">
              <size>
               <width>600</width>
@@ -883,17 +939,17 @@ QPushButton:focus {
            </spacer>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="comboManageAddTrophy"/>
+           <widget class="QComboBox" name="comboTeamsAddTrophy"/>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="btnManageAddTrophy">
+           <widget class="QPushButton" name="btnTeamsAddTrophy">
             <property name="text">
              <string>Ajouter tophée</string>
             </property>
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="btnManageAddTrophy_2">
+           <widget class="QPushButton" name="btnTeamsRemoveSelectedTrophy">
             <property name="text">
              <string>Supprimer le trophée sélectrionné</string>
             </property>
@@ -902,7 +958,7 @@ QPushButton:focus {
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="tableManageTrophyList">
+         <widget class="QTableWidget" name="tableTeamsTrophyList">
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
           </attribute>
@@ -952,7 +1008,7 @@ QPushButton:focus {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btnFinishedPrint">
+           <widget class="QPushButton" name="btnTeamsPrintScoresheet">
             <property name="text">
              <string>Imprimer la feuille de score</string>
             </property>

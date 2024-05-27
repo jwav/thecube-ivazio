@@ -238,7 +238,7 @@ def valid_simulation():
     test_eq(lambda: str(MASTER.teams.get_team_by_name(team_name).max_time_sec), str(max_time),
          "Team should have the correct max time")
     LOGGER.info(f"Master teams status: {MASTER.teams.to_string()}")
-    test(lambda: MASTER.teams.get_team_by_name(team_name).starting_timestamp is not None,
+    test(lambda: MASTER.teams.get_team_by_name(team_name).start_timestamp is not None,
          "Team should have a starting timestamp")
     wait(0.5, "waiting a bit...")
     LOGGER.infoplus("Simulating a new RFID read with the same UID")

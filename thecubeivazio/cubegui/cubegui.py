@@ -10,14 +10,16 @@ from cubegui_ui import Ui_Form
 
 from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils
 from thecubeivazio import cube_logger as cube_logger
+from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
+from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin
 
 import sys
 import atexit
 import traceback as tb
 
 
-class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin):
+class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin):
     def __init__(self):
         super().__init__()
         self.ui = Ui_Form()
@@ -41,26 +43,18 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin):
         self._backend_thread.start()
 
     def initial_setup(self):
-
-        self.setup_newteam_tab()
-        self.setup_team_management_tab()
-        self.setup_admin_tab()
-
+        self.setup_tab_newteam()
+        self.setup_tab_teams()
+        self.setup_tab_admin()
+        self.setup_debug()
         return True
 
+    def setup_debug(self):
+        self.ui.tabWidget.setCurrentIndex(1)
+        self.search_teams()
 
-
-
-
-    def update_team_creation_tab(self):
-        raise NotImplementedError
-
-    def setup_team_management_tab(self):
+    def setup_tab_admin(self):
         pass
-
-    def setup_admin_tab(self):
-        pass
-
 
     def closeEvent(self, event):
         self.log.info("Closing CubeGui...")
@@ -92,11 +86,13 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin):
                 for line in lines:
                     self.log.info(f"RFID line: {line}")
                     self.ui.lineNewteamRfid.setText(f"{line.uid}")
-                    self.ui.lineManageRfid.setText(f"{line.uid}")
+                    self.ui.lineTeamsRfid.setText(f"{line.uid}")
                     self.fd.rfid.remove_line(line)
         except Exception as e:
             self.log.error(f"Error in handle_rfid: {e}")
             print(tb.format_exc())
+
+
 
 
 if __name__ == "__main__":

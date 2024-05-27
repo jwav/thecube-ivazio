@@ -51,14 +51,14 @@ class CubeboxStatus:
     HARD_MIN_TIME = 12 * 60
 
     # TODO: set unknown state as the default
-    def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, starting_timestamp: Seconds = None,
-                 win_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
+    def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, start_timestamp: Seconds = None,
+                 end_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
                  state: CubeboxState = CubeboxState.STATE_READY_TO_PLAY):
-        self.cube_id: Optional[CubeId] = cube_id
-        self.current_team_name: Optional[TeamName] = None
-        self.starting_timestamp: Optional[Seconds] = None
-        self.win_timestamp: Optional[Seconds] = None
-        self.last_valid_rfid_line: Optional[cube_rfid.CubeRfidLine] = None
+        self.cube_id = cube_id
+        self.current_team_name = current_team_name
+        self.start_timestamp = start_timestamp
+        self.win_timestamp = end_timestamp
+        self.last_valid_rfid_line = last_valid_rfid_line
         self._state = state
 
     def __str__(self):
@@ -102,7 +102,7 @@ class CubeboxStatus:
         return {
             "cube_id": self.cube_id,
             "current_team_name": self.current_team_name,
-            "starting_timestamp": self.starting_timestamp,
+            "start_timestamp": self.start_timestamp,
             "win_timestamp": self.win_timestamp,
             "last_valid_rfid_line": self.last_valid_rfid_line.to_dict() if self.last_valid_rfid_line else None,
             "state": self.get_state().value
@@ -116,9 +116,9 @@ class CubeboxStatus:
             cube_id = int(d.get("cube_id"))
             ret = CubeboxStatus(cube_id)
             ret.current_team_name = d.get("current_team_name", None)
-            ret.starting_timestamp = d.get("starting_timestamp", None)
-            if ret.starting_timestamp is not None:
-                ret.starting_timestamp = float(ret.starting_timestamp)
+            ret.start_timestamp = d.get("start_timestamp", None)
+            if ret.start_timestamp is not None:
+                ret.start_timestamp = float(ret.start_timestamp)
             ret.win_timestamp = d.get("win_timestamp", None)
             if ret.win_timestamp is not None:
                 ret.win_timestamp = float(ret.win_timestamp)
@@ -166,13 +166,13 @@ class CubeboxStatus:
 
     def set_state_ready_to_play(self):
         self.current_team_name = None
-        self.starting_timestamp = None
+        self.start_timestamp = None
         self.win_timestamp = None
         self._state = CubeboxState.STATE_READY_TO_PLAY
 
     def set_state_playing(self, team_name: str = None, start_timestamp: Seconds = None):
         self.current_team_name = team_name
-        self.starting_timestamp = start_timestamp
+        self.start_timestamp = start_timestamp
         self.win_timestamp = None
         self._state = CubeboxState.STATE_PLAYING
 
@@ -191,16 +191,18 @@ class CubeboxStatus:
     def build_from_copy(self, other: 'CubeboxStatus'):
         self.cube_id = other.cube_id
         self.current_team_name = other.current_team_name
-        self.starting_timestamp = other.starting_timestamp
+        self.start_timestamp = other.start_timestamp
         self.win_timestamp = other.win_timestamp
         self.last_valid_rfid_line = other.last_valid_rfid_line
         self._state = other.get_state()
 
     @property
     def completion_time_sec(self) -> Optional[Seconds]:
-        if self.starting_timestamp is None or self.win_timestamp is None:
+        try:
+            return self.win_timestamp - self.start_timestamp
+        except Exception as e:
+            CubeLogger.static_warning(f"CubeboxStatus.completion_time_sec {e}")
             return None
-        return self.win_timestamp - self.starting_timestamp
 
     @property
     def completion_time_str(self) -> str:
@@ -212,6 +214,7 @@ class CubeboxStatus:
     def calculate_score(self) -> Optional[int]:
         try:
             cts = self.completion_time_sec
+            CubeLogger.static_info(f"CubeboxStatus.calculate_score cts={cts}, start_timestamp={self.start_timestamp}, win_timestamp={self.win_timestamp}")
             cube_id = self.cube_id
             if cube_id in CubeboxStatus.EASY_CUBES:
                 return CubeboxStatus.MAX_SCORE if cts < CubeboxStatus.EASY_MIN_TIME else int(
@@ -223,9 +226,9 @@ class CubeboxStatus:
                 return CubeboxStatus.MAX_SCORE if cts < CubeboxStatus.HARD_MIN_TIME else int(
                     CubeboxStatus.HARD_MIN_TIME - 1 / 3 * (cts - CubeboxStatus.HARD_MIN_TIME))
             else:
-                return 0
+                raise ValueError(f"CubeboxStatus.calculate_score: unknown cube_id {cube_id}")
         except Exception as e:
-            print(e)
+            CubeLogger.static_error(f"CubeboxStatus.calculate_score {e.with_traceback(e.__traceback__)}")
             return None
 
 
@@ -356,15 +359,15 @@ class CubeboxesStatusList(List[CubeboxStatus]):
         return [box.cube_id for box in self if not box.is_ready_to_play()]
 
 
-class CubeTeamTrophy:
+class CubeTrophy:
     """Represents a trophy that a team can win by playing a CubeGame"""
 
-    def __init__(self, name: str, description: str, points: int, image_path: str = None):
+    def __init__(self, name: str, description: str, points: int, image_filename: str = None):
         self.name = name
         self.description = description
         self.points = points
-        self.image_path = image_path
-        if image_path is not None:
+        self.image_path = image_filename
+        if image_filename is not None:
             self.image_path = DEFAULT_TROPHY_IMAGE_FILENAME
 
     def to_string(self):
@@ -393,7 +396,7 @@ class CubeTeamTrophy:
         }
 
     @classmethod
-    def make_from_dict(cls, d: Dict) -> Optional['CubeTeamTrophy']:
+    def make_from_dict(cls, d: Dict) -> Optional['CubeTrophy']:
         try:
             return cls(d.get("name"),
                        d.get("description"),
@@ -408,9 +411,9 @@ class CubeTeamStatus:
     """Represents a team playing a CubeGame"""
 
     def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, custom_name: str = "",
-                 starting_timestamp: Seconds = None, current_cubebox_id: int = None,
+                 start_timestamp: Seconds = None, current_cubebox_id: int = None,
                  completed_cubeboxes: List[CompletedCubeboxStatus] = None,
-                 trophies: List[CubeTeamTrophy] = None):
+                 trophies: List[CubeTrophy] = None):
         # the team's code name (a city name)
         self.name = name
         # the custom names chosen by the customers
@@ -420,13 +423,13 @@ class CubeTeamStatus:
         # the maximum time allowed to play the CubeGame
         self.max_time_sec = max_time_sec
         # the time when the team starts playing its first cubebox
-        self.starting_timestamp = starting_timestamp
+        self.start_timestamp = start_timestamp
         # the cubebox ID currently being played by the team
         self.current_cubebox_id = current_cubebox_id
         # the list of the cubeboxes IDs that the team has successfully played, with their completion times
         self.completed_cubeboxes = completed_cubeboxes or []
         # the trophies collected by the team, awarded by the frontdesk
-        self.trophies: List[CubeTeamTrophy] = [] if not trophies else trophies
+        self.trophies: List[CubeTrophy] = [] if not trophies else trophies
 
     def __eq__(self, other):
         try:
@@ -447,7 +450,7 @@ class CubeTeamStatus:
             "custom_name": self.custom_name,
             "rfid_uid": self.rfid_uid,
             "max_time_sec": self.max_time_sec,
-            "starting_timestamp": self.starting_timestamp,
+            "start_timestamp": self.start_timestamp,
             "current_cubebox_id": self.current_cubebox_id,
             "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes]
         }
@@ -458,16 +461,16 @@ class CubeTeamStatus:
         try:
             ret = cls(d.get("name"), d.get("rfid_uid"), d.get("max_time_sec"))
             ret.custom_name = d.get("custom_name", "")
-            ret.starting_timestamp = d.get("starting_timestamp", None)
-            if ret.starting_timestamp is not None:
-                ret.starting_timestamp = float(ret.starting_timestamp)
+            ret.start_timestamp = d.get("start_timestamp", None)
+            if ret.start_timestamp is not None:
+                ret.start_timestamp = float(ret.start_timestamp)
             ret.current_cubebox_id = d.get("current_cubebox_id", None)
             if ret.current_cubebox_id is not None:
                 ret.current_cubebox_id = int(ret.current_cubebox_id)
             ret.completed_cubeboxes = [
                 CompletedCubeboxStatus.make_from_dict(box) for box in d.get("completed_cubeboxes", [])]
             ret.trophies = [
-                CubeTeamTrophy.make_from_dict(trophy) for trophy in d.get("trophies", [])]
+                CubeTrophy.make_from_dict(trophy) for trophy in d.get("trophies", [])]
             return ret
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.make_from_dict {e}")
@@ -503,22 +506,26 @@ class CubeTeamStatus:
 
     # TODO: test
     def is_time_up(self, current_time: Seconds = None) -> bool:
-        if not self.starting_timestamp or not self.max_time_sec:
+        if not self.start_timestamp or not self.max_time_sec:
             return False
         current_time = current_time or time.time()
         try:
-            return current_time - self.starting_timestamp > self.max_time_sec
+            return current_time - self.start_timestamp > self.max_time_sec
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.is_time_up {e}")
             return False
 
-    # TODO: test
+    @property
+    def end_timestamp(self):
+        return self.start_timestamp + self.max_time_sec
+
+    # TODO: test. useful?
     def has_played_today(self, current_time: Seconds = None) -> bool:
         if current_time is None:
             current_time = time.time()
         try:
             return any(
-                [box.win_timestamp > cube_utils.timestamps_are_in_same_day(self.starting_timestamp, current_time) for
+                [box.win_timestamp > cube_utils.timestamps_are_in_same_day(self.start_timestamp, current_time) for
                  box in self.completed_cubeboxes])
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.has_played_today {e}")
@@ -530,7 +537,7 @@ class CubeTeamStatus:
             current_time = time.time()
         try:
             return any(
-                [box.win_timestamp > cube_utils.timestamps_are_in_same_week(self.starting_timestamp, current_time) for
+                [box.win_timestamp > cube_utils.timestamps_are_in_same_week(self.start_timestamp, current_time) for
                  box in self.completed_cubeboxes])
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.has_played_this_week {e}")
@@ -542,7 +549,7 @@ class CubeTeamStatus:
             current_time = time.time()
         try:
             return any(
-                [box.win_timestamp > cube_utils.timestamps_are_in_same_month(self.starting_timestamp, current_time) for
+                [box.win_timestamp > cube_utils.timestamps_are_in_same_month(self.start_timestamp, current_time) for
                  box in self.completed_cubeboxes])
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.has_played_this_month {e}")
@@ -561,19 +568,27 @@ class CubeTeamStatus:
                 f"CubeTeamStatus.set_completed_cube: Cube {cube_id} already completed by team {self.name}")
             return False
         self.completed_cubeboxes.append(CompletedCubeboxStatus(
-            cube_id=cube_id, current_team_name=self.name, starting_timestamp=start_timestamp,
-            win_timestamp=win_timestamp))
+            cube_id=cube_id, current_team_name=self.name, start_timestamp=start_timestamp,
+            end_timestamp=win_timestamp))
         return True
 
 
     def has_started(self) -> bool:
-        return self.starting_timestamp is not None
+        return self.start_timestamp is not None
 
 
-    def calculate_score(self) -> int:
+    def calculate_score(self) -> Optional[int]:
         """Calculate the total score of the team, based on the completion times of the cubeboxes it has played."""
         # memo: cid means cube_id, cts means completion_time_sec
-        return sum([box.calculate_score() for box in self.completed_cubeboxes])
+        try:
+            boxes_scores = [box.calculate_score() for box in self.completed_cubeboxes]
+            trophy_scores = [trophy.points for trophy in self.trophies]
+            CubeLogger.static_info(f"CubeTeamStatus.calculate_score boxes_scores={boxes_scores} trophy_scores={trophy_scores}")
+
+            return sum(boxes_scores) + sum(trophy_scores)
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamStatus.calculate_score {e.with_traceback(None)}")
+            return None
 
 
     def generate_raw_score_sheet(self) -> str:
@@ -632,7 +647,7 @@ class CubeTeamStatus:
     def copy(self):
         ret = CubeTeamStatus(self.name, self.rfid_uid, self.max_time_sec)
         ret.current_cubebox_id = self.current_cubebox_id
-        ret.starting_timestamp = self.starting_timestamp
+        ret.start_timestamp = self.start_timestamp
         ret.completed_cubeboxes = [box.copy() for box in self.completed_cubeboxes]
         return ret
 
@@ -650,7 +665,7 @@ class CubeTeamStatus:
         """Returns True if the team has the same name, custom_name, RFID UID, and starting timestamp as the other team.
         Any other difference could simply mean that the team has been updated."""
         return all((self.name == team.name, self.custom_name == team.custom_name, self.rfid_uid == team.rfid_uid,
-                    self.starting_timestamp == team.starting_timestamp))
+                    self.start_timestamp == team.start_timestamp))
 
 
     def update_from_team(self, team):
@@ -659,7 +674,7 @@ class CubeTeamStatus:
         If this is another team, return False"""
         if self.is_same_team_as(team):
             for completed_cube in team.completed_cubeboxes:
-                self.set_completed_cube(completed_cube.cube_id, completed_cube.starting_timestamp,
+                self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
                                         completed_cube.win_timestamp)
             for trophy in team.trophies:
                 self.add_trophy(trophy)
@@ -669,7 +684,7 @@ class CubeTeamStatus:
             return False
 
 
-    def add_trophy(self, trophy: CubeTeamTrophy):
+    def add_trophy(self, trophy: CubeTrophy):
         if not trophy in self.trophies:
             self.trophies.append(trophy)
 
@@ -765,7 +780,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def remove_team_by_name(self, name: str) -> bool:
         for team in self:
             if team.name == name:
-                self.remove(team)
+                super().remove(team)
                 return True
         return False
 
@@ -859,6 +874,19 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 return True
         return False
 
+    @classmethod
+    def add_team_to_database(cls, team: CubeTeamStatus) -> bool:
+        try:
+            db = CubeTeamsStatusList()
+            db.load_from_json_file(PAST_TEAMS_JSON_DATABASE)
+            assert db, "Could not load the teams database"
+            db.add_team(team)
+            assert db.save_to_json_file(PAST_TEAMS_JSON_DATABASE), f"Could not save to the teams database: {team}"
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.add_team_to_database {e}")
+            return False
+
 
 class CubeGameStatus:
     """Holds the statuses of all cubeboxes and all teams"""
@@ -880,7 +908,7 @@ class CubeGameStatus:
             cubebox.set_state_waiting_for_reset()
             team = self.teams.get_team_by_name(team_name)
             if team:
-                team.set_completed_cube(cube_id, cubebox.starting_timestamp, win_timestamp)
+                team.set_completed_cube(cube_id, cubebox.start_timestamp, win_timestamp)
                 return True
         return False
 
@@ -920,13 +948,13 @@ def test_cube_team():
     assert team.max_time_sec == 60.0
     assert not team.has_started()
     assert not team.is_time_up()
-    team.starting_timestamp = time.time()
+    team.start_timestamp = time.time()
     assert team.has_started()
     assert not team.is_time_up()
     team.max_time_sec = 0.1
     assert team.is_time_up()
     team.completed_cubeboxes.append(
-        CubeboxStatus(cube_id=1, starting_timestamp=time.time(), win_timestamp=time.time() + 1))
+        CubeboxStatus(cube_id=1, start_timestamp=time.time(), end_timestamp=time.time() + 1))
     assert team.calculate_score() == 300
     assert team.generate_raw_score_sheet() == "Équipe Budapest : 300 points\nCube 1 : 00:00:01 : 300 points\n"
     assert team.save_markdown_score_sheet()
@@ -975,9 +1003,9 @@ def test_cube_teams_list():
 def save_scoresheet():
     team = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
     team.completed_cubeboxes.append(
-        CubeboxStatus(cube_id=1, starting_timestamp=time.time(), win_timestamp=time.time() + 1150))
+        CubeboxStatus(cube_id=1, start_timestamp=time.time(), end_timestamp=time.time() + 1150))
     team.completed_cubeboxes.append(
-        CubeboxStatus(cube_id=2, starting_timestamp=time.time(), win_timestamp=time.time() + 200))
+        CubeboxStatus(cube_id=2, start_timestamp=time.time(), end_timestamp=time.time() + 200))
     team.save_html_score_sheet()
 
 
@@ -991,9 +1019,9 @@ def test_hashes():
     assert team1.hash != team2.hash
     assert team1.hash == team1_2.hash
 
-    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", starting_timestamp=1.0, win_timestamp=2.0)
+    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, end_timestamp=2.0)
     box1_2 = box1.copy()
-    box2 = CubeboxStatus(cube_id=2, current_team_name="Paris", starting_timestamp=1.0, win_timestamp=2.0)
+    box2 = CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, end_timestamp=2.0)
     print(f"box1 hash: {box1.hash}")
     print(f"box2 hash: {box2.hash}")
     print(f"box1_2 hash: {box1_2.hash}")
@@ -1010,7 +1038,7 @@ def test_json():
     assert team1 == team1_2
     log.success("team1 == team1_2")
 
-    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", starting_timestamp=1.0, win_timestamp=2.0)
+    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, end_timestamp=2.0)
     log.debug(f"box1.to_dict()={box1.to_dict()}")
     log.debug(f"box1.to_json()={box1.to_json()}")
     box1_2 = CubeboxStatus.make_from_json(box1.to_json())
@@ -1028,9 +1056,9 @@ def test_json():
 
     boxes_list = CubeboxesStatusList()
     boxes_list.update_cubebox(
-        CubeboxStatus(cube_id=1, current_team_name="Budapest", starting_timestamp=1.0, win_timestamp=2.0))
+        CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, end_timestamp=2.0))
     boxes_list.update_cubebox(
-        CubeboxStatus(cube_id=2, current_team_name="Paris", starting_timestamp=1.0, win_timestamp=2.0))
+        CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, end_timestamp=2.0))
     boxes_list_2 = CubeboxesStatusList.make_from_json(boxes_list.to_json())
     log.debug("-------------------")
     log.debug(f"boxes_list.to_json()={boxes_list.to_json()}")

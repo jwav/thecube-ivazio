@@ -13,7 +13,7 @@ import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
-from thecubeivazio.cube_common_defines import Seconds
+from thecubeivazio.cube_common_defines import *
 
 
 class CubeServerFrontdesk:
@@ -198,7 +198,20 @@ class CubeServerFrontdesk:
             self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")
         return report
 
-    def remove_team_by_name(self, team_name:str) -> cubenet.SendReport:
+    def move_team_to_database(self, team_name) -> bool:
+        """Move a team from the status to the database."""
+        try:
+            team = self.teams.get_team_by_name(team_name)
+            assert team, f"Team {team_name} not found"
+            assert cube_game.CubeTeamsStatusList.add_team_to_database(team), f"Failed to add team {team_name} to the database"
+            self.teams.remove_team(team_name)
+            self.log.info(f"Moved team {team_name} to the database")
+            return True
+        except Exception as e:
+            self.log.error(f"Error moving team {team_name} to the database: {e}")
+            return False
+
+    def order_cubemaster_to_remove_team(self, team_name:str) -> cubenet.SendReport:
         """Remove a team from this instance's status and send a message to the CubeMaster to remove the team.
         Return the SendReport of the message sent to the CubeMaster."""
         team = self.teams.get_team_by_name(team_name)
@@ -421,7 +434,7 @@ class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
                 print(f"Team {team_name} not found")
                 return False
             points = int(points)
-            trophy = cube_game.CubeTeamTrophy(name=name, description=description, points=points, image_path=image_path)
+            trophy = cube_game.CubeTrophy(name=name, description=description, points=points, image_filename=image_path)
             team.trophies.append(trophy)
             self.log.info(f"Added trophy {trophy.name} to team {team.name}:")
             self.log.info(f"{team}")
@@ -468,6 +481,40 @@ def test_prompt_commands():
     fd.handle_input("at London")
 
 
+def generate_sample_teams_database():
+    from datetime import datetime
+    teams = cube_game.CubeTeamsStatusList()
+
+    teams.add_team(cube_game.CubeTeamStatus(
+        name="Dakar", custom_name="Riri & Jojo", rfid_uid="1234567890", max_time_sec=3600,
+        start_timestamp=datetime(2024, 5, 21, 12, 34, 56).timestamp(),
+        completed_cubeboxes=[
+            cube_game.CubeboxStatus(cube_id=1, start_timestamp=0, end_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=2, start_timestamp=1000, end_timestamp=2000),
+        ],
+        trophies=[
+            cube_game.CubeTrophy(name="Trophy1", description="First trophy", points=100, image_filename="trophy1.png"),
+            cube_game.CubeTrophy(name="Trophy2", description="Second trophy", points=200, image_filename="trophy2.png"),
+        ]
+    ))
+    teams.add_team(cube_game.CubeTeamStatus(
+        name="Paris", custom_name="Émile et Gégé", rfid_uid="0987654321", max_time_sec=3600,
+        start_timestamp=datetime(2024, 5, 22, 12, 55, 0).timestamp(),
+        completed_cubeboxes=[
+            cube_game.CubeboxStatus(cube_id=3, start_timestamp=0, end_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=4, start_timestamp=1000, end_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=5, start_timestamp=2000, end_timestamp=3000),
+        ],
+        trophies=[
+            cube_game.CubeTrophy(name="Trophy3", description="Third trophy", points=300, image_filename="trophy3.png"),
+            cube_game.CubeTrophy(name="Trophy4", description="Fourth trophy", points=400, image_filename="trophy4.png"),
+        ]
+    ))
+
+    if teams.save_to_json_file(PAST_TEAMS_JSON_DATABASE):
+        print("Sample teams database generated:")
+        print(teams.to_string())
+
 def run_prompt():
     import atexit
     fd = CubeServerFrontdeskWithPrompt()
@@ -476,4 +523,6 @@ def run_prompt():
 
 
 if __name__ == "__main__":
+    generate_sample_teams_database()
+    exit(0)
     run_prompt()
