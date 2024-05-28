@@ -45,6 +45,7 @@ class SendReport:
         """enables the use of SendReport as a boolean, like `if send_report:`"""
         return self.success
 
+
 class CubeNetworking:
     UDP_BROADCAST_IP = "192.168.1.255"
     UDP_LISTEN_IP = "0.0.0.0"
@@ -61,7 +62,7 @@ class CubeNetworking:
     # TODO: set this to a ridiculously high number for production
     ACK_NB_TRIES = 10
 
-    def __init__(self, node_name: str, log_filename:str=None):
+    def __init__(self, node_name: str, log_filename: str = None):
         self.log = cube_logger.CubeLogger(name=f"{node_name} Networking", log_filename=log_filename)
 
         # check if the node name is valid. If not, raise an exception
@@ -89,15 +90,13 @@ class CubeNetworking:
         self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
         self._udp_socket.bind((self.UDP_LISTEN_IP, self.UDP_PORT))
 
-
-
         self.nodes_list = cubeid.NodesList()
         # add own IP to the nodes list
         self.nodes_list.set_node_ip_for_node_name(self.node_name, self.get_self_ip())
 
         self.incoming_messages: Deque[cm.CubeMessage] = deque()
 
-        self.heartbeats : Dict[str,float] = {}
+        self.heartbeats: Dict[str, float] = {}
 
     def run(self):
         """launches the listening and sending threads.
@@ -191,7 +190,7 @@ class CubeNetworking:
             self.log.debug(f"Message added to incoming queue: ({message.hash}) : {message}")
             return True
 
-    def acknowledge_this_message(self, message: cm.CubeMessage, info:cm.CubeAckInfos=None):
+    def acknowledge_this_message(self, message: cm.CubeMessage, info: cm.CubeAckInfos = None):
         """Sends an acknowledgement message for the given message"""
         self.log.debug(f"Acknowledging message: ({message.hash}) : {message}")
         ack_msg = cm.CubeMsgAck(self.node_name, message, info=info)
@@ -219,14 +218,14 @@ class CubeNetworking:
                 continue
             message.sender_ip = addr[0]
             if message.sender == self.node_name:
-                #self.log.debug(f"Ignoring message from self : ({message.hash}) {message}")
+                # self.log.debug(f"Ignoring message from self : ({message.hash}) {message}")
                 continue
 
             if not message.is_valid():
                 self.log.error(f"Invalid CubeMessage. Ignoring : {data.decode()}")
                 continue
 
-            self.log.debug(f"Received valid message: {message.hash} from {addr}: {message}")
+            self.log.debug(f"Received valid message from {message.sender} : ({message.hash}) {message}")
 
             self.add_msg_to_incoming_queue(message)
             self._remove_useless_ack_messages()
@@ -266,7 +265,13 @@ class CubeNetworking:
                     self.log.warning(f"Removing useless ack message: ({msg.hash}) : {msg}")
                     self.remove_msg_from_incoming_queue(msg, force_remove=True)
 
-    def _handle_generic_message(self, message:cm.CubeMessage) -> bool:
+    def _handle_generic_message(self, message: cm.CubeMessage) -> bool:
+        """Handles messages in a manner common to all nodes.
+        Returns True if the message was handled, False otherwise.
+        If the message was sent by self.node_name, ignore and return True."""
+        if message.sender == self.node_name:
+            # self.log.debug(f"Ignoring message from self : ({message.hash}) {message}")
+            return True
         # if `handled` is set to True, the message will be removed from the incoming queue
         handled = False
         self.log.debug(f"Handling message: ({message.hash}) : {message}")
@@ -290,7 +295,9 @@ class CubeNetworking:
         # if it's a WHO_IS message, acknowledge it
         elif message.msgtype == cm.CubeMsgTypes.WHO_IS:
             wi_msg = cm.CubeMsgWhoIs(copy_msg=message)
-            if wi_msg.node_name_to_find in (self.node_name, cubeid.EVERYONE_NODENAME) and wi_msg.sender != self.node_name:
+            if wi_msg.node_name_to_find in (
+            self.node_name, cubeid.EVERYONE_NODENAME) and wi_msg.sender != self.node_name:
+                self.log.info(f"acknowledging WHO_IS message")
                 self.acknowledge_this_message(message)
             handled = True
         if handled:
@@ -300,14 +307,10 @@ class CubeNetworking:
             self.log.debug(f"Not a generic message. Must be handled: ({message.hash}) : {message}")
         return handled
 
-
-
     @staticmethod
     def get_self_ip():
         """Returns the IP of the current node"""
         return socket.gethostbyname(socket.gethostname())
-
-
 
     # NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip
     def _send_bytes_with_udp(self, data: bytes, ip: str, port: int) -> bool:
@@ -321,10 +324,11 @@ class CubeNetworking:
             return True
         except Exception as e:
             self.log.error(e.__str__())
-            #print(traceback.format_exc())
+            # print(traceback.format_exc())
             return False
 
-    def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack=False, ack_timeout:int=None, nb_tries:int=None) -> SendReport:
+    def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack=False,
+                          ack_timeout: int = None, nb_tries: int = None) -> SendReport:
         """Sends a message with UDP. if ack is True, waits for an acknowledgement. Returns True if the message was acknowledged, False otherwise."""
         if not message.is_valid():
             self.log.error(f"Invalid message: {message}")
@@ -354,14 +358,12 @@ class CubeNetworking:
             ack_msg = self.wait_for_ack_of(message, timeout=ack_timeout)
             if ack_msg is not None:
                 return SendReport(True, ack_msg)
-            self.log.warning(f"Re-sending (try {i+1}/{nb_tries}) : ({message.hash}) : {message}")
+            self.log.warning(f"Re-sending (try {i + 1}/{nb_tries}) : ({message.hash}) : {message}")
             if not self._send_bytes_with_udp(message.to_bytes(), ip, port):
                 return SendReport(False, None)
         self.log.error(f"Failed to get an ack for this message after {nb_tries} tries : ({message.hash}) : {message}")
         self.add_msg_to_retry_queue(message)
         return SendReport(True, None)
-
-
 
     def send_msg_to(self, message: cm.CubeMessage, node_name: str, require_ack=False) -> SendReport:
         """Sends a message to a node. Returns True if the message was acknowledged, False otherwise."""
@@ -376,12 +378,14 @@ class CubeNetworking:
 
     def send_msg_to_cubemaster(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the CubeMaster. Returns True if the message was acknowledged, False otherwise."""
-        self.log.info(f"Sending message to CubeMaster ({self.nodes_list.cubeServer.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
+        self.log.info(
+            f"Sending message to CubeMaster ({self.nodes_list.cubeServer.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
         return self.send_msg_with_udp(message, self.nodes_list.cubeServer.ip, require_ack=require_ack)
 
     def send_msg_to_frontdesk(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the FrontDesk. Returns True if the message was acknowledged, False otherwise."""
-        self.log.info(f"Sending message to FrontDesk ({self.nodes_list.frontDesk.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
+        self.log.info(
+            f"Sending message to FrontDesk ({self.nodes_list.frontDesk.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
         return self.send_msg_with_udp(message, self.nodes_list.frontDesk.ip, require_ack=require_ack)
 
     def get_ack_wait_queue(self) -> Tuple[CubeMessage, ...]:
@@ -400,7 +404,6 @@ class CubeNetworking:
         if timeout is None:
             timeout = self.ACK_WAIT_TIMEOUT
         end_time = time.time() + timeout
-
 
         self.log.info(f"Waiting for ack of message: ({msg_to_ack.hash}) : {msg_to_ack}, timeout: {timeout} s ...")
         while self._keep_running:
@@ -421,7 +424,7 @@ class CubeNetworking:
             time.sleep(LOOP_PERIOD_SEC)
         return None
 
-    def wait_for_message(self, msgtype:cm.CubeMsgTypes, timeout:int=None) -> Optional[CubeMessage]:
+    def wait_for_message(self, msgtype: cm.CubeMsgTypes, timeout: int = None) -> Optional[CubeMessage]:
         """Waits for a message of a specific type. Returns the message if it was received, None otherwise.
         If timeout is None, uses the default timeout.
         If timeout is 0, wait forever."""

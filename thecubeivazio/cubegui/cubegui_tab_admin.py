@@ -42,7 +42,7 @@ class CubeGuiTabAdminMixin:
     def update_tab_admin(self: 'CubeGuiForm'):
         self.ui: Ui_Form
         self._last_displayed_game_status_hash: Optional[Hash]
-        print("update_tab_admin")
+        # print("update_tab_admin")
         try:
         # if True:
             if self._last_displayed_game_status_hash == self.fd.game_status.hash:

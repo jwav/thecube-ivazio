@@ -599,7 +599,7 @@ class CubeMsgWhoIs(CubeMessage):
             super().__init__(copy_msg=copy_msg)
         else:
             super().__init__(CubeMsgTypes.WHO_IS, sender, node_name_to_find=node_name_to_find)
-        self.require_ack = True
+        self.require_ack = False
 
     @property
     def node_name_to_find(self) -> NodeName:
