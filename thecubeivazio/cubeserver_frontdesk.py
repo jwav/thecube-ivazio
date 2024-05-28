@@ -96,6 +96,8 @@ class CubeServerFrontdesk:
                     self._handle_reply_all_cubeboxes_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUSES:
                     self._handle_reply_all_teams_status(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEMASTER_STATUS:
+                    self._handle_reply_cubemaster_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES:
                     self._handle_reply_all_teams_status_hashes(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES:
@@ -172,6 +174,8 @@ class CubeServerFrontdesk:
             acsr_msg = cm.CubeMsgReplyCubemasterStatus(copy_msg=message)
             new_cubemaster = acsr_msg.cubemaster_status
             assert new_cubemaster, "_handle_reply_cubemaster_status: new_cubemaster is None"
+            assert new_cubemaster.teams is not None, "_handle_reply_cubemaster_status: new_cubemaster.teams is None"
+            assert new_cubemaster.cubeboxes, "_handle_reply_cubemaster_status: new_cubemaster.cubeboxes is None"
             assert self.teams.update_from_teams_list(new_cubemaster.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
             assert self.cubeboxes.update_from_cubeboxes(new_cubemaster.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)

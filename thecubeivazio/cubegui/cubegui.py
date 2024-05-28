@@ -88,6 +88,7 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
 
         # print(f"{self.fd.net.nodes_list}\n---({self.fd.net.nodes_list.hash})---\n")
         if self._last_displayed_servers_info_hash != current_servers_info_hash:
+            self.set_servers_info_status_label(True, "Mise à jour partielle effectuée.")
             self.update_tab_admin()
             self._last_displayed_servers_info_hash = current_servers_info_hash
 

@@ -37,8 +37,24 @@ class CubeServerMaster:
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
 
-        self.teams = cube_game.CubeTeamsStatusList()
-        self.cubeboxes = cube_game.CubeboxesStatusList()
+        self.game_status = cube_game.CubeGameStatus()
+
+    @property
+    def teams(self) -> cube_game.CubeTeamsStatusList:
+        return self.game_status.teams
+
+    @property
+    def cubeboxes(self) -> cube_game.CubeboxesStatusList:
+        return self.game_status.cubeboxes
+
+    @teams.setter
+    def teams(self, value: cube_game.CubeTeamsStatusList):
+        self.game_status.teams = value
+
+    @cubeboxes.setter
+    def cubeboxes(self, value: cube_game.CubeboxesStatusList):
+        self.game_status.cubeboxes = value
+
 
     def run(self):
         self._rfid_thread = threading.Thread(target=self._rfid_loop)
@@ -252,8 +268,7 @@ class CubeServerMaster:
 
     def _handle_request_cubemaster_status_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request cubemaster status message from {message.sender}")
-        self._handle_request_all_teams_statuses_message(message)
-        self._handle_request_all_cubeboxes_statuses_message(message)
+        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
 
     def _handle_request_all_cubeboxes_statuses_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request all cubeboxes status message from {message.sender}")

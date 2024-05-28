@@ -50,7 +50,7 @@ class CubeNetworking:
     UDP_BROADCAST_IP = "192.168.1.255"
     UDP_LISTEN_IP = "0.0.0.0"
     UDP_PORT = 5005
-    UDP_BUFSIZE = 10000
+    UDP_BUFSIZE = 9001 # let's set it over 9000 to be safe
     UDP_LISTEN_TIMEOUT = 0.1  # seconds
 
     DISCOVERY_PORT = UDP_PORT

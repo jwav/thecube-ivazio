@@ -252,9 +252,14 @@ class CubeboxesStatusList(List[CubeboxStatus]):
         if cubeboxes:
             self.update_from_cubeboxes(cubeboxes)
 
-    def update_from_cubeboxes(self, cubeboxes: Iterable[CubeboxStatus]):
-        for box in cubeboxes:
-            self.update_cubebox(box)
+    def update_from_cubeboxes(self, cubeboxes: Iterable[CubeboxStatus]) -> bool:
+        try:
+            for box in cubeboxes:
+                self.update_cubebox(box)
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxesStatusList.update_from_cubeboxes {e}")
+            return False
 
     def extend(self, cubeboxes_list: Iterable[CubeboxStatus]):
         self.update_from_cubeboxes(cubeboxes_list)
@@ -788,7 +793,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             return None
 
     @classmethod
-    def make_from_json(cls, json_str: str):
+    def make_from_json(cls, json_str: str) -> Optional['CubeTeamsStatusList']:
         try:
             return cls.make_from_dict(json.loads(json_str))
         except Exception as e:
@@ -860,9 +865,14 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 return True
         return False
 
-    def update_from_teams_list(self, teams_list: 'CubeTeamsStatusList'):
-        for team in teams_list:
-            self.update_team(team)
+    def update_from_teams_list(self, teams_list: 'CubeTeamsStatusList') -> bool:
+        try:
+            for team in teams_list:
+                self.update_team(team)
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.update_from_teams_list {e}")
+            return False
 
     def remove_team(self, team_name: str) -> bool:
         for team in self:

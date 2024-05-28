@@ -324,7 +324,7 @@ if __name__ == "__main__":
         # test_testing_system()
         # exit(0)
         valid_simulation()
-        time.sleep(5)
+        # time.sleep(5)
         # unregistered_rfid()
         # test_testing_system()
     except Exception as e:
