@@ -55,7 +55,7 @@ class CubeboxStatus:
     # TODO: set unknown state as the default
     def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, start_timestamp: Seconds = None,
                  end_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
-                 state: CubeboxState = CubeboxState.STATE_READY_TO_PLAY):
+                 state: CubeboxState = CubeboxState.STATE_UNKNOWN):
         self.cube_id = cube_id
         self.current_team_name = current_team_name
         self.start_timestamp = start_timestamp
