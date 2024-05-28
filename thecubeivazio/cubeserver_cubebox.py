@@ -117,28 +117,42 @@ class CubeServerCubebox:
         """check the RFID lines and handle them"""
         self.rfid.run()
         while self._keep_running:
-            time.sleep(0.1)
+            time.sleep(LOOP_PERIOD_SEC)
             for rfid_line in self.rfid.get_completed_lines():
                 self.log.info(
                     f"Line entered at {rfid_line.timestamp}: {rfid_line.uid} : {'valid' if rfid_line.is_valid() else 'invalid'}")
-                if rfid_line.is_valid():
-                    # if the box is already being played, check if the same team is trying to play it again.
-                    # if so, ignore the read. If not, badge out the previous team and badge in the new team.
-                    if self.is_box_being_played():
-                        if rfid_line.uid == self.status.last_valid_rfid_line.uid:
-                            self.log.info("This box is already being played by this team. Ignoring RFID read.")
-                        else:
-                            self.log.info(
-                                "This box is already being played by another team. We're badging out the previous team.")
-                            self.badge_out_current_team(play_game_over_sound=True)
-                            self.badge_in_new_team(rfid_line)
-                    # if the box is not being played, simply badge in the new team
-                    else:
-                        self.badge_in_new_team(rfid_line)
+                if not rfid_line.is_valid():
+                    self.rfid.remove_line(rfid_line)
+                    self.buzzer.play_rfid_error_sound()
+                    continue
+                # if this rfid uid is in the resetter list, set the box status to ready to play
+                if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_line.uid):
+                    self.log.info(f"RFID {rfid_line.uid} is in the resetter list. Setting the box status to ready to play.")
+                    self.status.reset()
+                    self.buzzer.play_cubebox_reset_sound()
+                    self.rfid.remove_line(rfid_line)
+                    continue
+                # ok, so the line is valid and it's not a resetter rfid, which means it's a team rfid.
+                # if the box is not ready to play, ignore the read
+                if not self.status.is_ready_to_play():
+                    self.log.warning("Trying to badge in a team but the box is not ready to play")
+                    self.buzzer.play_rfid_error_sound()
+                    self.rfid.remove_line(rfid_line)
+                    continue
+                # if we're here. that means the box is ready to play. badge in the new team
+                self.badge_in_new_team(rfid_line)
                 self.rfid.remove_line(rfid_line)
 
     def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine) -> bool:
         self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
+        if not rfid_line.is_valid():
+            self.log.error("Trying to badge in an invalid RFID line")
+            self.buzzer.play_rfid_error_sound()
+            return False
+        if not self.status.is_ready_to_play():
+            self.log.warning("Trying to badge in a team but the box is not ready to play")
+            self.buzzer.play_rfid_error_sound()
+            return False
         if self.status.last_valid_rfid_line is not None:
             self.log.warning("Trying to badge in the same team that's already playing. Ignoring.")
             return False

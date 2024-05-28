@@ -170,10 +170,15 @@ class CubeboxStatus:
         return self.get_state() == CubeboxState.STATE_WAITING_FOR_RESET
 
     def set_state_ready_to_play(self):
+        """Resets the CubeBox to its initial state, ready to be played by a team."""
         self.current_team_name = None
         self.start_timestamp = None
         self.win_timestamp = None
         self._state = CubeboxState.STATE_READY_TO_PLAY
+
+    def reset(self):
+        """alias of set_state_ready_to_play()"""
+        self.set_state_ready_to_play()
 
     def set_state_playing(self, team_name: str = None, start_timestamp: Seconds = None):
         self.current_team_name = team_name
@@ -181,9 +186,7 @@ class CubeboxStatus:
         self.win_timestamp = None
         self._state = CubeboxState.STATE_PLAYING
 
-    # obsolete
-    def reset(self):
-        self.set_state_ready_to_play()
+
 
     def set_state_waiting_for_reset(self):
         self._state = CubeboxState.STATE_WAITING_FOR_RESET

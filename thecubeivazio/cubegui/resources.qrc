@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="images">
+    <file>images/logo_thecube_top.png</file>
     <file>images/icons_credits.txt</file>
     <file>images/icon_ok.png</file>
     <file>images/icon_error.png</file>

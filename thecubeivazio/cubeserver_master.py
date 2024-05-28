@@ -314,6 +314,7 @@ class CubeServerMaster:
         return
         self.rfid.run()
         while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
             for line in self.rfid.get_completed_lines():
                 print(f"Line entered at {line.timestamp}: {line.uid} : {'valid' if line.is_valid() else 'invalid'}")
                 if line.is_valid():
@@ -324,11 +325,13 @@ class CubeServerMaster:
     def _display_loop(self):
         # TODO: implement LCD matrix display
         while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
             pass
 
     def _webpage_loop(self):
         # TODO: implement webpage
         while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
             pass
 
 

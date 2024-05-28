@@ -93,6 +93,8 @@ class CubeBuzzer:
     def play_game_over_sound(self):
         self.play_file_or_tune("game_over.mp3", ((400, 0.5), (300, 0.5), (200, 0.5), (100, 1.0)))
 
+    def play_cubebox_reset_sound(self):
+        self.play_file_or_tune("rfid_ok.mp3", ((523, 0.5), (800, 0.5)))
 
 if __name__ == "__main__":
     buzzer = CubeBuzzer()

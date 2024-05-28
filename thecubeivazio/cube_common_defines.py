@@ -34,6 +34,7 @@ DEFAULT_TROPHY_IMAGE_FILEPATH = os.path.join(IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FI
 CUBEBOXES_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "cubeboxes_backup.json")
 TEAMS_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "teams_backup.json")
 TEAMS_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
+RESETTER_RFID_LIST_FILEPATH = os.path.join(SAVES_DIR, "rfid_reset_list.json")
 
 # used in looping functions to induce a little delay
 # TODO: implement in existing loops

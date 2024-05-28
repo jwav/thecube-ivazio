@@ -3,6 +3,7 @@
 """
 This module handles everything RFID-related for the CubeBox
 """
+import json
 import logging
 import os
 import re
@@ -83,6 +84,17 @@ class CubeRfidLine:
         import random
         import string
         return CubeRfidLine(time.time(), "".join(random.choices(string.digits, k=cls.VALID_UID_LENGTH)))
+
+    @staticmethod
+    def is_uid_in_resetter_list(uid: str) -> bool:
+        """Check if the given RFID UID is in the resetter list"""
+        try:
+            with open(RESETTER_RFID_LIST_FILEPATH, "r") as file:
+                resetter_list = json.load(file)
+                return uid in resetter_list
+        except Exception as e:
+            logging.error(f"Error checking RFID UID in resetter list: {e}")
+            return False
 
 
 class CubeRfidListenerBase:
