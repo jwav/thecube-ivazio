@@ -8,7 +8,7 @@ import os
 import re
 import subprocess
 
-import thecubeivazio.cube_logger as cube_logger
+from thecubeivazio.cube_logger import CubeLogger
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import XvfbManager
 
@@ -26,15 +26,14 @@ from pynput import keyboard
 
 
 class CubeRfidLine:
-    # valid length for the "Windows" RFID reader
-    #VALID_UID_LENGTH = 10
-    # valid length for the "Prison Island" RFID reader
-    VALID_UID_LENGTH = 8
     """Represents a line of RFID data entered by the user with a timestamp:
     timestamp: float, the time the line was entered
     uid: str, the RFID data entered by the user
     """
-
+    # valid length for the "Windows" RFID reader
+    #VALID_UID_LENGTH = 10
+    # valid length for the "Prison Island" RFID reader
+    VALID_UID_LENGTH = 8
     def __init__(self, timestamp: Seconds=None, uid: str=None):
         self.timestamp:Seconds = timestamp
         self.uid:str = uid
@@ -79,9 +78,16 @@ class CubeRfidLine:
     def __copy__(self):
         return self.copy()
 
+    @classmethod
+    def generate_random_rfid_line(cls) -> 'CubeRfidLine':
+        import random
+        import string
+        return CubeRfidLine(time.time(), "".join(random.choices(string.digits, k=cls.VALID_UID_LENGTH)))
+
 
 class CubeRfidListenerBase:
     """Base class for RFID listeners. Implementations should override the run, stop, setup methods."""
+
 
     def __init__(self):
         self._is_setup = False
@@ -105,9 +111,13 @@ class CubeRfidListenerBase:
         with self._lines_lock:
             return list(self._completed_lines)
 
-    def add_completed_line(self, rfid_line: CubeRfidLine):
+    def add_completed_line(self, rfid_line: CubeRfidLine) -> bool:
+        if not rfid_line.is_valid():
+            CubeLogger.static_error(f"Invalid RFID line entered: {rfid_line}")
+            return False
         with self._lines_lock:
             self._completed_lines.append(rfid_line)
+            return True
 
     def has_new_lines(self):
         with self._lines_lock:
@@ -118,7 +128,14 @@ class CubeRfidListenerBase:
             self._completed_lines.remove(rfid_line)
 
     def simulate_read(self, uid: str):
-        self.add_completed_line(CubeRfidLine(time.time(), uid))
+        """Simulate the reading of an RFID UID"""
+        CubeLogger.static_info(f"Simulating RFID read: {uid}")
+        if self.add_completed_line(CubeRfidLine(time.time(), uid)):
+            CubeLogger.static_info(f"Simulated RFID read successful: {uid}")
+        else:
+            CubeLogger.static_error(f"Simulated RFID read failed: {uid}")
+
+
 
 
 
@@ -135,7 +152,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.CubeLogger("RFID Event Listener")
+        self.log = CubeLogger("RFID Event Listener")
         self.log.setLevel(logging.INFO)
 
         self._thread = threading.Thread(target=self._event_read_loop)
@@ -250,7 +267,7 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
     def __init__(self):
         super().__init__()
-        self.log = cube_logger.CubeLogger(name="RFID Keyboard Listener")
+        self.log = CubeLogger(name="RFID Keyboard Listener")
         self.current_chars_buffer = deque()  # Use deque for efficient pop/append operations
         self._completed_lines = deque()  # Store completed lines with their timestamps
         self._keyboard_listener = keyboard.Listener(on_press=self._on_press)
@@ -334,12 +351,12 @@ def test_rfid_event_listener():
 def test_rfid_read_simulation():
     print("Testing RFID read simulation for CubeRfidKeyboardListener")
     rfid = CubeRfidKeyboardListener()
-    rfid.simulate_read("1234567890")
+    rfid.simulate_read(CubeRfidLine.generate_random_rfid_line().uid)
     print(rfid.get_completed_lines())
 
     print("Testing RFID read simulation for CubeRfidEventListener")
     rfid = CubeRfidEventListener()
-    rfid.simulate_read("1234567891")
+    rfid.simulate_read(CubeRfidLine.generate_random_rfid_line().uid)
     print(rfid.get_completed_lines())
 
 

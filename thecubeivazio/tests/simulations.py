@@ -14,6 +14,7 @@ from thecubeivazio import cube_game
 import time
 
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_rfid import CubeRfidLine
 
 COMM_DELAY_SEC = 3
 CUBE_ID = 1
@@ -199,9 +200,10 @@ def valid_simulation():
     global CUBEBOX, FRONTDESK, MASTER
     common_start()
     team_name = "Paris"
+    team_custom_name = "Paris Custom"
     cube_id = 1
-    rfid_uid = "1234567890"
-    rfid_uid2 = "1234567891"
+    rfid_uid = CubeRfidLine.generate_random_rfid_line().uid
+    rfid_uid2 = CubeRfidLine.generate_random_rfid_line().uid
     max_time:Seconds = 3650.0
 
     # mute some logs
@@ -215,7 +217,7 @@ def valid_simulation():
     # LOGGER.setLevel(logging.CRITICAL)
 
     # simulate the frontdesk creating a new team
-    team = cube_game.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=max_time)
+    team = cube_game.CubeTeamStatus(name=team_name, custom_name=team_custom_name, rfid_uid=rfid_uid, max_time_sec=max_time)
     LOGGER.infoplus("Frontdesk Adding a new team")
     FRONTDESK.add_new_team(team)
     # wait(COMM_DELAY_SEC, "waiting for the team to be added to the master")
@@ -224,6 +226,10 @@ def valid_simulation():
                timeout=COMM_DELAY_SEC)
     LOGGER.infoplus("Simulating RFID read on Cubebox")
     CUBEBOX.rfid.simulate_read(team.rfid_uid)
+    LOGGER.infoplus(f"CUBEBOX.last_valid_rfid_line={CUBEBOX.status.last_valid_rfid_line}")
+    wait_until(lambda : CUBEBOX.status.last_valid_rfid_line,
+               message="waiting for cubebox to have a valid rfid line",
+               timeout=1)
     # wait(COMM_DELAY_SEC, "waiting for the rfid msg to be sent to the master")
     wait_until(lambda: CUBEBOX.is_box_being_played() is True,
                message="waiting for the box to be played",
@@ -318,6 +324,7 @@ if __name__ == "__main__":
         # test_testing_system()
         # exit(0)
         valid_simulation()
+        time.sleep(5)
         # unregistered_rfid()
         # test_testing_system()
     except Exception as e:
