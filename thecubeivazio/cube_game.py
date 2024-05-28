@@ -79,7 +79,11 @@ class CubeboxStatus:
 
     @property
     def hash(self) -> Hash:
-        return hashlib.sha256(self.to_string().encode()).hexdigest()
+        try:
+            return hashlib.sha256(self.to_string().encode()).hexdigest()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxStatus.hash {e}")
+            return ""
 
     def __repr__(self):
         ret = f"CubeboxStatus({self.to_string()}, last_valid_rfid_line={self.last_valid_rfid_line})"
@@ -261,6 +265,14 @@ class CubeboxesStatusList(List[CubeboxStatus]):
     @property
     def hash_dict(self) -> Dict[NodeName, Hash]:
         return {cubeid.cubebox_index_to_node_name(box.cube_id): box.hash for box in self}
+
+    @property
+    def hash(self) -> Hash:
+        try:
+            return hashlib.sha256(self.to_string().encode()).hexdigest()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxesStatusList.hash {e}")
+            return ""
 
     def compare_with_hashlist(self, hash_dict: Dict[NodeName, Hash]) -> Optional[Tuple[NodeName, ...]]:
         """Returns the names of the teams whose hash is different from the one in the hash_dict.
@@ -503,7 +515,11 @@ class CubeTeamStatus:
 
     @property
     def hash(self) -> Hash:
-        return hashlib.sha256(self.to_string().encode()).hexdigest()
+        try:
+            return hashlib.sha256(self.to_string().encode()).hexdigest()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamStatus.hash {e}")
+            return ""
 
     # TODO: test
     def is_time_up(self, current_time: Seconds = None) -> bool:
@@ -724,6 +740,14 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def hash_dict(self) -> Dict[TeamName, Hash]:
         return {team.name: team.hash for team in self}
 
+    @property
+    def hash(self) -> Hash:
+        try:
+            return hashlib.sha256(self.to_string().encode()).hexdigest()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.hash {e}")
+            return ""
+
     def compare_with_hashlist(self, hash_dict: Dict[TeamName, Hash]) -> Optional[Tuple[TeamName, ...]]:
         """Returns the names of the teams whose hash is different from the one in the hash_dict.
         If the returned tuple is empty, it means that the hash_dict is up-to-date with the teams list.
@@ -851,10 +875,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def add_team_to_database(cls, team: CubeTeamStatus) -> bool:
         try:
             db = CubeTeamsStatusList()
-            db.load_from_json_file(PAST_TEAMS_JSON_DATABASE_FILEPATH)
+            db.load_from_json_file(TEAMS_DATABASE_FILEPATH)
             assert db, "Could not load the teams database"
             db.add_team(team)
-            assert db.save_to_json_file(PAST_TEAMS_JSON_DATABASE_FILEPATH), f"Could not save to the teams database: {team}"
+            assert db.save_to_json_file(TEAMS_DATABASE_FILEPATH), f"Could not save to the teams database: {team}"
             return True
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.add_team_to_database {e}")
@@ -876,12 +900,12 @@ class CubeGameStatus:
             return False
 
     @property
-    def hash(self) -> Optional[Hash]:
+    def hash(self) -> Hash:
         try:
             return hashlib.sha256(self.to_json().encode()).hexdigest()
         except Exception as e:
             CubeLogger.static_error(f"CubeGameStatus.hash {e}")
-            return None
+            return ""
 
     def register_win(self, cube_id: int, team_name: str, win_timestamp: Seconds) -> bool:
         cubebox = self.cubeboxes.get_cubebox_by_cube_id(cube_id)

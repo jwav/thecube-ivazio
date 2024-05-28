@@ -295,8 +295,8 @@ class CubeNetworking:
         # if it's a WHO_IS message, acknowledge it
         elif message.msgtype == cm.CubeMsgTypes.WHO_IS:
             wi_msg = cm.CubeMsgWhoIs(copy_msg=message)
-            if wi_msg.node_name_to_find in (
-            self.node_name, cubeid.EVERYONE_NODENAME) and wi_msg.sender != self.node_name:
+            if wi_msg.node_name_to_find in (self.node_name, cubeid.EVERYONE_NODENAME) \
+                    and wi_msg.sender != self.node_name:
                 self.log.info(f"acknowledging WHO_IS message")
                 self.acknowledge_this_message(message)
             handled = True
@@ -379,14 +379,14 @@ class CubeNetworking:
     def send_msg_to_cubemaster(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the CubeMaster. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(
-            f"Sending message to CubeMaster ({self.nodes_list.cubeServer.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
-        return self.send_msg_with_udp(message, self.nodes_list.cubeServer.ip, require_ack=require_ack)
+            f"Sending message to CubeMaster ({self.nodes_list.cubemaster.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
+        return self.send_msg_with_udp(message, self.nodes_list.cubemaster.ip, require_ack=require_ack)
 
     def send_msg_to_frontdesk(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the FrontDesk. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(
-            f"Sending message to FrontDesk ({self.nodes_list.frontDesk.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
-        return self.send_msg_with_udp(message, self.nodes_list.frontDesk.ip, require_ack=require_ack)
+            f"Sending message to FrontDesk ({self.nodes_list.frontdesk.ip}): ({message.hash}) : {message}, require_ack: {require_ack}")
+        return self.send_msg_with_udp(message, self.nodes_list.frontdesk.ip, require_ack=require_ack)
 
     def get_ack_wait_queue(self) -> Tuple[CubeMessage, ...]:
         """Returns the ack_wait_queue"""

@@ -11,15 +11,46 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
 from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils
-from thecubeivazio import cube_logger as cube_logger
+from thecubeivazio.cube_logger import CubeLogger, CUBEGUI_LOG_FILENAME
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
 from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin
 from thecubeivazio.cubegui.cubegui_tab_admin import CubeGuiTabAdminMixin
+from thecubeivazio import cube_identification as ci
 
 import sys
 import atexit
 import traceback as tb
+
+
+class ServersInfoHasher:
+    def __init__(self, fd: cfd.CubeServerFrontdesk):
+        self.teams_hash = fd.teams.hash
+        self.cubeboxes_hash = fd.cubeboxes.hash
+        self.nodes_list = fd.net.nodes_list.hash
+
+    @property
+    def hash(self) -> Hash:
+        try:
+            import hashlib
+            return hashlib.sha256(
+                f"{self.teams_hash}{self.cubeboxes_hash}{self.nodes_list}".encode()
+            ).hexdigest()
+        except Exception as e:
+            CubeLogger.static_error(f"Error in ServersInfoHash.hash: {e}")
+            CubeLogger.static_error(tb.format_exc())
+            return ""
+
+    def __repr__(self):
+        return self.hash
+
+    def __str__(self):
+        return self.hash
+
+    @classmethod
+    def get_current_servers_info_hash(cls, fd: cfd.CubeServerFrontdesk) -> Hash:
+        return ServersInfoHasher(fd).hash
+
 
 
 class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, CubeGuiTabAdminMixin):
@@ -28,14 +59,14 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
-        self.log = cube_logger.CubeLogger(name="CubeGui", log_filename=cube_logger.CUBEGUI_LOG_FILENAME)
+        self.log = CubeLogger(name="CubeGui", log_filename=CUBEGUI_LOG_FILENAME)
 
         self.fd = cfd.CubeServerFrontdesk()
         self.fd.run()
         atexit.register(self.fd.stop)
         self.log.info("FrontDesk Server started.")
 
-        self._last_displayed_game_status_hash:Optional[Hash] = None
+        self._last_displayed_servers_info_hash = None
 
         if self.initial_setup():
             self.log.info("Initial setup done.")
@@ -44,14 +75,21 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
             exit(1)
 
         self._rfid_timer = QTimer()
-        self._rfid_timer.timeout.connect(self.handle_rfid)
+        self._rfid_timer.timeout.connect(self.check_rfid)
         self._rfid_timer.start(100)
         self._update_timer = QTimer()
         self._update_timer.timeout.connect(self.update_all_tabs)
         self._update_timer.start(1000)
 
     def update_all_tabs(self):
-        self.update_tab_admin()
+        # print(f"{self._last_displayed_servers_info_hash.hash}, {ServersInfoHash.get_current_servers_info(self.fd).hash}")
+        # print(f"{self.fd.teams.hash}, {self.fd.cubeboxes.hash}, {self.fd.net.nodes_list.hash}\n")
+        current_servers_info_hash = ServersInfoHasher.get_current_servers_info_hash(self.fd)
+
+        # print(f"{self.fd.net.nodes_list}\n---({self.fd.net.nodes_list.hash})---\n")
+        if self._last_displayed_servers_info_hash != current_servers_info_hash:
+            self.update_tab_admin()
+            self._last_displayed_servers_info_hash = current_servers_info_hash
 
     def initial_setup(self):
         self.setup_tab_newteam()
@@ -69,14 +107,11 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         event.accept()
         self.log.info("Closing CubeGui...")
         self.fd.stop()
-        self._gui_thread.quit()
-        if not self._gui_thread.wait(100):
-            self.log.error("CubeGui thread did not stop in time.")
-            self._gui_thread.terminate()
-            self._gui_thread.wait()
+        self._update_timer.stop()
+        self._rfid_timer.stop()
         self.log.info("CubeGui closed")
 
-    def handle_rfid(self):
+    def check_rfid(self):
         try:
             if self.fd.rfid.is_setup():
                 self.ui.btnIconNewteamRfidStatus.setIcon(QtGui.QIcon())
@@ -95,13 +130,12 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
                     self.fd.rfid.remove_line(line)
         except Exception as e:
             self.log.error(f"Error in handle_rfid: {e}")
-            print(tb.format_exc())
-
-
+            self.log.error(tb.format_exc())
 
 
 if __name__ == "__main__":
     import atexit
+
     app = QApplication(sys.argv)
     window = CubeGuiForm()
     atexit.register(window.close)

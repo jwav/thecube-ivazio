@@ -18,6 +18,7 @@ import traceback as tb
 
 from typing import TYPE_CHECKING, Optional
 
+
 if TYPE_CHECKING:
     from cubegui import CubeGuiForm
 
@@ -41,12 +42,10 @@ class CubeGuiTabAdminMixin:
 
     def update_tab_admin(self: 'CubeGuiForm'):
         self.ui: Ui_Form
-        self._last_displayed_game_status_hash: Optional[Hash]
         # print("update_tab_admin")
         try:
         # if True:
-            if self._last_displayed_game_status_hash == self.fd.game_status.hash:
-                return
+            print("update_tab_admin")
             self.ui.tableAdminServersInfo.clearContents()
             node_names = [ci.CUBEFRONTDESK_NODENAME, ci.CUBEMASTER_NODENAME] + list(ci.CUBEBOX_NODENAMES)
             # rows: FrontDesk, CubeMaster, CubeBoxes 1 to NB_CUBEBOXES
@@ -54,12 +53,15 @@ class CubeGuiTabAdminMixin:
             # columns: last message time (hh:mm:ss) IP address, Status
             self.ui.tableAdminServersInfo.setRowCount(ci.NB_CUBEBOXES+2)
             self.ui.tableAdminServersInfo.setColumnCount(3)
-            self.ui.tableAdminServersInfo.setHorizontalHeaderLabels(["Last message time", "IP address", "Status"])
+            self.ui.tableAdminServersInfo.setHorizontalHeaderLabels(
+                ["Last message time", "IP address", "Status"])
             self.ui.tableAdminServersInfo.setVerticalHeaderLabels(node_names)
             for i, node_name in enumerate(node_names):
                 last_msg_timestamp = self.fd.net.nodes_list.get_last_msg_timestamp_from_node_name(node_name)
-                last_msg_hhmmss = cube_utils.timestamp_to_hhmmss_time_of_day_string(last_msg_timestamp)
+                last_msg_hhmmss = cube_utils.timestamp_to_hhmmss_time_of_day_string(last_msg_timestamp, separators="::")
                 ip = self.fd.net.nodes_list.get_node_ip_from_node_name(node_name)
+                # self.log.debug(f"node_name: {node_name}, ip: {ip}, last_msg_hhmmss: {last_msg_hhmmss}")
+                # print(f"nodes_list: {self.fd.net.nodes_list.to_string()}")
                 if node_name == ci.CUBEFRONTDESK_NODENAME or node_name == ci.CUBEMASTER_NODENAME:
                     status_str = ""
                 else:
@@ -68,7 +70,6 @@ class CubeGuiTabAdminMixin:
                 self.ui.tableAdminServersInfo.setItem(i, 1, QTableWidgetItem(ip))
                 self.ui.tableAdminServersInfo.setItem(i, 2, QTableWidgetItem(status_str))
                 # self.ui.tableAdminServersInfo.resizeColumnsToContents()
-            self._last_displayed_game_status_hash = self.fd.game_status.hash
         except Exception as e:
             traceback = tb.format_exc()
             self.log.error(f"Error in update_tab_admin: {e.with_traceback(e.__traceback__)}")
