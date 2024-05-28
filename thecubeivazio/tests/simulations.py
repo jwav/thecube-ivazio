@@ -285,7 +285,7 @@ def unregistered_rfid():
     # wait(COMM_DELAY_SEC, "waiting for the team to be added to the master")
     wait_until(lambda: MASTER.teams.get_team_by_name(team_name) is not None,
                message="waiting for the team to be added to the master",
-               timeout=5)
+               timeout=STATUS_REPLY_TIMEOUT)
 
     CUBEBOX.rfid.simulate_read("1234567891")
     wait(COMM_DELAY_SEC, "waiting for the rfid msg to be sent to the master")

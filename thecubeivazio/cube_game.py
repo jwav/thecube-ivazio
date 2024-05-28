@@ -252,32 +252,29 @@ class CubeboxesStatusList(List[CubeboxStatus]):
         if cubeboxes:
             self.update_from_cubeboxes(cubeboxes)
 
+    @cubetry
     def update_from_cubeboxes(self, cubeboxes: Iterable[CubeboxStatus]) -> bool:
-        try:
-            for box in cubeboxes:
-                self.update_cubebox(box)
-            return True
-        except Exception as e:
-            CubeLogger.static_error(f"CubeboxesStatusList.update_from_cubeboxes {e}")
-            return False
+        for box in cubeboxes:
+            self.update_cubebox(box)
+        return True
 
+    @cubetry
     def extend(self, cubeboxes_list: Iterable[CubeboxStatus]):
         self.update_from_cubeboxes(cubeboxes_list)
 
+    @cubetry
     def append(self, box: CubeboxStatus):
         self.update_cubebox(box)
 
+    @cubetry
     @property
     def hash_dict(self) -> Dict[NodeName, Hash]:
         return {cubeid.cubebox_index_to_node_name(box.cube_id): box.hash for box in self}
 
+    @cubetry
     @property
     def hash(self) -> Hash:
-        try:
-            return hashlib.sha256(self.to_string().encode()).hexdigest()
-        except Exception as e:
-            CubeLogger.static_error(f"CubeboxesStatusList.hash {e}")
-            return ""
+        return hashlib.sha256(self.to_string().encode()).hexdigest()
 
     def compare_with_hashlist(self, hash_dict: Dict[NodeName, Hash]) -> Optional[Tuple[NodeName, ...]]:
         """Returns the names of the teams whose hash is different from the one in the hash_dict.

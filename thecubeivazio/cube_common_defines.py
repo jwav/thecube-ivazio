@@ -38,6 +38,7 @@ TEAMS_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
 # used in looping functions to induce a little delay
 # TODO: implement in existing loops
 LOOP_PERIOD_SEC = 0.1
+STATUS_REPLY_TIMEOUT = 5
 
 
 def cubetry(func):
@@ -51,6 +52,8 @@ def cubetry(func):
             CubeLogger.static_error(f"{func.__name__} : {e}\n{traceback.format_exc()}")
             if func.__annotations__.get('return') == bool:
                 return False
+            elif func.__annotations__.get('return') == str:
+                return ""
             return None
     return wrapper
 
@@ -75,11 +78,13 @@ def test_cubetry():
         return 1/0
     @cubetry
     def test_func3() -> bool:
+        # noinspection PyTypeChecker
         x = 1 + "1"
         return True
     @cubetry
     def test_func4() -> int:
         assert 1 == 0, "asserted that 1 == 0"
+        # noinspection PyUnreachableCode
         return 42
 
     test_func1()

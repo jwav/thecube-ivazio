@@ -132,7 +132,7 @@ class CubeServerFrontdesk:
             return False
 
 
-    def _handle_reply_team_status_message(self, message: cm.CubeMessage):
+    def _handle_reply_team_status_message(self, message: cm.CubeMessage) -> bool:
         try:
             self.log.info(f"Received team status reply message from {message.sender}")
             rts_msg = cm.CubeMsgReplyTeamStatus(copy_msg=message)
@@ -141,8 +141,11 @@ class CubeServerFrontdesk:
             assert self.teams.update_team(new_team_status), "_handle_team_status_reply: update_team failed"
             self.log.info(f"Updated team status: {new_team_status}")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            return True
         except Exception as e:
+            self.log.error(f"Error handling team status reply message: {e}")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.INVALID)
+            return False
 
     def _handle_reply_all_cubeboxes_status_message(self, message: cm.CubeMessage):
         try:
@@ -178,6 +181,7 @@ class CubeServerFrontdesk:
             assert new_cubemaster.cubeboxes, "_handle_reply_cubemaster_status: new_cubemaster.cubeboxes is None"
             assert self.teams.update_from_teams_list(new_cubemaster.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
             assert self.cubeboxes.update_from_cubeboxes(new_cubemaster.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
+            self.log.info(f"Updated teams and cubeboxes from cubemaster status")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             return True
         except Exception as e:
@@ -252,7 +256,7 @@ class CubeServerFrontdesk:
             self.log.error(f"The CubeMaster did not remove the team : {team.name} ; info={ack_msg.info}")
         return report
 
-    def request_cubemaster_status(self, reply_timeout:Seconds=None) -> bool:
+    def request_cubemaster_status(self, reply_timeout:Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -268,7 +272,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_cubemaster_status_message(reply_msg)
 
-    def request_team_status(self, team_name:str, reply_timeout:Seconds=None) -> bool:
+    def request_team_status(self, team_name:str, reply_timeout:Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status of a team.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -284,7 +288,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_team_status_message(reply_msg)
 
-    def request_all_teams_status(self, reply_timeout:Seconds=None) -> bool:
+    def request_all_teams_status(self, reply_timeout:Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status of all teams.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -300,7 +304,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_all_teams_status(reply_msg)
 
-    def request_all_teams_status_hashes(self, reply_timeout:Seconds=None) -> bool:
+    def request_all_teams_status_hashes(self, reply_timeout:Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all teams.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -464,9 +468,9 @@ class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
                 print("Usage: requestteamstatus (team_name)")
                 return False
             team_name = args[0]
-            self.request_team_status(team_name)
+            self.request_team_status(team_name, reply_timeout=STATUS_REPLY_TIMEOUT)
         elif cmd in ["rats", "requestallteamsstatus"]:
-            self.request_all_teams_status()
+            self.request_all_teams_status(reply_timeout=STATUS_REPLY_TIMEOUT)
         elif cmd in ["rabs", "requestallcubeboxstatus"]:
             self.request_all_cubeboxes_status()
         else:

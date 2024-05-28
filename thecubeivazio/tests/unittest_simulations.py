@@ -83,7 +83,7 @@ def wait(seconds, message: str = None):
     time.sleep(seconds)
 
 
-def wait_until(condition, timeout=5, message: str = None):
+def wait_until(condition, timeout=STATUS_REPLY_TIMEOUT, message: str = None):
     start_time = time.time()
     if message is None:
         message = inspect.getsource(condition).strip()
@@ -202,7 +202,7 @@ def unregistered_rfid():
     # wait(COMM_DELAY_SEC, "waiting for the team to be added to the master")
     wait_until(lambda: MASTER.teams.get_team_by_name(team_name) is not None,
                message="waiting for the team to be added to the master",
-               timeout=5)
+               timeout=STATUS_REPLY_TIMEOUT)
 
     CUBEBOX.rfid.simulate_read("1234567891")
     wait(COMM_DELAY_SEC, "waiting for the rfid msg to be sent to the master")

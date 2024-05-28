@@ -31,20 +31,17 @@ class CubeGuiTabAdminMixin:
 
     def request_servers_infos(self: 'CubeGuiForm'):
         self.ui: Ui_Form
-        if self.fd.request_cubemaster_status():
-            self.set_servers_info_status_label(False, "Mise à jour totale effectuée.")
+        self.set_servers_info_status_label("hourglass", "En attente de réponse...")
+        if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT):
+            self.set_servers_info_status_label("ok", "Mise à jour totale effectuée.")
         else:
-            self.set_servers_info_status_label(False, "Erreur lors de la mise à jour totale.")
+            self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")
 
-    def set_servers_info_status_label(self: 'CubeGuiForm', success:bool, info:str):
+    def set_servers_info_status_label(self: 'CubeGuiForm', icon:str, info:str):
         self.ui: Ui_Form
-        if success:
-            self.ui.lblAdminServersInfoStatusText.setText(info)
-            self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme("ok"))
-        else:
-            self.log.error("Error while updating servers infos.")
-            self.ui.lblAdminServersInfoStatusText.setText(info)
-            self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme("error"))
+        self.ui.lblAdminServersInfoStatusText.setText(info)
+        self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme(icon))
+        QApplication.processEvents()
 
     def update_tab_admin(self: 'CubeGuiForm'):
         self.ui: Ui_Form
