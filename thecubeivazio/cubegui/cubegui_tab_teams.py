@@ -1,4 +1,4 @@
-"""File for the mixin class (partial for CubeGuiForm) for the new team tab."""
+"""File for the mixin class (partial for CubeGuiForm) for the teams management tab."""
 
 import threading
 import time
@@ -29,7 +29,7 @@ class CubeGuiTabTeamsMixin:
         # fill the team names combo box
         team_names = [""]  # empty string for "all teams"
         team_names.extend(self.fd.config.team_names)
-        print(team_names)
+        # print(team_names)
         self.ui.comboTeamsTeamName.clear()
         self.ui.comboTeamsTeamName.addItems(team_names)
 
@@ -101,7 +101,7 @@ class CubeGuiTabTeamsMixin:
         else:
             # search the teams in the database
             teams = cube_game.CubeTeamsStatusList()
-            teams.load_from_json_file(PAST_TEAMS_JSON_DATABASE)
+            teams.load_from_json_file(TEAMS_DATABASE_FILEPATH)
 
         # find matching teams: name, custom_name, rfid, and timestamp
         matching_teams = []

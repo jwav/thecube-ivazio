@@ -2,9 +2,11 @@
 
 import threading
 import time
+from functools import partial
+from typing import Optional
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QFile, QTextStream
+from PyQt5.QtCore import QFile, QTextStream, QThread, QMetaObject, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
@@ -13,13 +15,14 @@ from thecubeivazio import cube_logger as cube_logger
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
 from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin
+from thecubeivazio.cubegui.cubegui_tab_admin import CubeGuiTabAdminMixin
 
 import sys
 import atexit
 import traceback as tb
 
 
-class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin):
+class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, CubeGuiTabAdminMixin):
     def __init__(self):
         super().__init__()
         self.ui = Ui_Form()
@@ -32,15 +35,23 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin):
         atexit.register(self.fd.stop)
         self.log.info("FrontDesk Server started.")
 
+        self._last_displayed_game_status_hash:Optional[Hash] = None
+
         if self.initial_setup():
             self.log.info("Initial setup done.")
         else:
             self.log.error("Initial setup failed.")
             exit(1)
 
-        self._backend_thread = threading.Thread(target=self._backend_loop)
-        self._keep_running = True
-        self._backend_thread.start()
+        self._rfid_timer = QTimer()
+        self._rfid_timer.timeout.connect(self.handle_rfid)
+        self._rfid_timer.start(100)
+        self._update_timer = QTimer()
+        self._update_timer.timeout.connect(self.update_all_tabs)
+        self._update_timer.start(1000)
+
+    def update_all_tabs(self):
+        self.update_tab_admin()
 
     def initial_setup(self):
         self.setup_tab_newteam()
@@ -50,26 +61,20 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin):
         return True
 
     def setup_debug(self):
-        self.ui.tabWidget.setCurrentIndex(1)
+        """Initial setup for when we're debugging"""
+        self.ui.tabWidget.setCurrentIndex(2)
         self.search_teams()
 
-    def setup_tab_admin(self):
-        pass
-
     def closeEvent(self, event):
-        self.log.info("Closing CubeGui...")
-        self._keep_running = False
         event.accept()
-        self._backend_thread.join(timeout=0.1)
+        self.log.info("Closing CubeGui...")
         self.fd.stop()
+        self._gui_thread.quit()
+        if not self._gui_thread.wait(100):
+            self.log.error("CubeGui thread did not stop in time.")
+            self._gui_thread.terminate()
+            self._gui_thread.wait()
         self.log.info("CubeGui closed")
-
-    def _backend_loop(self):
-        """check the FrontDesk events (rfid, messages), and handle them"""
-        while self._keep_running:
-            # self.log.debug("Backend loop iteration")
-            self.handle_rfid()
-            time.sleep(1)
 
     def handle_rfid(self):
         try:
@@ -96,7 +101,9 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin):
 
 
 if __name__ == "__main__":
+    import atexit
     app = QApplication(sys.argv)
     window = CubeGuiForm()
+    atexit.register(window.close)
     window.show()
     sys.exit(app.exec_())

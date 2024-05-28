@@ -158,14 +158,17 @@ def timestamp_to_hhmmss_time_of_day_string(timestamp: Timestamp, separators="hms
     """Convert a timestamp to a time of day string in the format HH:MM:SS using datetime
     (i.e. it cannot go beyond 23:59:59)"""
     # use datetime to get the time of the timestamp
-    time_of_day = datetime.datetime.fromtimestamp(timestamp).time()
-    sep1 = separators[0] if len(separators) > 0 else ""
-    sep2 = separators[1] if len(separators) > 1 else ""
-    sep3 = separators[2] if len(separators) > 2 else ""
-    h = "%H" if hours else ""
-    m = "%M" if mins else ""
-    s = "%S" if secs else ""
-    return time_of_day.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}')
+    try:
+        time_of_day = datetime.datetime.fromtimestamp(timestamp).time()
+        sep1 = separators[0] if len(separators) > 0 else ""
+        sep2 = separators[1] if len(separators) > 1 else ""
+        sep3 = separators[2] if len(separators) > 2 else ""
+        h = "%H" if hours else ""
+        m = "%M" if mins else ""
+        s = "%S" if secs else ""
+        return time_of_day.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}')
+    except Exception as e:
+        return "??:??:??"
 
 def timestamp_to_french_date(timestamp: Union[float,int], weekday=True, day_number=True, month=True, year=True) -> str:
     """Convert a timestamp to a string in a format like 'lundi 1 janvier 2021'"""

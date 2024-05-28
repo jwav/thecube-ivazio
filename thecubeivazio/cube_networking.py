@@ -93,7 +93,7 @@ class CubeNetworking:
 
         self.nodes_list = cubeid.NodesList()
         # add own IP to the nodes list
-        self.nodes_list.set_node_ip_from_node_name(self.node_name, self.get_self_ip())
+        self.nodes_list.set_node_ip_for_node_name(self.node_name, self.get_self_ip())
 
         self.incoming_messages: Deque[cm.CubeMessage] = deque()
 
@@ -273,8 +273,10 @@ class CubeNetworking:
 
         # if the sender's ip is out of date, update it
         if self.nodes_list.get_node_ip_from_node_name(message.sender) != message.sender_ip:
-            self.nodes_list.set_node_ip_from_node_name(message.sender, message.sender_ip)
+            self.nodes_list.set_node_ip_for_node_name(message.sender, message.sender_ip)
             self.log.info(f"Added node {message.sender} to the nodes list")
+        # update the last message timestamp of the sender
+        self.nodes_list.set_last_msg_timestamp_for_node_name(message.sender, time.time())
         # if it's an ack message, ignore it. It has te be handled in wait_for_ack_of()
         if message.msgtype == cm.CubeMsgTypes.ACK:
             return True
@@ -285,22 +287,19 @@ class CubeNetworking:
         # if it's a version request, reply with a version reply message
         elif message.msgtype == cm.CubeMsgTypes.REQUEST_VISION:
             handled = self.send_msg_with_udp(cm.CubeMsgReplyVersion(self.node_name))
-        # if it's a WHO_IS message, reply with an I_AM message
+        # if it's a WHO_IS message, acknowledge it
         elif message.msgtype == cm.CubeMsgTypes.WHO_IS:
-            target_node = message.kwargs.get("node_name_to_find")
-            if target_node == self.node_name or target_node == cubeid.EVERYONE_NODENAME:
-                handled = self.send_msg_with_udp(cm.CubeMessage(cm.CubeMsgTypes.I_AM, self.node_name))
-        # if it's an I_AM message, update the nodes list with the sender's IP
-        elif message.msgtype == cm.CubeMsgTypes.I_AM:
-            self.nodes_list.set_node_ip_from_node_name(message.sender, self.get_self_ip())
+            wi_msg = cm.CubeMsgWhoIs(copy_msg=message)
+            if wi_msg.node_name_to_find in (self.node_name, cubeid.EVERYONE_NODENAME) and wi_msg.sender != self.node_name:
+                self.acknowledge_this_message(message)
             handled = True
-
         if handled:
             self.log.info(f"Handled generic message: ({message.hash}) : {message}")
             self.remove_msg_from_incoming_queue(message)
         else:
             self.log.debug(f"Not a generic message. Must be handled: ({message.hash}) : {message}")
         return handled
+
 
 
     @staticmethod

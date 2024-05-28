@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -953,7 +953,7 @@ QPushButton:focus {
         <item>
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="0">
-           <widget class="QTableWidget" name="tableAdminNodesStatusLeft">
+           <widget class="QTableWidget" name="tableAdminServersInfo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1068,7 +1068,7 @@ QPushButton:focus {
         <item>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="btnAdminUpdateServersInfo">
             <property name="text">
              <string>Mise à jour infos serveurs</string>
             </property>
@@ -1089,6 +1089,72 @@ QPushButton:focus {
           </item>
           <item row="0" column="2">
            <spacer name="horizontalSpacer_22">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btnIconAdminStatus">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: none;
+    border: none;
+}
+QPushButton:pressed {
+    background-color: none;
+    border: none;
+}
+QPushButton:focus {
+    outline: none;
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="lblAdminServersInfoStatusText">
+            <property name="text">
+             <string>Statut de la mise à jour des infos serveurs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>

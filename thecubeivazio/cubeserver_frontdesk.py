@@ -166,6 +166,21 @@ class CubeServerFrontdesk:
             self.log.error(f"Error handling reply cubebox status message: {e}")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
 
+    def _handle_reply_cubemaster_status_message(self, message: cm.CubeMessage) -> bool:
+        try:
+            self.log.info(f"Received reply cubemaster status message from {message.sender}")
+            acsr_msg = cm.CubeMsgReplyCubemasterStatus(copy_msg=message)
+            new_cubemaster = acsr_msg.cubemaster_status
+            assert new_cubemaster, "_handle_reply_cubemaster_status: new_cubemaster is None"
+            assert self.teams.update_from_teams_list(new_cubemaster.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
+            assert self.cubeboxes.update_from_cubeboxes(new_cubemaster.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            return True
+        except Exception as e:
+            self.log.error(f"Error handling reply cubemaster status message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            return False
+
     def _handle_cubebox_button_press_message(self, message: cm.CubeMessage):
         self.log.info(f"Received team win message from {message.sender}")
         try:
@@ -243,11 +258,11 @@ class CubeServerFrontdesk:
             self.log.error("Failed to send the request cubemaster status message")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.CUBEMASTER_STATUS_REPLY, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEMASTER_STATUS, timeout=reply_timeout)
             if not reply_msg:
                 self.log.error("Failed to receive the cubemaster status reply")
                 return False
-            return self._handle_cubemaster_status_reply(reply_msg)
+            return self._handle_reply_cubemaster_status_message(reply_msg)
 
     def request_team_status(self, team_name:str, reply_timeout:Seconds=None) -> bool:
         """Send a message to the CubeMaster to request the status of a team.
@@ -511,8 +526,8 @@ def generate_sample_teams_database():
         ]
     ))
 
-    if teams.save_to_json_file(PAST_TEAMS_JSON_DATABASE):
-        print("Sample teams database generated:")
+    if teams.save_to_json_file(PAST_TEAMS_JSON_DATABASE_FILEPATH):
+        print("Sample teams saves generated:")
         print(teams.to_string())
 
 def run_prompt():

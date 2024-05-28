@@ -6,6 +6,7 @@
 
 from typing import Optional
 from thecubeivazio import cube_utils
+from thecubeivazio.cube_common_defines import *
 
 CUBEFRONTDESK_NODENAME = "CubeFrontdesk"
 CUBEMASTER_NODENAME = "CubeMaster"
@@ -57,11 +58,17 @@ def hostname_to_valid_cubebox_name(username: str=None) -> Optional[str]:
 
 
 class NodeInfo:
-    """Container used to identify a node"""
+    """Container used to identify a node.
+    Attributes:
+    - name: the name of the node
+    - ip: the IP address of the node
+    - last_msg_timestamp: the timestamp of the last message received from the node
+    """
 
-    def __init__(self, name: str, ip: str):
+    def __init__(self, name: NodeName, ip: str, last_msg_timestamp:Timestamp=None):
         self.name = name
         self.ip = ip
+        self.last_msg_timestamp = last_msg_timestamp
 
     def is_valid(self) -> bool:
         return is_valid_node_name(self.name) and is_valid_ip(self.ip)
@@ -77,7 +84,7 @@ class NodesList:
     def __init__(self):
         self.frontDesk = NodeInfo(CUBEFRONTDESK_NODENAME, "")
         self.cubeServer = NodeInfo(CUBEMASTER_NODENAME, "")
-        self.cubeBoxes = [NodeInfo(f"{CUBEBOX_NODENAME_PREFIX}{i}", "") for i in range(1, NB_CUBEBOXES + 1)]
+        self.cubeBoxes = [NodeInfo(f"{CUBEBOX_NODENAME_PREFIX}{i}", "") for i in CUBEBOX_IDS]
 
     def is_complete(self) -> bool:
         return all([is_valid_ip(node.ip) for node in [self.frontDesk, self.cubeServer] + self.cubeBoxes])
@@ -87,7 +94,7 @@ class NodesList:
             f"CubeMaster: name={self.cubeServer.name}, ip={self.cubeServer.ip}\n" + \
             "\n".join([f"{cubebox.name}: name={cubebox.name}, ip={cubebox.ip}" for cubebox in self.cubeBoxes])
 
-    def set_node_ip_from_node_name(self, node_name:str, ip:str):
+    def set_node_ip_for_node_name(self, node_name:str, ip:str):
         if node_name == CUBEFRONTDESK_NODENAME:
             self.frontDesk.ip = ip
         elif node_name == CUBEMASTER_NODENAME:
@@ -106,6 +113,27 @@ class NodesList:
             cubebox_index = node_name_to_cubebox_index(node_name)
             if cubebox_index is not None:
                 return self.cubeBoxes[cubebox_index - 1].ip
+        return None
+
+    def set_last_msg_timestamp_for_node_name(self, sender:NodeName, timestamp:Timestamp):
+        if sender == CUBEFRONTDESK_NODENAME:
+            self.frontDesk.last_msg_timestamp = timestamp
+        elif sender == CUBEMASTER_NODENAME:
+            self.cubeServer.last_msg_timestamp = timestamp
+        elif sender.startswith(CUBEBOX_NODENAME_PREFIX):
+            cubebox_index = node_name_to_cubebox_index(sender)
+            if cubebox_index is not None:
+                self.cubeBoxes[cubebox_index - 1].last_msg_timestamp = timestamp
+
+    def get_last_msg_timestamp_from_node_name(self, sender:NodeName) -> Optional[Timestamp]:
+        if sender == CUBEFRONTDESK_NODENAME:
+            return self.frontDesk.last_msg_timestamp
+        elif sender == CUBEMASTER_NODENAME:
+            return self.cubeServer.last_msg_timestamp
+        elif sender.startswith(CUBEBOX_NODENAME_PREFIX):
+            cubebox_index = node_name_to_cubebox_index(sender)
+            if cubebox_index is not None:
+                return self.cubeBoxes[cubebox_index - 1].last_msg_timestamp
         return None
 
 

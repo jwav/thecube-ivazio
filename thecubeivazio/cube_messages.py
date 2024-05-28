@@ -23,7 +23,6 @@ class CubeMsgTypes(enum.Enum):
     HEARTBEAT = "HEARTBEAT"
     ACK = "ACK"
     WHO_IS = "WHO_IS"
-    I_AM = "I_AM"
 
     REQUEST_VISION = "REQUEST_VISION"
     REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
@@ -333,7 +332,20 @@ class CubeMsgRequestCubemasterStatus(CubeMessage):
 
 # TODO
 class CubeMsgReplyCubemasterStatus(CubeMessage):
-    pass
+    """Sent from the CubeMaster to a node in response to a REQUEST_CUBEMASTER_STATUS message."""
+
+    def __init__(self, sender=None, status: cube_game.CubeGameStatus = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_STATUS, sender, status=status)
+            if status:
+                self.kwargs["cubemaster_status"] = status.to_json()
+        self.require_ack = False
+
+    @property
+    def cubemaster_status(self) -> cube_game.CubeGameStatus:
+        return cube_game.CubeGameStatus.make_from_json(self.kwargs.get("cubemaster_status"))
 
 class CubeMsgRequestCubeMasterStatusHash(CubeMessage):
     """Sent from a node to the CubeMaster to ask for its status hash."""
@@ -582,9 +594,16 @@ class CubeMsgHeartbeat(CubeMessage):
 class CubeMsgWhoIs(CubeMessage):
     """Sent from whatever node to everyone to ask who is a specific node (asking for IP)."""
 
-    def __init__(self, sender, node_name_to_find):
-        super().__init__(CubeMsgTypes.WHO_IS, sender, node_name_to_find=node_name_to_find)
-        self.require_ack = False
+    def __init__(self, sender=None, node_name_to_find=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.WHO_IS, sender, node_name_to_find=node_name_to_find)
+        self.require_ack = True
+
+    @property
+    def node_name_to_find(self) -> NodeName:
+        return str(self.kwargs.get("node_name_to_find"))
 
 
 # test functions

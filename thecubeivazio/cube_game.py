@@ -2,6 +2,8 @@
 import enum
 import json
 import time
+import hashlib
+
 from typing import List, Optional, Dict, Tuple, Iterable
 import pickle
 
@@ -77,7 +79,6 @@ class CubeboxStatus:
 
     @property
     def hash(self) -> Hash:
-        import hashlib
         return hashlib.sha256(self.to_string().encode()).hexdigest()
 
     def __repr__(self):
@@ -502,7 +503,6 @@ class CubeTeamStatus:
 
     @property
     def hash(self) -> Hash:
-        import hashlib
         return hashlib.sha256(self.to_string().encode()).hexdigest()
 
     # TODO: test
@@ -851,10 +851,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def add_team_to_database(cls, team: CubeTeamStatus) -> bool:
         try:
             db = CubeTeamsStatusList()
-            db.load_from_json_file(PAST_TEAMS_JSON_DATABASE)
+            db.load_from_json_file(PAST_TEAMS_JSON_DATABASE_FILEPATH)
             assert db, "Could not load the teams database"
             db.add_team(team)
-            assert db.save_to_json_file(PAST_TEAMS_JSON_DATABASE), f"Could not save to the teams database: {team}"
+            assert db.save_to_json_file(PAST_TEAMS_JSON_DATABASE_FILEPATH), f"Could not save to the teams database: {team}"
             return True
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.add_team_to_database {e}")
@@ -874,6 +874,14 @@ class CubeGameStatus:
         except Exception as e:
             CubeLogger.static_error(f"CubeGameStatus.__eq__ {e}")
             return False
+
+    @property
+    def hash(self) -> Optional[Hash]:
+        try:
+            return hashlib.sha256(self.to_json().encode()).hexdigest()
+        except Exception as e:
+            CubeLogger.static_error(f"CubeGameStatus.hash {e}")
+            return None
 
     def register_win(self, cube_id: int, team_name: str, win_timestamp: Seconds) -> bool:
         cubebox = self.cubeboxes.get_cubebox_by_cube_id(cube_id)
