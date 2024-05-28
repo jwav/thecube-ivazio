@@ -75,7 +75,7 @@ class CubeServerFrontdesk:
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
-            time.sleep(0.1)
+            time.sleep(LOOP_PERIOD_SEC)
             # print(":", end="")
             if self.enable_heartbeat and self.heartbeat_timer.is_timeout():
                 self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
@@ -88,8 +88,8 @@ class CubeServerFrontdesk:
                     continue
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self._handle_cubebox_button_press_message(message)
-                elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS:
-                    self._handle_cubemaster_cubebox_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS:
+                    self._handle_reply_cubebox_status(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_TEAM_STATUS:
                     self._handle_reply_team_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES:
@@ -159,17 +159,15 @@ class CubeServerFrontdesk:
             self.log.error(f"Error handling reply all cubeboxes status message: {e}")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
 
-    def _handle_reply_cubebox_status(self, message: cm.CubeMessage):
-        try:
-            self.log.info(f"Received reply cubebox status message from {message.sender}")
-            acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
-            new_cubebox = acsr_msg.cubebox
-            assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
-            assert self.cubeboxes.update_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-        except Exception as e:
-            self.log.error(f"Error handling reply cubebox status message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+    @cubetry
+    def _handle_reply_cubebox_status(self, message: cm.CubeMessage) -> bool:
+        self.log.info(f"Received reply cubebox status message from {message.sender}")
+        acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
+        new_cubebox = acsr_msg.cubebox
+        assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
+        assert self.cubeboxes.update_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
+        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        return True
 
     def _handle_reply_cubemaster_status_message(self, message: cm.CubeMessage) -> bool:
         try:
@@ -234,6 +232,34 @@ class CubeServerFrontdesk:
             self.log.error(f"Error moving team {team_name} to the database: {e}")
             return False
 
+    @cubetry
+    def order_cubebox_to_reset(self, cubebox_id:int) -> bool:
+        """Send a message to a CubeBox to reset itself. Returns True if the msg has been sent,
+        we're not waiting for a reply."""
+        self.log.info(f"Sending cubebox reset order message for cubebox {cubebox_id}")
+        cubebox_nodename = cubeid.cubebox_index_to_node_name(cubebox_id)
+        msg = cm.CubeMsgOrderCubeboxToReset(self.net.node_name, cubebox_id)
+        report = self.net.send_msg_to(msg, cubebox_nodename, require_ack=False)
+        if not report:
+            self.log.error(f"Failed to send the cubebox reset message for cubebox {cubebox_id}")
+            return False
+        self.log.info(f"Sent cubebox reset message for cubebox {cubebox_id}")
+        return True
+
+    @cubetry
+    def order_cubebox_to_wait_for_reset(self, cubebox_id:int) -> bool:
+        """Send a message to a CubeBox to wait for a reset. Returns True if the msg has been sent,
+        we're not waiting for a reply."""
+        self.log.info(f"Sending cubebox wait for reset order message for cubebox {cubebox_id}")
+        msg = cm.CubeMsgOrderCubeboxToWaitForReset(self.net.node_name, cubebox_id)
+        report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
+        if not report:
+            self.log.error(f"Failed to send the cubebox wait for reset message for cubebox {cubebox_id}")
+            return False
+        self.log.info(f"Sent cubebox wait for reset message for cubebox {cubebox_id}")
+        return True
+
+    @cubetry
     def order_cubemaster_to_remove_team(self, team_name:str) -> cubenet.SendReport:
         """Remove a team from this instance's status and send a message to the CubeMaster to remove the team.
         Return the SendReport of the message sent to the CubeMaster."""
@@ -256,6 +282,7 @@ class CubeServerFrontdesk:
             self.log.error(f"The CubeMaster did not remove the team : {team.name} ; info={ack_msg.info}")
         return report
 
+    @cubetry
     def request_cubemaster_status(self, reply_timeout:Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -330,7 +357,7 @@ class CubeServerFrontdesk:
             self.log.error(f"Failed to send the request cubebox status message for cubebox {cubebox_id}")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS, timeout=reply_timeout)
             if not reply_msg:
                 self.log.error(f"Failed to receive the cubebox status reply for cubebox {cubebox_id}")
                 return False

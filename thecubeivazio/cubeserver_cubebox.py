@@ -83,7 +83,7 @@ class CubeServerCubebox:
         """Start the RFID, button, and networking threads"""
         self._thread_rfid = threading.Thread(target=self._rfid_loop)
         self._thread_button = threading.Thread(target=self._button_loop)
-        self._thread_networking = threading.Thread(target=self._networking_loop)
+        self._thread_networking = threading.Thread(target=self._msg_handling_loop)
         self._keep_running = True
         self._thread_rfid.start()
         self._thread_button.start()
@@ -96,22 +96,51 @@ class CubeServerCubebox:
         self._thread_button.join(timeout=0.1)
         self._thread_networking.join(timeout=0.1)
 
-    def _networking_loop(self):
+    def _msg_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
-            time.sleep(0.1)
+            time.sleep(LOOP_PERIOD_SEC)
             if self.enable_heartbeat and self.heartbeat_timer.is_timeout():
                 self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
                 self.heartbeat_timer.reset()
 
             for message in self.net.get_incoming_msg_queue():
-                if message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET:
-                    self.log.info("Received order to wait for reset")
-                    self.badge_out_current_team()
-                    self.status.set_state_waiting_for_reset()
-                    self.net.send_msg_to_all(cm.CubeMsgCubeboxStatusReply(self.net.node_name, self.status))
-        self.net.stop()
+                # ignore ack messages, they're handled in the networking module
+                if message.msgtype == cm.CubeMsgTypes.ACK:
+                    continue
+                elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET:
+                    self._handle_order_cubebox_to_wait_for_reset_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_RESET:
+                    self._handle_order_cubebox_to_reset_message(message)
+                else:
+                    self.log.warning(f"Unhandled message: {message}")
+                self.net.remove_msg_from_incoming_queue(message)
+
+    @cubetry
+    def _handle_order_cubebox_to_reset_message(self, message: cm.CubeMessage) -> bool:
+        octr_msg = cm.CubeMsgOrderCubeboxToReset(copy_msg=message)
+        if octr_msg.cube_id != self.cubebox_index:
+            return True
+        self.log.info("Received order to reset")
+        self.perform_reset()
+        self.net.send_msg_to_all(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status))
+        return True
+
+    @cubetry
+    def _handle_order_cubebox_to_wait_for_reset_message(self, message: cm.CubeMessage) -> bool:
+        octwfr_msg = cm.CubeMsgOrderCubeboxToWaitForReset(copy_msg=message)
+        if octwfr_msg.cube_id != self.cubebox_index:
+            return True
+        self.log.info("Received order to wait for reset")
+        self.badge_out_current_team()
+        self.status.set_state_waiting_for_reset()
+        self.net.send_msg_to_all(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status))
+        return True
+
+    def perform_reset(self):
+        self.status.reset()
+        self.buzzer.play_cubebox_reset_sound()
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
@@ -128,8 +157,7 @@ class CubeServerCubebox:
                 # if this rfid uid is in the resetter list, set the box status to ready to play
                 if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_line.uid):
                     self.log.info(f"RFID {rfid_line.uid} is in the resetter list. Setting the box status to ready to play.")
-                    self.status.reset()
-                    self.buzzer.play_cubebox_reset_sound()
+                    self.perform_reset()
                     self.rfid.remove_line(rfid_line)
                     continue
                 # ok, so the line is valid and it's not a resetter rfid, which means it's a team rfid.

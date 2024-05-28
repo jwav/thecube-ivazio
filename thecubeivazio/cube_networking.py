@@ -323,9 +323,11 @@ class CubeNetworking:
         self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
         return True
 
-    def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack=False,
+    def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack:bool=None,
                           ack_timeout: int = None, nb_tries: int = None) -> SendReport:
-        """Sends a message with UDP. if ack is True, waits for an acknowledgement. Returns True if the message was acknowledged, False otherwise."""
+        """Sends a message with UDP.
+        If require_ack is None, uses the message's require_ack attribute.
+        Returns True if the message was acknowledged, False otherwise."""
         if not message.is_valid():
             self.log.error(f"Invalid message: {message}")
             return SendReport(False, None)
@@ -335,8 +337,10 @@ class CubeNetworking:
         if port is None:
             port = self.UDP_PORT
 
-        if require_ack:
-            message.require_ack = True
+        if require_ack is None:
+            require_ack = message.require_ack
+        else:
+            message.require_ack = require_ack
         if ack_timeout is None:
             ack_timeout = self.ACK_WAIT_TIMEOUT
         if nb_tries is None:

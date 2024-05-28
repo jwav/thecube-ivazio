@@ -342,6 +342,9 @@ QPushButton:focus {
             <property name="text">
              <string>Créer une nouvelle équipe</string>
             </property>
+            <property name="icon">
+             <iconset theme="user"/>
+            </property>
            </widget>
           </item>
           <item>
@@ -522,6 +525,9 @@ QPushButton:focus {
            <widget class="QPushButton" name="btnTeamsSearch">
             <property name="text">
              <string>Rechercher équipes</string>
+            </property>
+            <property name="icon">
+             <iconset theme="search"/>
             </property>
            </widget>
           </item>
@@ -772,12 +778,18 @@ QPushButton:focus {
             <property name="text">
              <string>Ajouter tophée</string>
             </property>
+            <property name="icon">
+             <iconset theme="add"/>
+            </property>
            </widget>
           </item>
           <item row="0" column="4">
            <widget class="QPushButton" name="btnTeamsRemoveSelectedTrophy">
             <property name="text">
              <string>Supprimer le trophée sélectrionné</string>
+            </property>
+            <property name="icon">
+             <iconset theme="delete"/>
             </property>
            </widget>
           </item>
@@ -1147,6 +1159,9 @@ QPushButton:focus {
             <property name="text">
              <string>Mise à jour infos serveurs</string>
             </property>
+            <property name="icon">
+             <iconset theme="update"/>
+            </property>
            </widget>
           </item>
           <item row="0" column="3">
@@ -1223,15 +1238,27 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QComboBox" name="comboAdminCubeboxToReset"/>
+           <widget class="QComboBox" name="comboAdminCubeboxToOrder"/>
           </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="btnAdminResetCubebox">
+           <widget class="QPushButton" name="btnAdminOrderCubeboxReset">
             <property name="text">
              <string>Ordonner reset CubeBox</string>
             </property>
             <property name="icon">
-             <iconset theme="reload"/>
+             <iconset resource="resources.qrc">
+              <normaloff>:/images/images/icon_zero.png</normaloff>:/images/images/icon_zero.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btnAdminOrderCubeboxReboot">
+            <property name="text">
+             <string>Redémarrer CubeBox</string>
+            </property>
+            <property name="icon">
+             <iconset theme="reload">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>

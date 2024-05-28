@@ -37,7 +37,7 @@ class CubeMsgTypes(enum.Enum):
     REPLY_VERSION = "REPLY_VERSION"
     REPLY_CUBEMASTER_STATUS = "REPLY_CUBEMASTER_STATUS"
     REPLY_CUBEMASTER_STATUS_HASH = "REPLY_CUBEMASTER_STATUS_HASH"
-    REPLY_CUBEMASTER_CUBEBOX_STATUS = "REPLY_CUBEMASTER_CUBEBOX_STATUS"
+    REPLY_CUBEBOX_STATUS = "REPLY_CUBEMASTER_CUBEBOX_STATUS"
     REPLY_ALL_CUBEBOXES_STATUSES = "REPLY_ALL_CUBEBOXES_STATUSES"
     REPLY_TEAM_STATUS = "REPLY_TEAM_STATUS"
     REPLY_ALL_TEAMS_STATUSES = "REPLY_ALL_TEAMS_STATUSES"
@@ -45,6 +45,7 @@ class CubeMsgTypes(enum.Enum):
     REPLY_ALL_CUBEBOXES_STATUS_HASHES = "REPLY_ALL_CUBEBOXES_STATUS_HASHES"
 
     ORDER_CUBEBOX_TO_WAIT_FOR_RESET = "ORDER_CUBEBOX_TO_WAIT_FOR_RESET"
+    ORDER_CUBEBOX_TO_RESET = "ORDER_CUBEBOX_TO_RESET"
 
     # Messages sent by the CubeBox besides status messages
     CUBEBOX_RFID_READ = "CUBEBOX_RFID_READ"
@@ -55,6 +56,7 @@ class CubeMsgTypes(enum.Enum):
     # Messages sent by the Frontdesk
     FRONTDESK_NEW_TEAM = "FRONTDESK_NEW_TEAM"
     FRONTDESK_REMOVE_TEAM = "FRONTDESK_REMOVE_TEAM"
+
 
     # unneeded by way of empirical evidence, but hey, i needed to do it for CubeMsgReplies and I guess i can't hurt
     def __eq__(self, other):
@@ -286,19 +288,6 @@ class CubeMsgRfidRead(CubeMessage):
         return float(self.kwargs.get("timestamp"))
 
 
-# status requests and replies
-
-REQUEST_VISION = "REQUEST_VISION"
-REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
-REQUEST_CUBEMASTER_STATUS_HASH = "REQUEST_CUBEMASTER_STATUS_HASH"
-REQUEST_CUBEMASTER_CUBEBOX_STATUS = "REQUEST_CUBEMASTER_CUBEBOX_STATUS"
-REQUEST_ALL_CUBEBOXES_STATUSES = "REQUEST_ALL_CUBEBOXES_STATUS"
-REQUEST_TEAM_STATUS = "REQUEST_TEAM_STATUS"
-REQUEST_ALL_TEAMS_STATUSES = "REQUEST_ALL_TEAMS_STATUS"
-REQUEST_ALL_TEAMS_STATUS_HASHES = "REQUEST_ALL_TEAMS_STATUS_HASHES"
-REQUEST_ALL_CUBEBOXES_STATUS_HASHES = "REQUEST_ALL_CUBEBOXES_STATUS_HASHES"
-
-
 # version request & reply
 
 class CubeMsgRequestVersion(CubeMessage):
@@ -396,7 +385,7 @@ class CubeMsgReplyCubeboxStatus(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_CUBEBOX_STATUS, sender)
+            super().__init__(CubeMsgTypes.REPLY_CUBEBOX_STATUS, sender)
             if status:
                 self.kwargs["cubebox_status"] = status.to_json()
 
@@ -562,6 +551,37 @@ class CubeMsgReplyAllTeamsStatuses(CubeMessage):
         except Exception as e:
             CubeLogger.static_error(f"Error parsing TeamsStatusList from CubeMsgReplyAllTeamsStatuses: {e}")
             return None
+
+# orders
+
+class CubeMsgOrderCubeboxToWaitForReset(CubeMessage):
+    """Sent from the CubeMaster to a CubeBox to order it to wait for a reset."""
+
+    def __init__(self, sender=None, cube_id=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET, sender, cube_id=cube_id)
+        self.require_ack = True
+
+    @property
+    def cube_id(self) -> int:
+        return int(self.kwargs.get("cube_id"))
+
+class CubeMsgOrderCubeboxToReset(CubeMessage):
+    """Sent from the CubeMaster to a CubeBox to order it to reset."""
+
+    def __init__(self, sender=None, cube_id=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.ORDER_CUBEBOX_TO_RESET, sender, cube_id=cube_id)
+        self.require_ack = True
+
+    @property
+    def cube_id(self) -> int:
+        return int(self.kwargs.get("cube_id"))
+
 
 # common messages
 

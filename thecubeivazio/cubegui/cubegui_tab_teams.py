@@ -94,6 +94,7 @@ class CubeGuiTabTeamsMixin:
             start_timestamp = cube_utils.this_month_start_timestamp()
         else:
             start_timestamp = 1  # not 0 to avoid erroneous null checks
+        self.log.debug(f"start_timestamp: {start_timestamp}, i.e. {cube_utils.timestamp_to_french_date(start_timestamp)}")
 
         # if we're looking for a team currently playing, search fd.teams
         if search_currently_playing:
@@ -112,7 +113,7 @@ class CubeGuiTabTeamsMixin:
                 continue
             if rfid_uid and rfid_uid != team.rfid_uid:
                 continue
-            if start_timestamp and team.start_timestamp > start_timestamp:
+            if start_timestamp and team.start_timestamp < start_timestamp:
                 continue
             matching_teams.append(team)
 

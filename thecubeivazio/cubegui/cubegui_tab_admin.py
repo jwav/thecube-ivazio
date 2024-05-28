@@ -28,6 +28,15 @@ class CubeGuiTabAdminMixin:
     def setup_tab_admin(self: 'CubeGuiForm'):
         self.ui: Ui_Form
         self.ui.btnAdminUpdateServersInfo.clicked.connect(self.request_servers_infos)
+        self.ui.btnAdminOrderCubeboxReset.clicked.connect(self.order_cubebox_reset)
+        self.ui.comboAdminCubeboxToOrder.addItems(ci.CUBEBOX_NODENAMES)
+
+
+    def order_cubebox_reset(self: 'CubeGuiForm'):
+        self.ui: Ui_Form
+        cubebox_nodename = self.ui.comboAdminCubeboxToOrder.currentText()
+        cubebox_id = ci.node_name_to_cubebox_index(cubebox_nodename)
+        self.fd.order_cubebox_to_reset(cubebox_id=cubebox_id)
 
     def request_servers_infos(self: 'CubeGuiForm'):
         self.ui: Ui_Form
@@ -37,6 +46,7 @@ class CubeGuiTabAdminMixin:
         else:
             self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")
 
+    @cubetry
     def set_servers_info_status_label(self: 'CubeGuiForm', icon:str, info:str):
         self.ui: Ui_Form
         self.ui.lblAdminServersInfoStatusText.setText(info)
