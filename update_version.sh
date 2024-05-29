@@ -28,6 +28,18 @@ do
   fi
 done
 
+#SKIP_PIP=false
+SKIP_PIP=true
+for arg in "$@"
+do
+  if [ "$arg" == "--skip-pip" ]; then
+    SKIP_PIP=true
+    echo "Skipping pip install"
+    break
+  fi
+done
+
+
 
 if [ "$SKIP_APT" = false ]; then
   echo "Updating APT and installing required packages.."
@@ -49,6 +61,7 @@ else
   echo "OK : git pull succeeded"
 fi
 
+if [ "$SKIP_PIP" = false ]; then
 echo "pip install requirements..."
 pip install -r ./requirements.txt
 if [ $? -ne 0 ]; then
@@ -56,6 +69,7 @@ if [ $? -ne 0 ]; then
   exit 1
 else
   echo "OK : pip install requirements succeeded"
+fi
 fi
 
 echo "Installing the project package..."

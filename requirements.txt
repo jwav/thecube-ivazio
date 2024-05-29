@@ -14,3 +14,4 @@ evdev~=1.7.1
 pyinstaller
 colorlog
 #PyQt5
+RPi.GPIO
