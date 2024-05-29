@@ -12,6 +12,11 @@ sudo apt-get install xvfb
 sudo apt-get install x11-utils
 # todo: find the remaining packages with a fresh install and test routines
 
+python3 -m venv myenv
+source myenv/bin/activate
+pip install --upgrade pip
+pip install --upgrade setuptools
+pip install --upgrade wheel
 pip install pip_search
 
 if command -v pyenv >/dev/null 2>&1; then
@@ -27,3 +32,5 @@ fi
 
 pyenv install 3.9.19
 pyenv global 3.9.19
+
+#deactivate
