@@ -23,7 +23,7 @@ class Message:
         self.initial_seconds = initial_seconds
         self.start_time = time.time()
         self.font = graphics.Font()
-        self.font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/7x13.bdf")
+        self.font.LoadFont("~/rpi-rgb-led-matrix/fonts/7x13.bdf")
         self.textColor = graphics.Color(255, 255, 0)
 
     @property

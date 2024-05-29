@@ -15,3 +15,4 @@ pyinstaller
 colorlog
 #PyQt5
 RPi.GPIO
+Pillow
