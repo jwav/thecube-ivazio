@@ -30,7 +30,7 @@ else
   eval "$(pyenv virtualenv-init -)"
 fi
 
-pyenv install 3.9.19
+pyenv install -v 3.9.19
 pyenv global 3.9.19
 
 #deactivate
