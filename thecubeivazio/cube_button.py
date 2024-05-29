@@ -156,9 +156,6 @@ def test_button_press():
             print("Button ON" if btn.is_pressed_now() else "Button OFF")
             if btn.has_been_pressed_long_enough():
                 print("Button pressed long enough")
-                print("Waiting for button to be released...")
-                btn.wait_until_released()
-                print("Button released")
                 btn.reset()
             time.sleep(0.5)
     except KeyboardInterrupt:
