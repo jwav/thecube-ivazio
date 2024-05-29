@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-sudo apt-get update
-sudo apt install make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+sudo locale-gen en_US.UTF-8
+sudo update-locale LANG=en_US.UTF-8
 
-sudo apt-get install software-properties-common
-sudo apt-get install python3-pip
-sudo apt-get install python3-venv
-sudo apt-get install python-is-python3
-sudo apt-get install git
-sudo apt-get install xvfb
-sudo apt-get install x11-utils
-# todo: find the remaining packages with a fresh install and test routines
+sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
+vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils
+
 
 python3 -m venv myenv
 source myenv/bin/activate
@@ -18,6 +15,7 @@ pip install --upgrade pip
 pip install --upgrade setuptools
 pip install --upgrade wheel
 pip install pip_search
+
 
 if command -v pyenv >/dev/null 2>&1; then
   echo "pyenv is installed"
@@ -30,7 +28,14 @@ else
   eval "$(pyenv virtualenv-init -)"
 fi
 
-pyenv install -v 3.9.19
+if python3.9 --version &> /dev/null
+then
+  echo "Python 3.9 is installed"
+else
+  echo "Python 3.9 is not installed"
+  pyenv install -v 3.9.19
+fi
+
 pyenv global 3.9.19
 
 #deactivate
