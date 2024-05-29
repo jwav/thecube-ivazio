@@ -21,7 +21,7 @@ from pynput import keyboard
 class CubeButton:
     DEBOUNCE_TIME: Seconds = 0.5
     PRESS_CHECK_PERIOD: Seconds = 0.1
-    BUTTON_PIN: int = 14
+    BUTTON_PIN: int = 17
     KEYBOARD_SIMULATED_KEY: str = 'v'
 
     def __init__(self):
