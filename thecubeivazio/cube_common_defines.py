@@ -1,7 +1,8 @@
+import glob
 import os
 import traceback
 from pathlib import Path
-from typing import Union
+from typing import Union, Optional
 from functools import wraps
 from thecubeivazio.cube_logger import CubeLogger
 
@@ -17,8 +18,31 @@ HashDict = dict[str, Hash]
 
 # constants
 
-# the project root path
-PROJECT_ROOT_PATH = Path(__file__).parent.resolve()
+POSSIBLE_PROJECT_ROOT_PATH_PATTERNS = [
+    "/mnt/shared/thecube-ivazio/thecubeivazio",
+    "/home/*/thecube-ivazio/thecubeivazio",
+]
+
+def find_first_matching_path() -> Optional[str]:
+    for pattern in POSSIBLE_PROJECT_ROOT_PATH_PATTERNS:
+        matches = glob.glob(pattern)
+        if matches:
+            return matches[0]
+    return None
+
+
+# poses problems depending on the environment
+# PROJECT_ROOT_PATH = Path(__file__).parent.resolve()
+PROJECT_ROOT_PATH = find_first_matching_path()
+
+try:
+    assert PROJECT_ROOT_PATH and Path(PROJECT_ROOT_PATH).exists(), "PROJECT_ROOT_PATH not found"
+    print(f"PROJECT_ROOT_PATH: '{PROJECT_ROOT_PATH}'")
+except AssertionError as e:
+    print(e)
+    print("PROJECT_ROOT_PATH not found. Exiting.")
+    exit(1)
+
 SOUNDS_DIR = os.path.join(PROJECT_ROOT_PATH, "sounds")
 LOGS_DIR = os.path.join(PROJECT_ROOT_PATH, "logs")
 CUBEGUI_DIR = os.path.join(PROJECT_ROOT_PATH, "cubegui")

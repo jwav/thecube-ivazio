@@ -1,5 +1,13 @@
 #!/usr/bin/bash
 
+# Get the directory of the script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Run the script logic inside a subshell
+(
+  cd "$SCRIPT_DIR"
+  echo "Current working directory: $(pwd)"
+
 SKIP_APT=false
 for arg in "$@"
 do
@@ -50,3 +58,4 @@ else
 fi
 
 echo "Update OK: APT packages installed, git pulled, project package pip installed."
+)
