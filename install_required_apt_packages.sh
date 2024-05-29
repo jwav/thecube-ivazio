@@ -9,6 +9,7 @@ xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-d
 vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils
 
 
+
 python3 -m venv myenv
 source myenv/bin/activate
 pip install --upgrade pip
