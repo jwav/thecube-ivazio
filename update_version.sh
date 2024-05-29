@@ -41,7 +41,7 @@ else
 fi
 
 echo "Installing the project package..."
-python3 install .
+pip install .
 if [ $? -ne 0 ]; then
   echo "ERROR: project package install failed"
   exit 1
