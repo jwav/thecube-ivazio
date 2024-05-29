@@ -10,12 +10,13 @@ do
 done
 
 if [ "$SKIP_APT" = false ]; then
-./install_required_apt_packages.sh
-if [ $? -ne 0 ]; then
-    echo "ERROR: APT udpate and install failed"
-    exit 1
-  else
-    echo "OK : The script succeeded"
+  ./install_required_apt_packages.sh
+  if [ $? -ne 0 ]; then
+      echo "ERROR: APT udpate and install failed"
+      exit 1
+    else
+      echo "OK : The script succeeded"
+  fi
 fi
 
 git pull
