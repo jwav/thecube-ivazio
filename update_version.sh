@@ -5,6 +5,7 @@ for arg in "$@"
 do
   if [ "$arg" == "--skip-apt" ]; then
     SKIP_APT=true
+    echo "Skipping APT update and install"
     break
   fi
 done
