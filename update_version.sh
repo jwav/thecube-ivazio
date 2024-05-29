@@ -9,6 +9,7 @@ do
   fi
 done
 
+
 if [ "$SKIP_APT" = false ]; then
   ./install_required_apt_packages.sh
   if [ $? -ne 0 ]; then
