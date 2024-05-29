@@ -38,12 +38,18 @@ class CubeRfidLine:
     #VALID_UID_LENGTH = 10
     # valid length for the "Prison Island" RFID reader
     VALID_UID_LENGTH = 8
+    # if set to True, the length of the RFID UID will be checked to determine if it's valid
+    # if set to False, the UID will be considered valid if it's all digits
+    CHECK_FOR_LENGTH = False
     def __init__(self, timestamp: Seconds=None, uid: str=None):
         self.timestamp:Seconds = timestamp
         self.uid:str = uid
 
     def is_valid(self):
-        return len(self.uid) == self.VALID_UID_LENGTH and all([char.isdigit() for char in self.uid])
+        if self.CHECK_FOR_LENGTH:
+            return len(self.uid) == self.VALID_UID_LENGTH and all([char.isdigit() for char in self.uid])
+        else:
+            return all([char.isdigit() for char in self.uid])
 
     # TODO: testme
     def to_string(self):
