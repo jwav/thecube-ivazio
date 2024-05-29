@@ -153,6 +153,7 @@ def test_button_press():
     btn.run()
     try:
         while True:
+            print("0V" if btn.read_gpio_state() else "3.3V", end=" -> ")
             print("Button ON" if btn.is_pressed_now() else "Button OFF")
             if btn.has_been_pressed_long_enough():
                 print("Button pressed long enough")
