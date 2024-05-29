@@ -5,27 +5,10 @@ from typing import Tuple, Optional
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
 import thecubeivazio.cube_utils as cube_utils
+from thecubeivazio.cube_game import CubeTrophy
 
-
-class CubeTrophy:
-    """Class to hold trophy information."""
-
-    def __init__(self, name: str, description: str, points: int, image_path: str):
-        self.name = name
-        self.description = description
-        self.points = points
-        self.image_path = image_path
-
-    def to_string(self):
-        return self.__str__()
-
-    def __str__(self):
-        return f"CubeTrophy(name={self.name}, description={self.description}, points={self.points}, image_path={self.image_path})"
-
-    def __repr__(self):
-        return self.__str__()
-
-
+# todo: to_json
+# todo: remove local config. only one config file, the local is not needed
 class CubeConfig:
     """Class to hold configuration values."""
     # singleton instance of CubeConfig

@@ -93,8 +93,31 @@ def test_cubetry():
     test_func3()
     test_func4()
 
-if __name__ == "__main__":
-    # test_paths()
+def test_all():
+    test_paths()
     test_cubetry()
+
+def handle_sys_args() -> bool:
+    # use sys args to test the functions : if an argument starts with --test,
+    # check if it matches the name of a "test_*" function. if it does, call it.
+    # else, return False
+    import sys
+    if len(sys.argv) > 1:
+        for arg in sys.argv[1:]:
+            if arg.startswith("--test"):
+                test_name = arg[2:]
+                try:
+                    globals()[test_name]()
+                    return True
+                except KeyError:
+                    print(f"Test function {test_name} not found.")
+                    return False
+    return False
+
+if __name__ == "__main__":
+    if not handle_sys_args():
+        print("sys args not handled")
+        # test_paths()
+        test_cubetry()
 
 
