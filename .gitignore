@@ -3,3 +3,4 @@
 /thecubeivazio/logs/*
 *.log
 **/*.log
+/thecubeivazio/saves/
