@@ -5,10 +5,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Run the script logic inside a subshell
 (
-  cd "$SCRIPT_DIR"
+  cd "$SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
 
-SKIP_APT=false
+# TODO: while debugging, i'm skipping the APT update and install
+#SKIP_APT=false
+SKIP_APT=true
 for arg in "$@"
 do
   if [ "$arg" == "--skip-apt" ]; then
