@@ -204,6 +204,7 @@ def valid_simulation():
     cube_id = 1
     rfid_uid = CubeRfidLine.generate_random_rfid_line().uid
     rfid_uid2 = CubeRfidLine.generate_random_rfid_line().uid
+    rfid_uid_resetter = "11111111"
     max_time:Seconds = 3650.0
 
     # mute some logs
@@ -224,6 +225,12 @@ def valid_simulation():
     wait_until(lambda: MASTER.teams.get_team_by_name(team_name) is not None,
                message="waiting for the team to be added to the master",
                timeout=COMM_DELAY_SEC)
+    LOGGER.infoplus("Simulating RFID reset on Cubebox")
+    CUBEBOX.rfid.simulate_read(rfid_uid_resetter)
+    wait_until(lambda: CUBEBOX.status.is_ready_to_play() is True,
+               message="waiting for cubebox to be ready to play",
+               timeout=1)
+    test(lambda: CUBEBOX.status.is_ready_to_play(), "Cubebox should be ready to play")
     LOGGER.infoplus("Simulating RFID read on Cubebox")
     CUBEBOX.rfid.simulate_read(team.rfid_uid)
     LOGGER.infoplus(f"CUBEBOX.last_valid_rfid_line={CUBEBOX.status.last_valid_rfid_line}")
@@ -236,6 +243,7 @@ def valid_simulation():
                timeout=COMM_DELAY_SEC)
     LOGGER.info(f"Cubebox status: {CUBEBOX.to_string()}")
     test(lambda: CUBEBOX.is_box_being_played(), "Cubebox should be playing")
+    test(lambda: CUBEBOX.status.last_valid_rfid_line is not None, "Cubebox should have a valid RFID line")
     test_eq(lambda: CUBEBOX.status.last_valid_rfid_line.uid, rfid_uid, "Cubebox should have the correct RFID UID")
     test_eq(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id, cube_id,
          "Team should be associated with the cubebox")

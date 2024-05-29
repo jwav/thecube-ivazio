@@ -18,7 +18,10 @@ import time
 from typing import Union, List, Optional
 from collections import deque
 
-import evdev
+try:
+    import evdev
+except:
+    print("Failed to load evdev")
 
 # pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
 if not XvfbManager.has_x_server():

@@ -22,7 +22,7 @@ class CubeConfig:
 
         self.clear()
         self.load_global_config()
-        self.load_local_config()
+
         if self.is_valid():
             self.log.info("CubeConfig fully loaded and valid")
         else:
@@ -34,26 +34,33 @@ class CubeConfig:
             CubeConfig._instance = CubeConfig()
         return CubeConfig._instance
 
-    def is_valid(self):
-        try:
-            assert self.config_dict, "config_dict is empty"
-            assert self.game_durations_str, "game_durations_str is empty"
-            assert self.game_durations_sec, "game_durations_sec is empty"
-            assert self.team_names, "team_names is empty"
-            assert self.local_node_name, "local_node_name is empty"
-            assert self.trophies, "trophies is empty"
-            assert self.valid_node_names, "valid_node_names is empty"
-            assert self.local_node_name in self.valid_node_names, "local_node_name not in valid_node_names"
-            return True
-        except Exception as e:
-            self.log.error(f"Error checking if CubeConfig is valid: {e}")
-            return False
+    @cubetry
+    def is_valid(self) -> bool:
+        assert self.config_dict, "config_dict is empty"
+        assert self.game_durations_str, "game_durations_str is empty"
+        assert self.game_durations_sec, "game_durations_sec is empty"
+        assert self.team_names, "team_names is empty"
+        assert self.trophies, "trophies is empty"
+        assert self.valid_node_names, "valid_node_names is empty"
+        return True
 
-    def to_string(self):
-        return self.__str__()
+    @cubetry
+    def to_json(self) -> str:
+        return json.dumps(self.config_dict)
+
+    @cubetry
+    def save_to_json(self, filepath: str=None) -> bool:
+        if filepath is None:
+            filepath = GLOBAL_CONFIG_FILEPATH
+        with open(filepath, "w") as f:
+            f.write(self.to_json())
+            return True
+
+    def to_string(self) -> str:
+        return self.to_json()
 
     def __str__(self):
-        return f"CubeConfig(config_dict={self.config_dict})"
+        return self.to_json()
 
     def __repr__(self):
         return self.__str__()
@@ -74,21 +81,6 @@ class CubeConfig:
             self.log.error(f"Error decoding JSON configuration file: '{GLOBAL_CONFIG_FILEPATH}'")
             self.config_dict = {}
         self.log.info(f"Global configuration loaded")
-
-    def load_local_config(self):
-        self.log.info(f"Loading local configuration from file : '{LOCAL_CONFIG_FILEPATH}'")
-        try:
-            with open(LOCAL_CONFIG_FILEPATH, "r") as f:
-                local_config = json.load(f)
-                self.config_dict.update(local_config)
-        except FileNotFoundError:
-            self.log.error(f"Configuration file not found: '{LOCAL_CONFIG_FILEPATH}'")
-            self.config_dict = {}
-        except json.JSONDecodeError as e:
-            self.log.error(f"Error decoding JSON configuration file: '{LOCAL_CONFIG_FILEPATH}'")
-            self.log.error(f"{e}")
-            self.config_dict = {}
-        self.log.info(f"Local configuration loaded")
 
 
     @property

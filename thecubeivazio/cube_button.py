@@ -4,6 +4,7 @@ It is meant to interact with the Raspberry Pi's GPIO pins,
 but when testing on a regular computer, it will simply tell if the 'v' key is pressed
 """
 from thecubeivazio import cube_logger
+from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
 
 import logging
@@ -17,12 +18,11 @@ if not XvfbManager.has_x_server():
 from pynput import keyboard
 
 
-# TODO: read state of GPIO, add methods to interface all that
-# TODO: use an interrupt?
 class CubeButton:
-    DEBOUNCE_TIME = 1
-    PRESS_CHECK_PERIOD = 0.01
-    BUTTON_PIN = 18
+    DEBOUNCE_TIME: Seconds = 0.5
+    PRESS_CHECK_PERIOD: Seconds = 0.1
+    BUTTON_PIN: int = 14
+    KEYBOARD_SIMULATED_KEY: str = 'v'
 
     def __init__(self):
         self.log = cube_logger.CubeLogger(name="Button")
@@ -37,9 +37,10 @@ class CubeButton:
             self._is_raspberry_pi = True
         except ModuleNotFoundError:
             self.GPIO = None
-            self.keyboard_listener = keyboard.Listener(on_press=self._on_press, on_release=self._on_release)
+            self.keyboard_listener = keyboard.Listener(on_press=self._on_keyboard_press,
+                                                       on_release=self._on_keyboard_release)
             self.keyboard_listener.start()
-            self.log.info("Not on a Raspberry Pi, using 'v' key to simulate button press")
+            self.log.info(f"Not on a Raspberry Pi, using '{self.KEYBOARD_SIMULATED_KEY}' key to simulate button press")
             self._is_raspberry_pi = False
         self._pressed = False
         self._timer_started = False
@@ -49,7 +50,30 @@ class CubeButton:
         self._keep_running = True
         self._simulating_long_press = False
 
+        # the button will toggle between high and low. What we're interested in is the change of state.
+
+        self._pressed_state = None
+
+
+    def set_current_state_as_unpressed(self):
+        """This method should be called at startup and after a button press has been handled
+        to indicate : 'the state the button is in is considered the unpressed state.
+        When the button changes state, it will be considered pressed'
+        """
+        state = self.read_gpio_state()
+        if state is not None:
+            self._pressed_state = not state
+
+    def read_gpio_state(self) -> Optional[bool]:
+        # if we're on a rpi, read the GPIO pin
+        if self.GPIO:
+            return self.GPIO.input(self.BUTTON_PIN)
+        # if we're not on a rpi, return None to indicate that we can't read the state
+        else:
+            return None
+
     def run(self):
+        self.set_current_state_as_unpressed()
         self._thread = threading.Thread(target=self._loop)
         self._keep_running = True
         self._thread.start()
@@ -64,7 +88,7 @@ class CubeButton:
         self.log.info("Button thread stopped")
 
     def reset(self):
-        # print("Resetting button")
+        self.set_current_state_as_unpressed()
         self._pressed = False
         self._timer_started = False
         self._press_timer.reset()
@@ -82,7 +106,8 @@ class CubeButton:
         self._simulating_long_press = True
 
     def wait_until_released(self):
-        """Sleeps while self.is_pressed_now() is True"""
+        """NOTE: with the wireless button, this method should NEVER be used.
+        Sleeps while self.is_pressed_now() is True"""
         while self.is_pressed_now():
             time.sleep(self.PRESS_CHECK_PERIOD)
 
@@ -95,7 +120,7 @@ class CubeButton:
                     self.log.debug("resetting button timer")
                     self._timer_started = True
                     # print("starting button timer")
-                if self._timer_started and self._press_timer.is_timeout():
+                if self._timer_started and self._press_timer.is_timeout() and not self._pressed_long_enough:
                     self.log.debug("Button pressed long enough")
                     self._pressed_long_enough = True
             elif self._simulating_long_press:
@@ -105,26 +130,24 @@ class CubeButton:
             time.sleep(self.PRESS_CHECK_PERIOD)
 
     def is_pressed_now(self) -> bool:
-        if self.GPIO:
-            self._pressed = self.GPIO.input(18) == 0
+        state = self.read_gpio_state()
+        if state is not None:
+            self._pressed = (state == self._pressed_state)
         else:
-            # on_press handles the update of _pressed when not on a Raspberry Pi (keyboard input)
+            # if we're not on a Raspberry Pi, the keyboard listener will update the state
             pass
-        # print("Button pressed" if self._pressed else "Button not pressed")
         return self._pressed
 
-    def _on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
-        if hasattr(key, 'char') and key.char == 'v':  # Check if 'v' key is pressed
-            # print("v key pressed")
+    def _on_keyboard_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
+        if hasattr(key, 'char') and key.char == self.KEYBOARD_SIMULATED_KEY:
             self._pressed = True
 
-    def _on_release(self, key: Union[keyboard.KeyCode, keyboard.Key]):
-        if hasattr(key, 'char') and key.char == 'v':
-            # print("v key released")
+    def _on_keyboard_release(self, key: Union[keyboard.KeyCode, keyboard.Key]):
+        if hasattr(key, 'char') and key.char == self.KEYBOARD_SIMULATED_KEY:
             self._pressed = False
 
 
-if __name__ == "__main__":
+def test_button_press():
     btn = CubeButton()
     btn.log.setLevel(logging.DEBUG)
     btn.run()
@@ -142,3 +165,6 @@ if __name__ == "__main__":
         btn.stop()
         print("Button test stopped")
         exit(0)
+
+if __name__ == "__main__":
+    test_button_press()

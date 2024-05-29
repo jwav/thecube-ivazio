@@ -184,8 +184,12 @@ class CubeServerCubebox:
         if self.status.last_valid_rfid_line is not None:
             self.log.warning("Trying to badge in the same team that's already playing. Ignoring.")
             return False
+        # alright so it's a valid line. let's add it to our status
+        self.status.last_valid_rfid_line = rfid_line
+        # send the RFID read message to the CubeMaster
         report = self.net.send_msg_to_cubemaster(
-            cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp), require_ack=True)
+            cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp),
+            require_ack=True)
         if not report.success:
             self.log.error("Failed to send RFID read message to CubeMaster")
             self.buzzer.play_rfid_error_sound()

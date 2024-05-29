@@ -24,19 +24,19 @@
       "name": "Post sur média social",
       "description": "Partager son expérience TheCube sur un média social",
       "points": 10,
-      "image_path": "trophy_social_media.png"
+      "image_filename": "trophy_social_media.png"
     },
     {
       "name": "12 cubes terminés",
       "description": "Terminer tous les 12 cubes de TheCube",
       "points": 100,
-      "image_path": "trophy_12_cubes_done.png"
+      "image_filename": "trophy_12_cubes_done.png"
     },
     {
       "name": "Moins de 5 minutes",
       "description": "Terminer un cube en moins de 5 minutes",
       "points": 20,
-      "image_path": "trophy_under_5_minutes.png"
+      "image_filename": "trophy_under_5_minutes.png"
     }
   ],
   "valid_node_names": [
