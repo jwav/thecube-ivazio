@@ -16,7 +16,7 @@ class RunText(SampleBase):
     def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
-        font.LoadFont("/home/pi/rpi-rgb-led-matrix/fonts/7x13.bdf")
+        font.LoadFont("/home/pi/rpi-rgb-led-matrix/rgb_fonts/7x13.bdf")
         textColor = graphics.Color(255, 255, 0)
         w = offscreen_canvas.width
         team_name = "BERLIN"

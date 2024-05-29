@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 # Display a runtext with double-buffering.
+import os
+
 from samplebase import SampleBase
 from rgbmatrix import graphics
 import time
 import datetime
+
+from thecubeivazio.cube_common_defines import *
+
 
 def seconds_to_hhmmss(seconds):
     hours, remainder = divmod(seconds, 3600)
@@ -23,7 +28,7 @@ class Message:
         self.initial_seconds = initial_seconds
         self.start_time = time.time()
         self.font = graphics.Font()
-        self.font.LoadFont("~/rpi-rgb-led-matrix/fonts/7x13.bdf")
+        self.font.LoadFont(os.path.join(RGB_FONTS_DIR, "7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
     @property

@@ -51,6 +51,7 @@ CONFIG_DIR = os.path.join(PROJECT_ROOT_PATH, "config")
 IMAGES_DIR = os.path.join(CUBEGUI_DIR, "images")
 SAVES_DIR = os.path.join(PROJECT_ROOT_PATH, "saves")
 SCORESHEETS_DIR = os.path.join(PROJECT_ROOT_PATH, "scoresheets")
+RGB_FONTS_DIR = os.path.join(PROJECT_ROOT_PATH, "rgb_fonts")
 
 GLOBAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json")
 LOCAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "local_config.json")
