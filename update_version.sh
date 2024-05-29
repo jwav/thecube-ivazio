@@ -1,7 +1,17 @@
 #!/usr/bin/bash
 
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+
 # Get the directory of the script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+
 
 # Run the script logic inside a subshell
 (
@@ -59,5 +69,5 @@ else
   echo "OK : project package install succeeded"
 fi
 
-echo "Update OK: APT packages installed, git pulled, project package pip installed."
+echo "${GREEN}Update OK: APT packages installed, git pulled, project package pip installed.${NC}"
 )
