@@ -55,7 +55,7 @@ class RunText(SampleBase):
         super(RunText, self).__init__(*args, **kwargs)
 
 
-def run(self):
+    def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         msg1 = Message(team="BERLIN", id=0, initial_seconds=3605)
         msg2 = Message(team="BUDAPEST", id=1, initial_seconds=3609)
