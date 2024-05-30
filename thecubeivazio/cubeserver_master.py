@@ -303,9 +303,15 @@ class CubeServerMaster:
         ntmsg = cm.CubeMsgFrontdeskNewTeam(copy_msg=message)
         self.log.info(f"New team: {ntmsg.team.to_string()}")
         if self.teams.get_team_by_name(ntmsg.team.name):
-            self.log.error(f"Team already exists: {ntmsg.team.name}")
+            self.log.error(f"Team already exists with this name: {ntmsg.team.name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.OCCUPIED)
-        elif self.teams.add_team(ntmsg.team):
+            return
+        elif self.teams.get_team_by_rfid_uid(ntmsg.team.rfid_uid):
+            self.log.error(f"Team already exists with this RFID UID: {ntmsg.team.rfid_uid}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.OCCUPIED)
+            return
+        # ok, so it's a new team. Let's add it to the list
+        if self.teams.add_team(ntmsg.team):
             self.log.info(f"Added new team: {ntmsg.team.name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
         else:
