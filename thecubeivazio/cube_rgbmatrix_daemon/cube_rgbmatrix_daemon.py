@@ -41,30 +41,37 @@ LED_SLOWDOWN_GPIO = 5
 
 
 class TimeoutFlock:
-    def __init__(self, file, mode, timeout=5, delay=0.1):
-        self.file = file
-        self.mode = mode
+    def __init__(self, filepath, file_mode, lock_mode, timeout=5, delay=0.1):
+        self.filepath = filepath
+        self.file_mode = file_mode
+        self.lock_mode = lock_mode
         self.timeout = timeout
         self.delay = delay
+        self.file = None
 
     def acquire(self):
         end_time = time.time() + self.timeout
         while True:
             try:
-                fcntl.flock(self.file, self.mode)
+                self.file = open(self.filepath, self.file_mode)
+                fcntl.flock(self.file, self.lock_mode)
                 return True
             except IOError:
+                if self.file:
+                    self.file.close()
                 if time.time() > end_time:
                     return False
                 time.sleep(self.delay)
 
     def release(self):
-        fcntl.flock(self.file, fcntl.LOCK_UN)
+        if self.file:
+            fcntl.flock(self.file, fcntl.LOCK_UN)
+            self.file.close()
 
     def __enter__(self):
         if not self.acquire():
             raise TimeoutError("Could not acquire the lock within the specified timeout")
-        return self
+        return self.file  # Return the file object
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.release()
@@ -113,9 +120,8 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
         try:
-            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH):
-                with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
-                    f.write("\n".join(lines)+"\n")
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH) as f:
+                f.write("\n".join(lines)+"\n")
                 return True
         except Exception as e:
             cls.log.error(f"Error writing to file: {e}")
@@ -124,10 +130,9 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def read_lines_from_daemon_file(cls) -> list[str]:
         try:
-            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH):
-                with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
-                    ret = [s.strip() for s in f.readlines()]
-                    return ret
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH) as f:
+                ret = [s.strip() for s in f.readlines()]
+                return ret
         except Exception as e:
             cls.log.error(f"Error reading from file: {e}")
             return []
