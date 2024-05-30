@@ -68,7 +68,8 @@ class CubeRgbMatrixDaemon(SampleBase):
         if cls._static_process:
             print("{cls.__name__} :  process already running")
             return False
-        cls._static_process = subprocess.Popen(['sudo', 'python3', '/home/ivazio/thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon.py'])
+        daemon_path = os.path.abspath(__file__)
+        cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
         return True
 
     @classmethod
