@@ -50,7 +50,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.texts = ["foo", "bar"]
         self.start_time = time.time()
         self.font = graphics.Font()
-        self.font.LoadFont(os.path.join("../7x13.bdf"))
+        self.font.LoadFont(os.path.join("7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
     @staticmethod
