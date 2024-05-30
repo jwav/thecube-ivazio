@@ -89,7 +89,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
     log.addHandler(file_handler)
-    log.addHandler(console_handler)
+    # log.addHandler(console_handler)
 
 
     def __init__(self, *args, **kwargs):

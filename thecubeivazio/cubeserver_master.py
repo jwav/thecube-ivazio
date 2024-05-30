@@ -41,13 +41,16 @@ class CubeServerMaster:
 
         self.game_status = cube_game.CubeGameStatus()
 
-        if cube_utils.is_raspberry_pi():
-            self.log.info("Launching RGBMatrix Daemon process")
-            crd.CubeRgbMatrixDaemon.launch_process()
+
         self._rgb_matrix_thread = threading.Thread(target=self._rgb_matrix_loop)
 
     def _rgb_matrix_loop(self):
         """Write the remaining times to the RGBMatrix Daemon file"""
+        if not cube_utils.is_raspberry_pi():
+            self.log.error("Not running on a Raspberry Pi. Exiting RGBMatrix Daemon thread.")
+            return
+        self.log.info("Launching RGBMatrix Daemon process")
+        crd.CubeRgbMatrixDaemon.launch_process()
         while self._keep_running:
             time.sleep(1)
             # write the remaining times to the RGBMatrix Daemon file
