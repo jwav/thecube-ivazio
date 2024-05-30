@@ -114,6 +114,7 @@ def has_capability(cap):
 if __name__ == "__main__":
     print("has cap_sys_nice ?", has_capability('cap_sys_nice'))
     print("has cap_dac_override ?", has_capability('cap_dac_override'))
+    exit(0)
     import atexit
 
     lm = CubeRgbMatrixManager()
