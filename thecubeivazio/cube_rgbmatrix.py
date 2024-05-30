@@ -115,7 +115,9 @@ def has_capability(cap):
 if __name__ == "__main__":
     print("has cap_sys_nice ?", has_capability('cap_sys_nice'))
     print("has cap_dac_override ?", has_capability('cap_dac_override'))
-    exit(0)
+    if not os.geteuid() == 0 and not (has_capability('cap_sys_nice') and has_capability('cap_dac_override')):
+        print("Need root or appropriate capabilities to run this script.")
+    exit(1)
     import atexit
 
     lm = CubeRgbMatrixManager()
