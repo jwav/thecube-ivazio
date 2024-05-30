@@ -37,27 +37,32 @@ class CubeRgbTextDrawer(SampleBase):
         ])
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
-        self.messages = ["foo", "bar"]
+        self.texts = ["foo", "bar"]
+        self.start_time = time.time()
+        self.font = graphics.Font()
+        self.font.LoadFont(os.path.join("7x13.bdf"))
+        self.textColor = graphics.Color(255, 255, 0)
 
     def run(self):
         print("CubeRgbTextDrawer running")
         self._keep_running = True
         # NOTE: DO NOT copy the canvas in a CubeRgbText instance property.
         # it seems to create new canvas instances, and makes the message disappear
-        offscreen_canvas = self.matrix.CreateFrameCanvas()
+        canvas = self.matrix.CreateFrameCanvas()
         while self._keep_running:
-            offscreen_canvas.Clear()
-            for matrix_id,msg in enumerate(self.messages):
-                CubeRgbText(matrix_id=matrix_id, text=msg).draw(canvas=offscreen_canvas)
+            canvas.Clear()
+            for matrix_id,text in enumerate(self.texts):
+                x = matrix_id * PANEL_WIDTH + X_MARGIN
+                graphics.DrawText(canvas, self.font, x, Y_TEXT, self.textColor, text)
             time.sleep(1)
-            offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+            canvas = self.matrix.SwapOnVSync(canvas)
         print("CubeRgbTextDrawer stopped")
 
     def stop(self):
         self._keep_running = False
 
 
-
+# TODO: make obsolete
 class CubeRgbText:
     def __init__(self, matrix_id: int, text: str):
         self.text = text
