@@ -47,7 +47,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     log.addHandler(console_handler)
 
 
-def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # known_args, _ = self.parser.parse_known_args([
         #     f'--led-cols={PANEL_WIDTH}',
