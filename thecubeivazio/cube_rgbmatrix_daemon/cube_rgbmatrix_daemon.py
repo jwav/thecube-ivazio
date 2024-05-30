@@ -102,26 +102,11 @@ class CubeRgbMatrixDaemon(SampleBase):
         self._keep_running = False
 
 
-# TODO: make obsolete
-class CubeRgbText:
-    def __init__(self, matrix_id: int, text: str):
-        self.text = text
-        self.matrix_id = matrix_id
-        self.x = matrix_id * PANEL_WIDTH + X_MARGIN
-        self.start_time = time.time()
-        self.font = graphics.Font()
-        self.font.LoadFont(os.path.join("../7x13.bdf"))
-        self.textColor = graphics.Color(255, 255, 0)
-
-    def draw(self, canvas):
-        graphics.DrawText(canvas, self.font, self.x, Y_TEXT, self.textColor, self.text)
-
-
-
-
 
 
 # TODO: test display
 if __name__ == "__main__":
     daemon = CubeRgbMatrixDaemon()
-    daemon.run()
+    if not daemon.process():
+        exit(1)
+    exit(0)
