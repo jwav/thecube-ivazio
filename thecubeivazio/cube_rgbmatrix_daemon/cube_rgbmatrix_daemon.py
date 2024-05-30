@@ -39,11 +39,15 @@ class CubeRgbMatrixDaemon(SampleBase):
     log = logging.getLogger('RGBMatrixDaemon')
     log.setLevel(logging.DEBUG)
     file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
+    console_handler = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
     log.addHandler(file_handler)
+    log.addHandler(console_handler)
 
-    def __init__(self, *args, **kwargs):
+
+def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # known_args, _ = self.parser.parse_known_args([
         #     f'--led-cols={PANEL_WIDTH}',
@@ -110,6 +114,9 @@ class CubeRgbMatrixDaemon(SampleBase):
         except Exception as e:
             print(f"{cls.__name__} : Error stopping process: {e}")
 
+    def launch(self):
+        return self.process()
+
     def run(self):
         self.log.info("CubeRgbTextDrawer running")
         self._keep_running = True
@@ -136,8 +143,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 # TODO: test display
 if __name__ == "__main__":
     print(f"log filepath: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
-    CubeRgbMatrixDaemon.log.info("test logger")
     daemon = CubeRgbMatrixDaemon()
-    if not daemon.process():
+    if not daemon.launch():
         exit(1)
     exit(0)
