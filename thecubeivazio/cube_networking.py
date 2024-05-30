@@ -1,6 +1,4 @@
 """Handles everything related to networking communications"""
-import traceback
-
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_logger as cube_logger
 import thecubeivazio.cube_messages as cm
@@ -262,7 +260,7 @@ class CubeNetworking:
                     if msg.is_ack_of(msg_to_be_acked):
                         break
                 else:
-                    self.log.warning(f"Removing useless ack message: ({msg.hash})")
+                    # self.log.warning(f"Removing useless ack message: ({msg.hash})")
                     self.remove_msg_from_incoming_queue(msg, force_remove=True)
 
     def _handle_generic_message(self, message: cm.CubeMessage) -> bool:
@@ -367,25 +365,25 @@ class CubeNetworking:
 
     def send_msg_to(self, message: cm.CubeMessage, node_name: str, require_ack=False) -> SendReport:
         """Sends a message to a node. Returns True if the message was acknowledged, False otherwise."""
-        self.log.info(f"Sending message to {node_name}: ({message.hash}), require_ack: {require_ack}")
+        self.log.info(f"Sending message to {node_name}: ({message.hash}), require_ack: {require_ack}\n{message}")
         ip = self.nodes_list.get_node_ip_from_node_name(node_name)
         return self.send_msg_with_udp(message, ip, require_ack=require_ack)
 
     def send_msg_to_all(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to all nodes. Returns True if the message was acknowledged by all nodes, False otherwise."""
-        self.log.info(f"Sending message to all nodes: ({message.hash}), require_ack: {require_ack}")
+        self.log.info(f"Sending message to all nodes: ({message.hash}), require_ack: {require_ack}\n{message}")
         return self.send_msg_with_udp(message, self.UDP_BROADCAST_IP, require_ack=require_ack)
 
     def send_msg_to_cubemaster(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the CubeMaster. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(
-            f"Sending message to CubeMaster ({self.nodes_list.cubemaster.ip}): ({message.hash}), require_ack: {require_ack}")
+            f"Sending message to CubeMaster ({self.nodes_list.cubemaster.ip}): ({message.hash}), require_ack: {require_ack}\n{message}")
         return self.send_msg_with_udp(message, self.nodes_list.cubemaster.ip, require_ack=require_ack)
 
     def send_msg_to_frontdesk(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
         """Sends a message to the FrontDesk. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(
-            f"Sending message to FrontDesk ({self.nodes_list.frontdesk.ip}): ({message.hash}), require_ack: {require_ack}")
+            f"Sending message to FrontDesk ({self.nodes_list.frontdesk.ip}): ({message.hash}), require_ack: {require_ack}\n{message}")
         return self.send_msg_with_udp(message, self.nodes_list.frontdesk.ip, require_ack=require_ack)
 
     def get_ack_wait_queue(self) -> Tuple[CubeMessage, ...]:

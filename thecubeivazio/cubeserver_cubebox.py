@@ -319,9 +319,13 @@ class CubeServerCubeboxWithPrompt:
 
 if __name__ == "__main__":
     import atexit
-
     box = CubeServerCubeboxWithPrompt("CubeBox1")
     atexit.register(box.stop)
+
+    box.csc.log.setLevel(cube_logger.logging.INFO)
+    box.csc.net.log.setLevel(cube_logger.logging.INFO)
+
+
     try:
         box.run()
     except KeyboardInterrupt:

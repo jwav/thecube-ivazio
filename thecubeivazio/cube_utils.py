@@ -8,6 +8,7 @@ from typing import Optional, Union
 
 from thecubeivazio.cube_common_defines import *
 
+
 def is_raspberry_pi():
     try:
         with open('/proc/cpuinfo', 'r') as f:
@@ -17,6 +18,7 @@ def is_raspberry_pi():
     except FileNotFoundError:
         return False
     return False
+
 
 def get_git_branch_version():
     """
@@ -96,7 +98,7 @@ class SimpleTimer:
 
 
 def date_to_french_date_string(date: datetime.datetime,
-                               weekday=True, day_number=True,month=True, year=True) -> Optional[str]:
+                               weekday=True, day_number=True, month=True, year=True) -> Optional[str]:
     """Convert a datetime object to a string in a format like 'lundi 1 janvier 2021'"""
     # we need to specify the locale when calling strftimeto get the french version of the date. Don't modify the locale of the system
     import locale
@@ -125,7 +127,8 @@ def date_to_french_date_string(date: datetime.datetime,
         locale.setlocale(locale.LC_TIME, current_locale)
     return french_date_string
 
-def hhmmss_string_to_seconds(hhmmss:str) -> Optional[int]:
+
+def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
     """Convert a string like 1h30m15s ,0h30, 01:32:55, 00:21 to the number of seconds it represents"""
     # find which characters are digits, which are not, and split the string using the non-digits as separators
     import itertools
@@ -138,9 +141,9 @@ def hhmmss_string_to_seconds(hhmmss:str) -> Optional[int]:
         # print(parts)
         # check the number of parts : 3 means hours, minutes, seconds, 2 means hours, seconds, 1 means seconds
         if len(parts) == 3:
-            return parts[0]*3600 + parts[1]*60 + parts[2]
+            return parts[0] * 3600 + parts[1] * 60 + parts[2]
         elif len(parts) == 2:
-            return parts[0]*3600 + parts[1]
+            return parts[0] * 3600 + parts[1]
         elif len(parts) == 1:
             return parts[0]
         else:
@@ -148,6 +151,7 @@ def hhmmss_string_to_seconds(hhmmss:str) -> Optional[int]:
     except Exception as e:
         print(f"Error while converting {hhmmss} to seconds: {e}")
         return None
+
 
 # TODO: test
 def seconds_to_hhmmss_string(seconds: Seconds, separators="hms",
@@ -163,6 +167,7 @@ def seconds_to_hhmmss_string(seconds: Seconds, separators="hms",
         return time.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}', time.gmtime(seconds))
     except Exception as e:
         return "??:??:??"
+
 
 # TODO: test
 def timestamp_to_hhmmss_time_of_day_string(timestamp: Timestamp, separators="hms",
@@ -182,11 +187,15 @@ def timestamp_to_hhmmss_time_of_day_string(timestamp: Timestamp, separators="hms
     except Exception as e:
         return "??:??:??"
 
-@cubetry
-def timestamp_to_french_date(timestamp: Union[float,int], weekday=True, day_number=True, month=True, year=True) -> str:
+
+def timestamp_to_french_date(timestamp: Union[float, int], weekday=True, day_number=True, month=True, year=True) -> str:
     """Convert a timestamp to a string in a format like 'lundi 1 janvier 2021'"""
-    return date_to_french_date_string(datetime.datetime.fromtimestamp(timestamp),
-                                      weekday=weekday, day_number=day_number, month=month, year=year)
+    try:
+        return date_to_french_date_string(datetime.datetime.fromtimestamp(timestamp),
+                                          weekday=weekday, day_number=day_number, month=month, year=year)
+    except Exception as e:
+        return ""
+
 
 def get_system_hostname() -> str:
     """Get the hostname of the running machine"""
@@ -198,14 +207,13 @@ def get_system_hostname() -> str:
         return "hostnameNone"
 
 
-
-
 def timestamps_are_in_same_day(timestamp1: float, timestamp2: float) -> bool:
     """Check if two timestamps are in the same day"""
     # use datetime to get the date of the timestamps
     date1 = datetime.datetime.fromtimestamp(timestamp1)
     date2 = datetime.datetime.fromtimestamp(timestamp2)
     return date1.date() == date2.date()
+
 
 def timestamps_are_in_same_week(timestamp1: float, timestamp2: float) -> bool:
     """Check if two timestamps are in the same week"""
@@ -214,6 +222,7 @@ def timestamps_are_in_same_week(timestamp1: float, timestamp2: float) -> bool:
     date2 = datetime.datetime.fromtimestamp(timestamp2)
     return date1.isocalendar()[1] == date2.isocalendar()[1]
 
+
 def timestamps_are_in_same_month(timestamp1: float, timestamp2: float) -> bool:
     """Check if two timestamps are in the same month"""
     # use datetime to get the date of the timestamps
@@ -221,7 +230,8 @@ def timestamps_are_in_same_month(timestamp1: float, timestamp2: float) -> bool:
     date2 = datetime.datetime.fromtimestamp(timestamp2)
     return date1.month == date2.month
 
-def today_start_timestamp(timestamp:float=None):
+
+def today_start_timestamp(timestamp: float = None):
     """Get the timestamp of the start of the day of the timestamp"""
     if timestamp is None:
         timestamp = time.time()
@@ -231,7 +241,8 @@ def today_start_timestamp(timestamp:float=None):
     start_date = datetime.datetime(date.year, date.month, date.day)
     return start_date.timestamp()
 
-def this_week_start_timestamp(timestamp:float=None):
+
+def this_week_start_timestamp(timestamp: float = None):
     """Get the timestamp of the start of the week of the timestamp"""
     if timestamp is None:
         timestamp = time.time()
@@ -245,7 +256,8 @@ def this_week_start_timestamp(timestamp:float=None):
     start_date = datetime.datetime.strptime(f"{year}-{week_number}-1", "%Y-%W-%w")
     return start_date.timestamp()
 
-def this_month_start_timestamp(timestamp:float=None):
+
+def this_month_start_timestamp(timestamp: float = None):
     """Get the timestamp of the start of the month of the timestamp"""
     if timestamp is None:
         timestamp = time.time()
@@ -254,6 +266,7 @@ def this_month_start_timestamp(timestamp:float=None):
     # create a new datetime object with the same year and month, but at 00:00:00 on the first day of the month
     start_date = datetime.datetime(date.year, date.month, 1)
     return start_date.timestamp()
+
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())
