@@ -120,7 +120,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
         try:
-            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH) as f:
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w", fcntl.LOCK_SH) as f:
                 f.write("\n".join(lines)+"\n")
                 return True
         except Exception as e:
