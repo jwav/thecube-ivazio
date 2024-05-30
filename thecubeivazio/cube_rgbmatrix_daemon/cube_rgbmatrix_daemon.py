@@ -132,6 +132,10 @@ class CubeRgbMatrixDaemon(SampleBase):
         try:
             with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH) as f:
                 ret = [s.strip() for s in f.readlines()]
+                for line in ret:
+                    if "stop" in line:
+                        cls.stop_process()
+                        break
                 return ret
         except Exception as e:
             cls.log.error(f"Error reading from file: {e}")

@@ -59,6 +59,7 @@ class CubeServerMaster:
         # signal.signal(signal.SIGINT, signal_handler)
 
         while self._keep_running:
+
             time.sleep(1)
             # write the remaining times to the RGBMatrix Daemon file
             remaining_times = [team.remaining_time for team in self.teams]
@@ -125,14 +126,16 @@ class CubeServerMaster:
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
+        self._keep_running = False
         self.net.stop()
         self.rfid.stop()
-        self._keep_running = False
         self._networking_thread.join(timeout=0.1)
         self._rfid_thread.join(timeout=0.1)
         self._webpage_thread.join(timeout=0.1)
         self._display_thread.join(timeout=0.1)
         self._rgb_matrix_thread.join(timeout=0.1)
+        crd.CubeRgbMatrixDaemon.stop_process()
+
 
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""
