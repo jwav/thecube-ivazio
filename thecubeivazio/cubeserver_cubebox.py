@@ -261,10 +261,11 @@ class CubeServerCubeboxWithPrompt:
     @staticmethod
     def print_help():
         print("Commands:")
-        print("  h: print this help")
-        print("  q: quit")
-        print("  s: print the status of the CubeBox")
-        print("  p: simulate a long press of the button")
+        print("h: print this help")
+        print("q: quit")
+        print("s: print the status of the CubeBox")
+        print("p: simulate a long press of the button")
+        print("rcbs: send a REPLY_CUBEBOX_STATUS message to the CubeMaster")
 
     def stop(self):
         self.csc.stop()
@@ -282,6 +283,8 @@ class CubeServerCubeboxWithPrompt:
                 print(self.csc.status)
             elif cmd == "p":
                 self.csc.button.simulate_long_press()
+            elif cmd == "rcbs":
+                self.csc.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.csc.net.node_name, self.csc.status))
             else:
                 print("Unknown command. Try again.")
 
