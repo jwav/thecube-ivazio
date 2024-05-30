@@ -119,10 +119,10 @@ def check_capabilities():
 
 # TODO: test display
 if __name__ == "__main__":
-    check_capabilities()
-    if not os.geteuid() == 0 and not (check_capabilities()):
-        print("Need root or appropriate capabilities to run this script.")
-        exit(1)
+    # check_capabilities()
+    # if not os.geteuid() == 0 and not (check_capabilities()):
+    #     print("Need root or appropriate capabilities to run this script.")
+    #     exit(1)
     import atexit
 
     lm = CubeRgbMatrixManager()
