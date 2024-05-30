@@ -51,7 +51,10 @@ class CubeServerCubebox:
     @status.setter
     def status(self, value):
         self._status = value
-        self.info(f"Status set to {value}. Sending message to everyone.")
+        self.log.info(f"Status set to {value}. Sending message to everyone.")
+        self.send_status_to_all()
+
+    def send_status_to_all(self):
         self.net.send_msg_to_all(
             cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
             require_ack=False)
@@ -157,6 +160,7 @@ class CubeServerCubebox:
     def perform_reset(self):
         self.status.reset()
         self.buzzer.play_cubebox_reset_sound()
+        self.send_status_to_all()
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
