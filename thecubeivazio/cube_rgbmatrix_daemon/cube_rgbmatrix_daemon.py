@@ -66,7 +66,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def launch_process(cls) -> bool:
         if cls._static_process:
-            print("{cls.__name__} :  process already running")
+            print(f"{cls.__name__} :  process already running")
             return False
         daemon_path = os.path.abspath(__file__)
         cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
@@ -124,19 +124,5 @@ class CubeRgbText:
 
 # TODO: test display
 if __name__ == "__main__":
-    import atexit
-    atexit.register(CubeRgbMatrixDaemon.stop_process)
-
-    try:
-        CubeRgbMatrixDaemon.stop_process()
-    except Exception as e:
-        print(f"Error stopping process: {e}")
-
-    try:
-        CubeRgbMatrixDaemon.launch_process()
-        while True:
-            time.sleep(1)
-    except Exception as e:
-        print(f"Error launching process: {e}")
-        CubeRgbMatrixDaemon.stop_process()
-        sys.exit(1)
+    daemon = CubeRgbMatrixDaemon()
+    daemon.run()

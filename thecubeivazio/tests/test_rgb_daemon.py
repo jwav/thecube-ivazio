@@ -19,8 +19,8 @@ class MockCubeRgbMatrixDaemon:
 if __name__ == "__main__":
     try:
         # CubeRgbMatrixDaemon = MockCubeRgbMatrixDaemon
+        CubeRgbMatrixDaemon.launch_process()
         while True:
-            CubeRgbMatrixDaemon.launch_process()
             start_time = time.time()
             time.sleep(1)
             print("time elapsed:", time.time() - start_time)
@@ -37,3 +37,4 @@ if __name__ == "__main__":
     finally:
         CubeRgbMatrixDaemon.stop_process()
         print("process stopped")
+        exit(0)
