@@ -227,36 +227,42 @@ class CubeServerCubebox:
         self.button.run()
         while self._keep_running:
             time.sleep(0.1)
-            if not self.is_box_being_played():
-                continue
+
             # print(".", end="")
-            if self.button.is_pressed_now():
-                self.log.debug("Button pressed now")
+            # if self.button.is_pressed_now():
+                # self.log.debug("Button pressed now")
                 # self.log.debug(f"Button timer: {self.button._press_timer.timer()}")
-            if self.button.has_been_pressed_long_enough():
-                press_timestamp = time.time()
-                # for some reason the CubeMaster doesn't get the messages when it's sent to its ip.
-                # might be beause everyone is on 192.168.1.0, I don't know. For now, let's just use
-                # the broadcast address.
-                # if self.net.send_msg_to_cubeserver(cm.CubeMsgButtonPress(self.net.node_name)):
-                cbp_msg = cm.CubeMsgButtonPress(sender=self.net.node_name,
-                                                start_timestamp=self.play_start_timestamp,
-                                                press_timestamp=press_timestamp)
-                self.log.info(f"Button pressed long enough. Sending msg to CubeMaster : {cbp_msg.to_string()}")
 
-                if self.net.send_msg_to_cubemaster(cbp_msg, require_ack=True):
-                    self.log.info("Button press message sent to and acked by CubeMaster")
-                    self.badge_out_current_team()
-                    self.status.set_state_waiting_for_reset()
-                    self.buzzer.play_victory_sound()
+            if not self.button.has_been_pressed_long_enough():
+                continue
+            # if we're here. it means we've got a long press
+            if not self.is_box_being_played():
+                self.log.warning("The button was pressed long enough but the box is not being played. Ignoring.")
+                self.button.reset()
+                continue
+            press_timestamp = time.time()
+            # for some reason the CubeMaster doesn't get the messages when it's sent to its ip.
+            # might be beause everyone is on 192.168.1.0, I don't know. For now, let's just use
+            # the broadcast address.
+            # if self.net.send_msg_to_cubeserver(cm.CubeMsgButtonPress(self.net.node_name)):
+            cbp_msg = cm.CubeMsgButtonPress(sender=self.net.node_name,
+                                            start_timestamp=self.play_start_timestamp,
+                                            press_timestamp=press_timestamp)
+            self.log.info(f"Button pressed long enough. Sending msg to CubeMaster : {cbp_msg.to_string()}")
 
-                else:
-                    self.log.error("Failed to send or get ack for button press message to CubeMaster")
-                self.button.reset()
-                self.button.wait_until_released()
-                self.log.info("Button released")
-                self.button.reset()
-                self.log.info("Button reset")
+            if self.net.send_msg_to_cubemaster(cbp_msg, require_ack=True):
+                self.log.info("Button press message sent to and acked by CubeMaster")
+                self.badge_out_current_team()
+                self.status.set_state_waiting_for_reset()
+                self.buzzer.play_victory_sound()
+
+            else:
+                self.log.error("Failed to send or get ack for button press message to CubeMaster")
+            self.button.reset()
+            self.button.wait_until_released()
+            self.log.info("Button released")
+            self.button.reset()
+            self.log.info("Button reset")
         self.button.stop()
 
     @cubetry
