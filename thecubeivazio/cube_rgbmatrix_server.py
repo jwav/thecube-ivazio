@@ -37,7 +37,7 @@ class CubeRgbTextDrawer(SampleBase):
         ])
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
-        self.messages = []
+        self.messages = ["foo", "bar"]
 
     def run(self):
         print("CubeRgbTextDrawer running")
