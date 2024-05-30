@@ -4,15 +4,13 @@ import sys
 import threading
 
 # RGB matrix lib imports
-from thecubeivazio.rgbmatrix_samplebase import SampleBase
+from rgbmatrix_samplebase import SampleBase
 from rgbmatrix import graphics
 
 import os
 import time
 import datetime
 
-from thecubeivazio.cube_common_defines import *
-from thecubeivazio import cube_utils
 
 NB_MATRICES = 2
 PANEL_WIDTH = 64
@@ -63,7 +61,7 @@ class CubeRgbText:
         self.x = matrix_id * PANEL_WIDTH + X_MARGIN
         self.start_time = time.time()
         self.font = graphics.Font()
-        self.font.LoadFont(os.path.join(RGB_FONTS_DIR, "7x13.bdf"))
+        self.font.LoadFont(os.path.join("7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
     def draw(self, canvas):
