@@ -48,7 +48,7 @@ class CubeRgbTextDrawer(SampleBase):
         while self._keep_running:
             offscreen_canvas.Clear()
             for matrix_id,msg in enumerate(self.messages):
-                CubeRgbText(matrix_id=0, text=msg).draw(canvas=offscreen_canvas)
+                CubeRgbText(matrix_id=matrix_id, text=msg).draw(canvas=offscreen_canvas)
             time.sleep(1)
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
         print("CubeRgbTextDrawer stopped")
