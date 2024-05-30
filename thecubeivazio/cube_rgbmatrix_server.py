@@ -35,7 +35,7 @@ class CubeRgbTextDrawer(SampleBase):
             '--led-chain=2',
             '--led-slowdown-gpio=5'
         ])
-        print("CubeRgbTextDrawer args:", self.args)
+        # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
         self.messages = []
 
