@@ -121,11 +121,10 @@ def check_capabilities():
 
 # TODO: test display
 if __name__ == "__main__":
-    print("has cap_sys_nice ?", check_capabilities('cap_sys_nice'))
-    print("has cap_dac_override ?", check_capabilities('cap_dac_override'))
-    if not os.geteuid() == 0 and not (check_capabilities('cap_sys_nice') and check_capabilities('cap_dac_override')):
+    check_capabilities()
+    if not os.geteuid() == 0 and not (check_capabilities()):
         print("Need root or appropriate capabilities to run this script.")
-    exit(1)
+        exit(1)
     import atexit
 
     lm = CubeRgbMatrixManager()
