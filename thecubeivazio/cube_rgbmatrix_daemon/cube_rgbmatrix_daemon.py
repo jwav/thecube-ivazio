@@ -16,18 +16,11 @@ from logging.handlers import RotatingFileHandler
 # RGBMATRIX_DAEMON_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
 # RGBMATRIX_DAEMON_PY_PATH = os.path.abspath(__file__)
 # RGBMATRIX_DAEMON_DIR_PATH = os.path.dirname(RGBMATRIX_DAEMON_PY_PATH)
+home_dir = os.path.expanduser("~")
 
-RGBMATRIX_DAEMON_DIR_PATH = "/home/ivazio/thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon"
+RGBMATRIX_DAEMON_DIR_PATH = os.path.join(home_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
 # RGBMATRIX_DAEMON_PY_PATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "cube_rgbmatrix_daemon.py")
 print(f"RGBMATRIX_DAEMON_DIR_PATH: {RGBMATRIX_DAEMON_DIR_PATH}")
-
-if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
-    sys.path.append(RGBMATRIX_DAEMON_DIR_PATH)
-from rgbmatrix_samplebase import SampleBase
-from rgbmatrix import graphics
-
-
-
 
 RGBMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
 RGBMATRIX_DAEMON_TEXT_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, RGBMATRIX_DAEMON_TEXT_FILENAME)
@@ -36,8 +29,20 @@ NB_MATRICES = 2
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
 X_MARGIN = 0
-Y_TEXT = 30
+Y_TEXT = 20
 LED_SLOWDOWN_GPIO = 5
+
+
+if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
+    sys.path.append(RGBMATRIX_DAEMON_DIR_PATH)
+
+from rgbmatrix_samplebase import SampleBase
+from rgbmatrix import graphics
+
+
+
+
+
 
 
 class TimeoutFlock:

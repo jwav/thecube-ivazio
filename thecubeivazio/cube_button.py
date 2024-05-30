@@ -3,7 +3,7 @@ This module handles everything button-related for the CubeBox
 It is meant to interact with the Raspberry Pi's GPIO pins,
 but when testing on a regular computer, it will simply tell if the 'v' key is pressed
 """
-from thecubeivazio import cube_logger
+from thecubeivazio import cube_logger, cube_utils
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
 
@@ -29,6 +29,8 @@ class CubeButton:
         self.log.setLevel(logging.INFO)
         # test if we're on a Raspberry Pi or not
         try:
+            if not cube_utils.is_raspberry_pi():
+                raise ModuleNotFoundError
             # noinspection PyUnresolvedReferences
             import RPi.GPIO as GPIO
             self.GPIO = GPIO

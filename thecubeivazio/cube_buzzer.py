@@ -7,6 +7,7 @@ from typing import Tuple
 
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio import cube_utils
 import os
 
 import pygame.mixer as mixer
@@ -14,7 +15,10 @@ import pygame.time as pgtime
 
 try:
     # noinspection PyUnresolvedReferences
-    import RPi.GPIO as GPIO
+    if cube_utils.is_raspberry_pi():
+        import RPi.GPIO as GPIO
+    else:
+        raise ModuleNotFoundError
 except ModuleNotFoundError:
     GPIO = None
 
