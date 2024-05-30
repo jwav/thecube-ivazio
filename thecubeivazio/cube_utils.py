@@ -153,13 +153,16 @@ def hhmmss_string_to_seconds(hhmmss:str) -> Optional[int]:
 def seconds_to_hhmmss_string(seconds: Seconds, separators="hms",
                              hours=True, mins=True, secs=True) -> str:
     """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
-    sep1 = separators[0] if len(separators) > 0 else ""
-    sep2 = separators[1] if len(separators) > 1 else ""
-    sep3 = separators[2] if len(separators) > 2 else ""
-    h = "%H" if hours else ""
-    m = "%M" if mins else ""
-    s = "%S" if secs else ""
-    return time.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}', time.gmtime(seconds))
+    try:
+        sep1 = separators[0] if len(separators) > 0 else ""
+        sep2 = separators[1] if len(separators) > 1 else ""
+        sep3 = separators[2] if len(separators) > 2 else ""
+        h = "%H" if hours else ""
+        m = "%M" if mins else ""
+        s = "%S" if secs else ""
+        return time.strftime(f'{h}{sep1}{m}{sep2}{s}{sep3}', time.gmtime(seconds))
+    except Exception as e:
+        return "??:??:??"
 
 # TODO: test
 def timestamp_to_hhmmss_time_of_day_string(timestamp: Timestamp, separators="hms",

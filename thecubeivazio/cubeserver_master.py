@@ -13,6 +13,8 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
+
 
 
 class CubeServerMaster:
@@ -38,6 +40,48 @@ class CubeServerMaster:
         self.enable_heartbeat = False
 
         self.game_status = cube_game.CubeGameStatus()
+
+        if cube_utils.is_raspberry_pi():
+            self.log.info("Launching RGBMatrix Daemon process")
+            crd.CubeRgbMatrixDaemon.launch_process()
+        self._rgb_matrix_thread = threading.Thread(target=self._rgb_matrix_loop)
+
+    def _rgb_matrix_loop(self):
+        """Write the remaining times to the RGBMatrix Daemon file"""
+        while self._keep_running:
+            time.sleep(1)
+            # write the remaining times to the RGBMatrix Daemon file
+            remaining_times = [team.remaining_time for team in self.teams]
+
+            # DEBUG: write random times to the RGBMatrix Daemon file
+
+            # generate random time btwn 0 and 8000
+            import random
+            time1 = random.randint(0, 8000)
+            time2 = random.randint(0, 8000)
+            remaining_times = [time1, time2]
+            lines = []
+            for rt in remaining_times:
+                if rt is None:
+                    lines.append("")
+                else:
+                    lines.append(cube_utils.seconds_to_hhmmss_string(rt, separators="::"))
+            self.log.debug(f"Writing remaining times to RGBMatrix Daemon file: {lines}"
+                           f"({crd.RGBMATRIX_DAEMON_TEXT_FILEPATH})")
+
+
+            result = crd.CubeRgbMatrixDaemon.write_lines_to_daemon_file(lines)
+            if not result:
+                self.log.error(f"Error writing remaining times to RGBMatrix Daemon file :"
+                               f"({crd.RGBMATRIX_DAEMON_TEXT_FILEPATH})")
+            lines_read = crd.CubeRgbMatrixDaemon.read_lines_from_daemon_file()
+            if lines_read != lines:
+                self.log.error(f"Not the same lines! : {lines_read}")
+
+            with open(crd.RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
+                lines_read = f.readlines()
+                self.log.debug(f"Lines read from RGBMatrix Daemon file: {lines_read}")
+
 
     @property
     def teams(self) -> cube_game.CubeTeamsStatusList:
@@ -66,6 +110,7 @@ class CubeServerMaster:
         self._networking_thread.start()
         self._webpage_thread.start()
         self._display_thread.start()
+        self._rgb_matrix_thread.start()
 
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
@@ -77,6 +122,7 @@ class CubeServerMaster:
         self._rfid_thread.join(timeout=0.1)
         self._webpage_thread.join(timeout=0.1)
         self._display_thread.join(timeout=0.1)
+        self._rgb_matrix_thread.join(timeout=0.1)
 
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""

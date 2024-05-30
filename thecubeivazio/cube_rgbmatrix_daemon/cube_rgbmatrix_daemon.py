@@ -23,6 +23,7 @@ from rgbmatrix import graphics
 
 
 RGBMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
+RGBMATRIX_DAEMON_TEXT_FILEPATH = os.path.join(RGBMATRIX_DAEMON_PATH, RGBMATRIX_DAEMON_TEXT_FILENAME)
 RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_PATH, "rgbmatrix_daemon.log")
 NB_MATRICES = 2
 PANEL_WIDTH = 64
@@ -75,9 +76,9 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
         try:
-            with open(RGBMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
                 fcntl.flock(f, fcntl.LOCK_EX)
-                f.write("\n".join(lines))
+                f.write("\n".join(lines)+"\n")
                 fcntl.flock(f, fcntl.LOCK_UN)
             return True
         except Exception as e:
@@ -87,7 +88,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def read_lines_from_daemon_file(cls) -> list[str]:
         try:
-            with open(RGBMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
                 fcntl.flock(f, fcntl.LOCK_SH)
                 ret = [s.strip() for s in f.readlines()]
                 fcntl.flock(f, fcntl.LOCK_UN)

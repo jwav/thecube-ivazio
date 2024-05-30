@@ -449,6 +449,13 @@ class CubeTeamStatus:
         # the trophies collected by the team, awarded by the frontdesk
         self.trophies: List[CubeTrophy] = [] if not trophies else trophies
 
+    @property
+    def remaining_time(self) -> Optional[Seconds]:
+        try:
+            return self.max_time_sec - (time.time() - self.start_timestamp)
+        except:
+            return None
+
     def __eq__(self, other):
         try:
             return self.to_dict() == other.to_dict()
