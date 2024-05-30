@@ -14,9 +14,11 @@ from logging.handlers import RotatingFileHandler
 # RGB matrix lib imports
 # local import rgbmatrix_samplebase
 # RGBMATRIX_DAEMON_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
-RGBMATRIX_DAEMON_PY_PATH = os.path.abspath(__file__)
-RGBMATRIX_DAEMON_DIR_PATH = os.path.dirname(RGBMATRIX_DAEMON_PY_PATH)
+# RGBMATRIX_DAEMON_PY_PATH = os.path.abspath(__file__)
+# RGBMATRIX_DAEMON_DIR_PATH = os.path.dirname(RGBMATRIX_DAEMON_PY_PATH)
 
+RGBMATRIX_DAEMON_DIR_PATH = "/home/ivazio/thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon"
+# RGBMATRIX_DAEMON_PY_PATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "cube_rgbmatrix_daemon.py")
 print(f"RGBMATRIX_DAEMON_DIR_PATH: {RGBMATRIX_DAEMON_DIR_PATH}")
 
 if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
