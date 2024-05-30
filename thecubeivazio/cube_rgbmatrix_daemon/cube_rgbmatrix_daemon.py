@@ -9,18 +9,21 @@ import time
 import datetime
 import subprocess
 
+from logging.handlers import RotatingFileHandler
+
 # RGB matrix lib imports
 # local import rgbmatrix_samplebase
-module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
+RGBMATRIX_DAEMON_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
+if RGBMATRIX_DAEMON_PATH not in sys.path:
+    sys.path.append(RGBMATRIX_DAEMON_PATH)
 from rgbmatrix_samplebase import SampleBase
 from rgbmatrix import graphics
 
 
 
 
-RGGMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
+RGBMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
+RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_PATH, "rgbmatrix_daemon.log")
 NB_MATRICES = 2
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
@@ -35,7 +38,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     # Create a logger object
     log = logging.getLogger('RGBMatrixDaemon')
     log.setLevel(logging.DEBUG)
-    file_handler = logging.FileHandler('rgbmatrix_daemon.log', mode='a')
+    file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
     log.addHandler(file_handler)
@@ -68,7 +71,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
         try:
-            with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
+            with open(RGBMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
                 fcntl.flock(f, fcntl.LOCK_EX)
                 f.write("\n".join(lines))
                 fcntl.flock(f, fcntl.LOCK_UN)
@@ -78,7 +81,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def read_lines_from_daemon_file(cls) -> list[str]:
         try:
-            with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
+            with open(RGBMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
                 fcntl.flock(f, fcntl.LOCK_SH)
                 ret = f.readlines()
                 fcntl.flock(f, fcntl.LOCK_UN)
@@ -132,6 +135,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 
 # TODO: test display
 if __name__ == "__main__":
+    CubeRgbMatrixDaemon.log.info("test logger")
     daemon = CubeRgbMatrixDaemon()
     if not daemon.process():
         exit(1)

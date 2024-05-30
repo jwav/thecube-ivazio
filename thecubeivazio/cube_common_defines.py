@@ -53,8 +53,8 @@ SAVES_DIR = os.path.join(PROJECT_ROOT_PATH, "saves")
 SCORESHEETS_DIR = os.path.join(PROJECT_ROOT_PATH, "scoresheets")
 RGB_FONTS_DIR = os.path.join(PROJECT_ROOT_PATH, "rgb_fonts")
 RGB_SERVER_DIR = os.path.join(PROJECT_ROOT_PATH, "cube_rgbmatrix_daemon")
-from thecubeivazio.cube_rgbmatrix_daemon.cube_rgbmatrix_daemon import RGGMATRIX_DAEMON_TEXT_FILENAME
-RGB_SERVER_TEXT = os.path.join(RGB_SERVER_DIR, RGGMATRIX_DAEMON_TEXT_FILENAME)
+from thecubeivazio.cube_rgbmatrix_daemon.cube_rgbmatrix_daemon import RGBMATRIX_DAEMON_TEXT_FILENAME
+RGB_SERVER_TEXT = os.path.join(RGB_SERVER_DIR, RGBMATRIX_DAEMON_TEXT_FILENAME)
 
 GLOBAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json")
 LOCAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "local_config.json")
