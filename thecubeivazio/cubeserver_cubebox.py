@@ -113,6 +113,10 @@ class CubeServerCubebox:
                     self._handle_order_cubebox_to_wait_for_reset_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_RESET:
                     self._handle_order_cubebox_to_reset_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUSES:
+                    self._handle_request_all_cubeboxes_statuses_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEBOX_STATUS:
+                    self._handle_request_cubebox_status_message(message)
                 else:
                     self.log.warning(f"Unhandled message: {message}")
                 self.net.remove_msg_from_incoming_queue(message)
@@ -253,6 +257,16 @@ class CubeServerCubebox:
                 self.log.info("Button reset")
         self.button.stop()
 
+    def _handle_request_all_cubeboxes_statuses_message(self, message: cm.CubeMessage) -> bool:
+        report = self.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status), require_ack=False)
+        return report.success
+
+    def _handle_request_cubebox_status_message(self, message: cm.CubeMessage) -> bool:
+        rcs_msg = cm.CubeMsgRequestCubeboxStatus(copy_msg=message)
+        if rcs_msg.cube_id != self.cubebox_index:
+            return True
+        report = self.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status), require_ack=False)
+        return report.success
 
 class CubeServerCubeboxWithPrompt:
     def __init__(self, node_name: str):
