@@ -185,9 +185,6 @@ class CubeServerCubebox:
             self.log.warning("Trying to badge in a team but the box is not ready to play")
             self.buzzer.play_rfid_error_sound()
             return False
-        if self.status.last_valid_rfid_line is not None:
-            self.log.warning("Trying to badge in the same team that's already playing. Ignoring.")
-            return False
         # alright so it's a valid line. let's add it to our status
         self.status.last_valid_rfid_line = rfid_line
         # send the RFID read message to the CubeMaster

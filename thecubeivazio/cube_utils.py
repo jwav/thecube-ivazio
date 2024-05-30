@@ -182,6 +182,7 @@ def timestamp_to_hhmmss_time_of_day_string(timestamp: Timestamp, separators="hms
     except Exception as e:
         return "??:??:??"
 
+@cubetry
 def timestamp_to_french_date(timestamp: Union[float,int], weekday=True, day_number=True, month=True, year=True) -> str:
     """Convert a timestamp to a string in a format like 'lundi 1 janvier 2021'"""
     return date_to_french_date_string(datetime.datetime.fromtimestamp(timestamp),

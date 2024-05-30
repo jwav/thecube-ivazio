@@ -215,6 +215,7 @@ class CubeServerFrontdesk:
             self.log.error(f"The CubeMaster did not respond to the new team message : {team.name}")
         elif ack_msg.info == cm.CubeAckInfos.OK:
             self.log.info(f"The CubeMaster added the new team : {team.name}")
+            self.teams.add_team(team)
         else:
             self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")
         return report

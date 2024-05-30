@@ -545,6 +545,7 @@ class CubeTeamStatus:
             return False
 
     @property
+    @cubetry
     def end_timestamp(self):
         return self.start_timestamp + self.max_time_sec
 

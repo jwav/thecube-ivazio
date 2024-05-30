@@ -115,8 +115,9 @@ class CubeGuiTabTeamsMixin:
                 continue
             if rfid_uid and rfid_uid != team.rfid_uid:
                 continue
-            if start_timestamp and team.start_timestamp < start_timestamp:
-                continue
+            if start_timestamp and team.start_timestamp:
+                if team.start_timestamp < start_timestamp:
+                    continue
             matching_teams.append(team)
 
         self.ui.tableTeamsResults.clearContents()
