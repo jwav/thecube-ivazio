@@ -29,7 +29,6 @@ class CubeRgbTextDrawer(SampleBase):
             f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}'
         ])
         self.args = known_args
-        self._thread = threading.Thread()
         self._keep_running = False
         self.messages = []
 
@@ -46,7 +45,6 @@ class CubeRgbTextDrawer(SampleBase):
 
     def stop(self):
         self._keep_running = False
-        self._thread.join(timeout=0.5)
 
 
 class CubeRgbText:
@@ -68,12 +66,17 @@ class CubeRgbMatrixManager:
     I'd like to keep it coherent"""
     def __init__(self):
         self._drawer = CubeRgbTextDrawer()
+        self._thread:threading.Thread = None
+        self._keep_running = False
 
     def run(self) -> bool:
-        return self._drawer.process()
+        self._thread = threading.Thread(target=self._drawer.process)
+        self._keep_running = True
+        self._thread.start()
 
     def stop(self):
         self._drawer.stop()
+        self._thread.join(timeout=1)
 
 
 
