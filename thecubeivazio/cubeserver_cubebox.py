@@ -227,6 +227,8 @@ class CubeServerCubebox:
         self.button.run()
         while self._keep_running:
             time.sleep(0.1)
+            if not self.is_box_being_played():
+                continue
             # print(".", end="")
             if self.button.is_pressed_now():
                 self.log.debug("Button pressed now")

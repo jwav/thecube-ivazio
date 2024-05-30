@@ -99,10 +99,12 @@ class CubeGuiTabTeamsMixin:
         # if we're looking for a team currently playing, search fd.teams
         if search_currently_playing:
             teams = self.fd.teams
+            self.log.info(f"Searching currently playing teams: {teams}")
         else:
             # search the teams in the database
             teams = cube_game.CubeTeamsStatusList()
             teams.load_from_json_file(TEAMS_DATABASE_FILEPATH)
+            self.log.info(f"Searching teams in the database: {teams}")
 
         # find matching teams: name, custom_name, rfid, and timestamp
         matching_teams = []
