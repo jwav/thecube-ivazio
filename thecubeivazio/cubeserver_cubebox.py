@@ -216,9 +216,10 @@ class CubeServerCubebox:
             self.buzzer.play_rfid_error_sound()
             return False
         else:
-            self.log.info("RFID read message sent to and okayed by the CubeMaster")
+            self.log.success("RFID read message sent to and okayed by the CubeMaster")
             self.status.last_valid_rfid_line = rfid_line
             self.status.set_state_playing()
+            self.send_status_to_all()
             self.log.info(f"is_box_being_played()={self.is_box_being_played()}, last_rfid_line={self.status.last_valid_rfid_line}")
             # self.log.critical(f"{self.status}")
             self.buzzer.play_rfid_ok_sound()
