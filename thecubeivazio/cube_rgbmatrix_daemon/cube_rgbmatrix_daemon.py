@@ -188,6 +188,18 @@ class CubeRgbMatrixDaemon(SampleBase):
     def start(self):
         return self.process()
 
+    @staticmethod
+    def get_random_texts():
+        import random
+        time1 = random.randint(0, 8000)
+        time2 = random.randint(0, 8000)
+        remaining_times = [time1, time2]
+        lines = []
+        # convert to hh:mm:ss
+        for time in remaining_times:
+            lines.append(str(datetime.timedelta(seconds=time)))
+        return lines
+
     def run(self):
         self.log.info("CubeRgbTextDrawer running")
         self._keep_running = True
@@ -195,8 +207,9 @@ class CubeRgbMatrixDaemon(SampleBase):
         # it seems to create new canvas instances, and makes the message disappear
         canvas = self.matrix.CreateFrameCanvas()
         while self._keep_running:
-            self.texts = self.read_lines_from_daemon_file()
+            # self.texts = self.read_lines_from_daemon_file()
             # self.texts = ["aaa", "bbb"]
+            self.texts = self.get_random_texts()
             print(f"CubeRgbTextDrawer texts: {self.texts}")
             canvas.Clear()
             for matrix_id,text in enumerate(self.texts):

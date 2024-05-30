@@ -47,6 +47,8 @@ class CubeServerMaster:
 
     def _rgb_matrix_loop(self):
         """Write the remaining times to the RGBMatrix Daemon file"""
+        self.log.critical("Skipping RGBMatrix Daemon thread")
+        return
         if not cube_utils.is_raspberry_pi():
             self.log.error("Not running on a Raspberry Pi. Exiting RGBMatrix Daemon thread.")
             return
