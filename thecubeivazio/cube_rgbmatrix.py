@@ -86,9 +86,34 @@ class CubeRgbMatrixManager:
         self._thread.join(timeout=1)
 
 
+def has_capability(cap):
+    # Define necessary constants
+    CAP_SYS_NICE = 24
+    CAP_DAC_OVERRIDE = 1
+
+    # Map capability names to their values
+    cap_map = {
+        'cap_sys_nice': CAP_SYS_NICE,
+        'cap_dac_override': CAP_DAC_OVERRIDE
+    }
+
+    cap_val = cap_map.get(cap)
+    if cap_val is None:
+        return False
+
+    # Check if the process has the specified capability
+    libc = ctypes.CDLL('libc.so.6', use_errno=True)
+    cap_data = (ctypes.c_uint32 * 2)()
+    if libc.capget(ctypes.byref(cap_data), ctypes.byref(cap_data)) != 0:
+        return False
+
+    return (cap_data[0] & (1 << cap_val)) != 0
+
 
 # TODO: test display
 if __name__ == "__main__":
+    print("has cap_sys_nice ?", has_capability('cap_sys_nice'))
+    print("has cap_dac_override ?", has_capability('cap_dac_override'))
     import atexit
 
     lm = CubeRgbMatrixManager()
