@@ -82,7 +82,6 @@ class CubeRgbMatrixDaemon(SampleBase):
         except Exception as e:
             print(f"{cls.__name__} : Error stopping process: {e}")
 
-    @staticmethod
     def run(self):
         print("CubeRgbTextDrawer running")
         self._keep_running = True
