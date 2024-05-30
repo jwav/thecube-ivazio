@@ -46,15 +46,16 @@ class Message:
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
-        super(RunText, self).__init__(*args, **kwargs)
         sys.argv.extend([
             '--led-cols=64',
             '--led-rows=32',
             '--led-chain=2',
             '--led-slowdown-gpio=5'
         ])
+        super(RunText, self).__init__(*args, **kwargs)
 
-    def run(self):
+
+def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         msg1 = Message(team="BERLIN", id=0, initial_seconds=3605)
         msg2 = Message(team="BUDAPEST", id=1, initial_seconds=3609)
