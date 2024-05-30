@@ -42,7 +42,7 @@ def simple_read_write_test():
 
 if __name__ == "__main__":
     simple_read_write_test()
-    exit(0)
+    # exit(0)
     # if the argument --mock is passed, use the mock class
     import sys
     print(f"sys.argv: {sys.argv}")
