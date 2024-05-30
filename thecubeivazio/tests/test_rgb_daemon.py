@@ -16,7 +16,33 @@ class MockCubeRgbMatrixDaemon:
     def stop_process():
         print("stopping process")
 
+def simple_read_write_test():
+    test_file_path = RGBMATRIX_DAEMON_TEXT_FILEPATH
+    print(f"Test file path: {test_file_path}")
+    # Write to the test file
+    try:
+        with open(test_file_path, "w") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
+            f.write("Test content\n")
+            fcntl.flock(f, fcntl.LOCK_UN)
+        print("Write successful")
+    except Exception as e:
+        print(f"Error writing to test file: {e}")
+
+    # Read from the test file
+    try:
+        with open(test_file_path, "r") as f:
+            fcntl.flock(f, fcntl.LOCK_SH)
+            content = f.read()
+            fcntl.flock(f, fcntl.LOCK_UN)
+        print("Read successful")
+        print("Content:", content)
+    except Exception as e:
+        print(f"Error reading from test file: {e}")
+
 if __name__ == "__main__":
+    simple_read_write_test()
+    exit(0)
     # if the argument --mock is passed, use the mock class
     import sys
     print(f"sys.argv: {sys.argv}")
