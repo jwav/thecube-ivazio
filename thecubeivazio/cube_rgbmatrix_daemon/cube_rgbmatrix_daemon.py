@@ -174,6 +174,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             self.texts = self.read_lines_from_daemon_file()
             canvas.Clear()
             for matrix_id,text in enumerate(self.texts):
+                print(f"matrix_id: {matrix_id}, text: {text}")
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
                 graphics.DrawText(canvas, self.font, x, Y_TEXT, self.textColor, text)
             time.sleep(1)
