@@ -39,6 +39,36 @@ X_MARGIN = 0
 Y_TEXT = 30
 LED_SLOWDOWN_GPIO = 5
 
+
+class TimeoutFlock:
+    def __init__(self, file, mode, timeout=5, delay=0.1):
+        self.file = file
+        self.mode = mode
+        self.timeout = timeout
+        self.delay = delay
+
+    def acquire(self):
+        end_time = time.time() + self.timeout
+        while True:
+            try:
+                fcntl.flock(self.file, self.mode)
+                return True
+            except IOError:
+                if time.time() > end_time:
+                    return False
+                time.sleep(self.delay)
+
+    def release(self):
+        fcntl.flock(self.file, fcntl.LOCK_UN)
+
+    def __enter__(self):
+        if not self.acquire():
+            raise TimeoutError("Could not acquire the lock within the specified timeout")
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.release()
+
 class CubeRgbMatrixDaemon(SampleBase):
     # singleton instance for the subprocess
     _static_process = None
@@ -83,11 +113,10 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
         try:
-            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
-                fcntl.flock(f, fcntl.LOCK_EX)
-                f.write("\n".join(lines)+"\n")
-                fcntl.flock(f, fcntl.LOCK_UN)
-            return True
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH):
+                with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
+                    f.write("\n".join(lines)+"\n")
+                return True
         except Exception as e:
             cls.log.error(f"Error writing to file: {e}")
             return False
@@ -95,11 +124,10 @@ class CubeRgbMatrixDaemon(SampleBase):
     @classmethod
     def read_lines_from_daemon_file(cls) -> list[str]:
         try:
-            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
-                fcntl.flock(f, fcntl.LOCK_SH)
-                ret = [s.strip() for s in f.readlines()]
-                fcntl.flock(f, fcntl.LOCK_UN)
-                return ret
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH):
+                with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
+                    ret = [s.strip() for s in f.readlines()]
+                    return ret
         except Exception as e:
             cls.log.error(f"Error reading from file: {e}")
             return []
