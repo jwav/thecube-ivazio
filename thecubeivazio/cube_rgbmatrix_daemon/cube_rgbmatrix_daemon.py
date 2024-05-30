@@ -2,16 +2,23 @@
 import ctypes
 import sys
 import threading
-
-# RGB matrix lib imports
-from rgbmatrix_samplebase import SampleBase
-from rgbmatrix import graphics
-
 import os
 import time
 import datetime
+import subprocess
+
+# RGB matrix lib imports
+# local import rgbmatrix_samplebase
+module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
+if module_path not in sys.path:
+    sys.path.append(module_path)
+from rgbmatrix_samplebase import SampleBase
+from rgbmatrix import graphics
 
 
+
+
+RGGMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
 NB_MATRICES = 2
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
@@ -19,7 +26,10 @@ X_MARGIN = 0
 Y_TEXT = 30
 LED_SLOWDOWN_GPIO = 5
 
-class CubeRgbTextDrawer(SampleBase):
+class CubeRgbMatrixDaemon(SampleBase):
+    # singleton instance for the subprocess
+    _static_process = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # known_args, _ = self.parser.parse_known_args([
@@ -40,9 +50,37 @@ class CubeRgbTextDrawer(SampleBase):
         self.texts = ["foo", "bar"]
         self.start_time = time.time()
         self.font = graphics.Font()
-        self.font.LoadFont(os.path.join("7x13.bdf"))
+        self.font.LoadFont(os.path.join("../7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
+    @staticmethod
+    def write_lines_to_daemon_file(lines: list[str]):
+        with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
+            f.write("\n".join(lines))
+
+    @staticmethod
+    def read_lines_from_daemon_file() -> list[str]:
+        with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
+            return f.readlines()
+
+    @classmethod
+    def launch_process(cls) -> bool:
+        if cls._static_process:
+            print("{cls.__name__} :  process already running")
+            return False
+        cls._static_process = subprocess.Popen(['sudo', 'python3', '/home/ivazio/thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon.py'])
+        return True
+
+    @classmethod
+    def stop_process(cls, timeout=2):
+        try:
+            if cls._static_process:
+                cls._static_process.terminate()
+                cls._static_process.wait(timeout=timeout)
+        except Exception as e:
+            print(f"{cls.__name__} : Error stopping process: {e}")
+
+    @staticmethod
     def run(self):
         print("CubeRgbTextDrawer running")
         self._keep_running = True
@@ -50,6 +88,7 @@ class CubeRgbTextDrawer(SampleBase):
         # it seems to create new canvas instances, and makes the message disappear
         canvas = self.matrix.CreateFrameCanvas()
         while self._keep_running:
+            self.texts = self.read_lines_from_daemon_file()
             canvas.Clear()
             for matrix_id,text in enumerate(self.texts):
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
@@ -70,72 +109,32 @@ class CubeRgbText:
         self.x = matrix_id * PANEL_WIDTH + X_MARGIN
         self.start_time = time.time()
         self.font = graphics.Font()
-        self.font.LoadFont(os.path.join("7x13.bdf"))
+        self.font.LoadFont(os.path.join("../7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
     def draw(self, canvas):
         graphics.DrawText(canvas, self.font, self.x, Y_TEXT, self.textColor, self.text)
 
 
-class CubeRgbMatrixManager:
-    """A wrapper for CubeRgbTextDrawer, because CubeRgbTextDrawer is not run with `run`, but `process`.
-    I'd like to keep it coherent"""
-    def __init__(self):
-        self._drawer = CubeRgbTextDrawer()
-        # self._thread = threading.Thread(target=self._drawer.process)
-
-    def run(self):
-        self._drawer.process()
-        # self._thread.start()
-
-    def stop(self):
-        self._drawer.stop()
-        # self._thread.join(timeout=1)
 
 
-def check_capabilities():
-    CAP_SYS_NICE = 24
-    CAP_DAC_OVERRIDE = 1
-
-    libc = ctypes.CDLL('libc.so.6', use_errno=True)
-
-    class CapHeader(ctypes.Structure):
-        _fields_ = [("version", ctypes.c_uint32),
-                    ("pid", ctypes.c_int)]
-
-    class CapData(ctypes.Structure):
-        _fields_ = [("effective", ctypes.c_uint32),
-                    ("permitted", ctypes.c_uint32),
-                    ("inheritable", ctypes.c_uint32)]
-
-    header = CapHeader()
-    data = (CapData * 2)()
-    header.version = 0x19980330
-    header.pid = 0
-
-    if libc.capget(ctypes.byref(header), ctypes.byref(data)) != 0:
-        errno = ctypes.get_errno()
-        raise OSError(errno, os.strerror(errno))
-
-    cap_sys_nice = (data[0].effective & (1 << CAP_SYS_NICE)) != 0
-    cap_dac_override = (data[0].effective & (1 << CAP_DAC_OVERRIDE)) != 0
-
-    print(f"Effective UID: {os.geteuid()}")
-    print(f"Has CAP_SYS_NICE? {cap_sys_nice}")
-    print(f"Has CAP_DAC_OVERRIDE? {cap_dac_override}")
 
 
 # TODO: test display
 if __name__ == "__main__":
-    # check_capabilities()
-    # if not os.geteuid() == 0 and not (check_capabilities()):
-    #     print("Need root or appropriate capabilities to run this script.")
-    #     exit(1)
     import atexit
+    atexit.register(CubeRgbMatrixDaemon.stop_process)
 
-    drawer = CubeRgbTextDrawer()
-    drawer.process()
-    exit(0)
-    lm = CubeRgbMatrixManager()
-    atexit.register(lm.stop)
-    lm.run()
+    try:
+        CubeRgbMatrixDaemon.stop_process()
+    except Exception as e:
+        print(f"Error stopping process: {e}")
+
+    try:
+        CubeRgbMatrixDaemon.launch_process()
+        while True:
+            time.sleep(1)
+    except Exception as e:
+        print(f"Error launching process: {e}")
+        CubeRgbMatrixDaemon.stop_process()
+        sys.exit(1)
