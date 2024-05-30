@@ -328,7 +328,7 @@ class CubeMsgReplyCubemasterStatus(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_STATUS, sender, status=status)
+            super().__init__(CubeMsgTypes.REPLY_CUBEMASTER_STATUS, sender)
             if status:
                 self.kwargs["cubemaster_status"] = status.to_json()
         self.require_ack = False
