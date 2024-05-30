@@ -66,11 +66,10 @@ class CubeRgbMatrixManager:
     I'd like to keep it coherent"""
     def __init__(self):
         self._drawer = CubeRgbTextDrawer()
-        self._thread:threading.Thread = None
+        self._thread = threading.Thread(target=self._drawer.process)
         self._keep_running = False
 
-    def run(self) -> bool:
-        self._thread = threading.Thread(target=self._drawer.process)
+    def run(self):
         self._keep_running = True
         self._thread.start()
 
