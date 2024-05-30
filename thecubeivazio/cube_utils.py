@@ -8,6 +8,15 @@ from typing import Optional, Union
 
 from thecubeivazio.cube_common_defines import *
 
+def is_raspberry_pi():
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            cpuinfo = f.read()
+        if 'Raspberry Pi' in cpuinfo or 'BCM' in cpuinfo:
+            return True
+    except FileNotFoundError:
+        return False
+    return False
 
 def get_git_branch_version():
     """
@@ -184,20 +193,7 @@ def get_system_hostname() -> str:
     except Exception:
         return "hostnameNone"
 
-if __name__ == "__main__":
-    print("git branch version:", get_git_branch_version())
-    print("git branch date:", get_git_branch_date())
-    print("seconds_to_hhmmss_string(3600):", seconds_to_hhmmss_string(3600))
-    print("date_to_french_date_string(datetime.datetime.now()):", date_to_french_date_string(datetime.datetime.now()))
-    print("hhmmmsss_to_seconds('1h30m15s'):", hhmmss_string_to_seconds('1h30m15s'))
-    print("hhmmmsss_to_seconds('0h30'):", hhmmss_string_to_seconds('0h30'))
-    print("hhmmmsss_to_seconds('01:32:55'):", hhmmss_string_to_seconds('01:32:55'))
-    print("hhmmmsss_to_seconds('00:21'):", hhmmss_string_to_seconds('00:21'))
-    print("hhmmmsss_to_seconds('21'):", hhmmss_string_to_seconds('21'))
-    print("seconds_to_hhmmss_string(3661):", seconds_to_hhmmss_string(3661))
-    print("seconds_to_hhmmss_string(3661, separators='::'):", seconds_to_hhmmss_string(3661, separators='::'))
-    print("timestamp_to_french_date(time.time()):", timestamp_to_french_date(time.time()))
-    print("get_system_hostname():", get_system_hostname())
+
 
 
 def timestamps_are_in_same_day(timestamp1: float, timestamp2: float) -> bool:
@@ -254,3 +250,19 @@ def this_month_start_timestamp(timestamp:float=None):
     # create a new datetime object with the same year and month, but at 00:00:00 on the first day of the month
     start_date = datetime.datetime(date.year, date.month, 1)
     return start_date.timestamp()
+
+if __name__ == "__main__":
+    print("git branch version:", get_git_branch_version())
+    print("git branch date:", get_git_branch_date())
+    print("seconds_to_hhmmss_string(3600):", seconds_to_hhmmss_string(3600))
+    print("date_to_french_date_string(datetime.datetime.now()):", date_to_french_date_string(datetime.datetime.now()))
+    print("hhmmmsss_to_seconds('1h30m15s'):", hhmmss_string_to_seconds('1h30m15s'))
+    print("hhmmmsss_to_seconds('0h30'):", hhmmss_string_to_seconds('0h30'))
+    print("hhmmmsss_to_seconds('01:32:55'):", hhmmss_string_to_seconds('01:32:55'))
+    print("hhmmmsss_to_seconds('00:21'):", hhmmss_string_to_seconds('00:21'))
+    print("hhmmmsss_to_seconds('21'):", hhmmss_string_to_seconds('21'))
+    print("seconds_to_hhmmss_string(3661):", seconds_to_hhmmss_string(3661))
+    print("seconds_to_hhmmss_string(3661, separators='::'):", seconds_to_hhmmss_string(3661, separators='::'))
+    print("timestamp_to_french_date(time.time()):", timestamp_to_french_date(time.time()))
+    print("get_system_hostname():", get_system_hostname())
+    print(f"is raspberry pi? {is_raspberry_pi()}")
