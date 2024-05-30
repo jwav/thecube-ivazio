@@ -46,12 +46,12 @@ class Message:
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
-        sys.argv.extend([
-            '--led-cols=64',
-            '--led-rows=32',
-            '--led-chain=2',
-            '--led-slowdown-gpio=5'
-        ])
+        # sys.argv.extend([
+        #     '--led-cols=64',
+        #     '--led-rows=32',
+        #     '--led-chain=2',
+        #     '--led-slowdown-gpio=5'
+        # ])
         super(RunText, self).__init__(*args, **kwargs)
 
 
