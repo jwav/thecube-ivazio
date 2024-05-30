@@ -13,9 +13,12 @@ from logging.handlers import RotatingFileHandler
 
 # RGB matrix lib imports
 # local import rgbmatrix_samplebase
-RGBMATRIX_DAEMON_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
-if RGBMATRIX_DAEMON_PATH not in sys.path:
-    sys.path.append(RGBMATRIX_DAEMON_PATH)
+# RGBMATRIX_DAEMON_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './'))
+RGBMATRIX_DAEMON_PY_PATH = os.path.abspath(__file__)
+RGBMATRIX_DAEMON_DIR_PATH = os.path.dirname(RGBMATRIX_DAEMON_PY_PATH)
+
+if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
+    sys.path.append(RGBMATRIX_DAEMON_DIR_PATH)
 from rgbmatrix_samplebase import SampleBase
 from rgbmatrix import graphics
 
@@ -23,8 +26,8 @@ from rgbmatrix import graphics
 
 
 RGBMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
-RGBMATRIX_DAEMON_TEXT_FILEPATH = os.path.join(RGBMATRIX_DAEMON_PATH, RGBMATRIX_DAEMON_TEXT_FILENAME)
-RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_PATH, "rgbmatrix_daemon.log")
+RGBMATRIX_DAEMON_TEXT_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, RGBMATRIX_DAEMON_TEXT_FILENAME)
+RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "rgbmatrix_daemon.log")
 NB_MATRICES = 2
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
