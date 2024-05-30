@@ -74,6 +74,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 
     @classmethod
     def stop_process(cls, timeout=2):
+        print(f"{cls.__name__} : stopping process")
         try:
             if cls._static_process:
                 cls._static_process.terminate()
