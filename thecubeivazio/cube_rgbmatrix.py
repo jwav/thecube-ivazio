@@ -87,35 +87,43 @@ class CubeRgbMatrixManager:
         self._thread.join(timeout=1)
 
 
-def has_capability(cap):
-    # Define necessary constants
+def check_capabilities():
     CAP_SYS_NICE = 24
     CAP_DAC_OVERRIDE = 1
 
-    # Map capability names to their values
-    cap_map = {
-        'cap_sys_nice': CAP_SYS_NICE,
-        'cap_dac_override': CAP_DAC_OVERRIDE
-    }
-
-    cap_val = cap_map.get(cap)
-    if cap_val is None:
-        return False
-
-    # Check if the process has the specified capability
     libc = ctypes.CDLL('libc.so.6', use_errno=True)
-    cap_data = (ctypes.c_uint32 * 2)()
-    if libc.capget(ctypes.byref(cap_data), ctypes.byref(cap_data)) != 0:
-        return False
 
-    return (cap_data[0] & (1 << cap_val)) != 0
+    class CapHeader(ctypes.Structure):
+        _fields_ = [("version", ctypes.c_uint32),
+                    ("pid", ctypes.c_int)]
+
+    class CapData(ctypes.Structure):
+        _fields_ = [("effective", ctypes.c_uint32),
+                    ("permitted", ctypes.c_uint32),
+                    ("inheritable", ctypes.c_uint32)]
+
+    header = CapHeader()
+    data = (CapData * 2)()
+    header.version = 0x19980330
+    header.pid = 0
+
+    if libc.capget(ctypes.byref(header), ctypes.byref(data)) != 0:
+        errno = ctypes.get_errno()
+        raise OSError(errno, os.strerror(errno))
+
+    cap_sys_nice = (data[0].effective & (1 << CAP_SYS_NICE)) != 0
+    cap_dac_override = (data[0].effective & (1 << CAP_DAC_OVERRIDE)) != 0
+
+    print(f"Effective UID: {os.geteuid()}")
+    print(f"Has CAP_SYS_NICE? {cap_sys_nice}")
+    print(f"Has CAP_DAC_OVERRIDE? {cap_dac_override}")
 
 
 # TODO: test display
 if __name__ == "__main__":
-    print("has cap_sys_nice ?", has_capability('cap_sys_nice'))
-    print("has cap_dac_override ?", has_capability('cap_dac_override'))
-    if not os.geteuid() == 0 and not (has_capability('cap_sys_nice') and has_capability('cap_dac_override')):
+    print("has cap_sys_nice ?", check_capabilities('cap_sys_nice'))
+    print("has cap_dac_override ?", check_capabilities('cap_dac_override'))
+    if not os.geteuid() == 0 and not (check_capabilities('cap_sys_nice') and check_capabilities('cap_dac_override')):
         print("Need root or appropriate capabilities to run this script.")
     exit(1)
     import atexit
