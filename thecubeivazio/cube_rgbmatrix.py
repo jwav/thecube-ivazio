@@ -26,7 +26,7 @@ class CubeRgbTextDrawer(SampleBase):
             f'--led-cols={PANEL_WIDTH}',
             f'--led-rows={PANEL_HEIGHT}',
             f'--led-chain={NB_MATRICES}',
-            f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}'
+            f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}',
             f'--isolcpus=3'
         ])
         self.args = known_args
