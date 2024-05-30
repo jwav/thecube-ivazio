@@ -81,7 +81,6 @@ class CubeMasterLedMatrices:
             for matrix_id in range(self.NB_MATRICES):
                 # timestr = cube_utils.seconds_to_hhmmss_string(time.time() - start_time)
                 text = f"aaa{matrix_id}"
-                self.display_text_on_matrix(matrix_id, text)
                 CubeRgbText(matrix_id=matrix_id, text=text).draw(canvas=offscreen_canvas)
 
             time.sleep(1)
