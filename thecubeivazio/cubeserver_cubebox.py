@@ -51,6 +51,7 @@ class CubeServerCubebox:
     @status.setter
     def status(self, value):
         self._status = value
+        self.info(f"Status set to {value}. Sending message to everyone.")
         self.net.send_msg_to_all(
             cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
             require_ack=False)
