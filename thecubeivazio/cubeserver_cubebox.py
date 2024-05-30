@@ -225,6 +225,7 @@ class CubeServerCubebox:
             self.buzzer.play_rfid_ok_sound()
             return True
 
+
     def badge_out_current_team(self, play_game_over_sound=False):
         # TODO: send a message to the CubeMaster to badge out the team?
         #  i dont think it's needed. The CubeMaster handles this on itw own.
