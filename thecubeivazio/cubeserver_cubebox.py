@@ -257,15 +257,25 @@ class CubeServerCubebox:
                 self.log.info("Button reset")
         self.button.stop()
 
+    @cubetry
     def _handle_request_all_cubeboxes_statuses_message(self, message: cm.CubeMessage) -> bool:
-        report = self.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status), require_ack=False)
+        self.log.info("Received request for all cubeboxes statuses")
+        report = self.net.send_msg_to(
+            cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
+            node_name=message.sender,
+            require_ack=False)
         return report.success
 
+    @cubetry
     def _handle_request_cubebox_status_message(self, message: cm.CubeMessage) -> bool:
         rcs_msg = cm.CubeMsgRequestCubeboxStatus(copy_msg=message)
         if rcs_msg.cube_id != self.cubebox_index:
             return True
-        report = self.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status), require_ack=False)
+        self.log.info("Received request for cubebox status and it's for us")
+        report = self.net.send_msg_to(
+            cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
+            node_name=rcs_msg.sender,
+            require_ack=False)
         return report.success
 
 class CubeServerCubeboxWithPrompt:
