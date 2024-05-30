@@ -1,5 +1,6 @@
 # TODO: add imports and test method
 import ctypes
+import fcntl
 import sys
 import threading
 import os
@@ -56,12 +57,17 @@ class CubeRgbMatrixDaemon(SampleBase):
     @staticmethod
     def write_lines_to_daemon_file(lines: list[str]):
         with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
             f.write("\n".join(lines))
+            fcntl.flock(f, fcntl.LOCK_UN)
 
     @staticmethod
     def read_lines_from_daemon_file() -> list[str]:
         with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
-            return f.readlines()
+            fcntl.flock(f, fcntl.LOCK_EX)
+            ret = f.readlines()
+            fcntl.flock(f, fcntl.LOCK_UN)
+            return ret
 
     @classmethod
     def launch_process(cls) -> bool:
