@@ -28,7 +28,7 @@ if __name__ == "__main__":
             secs2 = int(time.time() - start_time) + 5
             lines = [cube_utils.seconds_to_hhmmss_string(x, separators="::") for x in [secs1, secs2]]
             if CubeRgbMatrixDaemon.write_lines_to_daemon_file(lines):
-                print("lines written")
+                print("lines written: ", lines)
             else:
                 print("error writing lines")
             lines_read = CubeRgbMatrixDaemon.read_lines_from_daemon_file()

@@ -146,7 +146,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 if __name__ == "__main__":
     print(f"log filepath: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
     daemon = CubeRgbMatrixDaemon()
-    CubeRgbMatrixDaemon.write_lines_to_daemon_file(["foo", "bar"])
+    CubeRgbMatrixDaemon.write_lines_to_daemon_file(["aaa", "bbb"])
     lines_read = CubeRgbMatrixDaemon.read_lines_from_daemon_file()
     print(f"lines read: {lines_read}")
 
