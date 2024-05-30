@@ -1,4 +1,5 @@
 # TODO: add imports and test method
+import ctypes
 import sys
 import threading
 
