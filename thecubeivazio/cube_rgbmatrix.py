@@ -2,7 +2,7 @@
 import threading
 
 # RGB matrix lib imports
-from samplebase import SampleBase
+from thecubeivazio.rgbmatrix_samplebase import SampleBase
 from rgbmatrix import graphics
 
 import os
@@ -16,7 +16,6 @@ from thecubeivazio import cube_utils
 class CubeRgbTextDrawer(SampleBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.parser.add_argument("-t", "--text", help="The text to scroll on the RGB LED panel", default="Hello world!")
 
     def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
