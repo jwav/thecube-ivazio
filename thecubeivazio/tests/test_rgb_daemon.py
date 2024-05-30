@@ -24,6 +24,7 @@ if __name__ == "__main__":
     else:
         CubeRgbMatrixDaemon = CubeRgbMatrixDaemon
     start_time = time.time()
+    CubeRgbMatrixDaemon.launch_process()
 
     try:
         while True:

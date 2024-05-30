@@ -116,7 +116,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         except Exception as e:
             print(f"{cls.__name__} : Error stopping process: {e}")
 
-    def launch(self):
+    def start(self):
         return self.process()
 
     def run(self):
@@ -150,6 +150,6 @@ if __name__ == "__main__":
     lines_read = CubeRgbMatrixDaemon.read_lines_from_daemon_file()
     print(f"lines read: {lines_read}")
 
-    if not daemon.launch():
+    if not daemon.start():
         exit(1)
     exit(0)
