@@ -26,8 +26,9 @@ if __name__ == "__main__":
 
     # if --path, just print the path
     if "--path" in sys.argv:
-        print(RGBMATRIX_DAEMON_TEXT_FILEPATH)
+        print(f"RGBMATRIX_DAEMON_TEXT_FILEPATH: {RGBMATRIX_DAEMON_TEXT_FILEPATH}")
         exit(0)
+
     start_time = time.time()
     CubeRgbMatrixDaemon.launch_process()
 
