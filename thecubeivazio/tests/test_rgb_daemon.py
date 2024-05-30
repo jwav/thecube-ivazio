@@ -1,7 +1,7 @@
 import time
 
 from thecubeivazio import cube_utils
-from thecubeivazio.cube_rgbmatrix_daemon.cube_rgbmatrix_daemon import CubeRgbMatrixDaemon
+from thecubeivazio.cube_rgbmatrix_daemon.cube_rgbmatrix_daemon import *
 
 class MockCubeRgbMatrixDaemon:
     @staticmethod
@@ -23,6 +23,11 @@ if __name__ == "__main__":
         CubeRgbMatrixDaemon = MockCubeRgbMatrixDaemon
     else:
         CubeRgbMatrixDaemon = CubeRgbMatrixDaemon
+
+    # if --path, just print the path
+    if len(sys.argv) > 1 and sys.argv[1] == "--path":
+        print(RGBMATRIX_DAEMON_TEXT_FILEPATH)
+        exit(0)
     start_time = time.time()
     CubeRgbMatrixDaemon.launch_process()
 
