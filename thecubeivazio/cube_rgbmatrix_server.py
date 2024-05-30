@@ -57,6 +57,7 @@ class CubeRgbTextDrawer(SampleBase):
         self._keep_running = False
 
 
+
 class CubeRgbText:
     def __init__(self, matrix_id: int, text: str):
         self.text = text
