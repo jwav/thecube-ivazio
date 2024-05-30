@@ -2,6 +2,7 @@
 This module handles everything related to TheCube's central room server, i.e. the raspberrypi4
 handling the CubeBoxes, the LED matrix displays, and the web page displayed on an HDMI monitor
 """
+import signal
 import threading
 import time
 
@@ -51,6 +52,13 @@ class CubeServerMaster:
             return
         self.log.info("Launching RGBMatrix Daemon process")
         crd.CubeRgbMatrixDaemon.launch_process()
+
+        def signal_handler(sig, frame):
+            self._keep_running = False
+        print("Exiting...")
+
+        signal.signal(signal.SIGINT, signal_handler)
+
         while self._keep_running:
             time.sleep(1)
             # write the remaining times to the RGBMatrix Daemon file
