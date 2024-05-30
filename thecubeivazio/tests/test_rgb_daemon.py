@@ -19,6 +19,7 @@ class MockCubeRgbMatrixDaemon:
 if __name__ == "__main__":
     # if the argument --mock is passed, use the mock class
     import sys
+    print(f"sys.argv: {sys.argv}")
     if "--mock" in sys.argv:
         CubeRgbMatrixDaemon = MockCubeRgbMatrixDaemon
     else:
@@ -28,6 +29,7 @@ if __name__ == "__main__":
     if "--path" in sys.argv:
         print(f"RGBMATRIX_DAEMON_TEXT_FILEPATH: {RGBMATRIX_DAEMON_TEXT_FILEPATH}")
         exit(0)
+    print(f"RGBMATRIX_DAEMON_TEXT_FILEPATH: {RGBMATRIX_DAEMON_TEXT_FILEPATH}")
 
     start_time = time.time()
     CubeRgbMatrixDaemon.launch_process()
