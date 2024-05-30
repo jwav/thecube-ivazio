@@ -51,13 +51,12 @@ class CubeServerMaster:
             self.log.error("Not running on a Raspberry Pi. Exiting RGBMatrix Daemon thread.")
             return
         self.log.info("Launching RGBMatrix Daemon process")
-        crd.CubeRgbMatrixDaemon.launch_process()
+        # crd.CubeRgbMatrixDaemon.launch_process()
 
-        def signal_handler(sig, frame):
-            self._keep_running = False
-        print("Exiting...")
-
-        signal.signal(signal.SIGINT, signal_handler)
+        # def signal_handler(sig, frame):
+        #     self._keep_running = False
+        # print("Exiting...")
+        # signal.signal(signal.SIGINT, signal_handler)
 
         while self._keep_running:
             time.sleep(1)
