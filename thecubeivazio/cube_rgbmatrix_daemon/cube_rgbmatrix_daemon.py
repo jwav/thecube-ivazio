@@ -171,7 +171,8 @@ class CubeRgbMatrixDaemon(SampleBase):
         # it seems to create new canvas instances, and makes the message disappear
         canvas = self.matrix.CreateFrameCanvas()
         while self._keep_running:
-            self.texts = self.read_lines_from_daemon_file()
+            # self.texts = self.read_lines_from_daemon_file()
+            self.texts = ["aaa", "bbb"]
             print(f"CubeRgbTextDrawer texts: {self.texts}")
             canvas.Clear()
             for matrix_id,text in enumerate(self.texts):
