@@ -135,6 +135,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 
 # TODO: test display
 if __name__ == "__main__":
+    print(f"log filepath: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
     CubeRgbMatrixDaemon.log.info("test logger")
     daemon = CubeRgbMatrixDaemon()
     if not daemon.process():
