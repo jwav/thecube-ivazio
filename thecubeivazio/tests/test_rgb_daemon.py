@@ -17,11 +17,12 @@ class MockCubeRgbMatrixDaemon:
         print("stopping process")
 
 if __name__ == "__main__":
+    start_time = time.time()
+
     try:
         # CubeRgbMatrixDaemon = MockCubeRgbMatrixDaemon
         # CubeRgbMatrixDaemon.launch_process()
         while True:
-            start_time = time.time()
             time.sleep(1)
             print("time elapsed:", time.time() - start_time)
             secs1 = int(time.time() - start_time)
