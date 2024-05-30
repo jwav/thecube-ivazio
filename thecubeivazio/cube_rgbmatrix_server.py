@@ -41,6 +41,7 @@ class CubeRgbTextDrawer(SampleBase):
 
     def run(self):
         print("CubeRgbTextDrawer running")
+        self._keep_running = True
         # NOTE: DO NOT copy the canvas in a CubeRgbText instance property.
         # it seems to create new canvas instances, and makes the message disappear
         offscreen_canvas = self.matrix.CreateFrameCanvas()
@@ -50,6 +51,7 @@ class CubeRgbTextDrawer(SampleBase):
                 msg.draw(canvas=offscreen_canvas)
             time.sleep(1)
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+        print("CubeRgbTextDrawer stopped")
 
     def stop(self):
         self._keep_running = False
