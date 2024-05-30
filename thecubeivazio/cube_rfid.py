@@ -36,21 +36,26 @@ class CubeRfidLine:
     """
     # valid length for the "Windows" RFID reader
     #VALID_UID_LENGTH = 10
-    # valid length for the "Prison Island" RFID reader
+    # valid length for the "Prison Island" RFID reader (sometimes it's 9)
     VALID_UID_LENGTH = 8
+    MAX_UID_LENGTH = 10
+    MIN_UID_LENGTH = 8
     # if set to True, the length of the RFID UID will be checked to determine if it's valid
     # if set to False, the UID will be considered valid if it's all digits
     # TODO: ideally, CHECK_FOR_LENGTH should be set to True, but we need to assert that all RFIDs read are the same length
     CHECK_FOR_LENGTH = False
+    CHECK_FOR_LENGTH_RANGE = True
     def __init__(self, timestamp: Seconds=None, uid: str=None):
         self.timestamp:Seconds = timestamp
         self.uid:str = uid
 
     def is_valid(self):
-        if not self.uid or not self.timestamp:
+        if not self.uid or not self.timestamp or not all([char.isdigit() for char in self.uid]):
             return False
         if self.CHECK_FOR_LENGTH:
-            return len(self.uid) == self.VALID_UID_LENGTH and all([char.isdigit() for char in self.uid])
+            return len(self.uid) == self.VALID_UID_LENGTH
+        if self.CHECK_FOR_LENGTH_RANGE:
+            return self.MIN_UID_LENGTH <= len(self.uid) <= self.MAX_UID_LENGTH
         else:
             return all([char.isdigit() for char in self.uid])
 
