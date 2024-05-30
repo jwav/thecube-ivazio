@@ -17,6 +17,8 @@ from logging.handlers import RotatingFileHandler
 RGBMATRIX_DAEMON_PY_PATH = os.path.abspath(__file__)
 RGBMATRIX_DAEMON_DIR_PATH = os.path.dirname(RGBMATRIX_DAEMON_PY_PATH)
 
+print(f"RGBMATRIX_DAEMON_DIR_PATH: {RGBMATRIX_DAEMON_DIR_PATH}")
+
 if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
     sys.path.append(RGBMATRIX_DAEMON_DIR_PATH)
 from rgbmatrix_samplebase import SampleBase
