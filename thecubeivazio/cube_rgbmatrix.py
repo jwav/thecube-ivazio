@@ -1,4 +1,5 @@
 # TODO: add imports and test method
+import sys
 import threading
 
 # RGB matrix lib imports
@@ -22,14 +23,20 @@ LED_SLOWDOWN_GPIO = 5
 class CubeRgbTextDrawer(SampleBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        known_args, _ = self.parser.parse_known_args([
-            f'--led-cols={PANEL_WIDTH}',
-            f'--led-rows={PANEL_HEIGHT}',
-            f'--led-chain={NB_MATRICES}',
-            f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}',
-            f'--isolcpus=3'
+        # known_args, _ = self.parser.parse_known_args([
+        #     f'--led-cols={PANEL_WIDTH}',
+        #     f'--led-rows={PANEL_HEIGHT}',
+        #     f'--led-chain={NB_MATRICES}',
+        #     f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}',
+        #     f'--isolcpus=3'
+        # ])
+        # self.args = known_args
+        sys.argv.extend([
+            '--led-cols=64',
+            '--led-rows=32',
+            '--led-chain=2',
+            '--led-slowdown-gpio=5'
         ])
-        self.args = known_args
         print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
         self.messages = []
