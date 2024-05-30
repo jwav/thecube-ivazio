@@ -79,15 +79,17 @@ class CubeRgbMatrixDaemon(SampleBase):
                 fcntl.flock(f, fcntl.LOCK_EX)
                 f.write("\n".join(lines))
                 fcntl.flock(f, fcntl.LOCK_UN)
+            return True
         except Exception as e:
             cls.log.error(f"Error writing to file: {e}")
+            return False
 
     @classmethod
     def read_lines_from_daemon_file(cls) -> list[str]:
         try:
             with open(RGBMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
                 fcntl.flock(f, fcntl.LOCK_SH)
-                ret = f.readlines()
+                ret = [s.strip() for s in f.readlines()]
                 fcntl.flock(f, fcntl.LOCK_UN)
                 return ret
         except Exception as e:

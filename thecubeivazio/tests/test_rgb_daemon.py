@@ -19,7 +19,7 @@ class MockCubeRgbMatrixDaemon:
 if __name__ == "__main__":
     try:
         # CubeRgbMatrixDaemon = MockCubeRgbMatrixDaemon
-        CubeRgbMatrixDaemon.launch_process()
+        # CubeRgbMatrixDaemon.launch_process()
         while True:
             start_time = time.time()
             time.sleep(1)
@@ -31,6 +31,8 @@ if __name__ == "__main__":
                 print("lines written")
             else:
                 print("error writing lines")
+            lines_read = CubeRgbMatrixDaemon.read_lines_from_daemon_file()
+            print("lines read:", lines_read)
 
     except Exception as e:
         print(f"Error launching process: {e}")
