@@ -40,6 +40,7 @@ class CubeRgbTextDrawer(SampleBase):
         self.messages = []
 
     def run(self):
+        print("CubeRgbTextDrawer running")
         # NOTE: DO NOT copy the canvas in a CubeRgbText instance property.
         # it seems to create new canvas instances, and makes the message disappear
         offscreen_canvas = self.matrix.CreateFrameCanvas()
@@ -73,16 +74,15 @@ class CubeRgbMatrixManager:
     I'd like to keep it coherent"""
     def __init__(self):
         self._drawer = CubeRgbTextDrawer()
-        self._thread = threading.Thread(target=self._drawer.process)
-        self._keep_running = False
+        # self._thread = threading.Thread(target=self._drawer.process)
 
     def run(self):
-        self._keep_running = True
-        self._thread.start()
+        self._drawer.process()
+        # self._thread.start()
 
     def stop(self):
         self._drawer.stop()
-        self._thread.join(timeout=1)
+        # self._thread.join(timeout=1)
 
 
 def check_capabilities():
@@ -125,6 +125,9 @@ if __name__ == "__main__":
     #     exit(1)
     import atexit
 
+    drawer = CubeRgbTextDrawer()
+    drawer.process()
+    exit(0)
     lm = CubeRgbMatrixManager()
     atexit.register(lm.stop)
     lm.run()
