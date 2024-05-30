@@ -119,6 +119,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
+        return cls.simpler_write_lines_to_daemon_file(lines)
         try:
             with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w", fcntl.LOCK_EX) as f:
                 f.write("\n".join(lines)+"\n")
@@ -129,6 +130,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 
     @classmethod
     def read_lines_from_daemon_file(cls) -> list[str]:
+        return cls.simpler_read_lines_from_daemon_file()
         try:
             with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH) as f:
                 ret = [s.strip() for s in f.readlines()]
@@ -139,6 +141,28 @@ class CubeRgbMatrixDaemon(SampleBase):
                 return ret
         except Exception as e:
             cls.log.error(f"Error reading from file: {e}")
+            return []
+
+    @classmethod
+    def simpler_write_lines_to_daemon_file(cls, lines: list[str]):
+        try:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
+                f.write("\n".join(lines)+"\n")
+                return True
+        except Exception as e:
+            return False
+
+    @classmethod
+    def simpler_read_lines_from_daemon_file(cls) -> list[str]:
+        try:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
+                ret = [s.strip() for s in f.readlines()]
+                for line in ret:
+                    if "stop" in line:
+                        cls.stop_process()
+                        break
+                return ret
+        except Exception as e:
             return []
 
     @classmethod
@@ -171,8 +195,8 @@ class CubeRgbMatrixDaemon(SampleBase):
         # it seems to create new canvas instances, and makes the message disappear
         canvas = self.matrix.CreateFrameCanvas()
         while self._keep_running:
-            # self.texts = self.read_lines_from_daemon_file()
-            self.texts = ["aaa", "bbb"]
+            self.texts = self.read_lines_from_daemon_file()
+            # self.texts = ["aaa", "bbb"]
             print(f"CubeRgbTextDrawer texts: {self.texts}")
             canvas.Clear()
             for matrix_id,text in enumerate(self.texts):
