@@ -1,6 +1,7 @@
 # TODO: add imports and test method
 import ctypes
 import fcntl
+import logging
 import sys
 import threading
 import os
@@ -31,6 +32,14 @@ class CubeRgbMatrixDaemon(SampleBase):
     # singleton instance for the subprocess
     _static_process = None
 
+    # Create a logger object
+    log = logging.getLogger('RGBMatrixDaemon')
+    log.setLevel(logging.DEBUG)
+    file_handler = logging.FileHandler('rgbmatrix_daemon.log', mode='a')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    log.addHandler(file_handler)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # known_args, _ = self.parser.parse_known_args([
@@ -54,33 +63,43 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.font.LoadFont(os.path.join("7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
-    @staticmethod
-    def write_lines_to_daemon_file(lines: list[str]):
-        with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
-            fcntl.flock(f, fcntl.LOCK_EX)
-            f.write("\n".join(lines))
-            fcntl.flock(f, fcntl.LOCK_UN)
 
-    @staticmethod
-    def read_lines_from_daemon_file() -> list[str]:
-        with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
-            fcntl.flock(f, fcntl.LOCK_EX)
-            ret = f.readlines()
-            fcntl.flock(f, fcntl.LOCK_UN)
-            return ret
+
+    @classmethod
+    def write_lines_to_daemon_file(cls, lines: list[str]):
+        try:
+            with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "w") as f:
+                fcntl.flock(f, fcntl.LOCK_EX)
+                f.write("\n".join(lines))
+                fcntl.flock(f, fcntl.LOCK_UN)
+        except Exception as e:
+            cls.log.error(f"Error writing to file: {e}")
+
+    @classmethod
+    def read_lines_from_daemon_file(cls) -> list[str]:
+        try:
+            with open(RGGMATRIX_DAEMON_TEXT_FILENAME, "r") as f:
+                fcntl.flock(f, fcntl.LOCK_SH)
+                ret = f.readlines()
+                fcntl.flock(f, fcntl.LOCK_UN)
+                return ret
+        except Exception as e:
+            cls.log.error(f"Error reading from file: {e}")
+            return []
 
     @classmethod
     def launch_process(cls) -> bool:
         if cls._static_process:
-            print(f"{cls.__name__} :  process already running")
+            cls.log.warning(f"{cls.__name__} :  process already running")
             return False
         daemon_path = os.path.abspath(__file__)
         cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
+        cls.log.info(f"{cls.__name__} :  process launched")
         return True
 
     @classmethod
     def stop_process(cls, timeout=2):
-        print(f"{cls.__name__} : stopping process")
+        cls.log.info(f"{cls.__name__} : stopping process")
         try:
             if cls._static_process:
                 cls._static_process.terminate()
@@ -89,7 +108,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             print(f"{cls.__name__} : Error stopping process: {e}")
 
     def run(self):
-        print("CubeRgbTextDrawer running")
+        self.log.info("CubeRgbTextDrawer running")
         self._keep_running = True
         # NOTE: DO NOT copy the canvas in a CubeRgbText instance property.
         # it seems to create new canvas instances, and makes the message disappear
@@ -105,6 +124,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         print("CubeRgbTextDrawer stopped")
 
     def stop(self):
+        self.log.info("CubeRgbTextDrawer stopping")
         self._keep_running = False
 
 
