@@ -46,7 +46,13 @@ class Message:
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
         super(RunText, self).__init__(*args, **kwargs)
-        self.parser.add_argument("-t", "--text", help="The text to scroll on the RGB LED panel", default="Hello world!")
+        known_args, _ = self.parser.parse_known_args([
+            f'--led-cols={64}',
+            f'--led-rows={32}',
+            f'--led-chain={2}',
+            f'--led-slowdown-gpio={5}',
+        ])
+        self.args = known_args
 
     def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
