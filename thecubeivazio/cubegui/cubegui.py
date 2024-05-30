@@ -10,7 +10,7 @@ from PyQt5.QtCore import QFile, QTextStream, QThread, QMetaObject, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
-from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils
+from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils, cube_rfid
 from thecubeivazio.cube_logger import CubeLogger, CUBEGUI_LOG_FILENAME
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
@@ -77,9 +77,9 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         self._rfid_timer = QTimer()
         self._rfid_timer.timeout.connect(self.check_rfid)
         self._rfid_timer.start(100)
-        self._update_timer = QTimer()
-        self._update_timer.timeout.connect(self.update_all_tabs)
-        self._update_timer.start(1000)
+        self._tabs_update_timer = QTimer()
+        self._tabs_update_timer.timeout.connect(self.update_all_tabs)
+        self._tabs_update_timer.start(1000)
 
     def update_all_tabs(self):
         # print(f"{self._last_displayed_servers_info_hash.hash}, {ServersInfoHash.get_current_servers_info(self.fd).hash}")
@@ -108,27 +108,34 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         event.accept()
         self.log.info("Closing CubeGui...")
         self.fd.stop()
-        self._update_timer.stop()
+        self._tabs_update_timer.stop()
         self._rfid_timer.stop()
         self.log.info("CubeGui closed")
 
     def check_rfid(self):
         try:
-            if self.fd.rfid.is_setup():
-                self.ui.btnIconNewteamRfidStatus.setIcon(QtGui.QIcon())
-                self.ui.btnIconNewteamRfidStatus.setToolTip("")
-            else:
-                icon = QtGui.QIcon.fromTheme("error")
-                self.ui.btnIconNewteamRfidStatus.setIcon(icon)
-                self.ui.btnIconNewteamRfidStatus.setToolTip("Le lecteur RFID n'est pas connecté.")
+            if not self.fd.rfid.is_setup():
+                self.update_new_team_rfid_status_label("Lecteur RFID non connecté", "error")
                 self.fd.rfid.setup()
+                return
             if self.fd.rfid.has_new_lines():
                 lines = self.fd.rfid.get_completed_lines()
                 for line in lines:
+                    if not line.is_valid():
+                        self.update_new_team_rfid_status_label("RFID non valide", "error")
+                        break
                     self.log.info(f"RFID line: {line}")
                     self.ui.lineNewteamRfid.setText(f"{line.uid}")
                     self.ui.lineTeamsRfid.setText(f"{line.uid}")
                     self.fd.rfid.remove_line(line)
+                    if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(line.uid):
+                        self.log.info(f"RFID is in resetter list: {line.uid}")
+                        self.update_new_team_rfid_status_label("Ce RFID est un resetter", "attention")
+                        break
+                    else:
+                        self.update_new_team_rfid_status_label("RFID valide", "ok")
+                        break
+
         except Exception as e:
             self.log.error(f"Error in handle_rfid: {e}")
             self.log.error(tb.format_exc())

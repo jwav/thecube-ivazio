@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
+    <normaloff>../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
   </property>
   <property name="iconSize">
    <size>
@@ -121,6 +121,87 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
+          <item row="2" column="2">
+           <widget class="QLabel" name="lblNewteamRfid">
+            <property name="text">
+             <string>Badge RFID : </string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="lblNewteamAllocatedTime">
+            <property name="text">
+             <string>Temps alloué : </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="comboNewteamTeamName">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>NomDeVille1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>NomDeVille2</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QComboBox" name="comboNewteamDuration">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>0h10</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>0h20</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="7">
+           <spacer name="horizontalSpacer_20">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="lblNewteamTeamName">
+            <property name="text">
+             <string>Nom de code :</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <spacer name="horizontalSpacer_17">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="2" column="3">
            <widget class="QLineEdit" name="lineNewteamRfid">
             <property name="maximumSize">
@@ -157,46 +238,39 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3" colspan="3">
-           <widget class="QLineEdit" name="lineNewteamTeamCustomName">
+          <item row="2" column="4">
+           <widget class="QPushButton" name="btnNewteamRfidClear">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="lblNewteamTeamName">
             <property name="text">
-             <string>Nom de code :</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="edit-clear">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <spacer name="horizontalSpacer_17">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="1">
+          <item row="2" column="5">
            <widget class="QPushButton" name="btnIconNewteamRfidStatus">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {
@@ -214,10 +288,6 @@ QPushButton:focus {
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset theme="error">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
             <property name="checkable">
              <bool>false</bool>
             </property>
@@ -226,83 +296,34 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="2" column="4">
-           <widget class="QPushButton" name="btnNewteamRfidClear">
+          <item row="2" column="6">
+           <widget class="QLabel" name="lblNewteamRfidStatusText">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Statut RFID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3" colspan="5">
+           <widget class="QLineEdit" name="lineNewteamTeamCustomName">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="edit-clear">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="lblNewteamRfid">
-            <property name="text">
-             <string>Badge RFID : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLabel" name="lblNewteamAllocatedTime">
-            <property name="text">
-             <string>Temps alloué : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QComboBox" name="comboNewteamDuration">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>0h10</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>0h20</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QComboBox" name="comboNewteamTeamName">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>NomDeVille1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>NomDeVille2</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="6">
-           <spacer name="horizontalSpacer_20">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+            <property name="minimumSize">
              <size>
-              <width>40</width>
-              <height>20</height>
+              <width>400</width>
+              <height>0</height>
              </size>
             </property>
-           </spacer>
+           </widget>
           </item>
          </layout>
         </item>
@@ -343,7 +364,8 @@ QPushButton:focus {
              <string>Créer une nouvelle équipe</string>
             </property>
             <property name="icon">
-             <iconset theme="user"/>
+             <iconset theme="user">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -527,7 +549,8 @@ QPushButton:focus {
              <string>Rechercher équipes</string>
             </property>
             <property name="icon">
-             <iconset theme="search"/>
+             <iconset theme="search">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -779,7 +802,8 @@ QPushButton:focus {
              <string>Ajouter tophée</string>
             </property>
             <property name="icon">
-             <iconset theme="add"/>
+             <iconset theme="add">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -789,7 +813,8 @@ QPushButton:focus {
              <string>Supprimer le trophée sélectrionné</string>
             </property>
             <property name="icon">
-             <iconset theme="delete"/>
+             <iconset theme="delete">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -852,7 +877,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="print">
-              <normaloff>.</normaloff>.</iconset>
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1160,7 +1185,8 @@ QPushButton:focus {
              <string>Mise à jour infos serveurs</string>
             </property>
             <property name="icon">
-             <iconset theme="update"/>
+             <iconset theme="update">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1223,7 +1249,8 @@ QPushButton:focus {
              <string>Retirer ce RFID de la liste des resetters</string>
             </property>
             <property name="icon">
-             <iconset theme="remove"/>
+             <iconset theme="remove">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1233,7 +1260,8 @@ QPushButton:focus {
              <string>Ajouter ce RFID comme resetter</string>
             </property>
             <property name="icon">
-             <iconset theme="add"/>
+             <iconset theme="add">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1258,7 +1286,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="reload">
-              <normaloff>.</normaloff>.</iconset>
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1326,6 +1354,7 @@ QPushButton:focus {
  </widget>
  <resources>
   <include location="resources.qrc"/>
+  <include location="../../../../../home/vee/.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
