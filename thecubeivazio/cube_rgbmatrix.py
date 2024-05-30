@@ -60,44 +60,39 @@ class CubeMasterLedMatrices:
         self._thread = threading.Thread()
         self._keep_running = False
 
+
     def run(self):
         self._thread = threading.Thread(target=self._drawing_loop)
         self._keep_running = True
         self._thread.start()
 
+    def stop(self):
+        self._keep_running = False
+        self._thread.join(timeout=0.5)
+
     def _drawing_loop(self):
         # NOTE: DO NOT copy the canvas in a CubeRgbText instance property.
         # it seems to create new canvas instances, and makes the message disappear
-        offscreen_canvas = self._drawer.matrix.CreateFrameCanvas()
         start_time = time.time()
+        offscreen_canvas = self._drawer.matrix.CreateFrameCanvas()
+
         while self._keep_running:
             offscreen_canvas.Clear()
-            for i in range(self.NB_MATRICES):
-                timestr = time.time() - start_time
-                CubeRgbText(matrix_id=i, text=timestr).draw(canvas=offscreen_canvas)
+            for matrix_id in range(self.NB_MATRICES):
+                # timestr = cube_utils.seconds_to_hhmmss_string(time.time() - start_time)
+                text = f"aaa{matrix_id}"
+                self.display_text_on_matrix(matrix_id, text)
+                CubeRgbText(matrix_id=matrix_id, text=text).draw(canvas=offscreen_canvas)
 
             time.sleep(1)
             offscreen_canvas = self._drawer.matrix.SwapOnVSync(offscreen_canvas)
 
-    def display_text_on_matrix(self, matrix_id:int, text:str):
-        raise NotImplementedError
 
-
-
-
-
-
-
-
-
-
-# Main function
-def runtext_main():
-    run_text = CubeRgbTextDrawer()
-    if not run_text.process():
-        run_text.print_help()
 
 
 # TODO: test display
 if __name__ == "__main__":
-    raise NotImplementedError
+    import atexit
+    lm = CubeMasterLedMatrices()
+    atexit.register(lm.stop)
+    lm.run()
