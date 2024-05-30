@@ -33,7 +33,7 @@ class CubeServerCubebox:
         self.buzzer = cube_buzzer.CubeBuzzer()
 
         # the last valid RFID and acknowledged line read
-        self.status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)
+        self._status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)
 
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
@@ -43,6 +43,17 @@ class CubeServerCubebox:
         self._thread_networking = None
 
         self._keep_running = False
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        self._status = value
+        self.net.send_msg_to_all(
+            cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
+            require_ack=False)
 
     def determine_node_name(self) -> str:
         """if no node name is specified, check the local config file for the node name.
