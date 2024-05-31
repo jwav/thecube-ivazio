@@ -713,8 +713,10 @@ class CubeTeamStatus:
     def is_same_team_as(self, team):
         """Returns True if the team has the same name, custom_name, RFID UID, and starting timestamp as the other team.
         Any other difference could simply mean that the team has been updated."""
-        return all((self.name == team.name, self.custom_name == team.custom_name, self.rfid_uid == team.rfid_uid,
-                    self.start_timestamp == team.start_timestamp))
+        return all((self.name == team.name,
+                    self.custom_name == team.custom_name,
+                    self.rfid_uid == team.rfid_uid,
+                    self.start_timestamp == team.start_timestamp if self.start_timestamp and team.start_timestamp else True))
 
 
     def update_from_team(self, team):

@@ -36,8 +36,8 @@ class CubeGuiTabTeamsMixin:
         # clear the RFID line edit
         self.ui.lineTeamsRfid.clear()
 
-        # select the default radio button to "today"
-        self.ui.radioTeamsToday.setChecked(True)
+        # select the default radio button to "currently playing"
+        self.ui.radioTeamsCurrentlyPlaying.setChecked(True)
 
         # connect the "search" button
         self.ui.btnTeamsSearch.clicked.connect(self.search_teams)
