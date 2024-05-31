@@ -281,8 +281,8 @@ class CubeServerCubebox:
                 self.log.info("Button press message sent to and acked by CubeMaster")
                 self.badge_out_current_team()
                 self.status.set_state_waiting_for_reset()
+                self.send_status_to_all()
                 self.buzzer.play_victory_sound()
-
             else:
                 self.log.error("Failed to send or get ack for button press message to CubeMaster")
             self.button.reset()

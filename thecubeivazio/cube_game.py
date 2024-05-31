@@ -719,17 +719,24 @@ class CubeTeamStatus:
                     self.start_timestamp == team.start_timestamp if self.start_timestamp and team.start_timestamp else True))
 
 
+    @cubetry
     def update_from_team(self, team):
         """If this team is the same as the other team, update its data with the other team's data,
         preserving the completed cubeboxes and trophies
         If this is another team, return False"""
+        CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: updating team {self.name}")
         if self.is_same_team_as(team):
+            # TODO: just do a raw copy
+            CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is the same team. updating.")
             for completed_cube in team.completed_cubeboxes:
                 self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
                                         completed_cube.win_timestamp)
             for trophy in team.trophies:
                 self.add_trophy(trophy)
             self.current_cubebox_id = team.current_cubebox_id
+            self.start_timestamp = team.start_timestamp
+            self.max_time_sec = team.max_time_sec
+            self.trophies = team.trophies
             return True
         else:
             return False
