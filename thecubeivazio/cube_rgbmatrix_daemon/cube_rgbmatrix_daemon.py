@@ -124,8 +124,17 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.font = graphics.Font()
         self.font.LoadFont(os.path.join("7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
+        self.create_log_file()
 
-
+    @classmethod
+    def create_log_file(cls) -> bool:
+        try:
+            with open(RGBMATRIX_DAEMON_LOG_FILEPATH, "w") as f:
+                f.write("")
+                return True
+        except Exception as e:
+            cls.log.error(f"Error creating log file: {e}")
+            return False
 
     @classmethod
     def write_lines_to_daemon_file(cls, lines: list[str]):
@@ -152,6 +161,20 @@ class CubeRgbMatrixDaemon(SampleBase):
         except Exception as e:
             cls.log.error(f"Error reading from file: {e}")
             return []
+
+    @classmethod
+    def does_daemon_file_exist(cls) -> bool:
+        return os.path.exists(RGBMATRIX_DAEMON_TEXT_FILEPATH)
+
+    @classmethod
+    def create_daemon_file(cls):
+        try:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
+                f.write("")
+                return True
+        except Exception as e:
+            cls.log.error(f"Error creating file: {e}")
+            return False
 
     @classmethod
     def simpler_write_lines_to_daemon_file(cls, lines: list[str]):
