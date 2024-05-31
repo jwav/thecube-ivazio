@@ -728,15 +728,17 @@ class CubeTeamStatus:
         if self.is_same_team_as(team):
             # TODO: just do a raw copy
             CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is the same team. updating.")
+            CubeLogger.static_debug(f"current team status: {self.to_json()}")
             for completed_cube in team.completed_cubeboxes:
                 self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
                                         completed_cube.win_timestamp)
             for trophy in team.trophies:
                 self.add_trophy(trophy)
             self.current_cubebox_id = team.current_cubebox_id
-            self.start_timestamp = team.start_timestamp
+            if not self.start_timestamp:
+                self.start_timestamp = team.start_timestamp
             self.max_time_sec = team.max_time_sec
-            self.trophies = team.trophies
+            CubeLogger.static_debug(f"updated team status: {self.to_json()}")
             return True
         else:
             return False
