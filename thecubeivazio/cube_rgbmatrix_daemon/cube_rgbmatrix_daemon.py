@@ -17,7 +17,8 @@ from logging.handlers import RotatingFileHandler
 # RGBMATRIX_DAEMON_PY_PATH = os.path.abspath(__file__)
 # RGBMATRIX_DAEMON_DIR_PATH = os.path.dirname(RGBMATRIX_DAEMON_PY_PATH)
 
-home_dir = os.path.expanduser("~")
+# home_dir = os.path.expanduser("~")
+home_dir = "/home/ivazio"
 mnt_shared_dir = "/mnt/shared"
 RGBMATRIX_DAEMON_DIR_PATH = os.path.join(home_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
 if not os.path.exists(RGBMATRIX_DAEMON_DIR_PATH):
