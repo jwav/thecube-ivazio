@@ -215,6 +215,10 @@ class CubeServerCubebox:
             self.log.error("Sent RFID messages but the CubeMaster did not acknowledge it")
             self.buzzer.play_rfid_error_sound()
             return False
+        if report.ack_info != cm.CubeAckInfos.OK:
+            self.log.error(f"CubeMaster acked the RFID read message with error: {report.ack_info}")
+            self.buzzer.play_rfid_error_sound()
+            return False
         else:
             self.log.success("RFID read message sent to and okayed by the CubeMaster")
             self.status.last_valid_rfid_line = rfid_line
