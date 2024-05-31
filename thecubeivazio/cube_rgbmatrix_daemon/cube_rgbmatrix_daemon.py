@@ -21,6 +21,8 @@ home_dir = os.path.expanduser("~")
 mnt_shared_dir = "/mnt/shared"
 RGBMATRIX_DAEMON_DIR_PATH = os.path.join(home_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
 if not os.path.exists(RGBMATRIX_DAEMON_DIR_PATH):
+    print(f"RGBMATRIX_DAEMON_DIR_PATH not found: {RGBMATRIX_DAEMON_DIR_PATH}")
+    print(f"Trying {mnt_shared_dir}")
     RGBMATRIX_DAEMON_DIR_PATH = os.path.join(mnt_shared_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
 # RGBMATRIX_DAEMON_PY_PATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "cube_rgbmatrix_daemon.py")
 print(f"RGBMATRIX_DAEMON_DIR_PATH: {RGBMATRIX_DAEMON_DIR_PATH}")
