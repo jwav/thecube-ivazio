@@ -202,9 +202,14 @@ class CubeMsgFrontdeskNewTeam(CubeMessage):
         self.require_ack = True
 
     @property
-    def team(self) -> cube_game.CubeTeamStatus:
-        return cube_game.CubeTeamStatus(name=self.kwargs.get("name"), rfid_uid=self.kwargs.get("rfid_uid"),
-                                        max_time_sec=self.kwargs.get("max_time_sec"))
+    def team(self) -> Optional[cube_game.CubeTeamStatus]:
+        name = self.kwargs.get("name", None)
+        rfid_uid = self.kwargs.get("rfid_uid", None)
+        max_time_sec = float(self.kwargs.get("max_time_sec", None))
+        if not all([name, rfid_uid, max_time_sec]):
+            return None
+        return cube_game.CubeTeamStatus(
+            name=name, rfid_uid=rfid_uid, max_time_sec=max_time_sec)
 
 
 # TODO: handle in cubemaster

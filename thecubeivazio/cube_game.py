@@ -563,9 +563,10 @@ class CubeTeamStatus:
             return False
 
     @property
-    @cubetry
     def end_timestamp(self):
-        return self.start_timestamp + self.max_time_sec
+        if isinstance(self.start_timestamp, float) and isinstance(self.max_time_sec, float):
+            return self.start_timestamp + self.max_time_sec
+        return None
 
     # TODO: test. useful?
     def has_played_today(self, current_time: Seconds = None) -> bool:

@@ -463,12 +463,7 @@ if __name__ == "__main__":
 
     master.log.setLevel(cube_logger.logging.INFO)
     master.net.log.setLevel(cube_logger.logging.INFO)
-    # handle the sys args. if --log=info, set to loglevel INFO, etc
-    import sys
-    if "--log=info" in sys.argv:
-        master.log.setLevel(cube_logger.logging.INFO)
-    elif "--log=debug" in sys.argv:
-        master.log.setLevel(cube_logger.logging.DEBUG)
+
     try:
         master.run()
     except KeyboardInterrupt:

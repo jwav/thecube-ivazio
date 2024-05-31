@@ -92,7 +92,7 @@ class Ui_Form(object):
         font.setWeight(75)
         self.lineNewteamRfid.setFont(font)
         self.lineNewteamRfid.setAlignment(QtCore.Qt.AlignCenter)
-        self.lineNewteamRfid.setReadOnly(True)
+        self.lineNewteamRfid.setReadOnly(False)
         self.lineNewteamRfid.setObjectName("lineNewteamRfid")
         self.gridLayout_6.addWidget(self.lineNewteamRfid, 2, 3, 1, 1)
         self.label_3 = QtWidgets.QLabel(self.tabMain)
