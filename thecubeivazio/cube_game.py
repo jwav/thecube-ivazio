@@ -55,7 +55,7 @@ class CubeboxStatus:
     # TODO: set unknown state as the default
     def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, start_timestamp: Seconds = None,
                  end_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
-                 state: CubeboxState = CubeboxState.STATE_WAITING_FOR_RESET):
+                 state: CubeboxState = CubeboxState.STATE_UNKNOWN):
         self.cube_id = cube_id
         self.current_team_name = current_team_name
         self.start_timestamp = start_timestamp
@@ -185,6 +185,24 @@ class CubeboxStatus:
         self.start_timestamp = start_timestamp
         self.win_timestamp = None
         self._state = CubeboxState.STATE_PLAYING
+
+    def set_state(self, state: CubeboxState) -> bool:
+        try:
+            if state not in CubeboxState:
+                CubeLogger.static_error(f"CubeboxStatus.set_state: unknown state {state}")
+                return False
+            if state == CubeboxState.STATE_READY_TO_PLAY:
+                self.set_state_ready_to_play()
+            elif state == CubeboxState.STATE_PLAYING:
+                self.set_state_playing()
+            elif state == CubeboxState.STATE_WAITING_FOR_RESET:
+                self.set_state_waiting_for_reset()
+            elif state == CubeboxState.STATE_UNKNOWN:
+                self._state = CubeboxState.STATE_UNKNOWN
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxStatus.set_state {e}")
+            return False
 
 
 

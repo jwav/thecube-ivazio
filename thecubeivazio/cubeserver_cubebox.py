@@ -44,6 +44,10 @@ class CubeServerCubebox:
 
         self._keep_running = False
 
+        # at startup, a cubebox is waiting for reset. always.
+        self.status.set_state_waiting_for_reset()
+        self.send_status_to_all()
+
     @property
     def status(self):
         return self._status
@@ -53,6 +57,10 @@ class CubeServerCubebox:
         self._status = value
         self.log.info(f"Status set to {value}. Sending message to everyone.")
         self.send_status_to_all()
+
+    def set_status_state(self, state: cube_game.CubeboxState):
+        if self.status.set_state(state):
+            self.send_status_to_all()
 
     def send_status_to_all(self):
         self.net.send_msg_to_all(

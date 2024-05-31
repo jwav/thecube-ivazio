@@ -45,6 +45,10 @@ class CubeServerMaster:
 
         self._rgb_matrix_thread = threading.Thread(target=self._rgb_matrix_loop)
 
+        self.net.send_msg_to_frontdesk(
+            cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
+
+
     def _rgb_matrix_loop(self):
         """Write the remaining times to the RGBMatrix Daemon file"""
         self.log.critical("Skipping RGBMatrix Daemon thread")
