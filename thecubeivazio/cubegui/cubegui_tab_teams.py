@@ -69,7 +69,8 @@ class CubeGuiTabTeamsMixin:
         self.update_tab_teams()
 
     def on_spinTeamsAmountOfDays_valueChanged(self, value):
-        # Check the radio button when the spinbox value is changed
+        """Check the radio button when the spinbox value is changed"""
+        self.ui: Ui_Form
         self.ui.radioTeamsLessThanXDays.setChecked(True)
 
     def update_tab_teams(self: 'CubeGuiForm'):
