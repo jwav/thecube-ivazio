@@ -304,7 +304,7 @@ def decrypt_string(encrypted_string: str, password: str) -> str:
     decrypted_string = fernet.decrypt(encrypted_string.encode())
     return decrypted_string.decode()
 
-if __name__ == "__main__":
+def test_utils():
     print("git branch version:", get_git_branch_version())
     print("git branch date:", get_git_branch_date())
     print("seconds_to_hhmmss_string(3600):", seconds_to_hhmmss_string(3600))
@@ -321,10 +321,17 @@ if __name__ == "__main__":
     print("get_system_hostname():", get_system_hostname())
     print(f"is raspberry pi? {is_raspberry_pi()}")
     print("timestamps_are_in_same_day(time.time(), time.time()):", timestamps_are_in_same_day(time.time(), time.time()))
+    print("timestamps_are_in_same_day(time.time(), time.time() - 86400):", timestamps_are_in_same_day(time.time(), time.time() - 864000))
     print("timestamps_are_in_same_week(time.time(), time.time()):", timestamps_are_in_same_week(time.time(), time.time()))
+    print("timestamps_are_in_same_week(time.time(), time.time() - 86400):", timestamps_are_in_same_week(time.time(), time.time() - 864000))
     print("timestamps_are_in_same_month(time.time(), time.time()):", timestamps_are_in_same_month(time.time(), time.time()))
+    print("timestamps_are_in_same_month(time.time(), time.time() - 86400):", timestamps_are_in_same_month(time.time(), time.time() - 864000))
     print("today_start_timestamp():", today_start_timestamp())
     print("this_week_start_timestamp():", this_week_start_timestamp())
     print("this_month_start_timestamp():", this_month_start_timestamp())
     print("encrypt_string('test', 'password'):", encrypt_string('test', 'password'))
     print("decrypt_string(encrypt_string('test', 'password'), 'password'):", decrypt_string(encrypt_string('test', 'password'), 'password'))
+
+
+if __name__ == "__main__":
+    test_utils()
