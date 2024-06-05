@@ -22,6 +22,7 @@
 # CubeRGBMatrix
 
 - [ ] use a localhost server instead of a shared file
+- [ ] add an option to display the team name additionally to the remaining time
 
 # GUI
 
@@ -37,6 +38,7 @@
 # Hardware
 
 - [ ] find cheap Rpi GPIO hats
+- [ ] find a solution for in-box setup of components (like an MDF board)
 - [ ] interface new RFID readers
   - [ ] RFID reading
   - [ ] neopixel control

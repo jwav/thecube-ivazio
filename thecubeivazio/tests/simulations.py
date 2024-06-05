@@ -26,6 +26,10 @@ CUBEBOX_THREAD = threading.Thread(target=CUBEBOX.run)
 FRONTDESK_THREAD = threading.Thread(target=FRONTDESK.run)
 MASTER_THREAD = threading.Thread(target=MASTER.run)
 
+# disable RFID listeners, we will simulate the RFID reads
+CUBEBOX.rfid._is_enabled = False
+FRONTDESK.rfid._is_enabled = False
+MASTER.rfid._is_enabled = False
 
 class TestResults:
     RESULT_PASS = "PASS"
@@ -40,6 +44,9 @@ class TestResults:
         self.results.append(result)
 
     def display(self):
+        nb_tests = len(self.statements)
+        nb_pass = self.results.count(self.RESULT_PASS)
+        nb_fail = self.results.count(self.RESULT_FAIL)
         LOGGER.info("TestResults:")
         for i, statement in enumerate(self.statements):
             if self.results[i] == TestResults.RESULT_PASS:
@@ -48,6 +55,7 @@ class TestResults:
             else:
                 # LOGGER.warning(f"FAIL : {statement}: {self.results[i]}")
                 LOGGER.warning(f"FAIL : {statement}")
+        LOGGER.info(f"Results: {nb_pass}/{nb_tests} passed, {nb_fail}/{nb_tests} failed")
 
 
 RESULTS = TestResults()

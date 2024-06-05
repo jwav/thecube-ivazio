@@ -63,8 +63,18 @@ class CubeRfidLine:
     def to_string(self):
         return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
 
+    @cubetry
     def to_dict(self):
         return {"timestamp": self.timestamp, "uid": self.uid}
+
+    @cubetry
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    @cubetry
+    def make_from_json(cls, json_str: str) -> Optional['CubeRfidLine']:
+        return cls.make_from_dict(json.loads(json_str))
 
     @classmethod
     def make_from_dict(cls, d: dict) -> Optional['CubeRfidLine']:
@@ -75,24 +85,19 @@ class CubeRfidLine:
             logging.error(f"Error creating CubeRfidLine from dict: {e}")
             return None
 
-    #TODO: testme
-    @staticmethod
-    def make_from_string(string: str) -> Optional['CubeRfidLine']:
-        """Create a CubeRfidLine object from a string"""
-        try:
-            # Extract the timestamp and uid from the string
-            timestamp, uid = re.findall(r"\d+\.\d+|\d+", string)
-            return CubeRfidLine(Seconds(timestamp), uid)
-        except Exception as e:
-            logging.error(f"Error creating CubeRfidLine from string: {e}")
-            return None
+    @cubetry
+    def __eq__(self, other: 'CubeRfidLine'):
+        return self.timestamp == other.timestamp and self.uid == other.uid
 
+    @cubetry
     def __repr__(self):
         return f"CubeRfidLine(timestamp={self.timestamp}, uid={self.uid})"
 
+    @cubetry
     def copy(self):
         return CubeRfidLine(self.timestamp, self.uid)
 
+    @cubetry
     def __copy__(self):
         return self.copy()
 
@@ -123,6 +128,9 @@ class CubeRfidListenerBase:
         self._current_chars_buffer = deque()
         self._completed_lines = deque()  # Store completed lines with their timestamps
         self._lines_lock = threading.Lock()  # Lock for thread-safe access to keycodes
+        # in simulations, we will need to disable the rfid listeners for a cleaner test
+        # and avoiding constant log errors
+        self._is_enabled = True
 
     def run(self):
         raise NotImplementedError
@@ -191,11 +199,10 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         self._device = None
         self._is_setup = False
 
-    def is_setup(self):
-        return self._is_setup
-
     def setup(self) -> bool:
         try:
+            if not self._is_enabled:
+                return True
             self._device_path = self._get_input_device_path_from_device_name("RFID")
             if self._device_path is None:
                 raise Exception("No RFID input device found")
@@ -222,6 +229,9 @@ class CubeRfidEventListener(CubeRfidListenerBase):
     def _event_read_loop(self):
         while self._keep_running:
             try:
+                if not self._is_enabled:
+                    time.sleep(1)
+                    continue
                 if not self.is_setup():
                     self.log.error("RFID listener not set up. Setting up...")
                     if not self.setup():
@@ -301,6 +311,7 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
         self._completed_lines = deque()  # Store completed lines with their timestamps
         self._keyboard_listener = keyboard.Listener(on_press=self._on_press)
         self.setup()
+
 
     def setup(self):
         self._is_setup = True
