@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -1334,6 +1334,37 @@ QPushButton:focus {
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Configuration du jeu</string>
+       </attribute>
+       <widget class="QWidget" name="gridLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>60</y>
+          <width>501</width>
+          <height>80</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="lineConfigPassword">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="btnConfigPassword">
+           <property name="text">
+            <string>PushButton</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
     </item>
     <item>
@@ -1354,7 +1385,6 @@ QPushButton:focus {
  </widget>
  <resources>
   <include location="resources.qrc"/>
-  <include location="../../../../../home/vee/.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -1,20 +1,34 @@
-- TODO: display on led screens
-- TODO: display webpage
-- TODO: setup automatic tests
-- TODO: build a hardware install on a wooden board
+# CubeGame
 
-# Goals for the first presentation :
+- [ ] implement the new time calculation method
+- [ ] add team creation timestamp for unique identification
 
-- [ ] hardware layout out on wooden board
-- [ ] a functional GUI with all the features (not all features need be implemented)
-  - [ ] features to implement:
-    - [ ] all team creation features
-    - [ ] team management displaying features
-- [ ] frontdesk backend with the features to support those of the GUI
-- [ ] cubemaster with features :
-  - [ ] new team and team info requests for frontdesk
-  - [ ] team management requests for frontdesk
-  - [ ] display on led matrices()
-- [ ] cubebox with all the bells and whistles (already the case)
-  - [ ] handle wireless button
-  - [ ] play tunes
+# CubeBoxes
+ 
+- [ ] make the cubeboxes status messages more frequent and more orderly
+
+# CubeMaster
+
+- [ ] ??? 
+
+
+# CubeRGBMatrix
+
+- [ ] use a localhost server instead of a shared file
+
+# GUI
+
+- [ ] new tab for game config :
+  - [ ] trophies
+  - [ ] game times
+  - [ ] cubeboxes score formulae
+  - [ ] password system for config edition
+- [ ] "sound the alarm" checkbox
+
+
+# Hardware
+
+- [ ] find cheap Rpi GPIO hats
+- [ ] interface new RFID readers
+  - [ ] RFID reading
+  - [ ] neopixel control
