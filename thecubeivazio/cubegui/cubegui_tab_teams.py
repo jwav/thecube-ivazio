@@ -42,7 +42,8 @@ class CubeGuiTabTeamsMixin:
 
         # select the default radio button for the search period
         # self.ui.radioTeamsCurrentlyPlaying.setChecked(True)
-        self.ui.radioTeamsNoDate.setChecked(True)
+        self.ui.spinTeamsAmountOfDays.valueChanged.connect(lambda value: self.ui.radioTeamsLessThanXDays.setChecked(True))
+        self.ui.radioTeamsCurrentlyPlaying.setChecked(True)
 
         # connect the "search" button
         self.ui.btnTeamsSearch.clicked.connect(self.click_search_teams)
@@ -67,6 +68,10 @@ class CubeGuiTabTeamsMixin:
         # update the tab
         self.update_tab_teams()
 
+    def on_spinTeamsAmountOfDays_valueChanged(self, value):
+        # Check the radio button when the spinbox value is changed
+        self.ui.radioTeamsLessThanXDays.setChecked(True)
+
     def update_tab_teams(self: 'CubeGuiForm'):
         pass
 
@@ -85,21 +90,13 @@ class CubeGuiTabTeamsMixin:
         team_name = self.ui.comboTeamsTeamName.currentText()
         custom_name: str = self.ui.lineTeamsCustomName.text()
         rfid_uid = self.ui.lineTeamsRfid.text()
-        search_currently_playing = self.ui.radioTeamsCurrentlyPlaying.isChecked()
 
-        if self.ui.radioTeamsToday.isChecked():
-            min_timestamp = cube_utils.today_start_timestamp()
-        elif self.ui.radioTeamsThisWeek.isChecked():
-            min_timestamp = cube_utils.this_week_start_timestamp()
-        elif self.ui.radioTeamsThisMonth.isChecked():
-            min_timestamp = cube_utils.this_month_start_timestamp()
-        else:
-            min_timestamp = 1
-        self.log.debug(f"min_timestamp: {min_timestamp}, i.e. {cube_utils.timestamp_to_date(min_timestamp)}")
-
-        if search_currently_playing:
+        if self.ui.radioTeamsCurrentlyPlaying.isChecked():
             teams = self.fd.teams
         else:
+            nb_days = self.ui.spinTeamsAmountOfDays.value()
+            min_timestamp = time.time() - nb_days * 24 * 3600
+            self.log.debug(f"min_timestamp: {min_timestamp}, i.e. {cube_utils.timestamp_to_date(min_timestamp)}")
             teams = cubedb.find_teams_matching(name=team_name, custom_name=custom_name, rfid_uid=rfid_uid,
                                                min_creation_timestamp=min_timestamp, max_creation_timestamp=time.time())
 
