@@ -804,6 +804,26 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             CubeLogger.static_error(f"CubeTeamsStatusList.hash {e}")
             return ""
 
+    def is_valid(self):
+        try:
+            all_valid = all([team.is_valid() for team in self])
+            # if two teams share the same create_timestamp, they're duplicates
+            no_duplicates = len(set([team.creation_timestamp for team in self])) == len(self)
+            if not all_valid:
+                CubeLogger.static_warning("CubeTeamsStatusList.is_valid: these teams are invalid:")
+                for team in self:
+                    if not team.is_valid():
+                        CubeLogger.static_warning(f"CubeTeamsStatusList.is_valid: {team}")
+            if not no_duplicates:
+                CubeLogger.static_warning("CubeTeamsStatusList.is_valid: these teams are duplicates:")
+                for team in self:
+                    if [t.creation_timestamp for t in self].count(team.creation_timestamp) > 1:
+                        CubeLogger.static_warning(f"CubeTeamsStatusList.is_valid: {team}")
+            return all_valid and no_duplicates
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.is_valid {e}")
+            return False
+
     def compare_with_hashlist(self, hash_dict: Dict[TeamName, Hash]) -> Optional[Tuple[TeamName, ...]]:
         """Returns the names of the teams whose hash is different from the one in the hash_dict.
         If the returned tuple is empty, it means that the hash_dict is up-to-date with the teams list.
