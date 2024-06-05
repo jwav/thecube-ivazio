@@ -4,7 +4,6 @@ import time
 from typing import Optional, Dict, Type
 import enum
 
-
 import thecubeivazio.cube_game as cube_game
 import thecubeivazio.cube_rfid as cube_rfid
 import thecubeivazio.cube_utils as cube_utils
@@ -58,7 +57,6 @@ class CubeMsgTypes(enum.Enum):
     FRONTDESK_NEW_TEAM = "FRONTDESK_NEW_TEAM"
     FRONTDESK_REMOVE_TEAM = "FRONTDESK_REMOVE_TEAM"
 
-
     # unneeded by way of empirical evidence, but hey, i needed to do it for CubeMsgReplies and I guess i can't hurt
     def __eq__(self, other):
         """This is needed to compare a CubeMsgTypes with a str."""
@@ -74,6 +72,7 @@ class CubeAckInfos(enum.Enum):
     DENIED = "DENIED"
     INVALID = "INVALID"
     OCCUPIED = "OCCUPIED"
+    NO_RESPONSE = "NO_RESPONSE"
 
     def __str__(self):
         return self.value
@@ -197,19 +196,29 @@ class CubeMsgFrontdeskNewTeam(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.FRONTDESK_NEW_TEAM, sender, name=team.name, rfid_uid=team.rfid_uid,
-                             max_time_sec=team.max_time_sec)
+            super().__init__(
+                CubeMsgTypes.FRONTDESK_NEW_TEAM, sender, name=team.name, rfid_uid=team.rfid_uid,
+                creation_timestamp=team.creation_timestamp, max_time_sec=team.max_time_sec,
+                custom_name=team.custom_name, use_alarm=team.use_alarm)
         self.require_ack = True
 
     @property
     def team(self) -> Optional[cube_game.CubeTeamStatus]:
-        name = self.kwargs.get("name", None)
-        rfid_uid = self.kwargs.get("rfid_uid", None)
-        max_time_sec = float(self.kwargs.get("max_time_sec", None))
-        if not all([name, rfid_uid, max_time_sec]):
+        try:
+            name = self.kwargs.get("name")
+            custom_name = self.kwargs.get("custom_name")
+            rfid_uid = self.kwargs.get("rfid_uid")
+            max_time_sec = float(self.kwargs.get("max_time_sec"))
+            creation_timestamp = float(self.kwargs.get("creation_timestamp"))
+            use_alarm = self.kwargs.get("use_alarm")
+            if not all([name, rfid_uid, max_time_sec]):
+                return None
+            return cube_game.CubeTeamStatus(
+                name=name, custom_name=custom_name, rfid_uid=rfid_uid, max_time_sec=max_time_sec,
+                creation_timestamp=creation_timestamp, use_alarm=use_alarm)
+        except Exception as e:
+            CubeLogger.static_error(f"Error parsing team from CubeMsgFrontdeskNewTeam: {e}")
             return None
-        return cube_game.CubeTeamStatus(
-            name=name, rfid_uid=rfid_uid, max_time_sec=max_time_sec)
 
 
 # TODO: handle in cubemaster
@@ -325,6 +334,7 @@ class CubeMsgRequestCubemasterStatus(CubeMessage):
         super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_STATUS, sender)
         self.require_ack = False
 
+
 # TODO
 class CubeMsgReplyCubemasterStatus(CubeMessage):
     """Sent from the CubeMaster to a node in response to a REQUEST_CUBEMASTER_STATUS message."""
@@ -341,6 +351,7 @@ class CubeMsgReplyCubemasterStatus(CubeMessage):
     @property
     def cubemaster_status(self) -> cube_game.CubeGameStatus:
         return cube_game.CubeGameStatus.make_from_json(self.kwargs.get("cubemaster_status"))
+
 
 class CubeMsgRequestCubeMasterStatusHash(CubeMessage):
     """Sent from a node to the CubeMaster to ask for its status hash."""
@@ -382,6 +393,7 @@ class CubeMsgRequestCubeboxStatus(CubeMessage):
     def cube_id(self) -> int:
         return int(self.kwargs.get("cube_id"))
 
+
 # TODO: testme
 
 class CubeMsgReplyCubeboxStatus(CubeMessage):
@@ -408,7 +420,6 @@ class CubeMsgRequestAllCubeboxesStatuses(CubeMessage):
     def __init__(self, sender):
         super().__init__(CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUSES, sender)
         self.require_ack = False
-
 
 
 class CubeMsgReplyAllCubeboxesStatuses(CubeMessage):
@@ -536,6 +547,7 @@ class CubeMsgRequestAllTeamsStatuses(CubeMessage):
         super().__init__(CubeMsgTypes.REQUEST_ALL_TEAMS_STATUSES, sender)
         self.require_ack = False
 
+
 class CubeMsgReplyAllTeamsStatuses(CubeMessage):
     """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_ALL_TEAMS_STATUSES message."""
 
@@ -559,6 +571,7 @@ class CubeMsgReplyAllTeamsStatuses(CubeMessage):
             CubeLogger.static_error(f"Error parsing TeamsStatusList from CubeMsgReplyAllTeamsStatuses: {e}")
             return None
 
+
 # orders
 
 class CubeMsgOrderCubeboxToWaitForReset(CubeMessage):
@@ -574,6 +587,7 @@ class CubeMsgOrderCubeboxToWaitForReset(CubeMessage):
     @property
     def cube_id(self) -> int:
         return int(self.kwargs.get("cube_id"))
+
 
 class CubeMsgOrderCubeboxToReset(CubeMessage):
     """Sent from the CubeMaster to a CubeBox to order it to reset."""
@@ -700,7 +714,7 @@ def test_make_from_message():
 def test_message_to_and_from_string(msg_class: Type[CubeMessage], sender: str, **kwargs):
     """test that the message can be converted to a string and back"""
     log = CubeLogger("test_message_to_and_from_string")
-    log.setLevel(log.LEVEL_DEBUG +1)
+    log.setLevel(log.LEVEL_DEBUG + 1)
     # noinspection PyBroadException
     try:
         # assert kwargs is not None
@@ -874,11 +888,6 @@ def test_all_reply_messages():
     log.success("CubeMsgReplyCubeMasterStatusHash PASSED")
 
     log.success("test_all_reply_messages PASSED")
-
-
-
-
-
 
 
 if __name__ == "__main__":

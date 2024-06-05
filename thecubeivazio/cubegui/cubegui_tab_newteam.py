@@ -1,15 +1,12 @@
 """File for the mixin class (partial for CubeGuiForm) for the new team tab."""
 
-import threading
 import time
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
 from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils, cube_rfid
-from thecubeivazio import cube_logger as cube_logger
 
 import sys
 import atexit
@@ -17,8 +14,11 @@ import traceback as tb
 
 from typing import TYPE_CHECKING
 
+from thecubeivazio.cube_messages import CubeAckInfos
+
 if TYPE_CHECKING:
     from cubegui import CubeGuiForm
+
 
 
 class CubeGuiTabNewTeamMixin:
@@ -73,31 +73,51 @@ class CubeGuiTabNewTeamMixin:
 
     def create_new_team(self: 'CubeGuiForm'):
         team_name = self.ui.comboNewteamTeamName.currentText()
-        team_custom_name = self.ui.lineNewteamTeamCustomName.text()
+        custom_name = self.ui.lineNewteamTeamCustomName.text()
         rfid_uid = self.ui.lineNewteamRfid.text()
-        allocated_time = cube_utils.hhmmss_string_to_seconds(self.ui.comboNewteamDuration.currentText())
+        max_time_sec = cube_utils.hhmmss_string_to_seconds(self.ui.comboNewteamDuration.currentText())
+        creation_timestamp = time.time()
+        use_alarm = self.ui.checkNewteamUseAlarm.isChecked()
+
         if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_uid):
             self.update_new_team_status_label("Ce RFID est un resetter, il ne peut pas servir à une équipe", "error")
             self.log.info(f"RFID is in resetter list: {rfid_uid}")
             return
-        if any([not team_name, not rfid_uid, not allocated_time]):
+        try:
+            team = cube_game.CubeTeamStatus(
+                name=team_name, custom_name=custom_name, rfid_uid=rfid_uid,
+                max_time_sec=max_time_sec, creation_timestamp=creation_timestamp,
+                use_alarm=use_alarm)
+            assert team.is_valid()
+        except Exception as e:
             self.update_new_team_status_label(f"Informations manquantes ou erronées", "error")
-            self.log.error("Missing information to create a new team.")
+            self.log.error(f"Missing or erroneous information to create a new team: {e}"
+                           f" name={team_name}, custom_name={custom_name}, rfid_uid={rfid_uid}, max_time={max_time_sec}")
             return
-        team = cube_game.CubeTeamStatus(team_name, rfid_uid, allocated_time)
+
         self.log.info(f"Creating new team: {team.to_string()}")
         self.update_new_team_status_label(f"Création de l'équipe {team_name} en cours...", "hourglass")
         # send the new team creation message to the cubemaster and check that the ack is ok
         report = self.fd.add_new_team(team)
-        if report.ok:
-            self.update_new_team_status_label(f"Équipe {team_name} créée avec succès.", "ok")
-        else:
-            self.update_new_team_status_label(f"Échec de la création de l'équipe {team_name} : {report.ack_info}",
-                                              "error")
+
+        if not report.success:
+            self.update_new_team_status_label(
+                f"Échec de la création de l'équipe {team_name} : pas réussi à envoyer le message!",
+                "error")
+            return
+        elif not report.ack_info:
+            self.update_new_team_status_label(
+                f"Échec de la création de l'équipe {team_name} : pas de réponse du CubeMaster!",
+                "error")
+            return
+        elif not report.ok:
+            self.update_new_team_status_label(
+                f"Échec de la création de l'équipe {team_name} : {report.ack_info}",
+                "error")
+            return
+        self.update_new_team_status_label(f"Équipe {team_name} créée avec succès.", "ok")
+
 
 if __name__ == "__main__":
     from cubegui import CubeGuiForm
-    app = QApplication(sys.argv)
-    window = CubeGuiForm()
-    window.show()
-    sys.exit(app.exec_())
+    CubeGuiForm.main()

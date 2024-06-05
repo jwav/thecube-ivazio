@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -121,92 +121,30 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="2" column="2">
-           <widget class="QLabel" name="lblNewteamRfid">
-            <property name="text">
-             <string>Badge RFID : </string>
+          <item row="1" column="3" colspan="5">
+           <widget class="QLineEdit" name="lineNewteamTeamCustomName">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLabel" name="lblNewteamAllocatedTime">
-            <property name="text">
-             <string>Temps alloué : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QComboBox" name="comboNewteamTeamName">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>NomDeVille1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>NomDeVille2</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QComboBox" name="comboNewteamDuration">
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>0h10</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>0h20</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="7">
-           <spacer name="horizontalSpacer_20">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+            <property name="minimumSize">
              <size>
-              <width>40</width>
-              <height>20</height>
+              <width>400</width>
+              <height>0</height>
              </size>
             </property>
-           </spacer>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="lblNewteamTeamName">
-            <property name="text">
-             <string>Nom de code :</string>
+            <property name="toolTip">
+             <string>Ce nom personnalisé sera affiché sur la feuille de score ainsi que le leaderboard des meilleurs scores</string>
             </property>
            </widget>
-          </item>
-          <item row="2" column="0">
-           <spacer name="horizontalSpacer_17">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item row="2" column="3">
            <widget class="QLineEdit" name="lineNewteamRfid">
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>120</width>
               <height>16777215</height>
              </size>
             </property>
@@ -231,27 +169,13 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_3">
+          <item row="3" column="2">
+           <widget class="QLabel" name="lblNewteamAllocatedTime">
             <property name="text">
-             <string>Nom personnalisé : </string>
+             <string>Temps alloué : </string>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QPushButton" name="btnNewteamRfidClear">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="edit-clear">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
@@ -296,6 +220,36 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="lblNewteamRfid">
+            <property name="text">
+             <string>Badge RFID : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="lblNewteamTeamName">
+            <property name="text">
+             <string>Nom de code :</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Nom personnalisé : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="6">
            <widget class="QLabel" name="lblNewteamRfidStatusText">
             <property name="minimumSize">
@@ -309,20 +263,91 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="1" column="3" colspan="5">
-           <widget class="QLineEdit" name="lineNewteamTeamCustomName">
+          <item row="0" column="3">
+           <widget class="QComboBox" name="comboNewteamTeamName">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>NomDeVille1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>NomDeVille2</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="7">
+           <spacer name="horizontalSpacer_20">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0">
+           <spacer name="horizontalSpacer_17">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="4">
+           <widget class="QPushButton" name="btnNewteamRfidClear">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>0</height>
-             </size>
+            <property name="text">
+             <string/>
             </property>
+            <property name="icon">
+             <iconset theme="edit-clear">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3" colspan="3">
+           <widget class="QCheckBox" name="checkNewteamUseAlarm">
+            <property name="toolTip">
+             <string>Pour certaines équipes comme par exemple de grands groupes, il est recommandé d'utiliser une alarme sonore pour la notifier que son temps s'est écoulé. À utiliser avec parcimonie.</string>
+            </property>
+            <property name="text">
+             <string>Utiliser l'alarme pour cette équipe</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QComboBox" name="comboNewteamDuration">
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>0h10</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>0h20</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -1338,32 +1363,187 @@ QPushButton:focus {
        <attribute name="title">
         <string>Configuration du jeu</string>
        </attribute>
-       <widget class="QWidget" name="gridLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>270</x>
-          <y>60</y>
-          <width>501</width>
-          <height>80</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLineEdit" name="lineConfigPassword">
-           <property name="echoMode">
-            <enum>QLineEdit::Password</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="btnConfigPassword">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="resources.qrc">:/images/images/logo_thecube_top.png</pixmap>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_29">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblNewteamStatusText_7">
+          <property name="font">
+           <font>
+            <family>Noto Serif</family>
+            <pointsize>16</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>CONFIGURATION DU JEU</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_18">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_11">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="lineConfigPassword">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="btnConfigPassword">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Mot de passe :</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutAdminMain">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

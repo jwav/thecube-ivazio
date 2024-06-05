@@ -6,10 +6,17 @@
 # CubeBoxes
  
 - [ ] make the cubeboxes status messages more frequent and more orderly
+- [ ] for the CubeBoxWithPrompt, add commands
 
 # CubeMaster
 
-- [ ] ??? 
+- [ ] create scoresheets
+- [ ] display scoreboard on hdmi screen
+- [ ] for the CubeMasterWithPrompt, add commands
+
+# CubeFrontdesk
+
+- [ ] for the CubeFrontdeskWithPrompt, add commands
 
 
 # CubeRGBMatrix
@@ -24,6 +31,7 @@
   - [ ] cubeboxes score formulae
   - [ ] password system for config edition
 - [ ] "sound the alarm" checkbox
+- [ ] shorter dates: dd/mm/yyyy
 
 
 # Hardware

@@ -5,15 +5,11 @@ import time
 import hashlib
 
 from typing import List, Optional, Dict, Tuple, Iterable
-import pickle
 
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_identification as cubeid
-from thecubeivazio import cube_utils
+from thecubeivazio import cube_utils as cube_utils
 import thecubeivazio.cube_rfid as cube_rfid
-
-# todo: use seconds and timestamps from cube_common_defines
-from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_logger import CubeLogger
 
 
@@ -52,7 +48,6 @@ class CubeboxStatus:
     MEDIUM_MIN_TIME = 8 * 60
     HARD_MIN_TIME = 12 * 60
 
-    # TODO: set unknown state as the default
     def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, start_timestamp: Seconds = None,
                  end_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
                  state: CubeboxState = CubeboxState.STATE_UNKNOWN):
@@ -73,6 +68,7 @@ class CubeboxStatus:
             CubeLogger.static_error(f"CubeboxStatus.__eq__ {e}")
             return False
 
+    @cubetry
     def is_valid(self):
         """if this function returns False, then it might have been made from corrupted data"""
         return all((self.cube_id in cubeid.CUBEBOX_IDS, self._state in CubeboxState))
@@ -89,9 +85,9 @@ class CubeboxStatus:
         ret = f"CubeboxStatus({self.to_string()}, last_valid_rfid_line={self.last_valid_rfid_line})"
 
     def to_string(self) -> str:
-        sep = ","
-        return sep.join([f"{k}={v}" for k, v in self.to_dict().items()])
+        return self.to_json()
 
+    @cubetry
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
@@ -103,6 +99,7 @@ class CubeboxStatus:
             CubeLogger.static_error(f"CubeboxStatus.make_from_json {e.with_traceback(None)}")
             return None
 
+    @cubetry
     def to_dict(self) -> Dict:
         return {
             "cube_id": self.cube_id,
@@ -446,10 +443,13 @@ class CubeTrophy:
 class CubeTeamStatus:
     """Represents a team playing a CubeGame"""
 
-    def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, custom_name: str = "",
-                 start_timestamp: Seconds = None, current_cubebox_id: int = None,
+    def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, creation_timestamp: Timestamp = None,
+                 custom_name: str = "",
+                 start_timestamp: Timestamp = None, current_cubebox_id: int = None,
                  completed_cubeboxes: List[CompletedCubeboxStatus] = None,
-                 trophies: List[CubeTrophy] = None):
+                 trophies: List[CubeTrophy] = None,
+                 use_alarm=False):
+        self.creation_timestamp = creation_timestamp or time.time()
         # the team's code name (a city name)
         self.name = name
         # the custom names chosen by the customers
@@ -466,6 +466,14 @@ class CubeTeamStatus:
         self.completed_cubeboxes = completed_cubeboxes or []
         # the trophies collected by the team, awarded by the frontdesk
         self.trophies: List[CubeTrophy] = [] if not trophies else trophies
+        # for certain teams, we want to use a loud alarm when their time is up
+        # TODO: test
+        self.use_alarm = use_alarm
+
+    @cubetry
+    def is_valid(self):
+        """if this function returns False, then it might have been made from corrupted data"""
+        return all((self.name, self.rfid_uid, self.max_time_sec, self.creation_timestamp))
 
     @property
     def remaining_time(self) -> Optional[Seconds]:
@@ -481,18 +489,33 @@ class CubeTeamStatus:
             CubeLogger.static_error(f"CubeTeamStatus.__eq__ {e}")
             return False
 
+    @cubetry
+    def is_same_team_as(self, team):
+        """Returns True if the team has the same name, custom_name, RFID UID, and starting timestamp as the other team.
+        Any other difference could simply mean that the team has been updated."""
+        return all((self.name == team.name,
+                    self.rfid_uid == team.rfid_uid,
+                    self.creation_timestamp == team.creation_timestamp))
+
+
     def __repr__(self):
-        ret = f"CubeTeam({self.to_string()})"
+        return self.to_string()
 
     def __str__(self):
         return self.to_string()
 
+    def to_string(self) -> Optional[str]:
+        return self.to_json()
+
     def to_dict(self) -> Dict:
+        """This is the main method to convert a CubeTeamStatus instance to any kind of text.
+        When the CubeTeamStatus structure is changed, update this method as well as make_from_dict()"""
         return {
             "name": self.name,
             "custom_name": self.custom_name,
             "rfid_uid": self.rfid_uid,
             "max_time_sec": self.max_time_sec,
+            "creation_timestamp": self.creation_timestamp,
             "start_timestamp": self.start_timestamp,
             "current_cubebox_id": self.current_cubebox_id,
             "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes],
@@ -501,9 +524,16 @@ class CubeTeamStatus:
 
     @classmethod
     def make_from_dict(cls, d: Optional[Dict]) -> Optional['CubeTeamStatus']:
+        """This is the main method to convert any kind of text to a CubeTeamStatus instance.
+        When the CubeTeamStatus structure is changed, update this method as well as to_dict()"""
         # CubeLogger.static_debug(f"CubeTeamStatus.make_from_dict {d}")
         try:
-            ret = cls(d.get("name"), d.get("rfid_uid"), d.get("max_time_sec"))
+            # if any
+            ret = cls(name=d.get("name"),
+                      rfid_uid=d.get("rfid_uid"),
+                      max_time_sec=d.get("max_time_sec"),
+                      creation_timestamp=d.get("creation_timestamp"))
+
             ret.custom_name = d.get("custom_name", "")
             ret.start_timestamp = d.get("start_timestamp", None)
             if ret.start_timestamp is not None:
@@ -520,10 +550,6 @@ class CubeTeamStatus:
             CubeLogger.static_error(f"CubeTeamStatus.make_from_dict {e}")
             return None
 
-    @classmethod
-    def make_from_kwargs(cls, **kwargs) -> Optional['CubeTeamStatus']:
-        return cls.make_from_dict(kwargs)
-
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
@@ -536,8 +562,7 @@ class CubeTeamStatus:
             CubeLogger.static_error(f"CubeTeamStatus.make_from_json {e}")
             return None
 
-    def to_string(self) -> Optional[str]:
-        return self.to_json()
+
 
     @property
     def completed_cubebox_ids(self) -> List[CubeId]:
@@ -693,30 +718,22 @@ class CubeTeamStatus:
             return False
 
 
+    @cubetry
     def copy(self):
-        ret = CubeTeamStatus(self.name, self.rfid_uid, self.max_time_sec)
-        ret.current_cubebox_id = self.current_cubebox_id
-        ret.start_timestamp = self.start_timestamp
-        ret.completed_cubeboxes = [box.copy() for box in self.completed_cubeboxes]
-        return ret
+        return CubeTeamStatus.make_from_dict(self.to_dict())
 
 
+    @cubetry
     def resign_current_cube(self):
         # TODO: do we need to actually do something more here?
         self.current_cubebox_id = None
 
 
+    @cubetry
     def has_played_cube(self, cubebox_id):
         return cubebox_id in [box.cube_id for box in self.completed_cubeboxes]
 
 
-    def is_same_team_as(self, team):
-        """Returns True if the team has the same name, custom_name, RFID UID, and starting timestamp as the other team.
-        Any other difference could simply mean that the team has been updated."""
-        return all((self.name == team.name,
-                    self.custom_name == team.custom_name,
-                    self.rfid_uid == team.rfid_uid,
-                    self.start_timestamp == team.start_timestamp if self.start_timestamp and team.start_timestamp else True))
 
 
     @cubetry
@@ -725,33 +742,31 @@ class CubeTeamStatus:
         preserving the completed cubeboxes and trophies
         If this is another team, return False"""
         CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: updating team {self.name}")
-        if self.is_same_team_as(team):
-            # TODO: just do a raw copy
-            CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is the same team. updating.")
-            CubeLogger.static_debug(f"current team status: {self.to_json()}")
-            for completed_cube in team.completed_cubeboxes:
-                self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
-                                        completed_cube.win_timestamp)
-            for trophy in team.trophies:
-                self.add_trophy(trophy)
-            self.current_cubebox_id = team.current_cubebox_id
-            if not self.start_timestamp:
-                self.start_timestamp = team.start_timestamp
-            self.max_time_sec = team.max_time_sec
-            CubeLogger.static_debug(f"updated team status: {self.to_json()}")
-            return True
-        else:
+        if not self.is_same_team_as(team):
+            CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is not the same team. returning.")
             return False
+        # TODO: just do a raw copy
+        CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is the same team. updating.")
+        CubeLogger.static_debug(f"current team status: {self.to_json()}")
+        for completed_cube in team.completed_cubeboxes:
+            self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
+                                    completed_cube.win_timestamp)
+        for trophy in team.trophies:
+            self.add_trophy(trophy)
+        self.current_cubebox_id = team.current_cubebox_id
+        if not self.start_timestamp:
+            self.start_timestamp = team.start_timestamp
+        self.max_time_sec = team.max_time_sec
+        CubeLogger.static_debug(f"updated team status: {self.to_json()}")
+        return True
 
 
+    @cubetry
     def add_trophy(self, trophy: CubeTrophy):
         if not trophy in self.trophies:
             self.trophies.append(trophy)
 
 
-    def is_valid(self):
-        """if this function returns False, then it might have been made from corrupted data"""
-        return all((self.name, self.rfid_uid, self.max_time_sec))
 
 
 # TODO : add ranks for the day, week, mont, all-time
@@ -1017,8 +1032,8 @@ def test_cube_team():
 def test_cube_teams_list():
     teams_list = CubeTeamsStatusList()
     assert len(teams_list) == 0
-    team1 = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
-    team2 = CubeTeamStatus(rfid_uid="1234567891", name="Paris", max_time_sec=60.0)
+    team1 = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0, creation_timestamp=time.time())
+    team2 = CubeTeamStatus(rfid_uid="1234567891", name="Paris", max_time_sec=60.0, creation_timestamp=time.time())
     assert teams_list.add_team(team1)
     assert len(teams_list) == 1
     assert teams_list.add_team(team2)
@@ -1039,19 +1054,6 @@ def test_cube_teams_list():
     assert len(teams_list) == 0
     assert not teams_list.remove_team_by_name("Budapest")
     assert len(teams_list) == 0
-    # test pickle
-    assert teams_list.save_to_pickle()
-    teams_list.append(team1)
-    assert len(teams_list) == 1
-    assert teams_list.load_from_pickle()
-    assert len(teams_list) == 0
-    assert teams_list.get_team_by_rfid_uid("1234567890") == team1
-    assert teams_list.get_team_by_name("Budapest") == team1
-    assert teams_list.remove_team_by_name("Budapest")
-    assert len(teams_list) == 0
-    assert not teams_list.load_from_pickle("foo")
-    assert len(teams_list) == 0
-
 
 def save_scoresheet():
     team = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)

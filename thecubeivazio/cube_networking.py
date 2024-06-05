@@ -24,7 +24,7 @@ class SendReport:
             return cm.CubeMsgAck(copy_msg=self.reply_msg)
 
     @property
-    def ack_info(self):
+    def ack_info(self) -> Optional[cm.CubeAckInfos]:
         # noinspection PyBroadException
         try:
             return self.ack_msg.info
@@ -56,9 +56,9 @@ class CubeNetworking:
     DISCOVERY_BROADCAST_IP = UDP_BROADCAST_IP
     DISCOVERY_LISTEN_IP = UDP_LISTEN_IP
 
-    ACK_WAIT_TIMEOUT = 3  # seconds
+    ACK_WAIT_TIMEOUT = 2  # seconds
     # TODO: set this to a ridiculously high number for production
-    ACK_NB_TRIES = 10
+    ACK_NB_TRIES = 3
 
     def __init__(self, node_name: str, log_filename: str = None):
         self.log = cube_logger.CubeLogger(name=f"{node_name} Networking", log_filename=log_filename)
@@ -335,12 +335,15 @@ class CubeNetworking:
         if port is None:
             port = self.UDP_PORT
 
+        # if require_ack is None, use the message's require_ack attribute
         if require_ack is None:
             require_ack = message.require_ack
         else:
             message.require_ack = require_ack
+        # if ack_timeout is None, use the default value
         if ack_timeout is None:
             ack_timeout = self.ACK_WAIT_TIMEOUT
+        # if nb_tries is None, use the default value
         if nb_tries is None:
             nb_tries = self.ACK_NB_TRIES
 
@@ -363,28 +366,28 @@ class CubeNetworking:
         self.add_msg_to_retry_queue(message)
         return SendReport(True, None)
 
-    def send_msg_to(self, message: cm.CubeMessage, node_name: str, require_ack=False) -> SendReport:
+    def send_msg_to(self, message: cm.CubeMessage, node_name: str, require_ack=False, nb_tries=None) -> SendReport:
         """Sends a message to a node. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(f"Sending message to {node_name}: ({message.hash}), require_ack: {require_ack}\n{message}")
         ip = self.nodes_list.get_node_ip_from_node_name(node_name)
-        return self.send_msg_with_udp(message, ip, require_ack=require_ack)
+        return self.send_msg_with_udp(message, ip, require_ack=require_ack, nb_tries=nb_tries)
 
-    def send_msg_to_all(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
+    def send_msg_to_all(self, message: cm.CubeMessage, require_ack=False, nb_tries=None) -> SendReport:
         """Sends a message to all nodes. Returns True if the message was acknowledged by all nodes, False otherwise."""
         self.log.info(f"Sending message to all nodes: ({message.hash}), require_ack: {require_ack}\n{message}")
-        return self.send_msg_with_udp(message, self.UDP_BROADCAST_IP, require_ack=require_ack)
+        return self.send_msg_with_udp(message, self.UDP_BROADCAST_IP, require_ack=require_ack, nb_tries=nb_tries)
 
-    def send_msg_to_cubemaster(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
+    def send_msg_to_cubemaster(self, message: cm.CubeMessage, require_ack=False, nb_tries=None) -> SendReport:
         """Sends a message to the CubeMaster. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(
             f"Sending message to CubeMaster ({self.nodes_list.cubemaster.ip}): ({message.hash}), require_ack: {require_ack}\n{message}")
-        return self.send_msg_with_udp(message, self.nodes_list.cubemaster.ip, require_ack=require_ack)
+        return self.send_msg_with_udp(message, self.nodes_list.cubemaster.ip, require_ack=require_ack, nb_tries=nb_tries)
 
-    def send_msg_to_frontdesk(self, message: cm.CubeMessage, require_ack=False) -> SendReport:
+    def send_msg_to_frontdesk(self, message: cm.CubeMessage, require_ack=False, nb_tries=None) -> SendReport:
         """Sends a message to the FrontDesk. Returns True if the message was acknowledged, False otherwise."""
         self.log.info(
             f"Sending message to FrontDesk ({self.nodes_list.frontdesk.ip}): ({message.hash}), require_ack: {require_ack}\n{message}")
-        return self.send_msg_with_udp(message, self.nodes_list.frontdesk.ip, require_ack=require_ack)
+        return self.send_msg_with_udp(message, self.nodes_list.frontdesk.ip, require_ack=require_ack, nb_tries=nb_tries)
 
     def get_ack_wait_queue(self) -> Tuple[CubeMessage, ...]:
         """Returns the ack_wait_queue"""

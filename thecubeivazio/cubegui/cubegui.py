@@ -140,12 +140,15 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
             self.log.error(f"Error in handle_rfid: {e}")
             self.log.error(tb.format_exc())
 
+    @staticmethod
+    def main():
+        import atexit
+        app = QApplication(sys.argv)
+        window = CubeGuiForm()
+        atexit.register(window.close)
+        window.show()
+        sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
-    import atexit
-
-    app = QApplication(sys.argv)
-    window = CubeGuiForm()
-    atexit.register(window.close)
-    window.show()
-    sys.exit(app.exec_())
+    CubeGuiForm.main()
