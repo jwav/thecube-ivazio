@@ -399,9 +399,9 @@ class CubeTrophy:
         self.name = name
         self.description = description
         self.points = points
-        self.image_path = image_filename
+        self.image_filename = image_filename
         if image_filename is not None:
-            self.image_path = DEFAULT_TROPHY_IMAGE_FILENAME
+            self.image_filename = DEFAULT_TROPHY_IMAGE_FILENAME
 
     def to_string(self):
         sep = ","
@@ -425,7 +425,7 @@ class CubeTrophy:
             "name": self.name,
             "description": self.description,
             "points": self.points,
-            "image_path": self.image_path
+            "image_path": self.image_filename
         }
 
     @classmethod
@@ -491,11 +491,8 @@ class CubeTeamStatus:
 
     @cubetry
     def is_same_team_as(self, team):
-        """Returns True if the team has the same name, custom_name, RFID UID, and starting timestamp as the other team.
-        Any other difference could simply mean that the team has been updated."""
-        return all((self.name == team.name,
-                    self.rfid_uid == team.rfid_uid,
-                    self.creation_timestamp == team.creation_timestamp))
+        """Returns True if the creation timestamps are the same. This is the only way to uniquely identify a team."""
+        return self.creation_timestamp == team.creation_timestamp
 
 
     def __repr__(self):
@@ -517,6 +514,7 @@ class CubeTeamStatus:
             "max_time_sec": self.max_time_sec,
             "creation_timestamp": self.creation_timestamp,
             "start_timestamp": self.start_timestamp,
+            "use_alarm": self.use_alarm,
             "current_cubebox_id": self.current_cubebox_id,
             "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes],
             "trophies": [trophy.to_dict() for trophy in self.trophies],
@@ -938,10 +936,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def add_team_to_database(cls, team: CubeTeamStatus) -> bool:
         try:
             db = CubeTeamsStatusList()
-            db.load_from_json_file(TEAMS_DATABASE_FILEPATH)
+            db.load_from_json_file(TEAMS_JSON_DATABASE_FILEPATH)
             assert db, "Could not load the teams database"
             db.add_team(team)
-            assert db.save_to_json_file(TEAMS_DATABASE_FILEPATH), f"Could not save to the teams database: {team}"
+            assert db.save_to_json_file(TEAMS_JSON_DATABASE_FILEPATH), f"Could not save to the teams database: {team}"
             return True
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.add_team_to_database {e}")

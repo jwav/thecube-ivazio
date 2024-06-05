@@ -36,8 +36,9 @@ class CubeGuiTabTeamsMixin:
         # clear the RFID line edit
         self.ui.lineTeamsRfid.clear()
 
-        # select the default radio button to "currently playing"
-        self.ui.radioTeamsCurrentlyPlaying.setChecked(True)
+        # select the default radio button for the search period
+        # self.ui.radioTeamsCurrentlyPlaying.setChecked(True)
+        self.ui.radioTeamsNoDate.setChecked(True)
 
         # connect the "search" button
         self.ui.btnTeamsSearch.clicked.connect(self.search_teams)
@@ -94,7 +95,7 @@ class CubeGuiTabTeamsMixin:
             start_timestamp = cube_utils.this_month_start_timestamp()
         else:
             start_timestamp = 1  # not 0 to avoid erroneous null checks
-        self.log.debug(f"start_timestamp: {start_timestamp}, i.e. {cube_utils.timestamp_to_french_date(start_timestamp)}")
+        self.log.debug(f"start_timestamp: {start_timestamp}, i.e. {cube_utils.timestamp_to_date(start_timestamp)}")
 
         # if we're looking for a team currently playing, search fd.teams
         if search_currently_playing:
@@ -103,7 +104,7 @@ class CubeGuiTabTeamsMixin:
         else:
             # search the teams in the database
             teams = cube_game.CubeTeamsStatusList()
-            teams.load_from_json_file(TEAMS_DATABASE_FILEPATH)
+            teams.load_from_json_file(TEAMS_JSON_DATABASE_FILEPATH)
             self.log.info(f"Searching teams in the database: {teams}")
 
         # find matching teams: name, custom_name, rfid, and timestamp
@@ -123,11 +124,14 @@ class CubeGuiTabTeamsMixin:
         self.ui.tableTeamsResults.clearContents()
         self.ui.tableTeamsResults.setColumnCount(9)
         self.ui.tableTeamsResults.setHorizontalHeaderLabels(
-            ["Date", "Nom", "Nom personnalisé", "Score", "Cubes faits", "Trophées", "Début", "Fin", "RFID"])
+            ["Date", "Nom", "Nom personnalisé", "Score", "Cubes faits", "Trophées", "Création", "Début", "Fin", "RFID"])
         self.ui.tableTeamsResults.setRowCount(len(matching_teams))
 
         for i, team in enumerate(matching_teams):
             french_date = cube_utils.timestamp_to_french_date(team.start_timestamp)
+            short_date = cube_utils.timestamp_to_date(team.start_timestamp)
+            creation_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
+                team.creation_timestamp, separators=":", secs=False)
             start_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
                 team.start_timestamp, separators=":", secs=False)
             end_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
@@ -135,21 +139,19 @@ class CubeGuiTabTeamsMixin:
             trophies_str = "".join(["🏆" for t in team.trophies])
             trophies_str = ",".join([t.name for t in team.trophies])
             print(f"team: {team}")
-            self.ui.tableTeamsResults.setItem(i, 0, QTableWidgetItem(french_date))
+            self.ui.tableTeamsResults.setItem(i, 0, QTableWidgetItem(short_date))
             self.ui.tableTeamsResults.setItem(i, 1, QTableWidgetItem(team.name))
             self.ui.tableTeamsResults.setItem(i, 2, QTableWidgetItem(team.custom_name))
             self.ui.tableTeamsResults.setItem(i, 3, QTableWidgetItem(str(team.calculate_score())))
             self.ui.tableTeamsResults.setItem(i, 4, QTableWidgetItem(str(team.completed_cubebox_ids)))
             self.ui.tableTeamsResults.setItem(i, 5, QTableWidgetItem(trophies_str))
-            self.ui.tableTeamsResults.setItem(i, 6, QTableWidgetItem(start_tod))
-            self.ui.tableTeamsResults.setItem(i, 7, QTableWidgetItem(end_tod))
-            self.ui.tableTeamsResults.setItem(i, 8, QTableWidgetItem(team.rfid_uid))
+            self.ui.tableTeamsResults.setItem(i, 6, QTableWidgetItem(creation_tod))
+            self.ui.tableTeamsResults.setItem(i, 7, QTableWidgetItem(start_tod))
+            self.ui.tableTeamsResults.setItem(i, 8, QTableWidgetItem(end_tod))
+            self.ui.tableTeamsResults.setItem(i, 9, QTableWidgetItem(team.rfid_uid))
         # Resize columns to fit contents and headers
         self.ui.tableTeamsResults.resizeColumnsToContents()
 
 if __name__ == "__main__":
     from cubegui import CubeGuiForm
-    app = QApplication(sys.argv)
-    window = CubeGuiForm()
-    window.show()
-    sys.exit(app.exec_())
+    CubeGuiForm.main()

@@ -65,7 +65,8 @@ DEFAULT_TROPHY_IMAGE_FILENAME = "default_trophy_image.png"
 DEFAULT_TROPHY_IMAGE_FILEPATH = os.path.join(IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILENAME)
 CUBEBOXES_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "cubeboxes_backup.json")
 TEAMS_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "teams_backup.json")
-TEAMS_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
+TEAMS_JSON_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
+TEAMS_SQLITE_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.db")
 RESETTER_RFID_LIST_FILEPATH = os.path.join(CONFIG_DIR, "resetter_rfids_list.json")
 
 # used in looping functions to induce a little delay
@@ -93,7 +94,7 @@ def cubetry(func):
 def test_paths():
     all_paths = [PROJECT_ROOT_PATH, SOUNDS_DIR, LOGS_DIR, CUBEGUI_DIR, CONFIG_DIR, GLOBAL_CONFIG_FILEPATH,
                  LOCAL_CONFIG_FILEPATH, SCORESHEETS_DIR, IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILEPATH,
-                 CUBEBOXES_BACKUP_FILEPATH, TEAMS_DATABASE_FILEPATH]
+                 CUBEBOXES_BACKUP_FILEPATH, TEAMS_JSON_DATABASE_FILEPATH]
     for path in all_paths:
         try:
             assert os.path.exists(path)

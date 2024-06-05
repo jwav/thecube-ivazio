@@ -538,7 +538,8 @@ def generate_sample_teams_database():
 
     teams.add_team(cube_game.CubeTeamStatus(
         name="Dakar", custom_name="Riri & Jojo", rfid_uid="1234567890", max_time_sec=3600,
-        start_timestamp=datetime(2024, 5, 21, 12, 34, 56).timestamp(),
+        creation_timestamp=datetime(2024, 5, 20, 12, 34, 56).timestamp(),
+        start_timestamp=datetime(2024, 5, 21, 12, 40, 20).timestamp(),
         completed_cubeboxes=[
             cube_game.CubeboxStatus(cube_id=1, start_timestamp=0, end_timestamp=1000),
             cube_game.CubeboxStatus(cube_id=2, start_timestamp=1000, end_timestamp=2000),
@@ -550,6 +551,7 @@ def generate_sample_teams_database():
     ))
     teams.add_team(cube_game.CubeTeamStatus(
         name="Paris", custom_name="Émile et Gégé", rfid_uid="0987654321", max_time_sec=3600,
+        creation_timestamp=datetime(2024, 5, 21, 12, 34, 56).timestamp(),
         start_timestamp=datetime(2024, 5, 22, 12, 55, 0).timestamp(),
         completed_cubeboxes=[
             cube_game.CubeboxStatus(cube_id=3, start_timestamp=0, end_timestamp=1000),
@@ -562,7 +564,7 @@ def generate_sample_teams_database():
         ]
     ))
 
-    if teams.save_to_json_file(PAST_TEAMS_JSON_DATABASE_FILEPATH):
+    if teams.save_to_json_file(TEAMS_JSON_DATABASE_FILEPATH):
         print("Sample teams saves generated:")
         print(teams.to_string())
 
