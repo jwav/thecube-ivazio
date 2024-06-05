@@ -1,4 +1,5 @@
 import glob
+import inspect
 import os
 import traceback
 from pathlib import Path
@@ -74,22 +75,51 @@ RESETTER_RFID_LIST_FILEPATH = os.path.join(CONFIG_DIR, "resetter_rfids_list.json
 LOOP_PERIOD_SEC = 0.1
 STATUS_REPLY_TIMEOUT = 5
 
-
 def cubetry(func):
     """Decorator to catch exceptions in functions and log them without having to write a try/except block in the function."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            # Get the signature and the parameters of the function
+            sig = inspect.signature(func)
+            parameters = sig.parameters
+
+            # Only pass the required arguments to the function
+            func_args = args[:len(parameters)]
+            func_kwargs = {k: v for k, v in kwargs.items() if k in parameters}
+
+            return func(*func_args, **func_kwargs)
         except Exception as e:
-            # print full traceback
-            CubeLogger.static_error(f"{func.__name__} : {e}\n{traceback.format_exc()}")
+            # Get the full traceback of the error
+            full_traceback = traceback.format_exc()
+
+            # Get the full call stack
+            call_stack = inspect.stack()
+            formatted_call_stack = "\n".join([
+                f"File \"{frame.filename}\", line {frame.lineno}, in {frame.function}"
+                for frame in call_stack
+            ])
+
+            # Format the log message
+            log_message = (
+                f"Exception in {func.__name__}:\n"
+                f"Call Stack:\n{formatted_call_stack}\n"
+                f"Error: {e}\n"
+                f"{full_traceback}"
+            )
+
+            # Log the error with additional context
+            CubeLogger.static_error(log_message)
+
+            # Return appropriate default values based on function annotations
             if func.__annotations__.get('return') == bool:
                 return False
             elif func.__annotations__.get('return') == str:
                 return ""
             return None
     return wrapper
+
+
 
 def test_paths():
     all_paths = [PROJECT_ROOT_PATH, SOUNDS_DIR, LOGS_DIR, CUBEGUI_DIR, CONFIG_DIR, GLOBAL_CONFIG_FILEPATH,
