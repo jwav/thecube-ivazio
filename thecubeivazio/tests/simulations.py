@@ -333,7 +333,18 @@ def test_testing_system():
     test_neq(get_one(), 1, "should fail: get_one() != 1, hurr durr")
     test_neq(lambda: 1, 1, "should fail: lambda: 1 != 1, hurr durr")
 
-
+def stop_simulation():
+    try:
+        LOGGER.info("Stopping the servers")
+        CUBEBOX.stop()
+        FRONTDESK.stop()
+        MASTER.stop()
+        CUBEBOX_THREAD.join(timeout=0.1)
+        FRONTDESK_THREAD.join(timeout=0.1)
+        MASTER_THREAD.join(timeout=0.1)
+    except Exception as e:
+        LOGGER.error(f"An error occurred while stopping the servers: {e}")
+        traceback.print_exc()
 
 if __name__ == "__main__":
     try:
@@ -346,17 +357,8 @@ if __name__ == "__main__":
     except Exception as e:
         LOGGER.error(f"An error occurred: {e}")
         traceback.print_exc()
-
-    try:
-        LOGGER.info("Stopping the servers")
-        CUBEBOX.stop()
-        FRONTDESK.stop()
-        MASTER.stop()
-        CUBEBOX_THREAD.join(timeout=0.1)
-        FRONTDESK_THREAD.join(timeout=0.1)
-        MASTER_THREAD.join(timeout=0.1)
-    except Exception as e:
-        LOGGER.error(f"An error occurred while stopping the servers: {e}")
-        traceback.print_exc()
-    LOGGER.setLevel(logging.DEBUG)
-    RESULTS.display()
+    finally:
+        stop_simulation()
+        LOGGER.setLevel(logging.DEBUG)
+        RESULTS.display()
+        exit(0)

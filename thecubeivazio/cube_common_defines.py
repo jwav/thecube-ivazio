@@ -18,6 +18,9 @@ HashDict = dict[str, Hash]
 
 # constants
 
+# used to unlock admin actions and decrypt encrypted files
+ADMIN_PASSWORD_SHA256 = "ea6c4c5edc6493edd233ed2e51fcc1f9002b654e04b88806b5439f00fadcff2b"
+
 POSSIBLE_PROJECT_ROOT_PATH_PATTERNS = [
     "/mnt/shared/thecube-ivazio/thecubeivazio",
     "/home/*/thecube-ivazio/thecubeivazio",

@@ -5,11 +5,16 @@ import subprocess
 import os
 import atexit
 from typing import Optional, Union
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.backends import default_backend
+from cryptography.fernet import Fernet
+import base64
 
 from thecubeivazio.cube_common_defines import *
 
 
-def is_raspberry_pi():
+def is_raspberry_pi() -> bool:
     try:
         with open('/proc/cpuinfo', 'r') as f:
             cpuinfo = f.read()
@@ -20,7 +25,7 @@ def is_raspberry_pi():
     return False
 
 
-def get_git_branch_version():
+def get_git_branch_version() -> str:
     """
     Get the current git branch and commit hash
     """
@@ -33,7 +38,7 @@ def get_git_branch_version():
         return "Unknown"
 
 
-def get_git_branch_date():
+def get_git_branch_date() -> str:
     """
     Get the date of the last commit on the current branch
     """
@@ -267,6 +272,29 @@ def this_month_start_timestamp(timestamp: float = None):
     start_date = datetime.datetime(date.year, date.month, 1)
     return start_date.timestamp()
 
+def generate_key(password: str) -> bytes:
+    # Derive a key from the password without using a salt
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=b"",  # Empty salt
+        iterations=100000,
+        backend=default_backend()
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
+    return key
+
+def encrypt_string(string: str, password: str) -> str:
+    key = generate_key(password)
+    fernet = Fernet(key)
+    encrypted_string = fernet.encrypt(string.encode())
+    return encrypted_string.decode()
+
+def decrypt_string(encrypted_string: str, password: str) -> str:
+    key = generate_key(password)
+    fernet = Fernet(key)
+    decrypted_string = fernet.decrypt(encrypted_string.encode())
+    return decrypted_string.decode()
 
 if __name__ == "__main__":
     print("git branch version:", get_git_branch_version())
@@ -283,3 +311,11 @@ if __name__ == "__main__":
     print("timestamp_to_french_date(time.time()):", timestamp_to_french_date(time.time()))
     print("get_system_hostname():", get_system_hostname())
     print(f"is raspberry pi? {is_raspberry_pi()}")
+    print("timestamps_are_in_same_day(time.time(), time.time()):", timestamps_are_in_same_day(time.time(), time.time()))
+    print("timestamps_are_in_same_week(time.time(), time.time()):", timestamps_are_in_same_week(time.time(), time.time()))
+    print("timestamps_are_in_same_month(time.time(), time.time()):", timestamps_are_in_same_month(time.time(), time.time()))
+    print("today_start_timestamp():", today_start_timestamp())
+    print("this_week_start_timestamp():", this_week_start_timestamp())
+    print("this_month_start_timestamp():", this_month_start_timestamp())
+    print("encrypt_string('test', 'password'):", encrypt_string('test', 'password'))
+    print("decrypt_string(encrypt_string('test', 'password'), 'password'):", decrypt_string(encrypt_string('test', 'password'), 'password'))
