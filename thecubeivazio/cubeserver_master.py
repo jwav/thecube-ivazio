@@ -378,6 +378,15 @@ class CubeServerMaster:
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyAllCubeboxesStatusHashes(self.net.node_name, self.cubeboxes.hash_dict))
 
+    # TODO
+    def _handle_team_time_up(self, team: cube_game.CubeTeamStatus):
+        """Handle the fact that a team is out of time"""
+        self.log.info(f"Team {team.name} is out of time.")
+        if team.use_alarm:
+            raise NotImplementedError
+        else:
+            raise NotImplementedError
+
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
         # TODO: re-enable RFID listener on the server once the tests are over
