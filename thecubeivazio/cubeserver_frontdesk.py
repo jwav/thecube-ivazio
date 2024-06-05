@@ -14,6 +14,7 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio import cube_database as cubedb
 
 
 class CubeServerFrontdesk:
@@ -107,7 +108,6 @@ class CubeServerFrontdesk:
                     self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
                 self.net.remove_msg_from_incoming_queue(message)
 
-
     def _handle_reply_all_cubeboxes_status_hashes(self, message: cm.CubeMessage):
         raise NotImplementedError
 
@@ -123,14 +123,14 @@ class CubeServerFrontdesk:
             alsr_msg = cm.CubeMsgReplyAllTeamsStatuses(copy_msg=message)
             new_teams = alsr_msg.teams_statuses
             assert new_teams, "_handle_reply_all_teams_status: new_teams is None"
-            assert self.teams.update_from_teams_list(new_teams), "_handle_reply_all_teams_status: update_from_teams_list failed"
+            assert self.teams.update_from_teams_list(
+                new_teams), "_handle_reply_all_teams_status: update_from_teams_list failed"
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             return True
         except Exception as e:
             self.log.error(f"Error handling reply all teams status message: {e}")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
             return False
-
 
     def _handle_reply_team_status_message(self, message: cm.CubeMessage) -> bool:
         try:
@@ -153,7 +153,8 @@ class CubeServerFrontdesk:
             acsr_msg = cm.CubeMsgReplyAllCubeboxesStatuses(copy_msg=message)
             new_cubeboxes = acsr_msg.cubeboxes_statuses
             assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
-            assert self.cubeboxes.update_from_cubeboxes(new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
+            assert self.cubeboxes.update_from_cubeboxes(
+                new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
         except Exception as e:
             self.log.error(f"Error handling reply all cubeboxes status message: {e}")
@@ -177,8 +178,10 @@ class CubeServerFrontdesk:
             assert new_cubemaster, "_handle_reply_cubemaster_status: new_cubemaster is None"
             assert new_cubemaster.teams is not None, "_handle_reply_cubemaster_status: new_cubemaster.teams is None"
             assert new_cubemaster.cubeboxes, "_handle_reply_cubemaster_status: new_cubemaster.cubeboxes is None"
-            assert self.teams.update_from_teams_list(new_cubemaster.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
-            assert self.cubeboxes.update_from_cubeboxes(new_cubemaster.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
+            assert self.teams.update_from_teams_list(
+                new_cubemaster.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
+            assert self.cubeboxes.update_from_cubeboxes(
+                new_cubemaster.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
             self.log.info(f"Updated teams and cubeboxes from cubemaster status")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             return True
@@ -225,7 +228,8 @@ class CubeServerFrontdesk:
         try:
             team = self.teams.get_team_by_name(team_name)
             assert team, f"Team {team_name} not found"
-            assert cube_game.CubeTeamsStatusList.add_team_to_database(team), f"Failed to add team {team_name} to the database"
+            assert cube_game.CubeTeamsStatusList.add_team_to_database(
+                team), f"Failed to add team {team_name} to the database"
             self.teams.remove_team(team_name)
             self.log.info(f"Moved team {team_name} to the database")
             return True
@@ -234,7 +238,7 @@ class CubeServerFrontdesk:
             return False
 
     @cubetry
-    def order_cubebox_to_reset(self, cubebox_id:int) -> bool:
+    def order_cubebox_to_reset(self, cubebox_id: int) -> bool:
         """Send a message to a CubeBox to reset itself. Returns True if the msg has been sent,
         we're not waiting for a reply."""
         self.log.info(f"Sending cubebox reset order message for cubebox {cubebox_id}")
@@ -248,7 +252,7 @@ class CubeServerFrontdesk:
         return True
 
     @cubetry
-    def order_cubebox_to_wait_for_reset(self, cubebox_id:int) -> bool:
+    def order_cubebox_to_wait_for_reset(self, cubebox_id: int) -> bool:
         """Send a message to a CubeBox to wait for a reset. Returns True if the msg has been sent,
         we're not waiting for a reply."""
         self.log.info(f"Sending cubebox wait for reset order message for cubebox {cubebox_id}")
@@ -261,7 +265,7 @@ class CubeServerFrontdesk:
         return True
 
     @cubetry
-    def order_cubemaster_to_remove_team(self, team_name:str) -> cubenet.SendReport:
+    def order_cubemaster_to_remove_team(self, team_name: str) -> cubenet.SendReport:
         """Remove a team from this instance's status and send a message to the CubeMaster to remove the team.
         Return the SendReport of the message sent to the CubeMaster."""
         team = self.teams.get_team_by_name(team_name)
@@ -284,7 +288,7 @@ class CubeServerFrontdesk:
         return report
 
     @cubetry
-    def request_cubemaster_status(self, reply_timeout:Optional[Seconds]) -> bool:
+    def request_cubemaster_status(self, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -294,13 +298,14 @@ class CubeServerFrontdesk:
             self.log.error("Failed to send the request cubemaster status message")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEMASTER_STATUS, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEMASTER_STATUS,
+                                                  timeout=reply_timeout)
             if not reply_msg:
                 self.log.error("Failed to receive the cubemaster status reply")
                 return False
             return self._handle_reply_cubemaster_status_message(reply_msg)
 
-    def request_team_status(self, team_name:str, reply_timeout:Optional[Seconds]) -> bool:
+    def request_team_status(self, team_name: str, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status of a team.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -316,7 +321,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_team_status_message(reply_msg)
 
-    def request_all_teams_status(self, reply_timeout:Optional[Seconds]) -> bool:
+    def request_all_teams_status(self, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status of all teams.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -332,7 +337,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_all_teams_status(reply_msg)
 
-    def request_all_teams_status_hashes(self, reply_timeout:Optional[Seconds]) -> bool:
+    def request_all_teams_status_hashes(self, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all teams.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -342,13 +347,14 @@ class CubeServerFrontdesk:
             self.log.error("Failed to send the request all teams status hashes message")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_TEAMS_STATUS_HASHES,
+                                                  timeout=reply_timeout)
             if not reply_msg:
                 self.log.error("Failed to receive the all teams status hashes reply")
                 return False
             return self._handle_reply_all_teams_status_hashes(reply_msg)
 
-    def request_cubebox_status(self, cubebox_id:int, reply_timeout:Seconds=None) -> bool:
+    def request_cubebox_status(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
         """Send a message to a CubeBox to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -364,7 +370,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_cubebox_status(reply_msg)
 
-    def request_all_cubeboxes_status(self, reply_timeout:Seconds=None) -> bool:
+    def request_all_cubeboxes_status(self, reply_timeout: Seconds = None) -> bool:
         """Send a message to the CubeMaster to request the status of all cubeboxes.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -374,13 +380,14 @@ class CubeServerFrontdesk:
             self.log.error("Failed to send the request all cubeboxes status message")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES,
+                                                  timeout=reply_timeout)
             if not reply_msg:
                 self.log.error("Failed to receive the all cubeboxes status reply")
                 return False
             return self._handle_reply_all_cubeboxes_status_message(reply_msg)
 
-    def request_all_cubeboxes_status_hashes(self, reply_timeout:Seconds=None) -> bool:
+    def request_all_cubeboxes_status_hashes(self, reply_timeout: Seconds = None) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all cubeboxes.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -390,7 +397,8 @@ class CubeServerFrontdesk:
             self.log.error("Failed to send the request all cubeboxes status hashes message")
             return True
         if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES, timeout=reply_timeout)
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES,
+                                                  timeout=reply_timeout)
             if not reply_msg:
                 self.log.error("Failed to receive the all cubeboxes status hashes reply")
                 return False
@@ -532,41 +540,118 @@ def test_prompt_commands():
     fd.handle_input("at London")
 
 
-def generate_sample_teams_database():
-    from datetime import datetime
+def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
+    from datetime import datetime, timedelta
+
     teams = cube_game.CubeTeamsStatusList()
 
-    teams.add_team(cube_game.CubeTeamStatus(
-        name="Dakar", custom_name="Riri & Jojo", rfid_uid="1234567890", max_time_sec=3600,
-        creation_timestamp=datetime(2024, 5, 20, 12, 34, 56).timestamp(),
-        start_timestamp=datetime(2024, 5, 21, 12, 40, 20).timestamp(),
-        completed_cubeboxes=[
+    # Lists of parameters for each team
+    names = ["Dakar", "Paris", "Tokyo", "New York", "London"]
+    custom_names = ["Riri & Jojo", "Émile et Gégé", "Sakura & Kenji", "Mikey & John", "Elizabeth & Charles"]
+    rfid_uids = ["1234567890", "0987654321", "1122334455", "5566778899", "6677889900"]
+    max_times = [3600, 3600, 7200, 5400, 3600]
+    creation_timestamps = [
+        datetime(2024, 5, 20, 12, 34, 56).timestamp(),  # a few weeks ago
+        datetime(2024, 5, 21, 12, 34, 56).timestamp(),  # a few weeks ago
+        (datetime.now() - timedelta(days=5)).timestamp(),  # 5 days ago
+        (datetime.now() - timedelta(days=30)).timestamp(),  # 1 month ago
+        (datetime.now() - timedelta(days=90)).timestamp()  # 3 months ago
+    ]
+    start_timestamps = [
+        datetime(2024, 5, 21, 12, 40, 20).timestamp(),
+        datetime(2024, 5, 22, 12, 55, 0).timestamp(),
+        (datetime.now() - timedelta(days=4)).timestamp(),
+        (datetime.now() - timedelta(days=29)).timestamp(),
+        (datetime.now() - timedelta(days=89)).timestamp()
+    ]
+    completed_cubeboxes_list = [
+        [
             cube_game.CubeboxStatus(cube_id=1, start_timestamp=0, end_timestamp=1000),
             cube_game.CubeboxStatus(cube_id=2, start_timestamp=1000, end_timestamp=2000),
         ],
-        trophies=[
-            cube_game.CubeTrophy(name="Trophy1", description="First trophy", points=100, image_filename="trophy1.png"),
-            cube_game.CubeTrophy(name="Trophy2", description="Second trophy", points=200, image_filename="trophy2.png"),
-        ]
-    ))
-    teams.add_team(cube_game.CubeTeamStatus(
-        name="Paris", custom_name="Émile et Gégé", rfid_uid="0987654321", max_time_sec=3600,
-        creation_timestamp=datetime(2024, 5, 21, 12, 34, 56).timestamp(),
-        start_timestamp=datetime(2024, 5, 22, 12, 55, 0).timestamp(),
-        completed_cubeboxes=[
+        [
             cube_game.CubeboxStatus(cube_id=3, start_timestamp=0, end_timestamp=1000),
             cube_game.CubeboxStatus(cube_id=4, start_timestamp=1000, end_timestamp=2000),
             cube_game.CubeboxStatus(cube_id=5, start_timestamp=2000, end_timestamp=3000),
         ],
-        trophies=[
+        [
+            cube_game.CubeboxStatus(cube_id=6, start_timestamp=0, end_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=7, start_timestamp=1000, end_timestamp=2000),
+        ],
+        [
+            cube_game.CubeboxStatus(cube_id=8, start_timestamp=0, end_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=9, start_timestamp=1000, end_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=10, start_timestamp=2000, end_timestamp=3000),
+        ],
+        [
+            cube_game.CubeboxStatus(cube_id=11, start_timestamp=0, end_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=12, start_timestamp=1000, end_timestamp=2000),
+        ]
+    ]
+    trophies_list = [
+        [
+            cube_game.CubeTrophy(name="Trophy1", description="First trophy", points=100, image_filename="trophy1.png"),
+            cube_game.CubeTrophy(name="Trophy2", description="Second trophy", points=200, image_filename="trophy2.png"),
+        ],
+        [
             cube_game.CubeTrophy(name="Trophy3", description="Third trophy", points=300, image_filename="trophy3.png"),
             cube_game.CubeTrophy(name="Trophy4", description="Fourth trophy", points=400, image_filename="trophy4.png"),
+        ],
+        [
+            cube_game.CubeTrophy(name="Trophy5", description="Fifth trophy", points=500, image_filename="trophy5.png"),
+            cube_game.CubeTrophy(name="Trophy6", description="Sixth trophy", points=600, image_filename="trophy6.png"),
+        ],
+        [
+            cube_game.CubeTrophy(name="Trophy7", description="Seventh trophy", points=700,
+                                 image_filename="trophy7.png"),
+            cube_game.CubeTrophy(name="Trophy8", description="Eighth trophy", points=800, image_filename="trophy8.png"),
+        ],
+        [
+            cube_game.CubeTrophy(name="Trophy9", description="Ninth trophy", points=900, image_filename="trophy9.png"),
+            cube_game.CubeTrophy(name="Trophy10", description="Tenth trophy", points=1000,
+                                 image_filename="trophy10.png"),
         ]
-    ))
+    ]
 
+    # Loop to add teams
+    for name, custom_name, rfid_uid, max_time, creation_timestamp, start_timestamp, completed_cubeboxes, trophies in zip(
+            names, custom_names, rfid_uids, max_times, creation_timestamps, start_timestamps, completed_cubeboxes_list,
+            trophies_list
+    ):
+        teams.add_team(cube_game.CubeTeamStatus(
+            name=name,
+            custom_name=custom_name,
+            rfid_uid=rfid_uid,
+            max_time_sec=max_time,
+            creation_timestamp=creation_timestamp,
+            start_timestamp=start_timestamp,
+            completed_cubeboxes=completed_cubeboxes,
+            trophies=trophies
+        ))
+
+    return teams
+
+
+def generate_sample_teams_json_database():
+    teams = generate_sample_teams()
     if teams.save_to_json_file(TEAMS_JSON_DATABASE_FILEPATH):
         print("Sample teams saves generated:")
         print(teams.to_string())
+
+
+def generate_sample_teams_sqlite_database():
+    """same as the json database, but in sqlite"""
+    teams = generate_sample_teams()
+    if teams.save_to_sqlite_database(TEAMS_SQLITE_DATABASE_FILEPATH):
+        print("Sample teams sqlite database generated:")
+        print(teams.to_string())
+
+
+def display_teams_sqlite_database():
+    teams = cubedb.load_all_teams()
+    print(teams.to_string())
+    print(f"nb teams: {len(teams)}")
+
 
 def run_prompt():
     import atexit
@@ -576,6 +661,8 @@ def run_prompt():
 
 
 if __name__ == "__main__":
-    generate_sample_teams_database()
+    # generate_sample_teams_json_database()
+    generate_sample_teams_sqlite_database()
+    display_teams_sqlite_database()
     exit(0)
     run_prompt()

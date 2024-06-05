@@ -292,6 +292,10 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
     conn.close()
     return teams_list
 
+@cubetry
+def load_all_teams(db_filename=None) -> cg.CubeTeamsStatusList:
+    return find_teams_matching(db_filename=db_filename)
+
 def expanded_test_find_teams_matching():
     test_db_filepath = os.path.join(SAVES_DIR, 'test_teams_database.db')
     # delete_database(test_db_filepath)

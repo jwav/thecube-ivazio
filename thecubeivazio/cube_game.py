@@ -902,7 +902,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 return team
         return None
 
-    # TODO: testme
     def save_to_json_file(self, filename: str = None) -> bool:
         filename = filename or self.DEFAULT_JSON_FILE
         try:
@@ -913,7 +912,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             CubeLogger.static_error(e)
             return False
 
-    # TODO: testme
     def load_from_json_file(self, filename: str = None) -> bool:
         filename = filename or self.DEFAULT_JSON_FILE
         try:
@@ -926,7 +924,18 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             CubeLogger.static_error(e)
             return False
 
-    # TODO: testme
+    def save_to_sqlite_database(self, db_path: str = None) -> bool:
+        from thecubeivazio import cube_database as cubedb
+        try:
+            db_path = db_path or TEAMS_SQLITE_DATABASE_FILEPATH
+            result = cubedb.update_database_from_teams_list(self, db_path)
+            return result
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.save_to_sqlite_database {e}")
+            return False
+
+
+
     def update_team(self, team: CubeTeamStatus) -> bool:
         for i, t in enumerate(self):
             if t.is_same_team_as(team):

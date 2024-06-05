@@ -102,7 +102,7 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
     def setup_debug(self):
         """Initial setup for when we're debugging"""
         self.ui.tabWidget.setCurrentIndex(2)
-        self.search_teams()
+        self.click_search_teams()
 
     def closeEvent(self, event):
         event.accept()
