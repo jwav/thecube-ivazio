@@ -5,7 +5,6 @@ from typing import Tuple, Optional
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
 import thecubeivazio.cube_utils as cube_utils
-from thecubeivazio.cube_game import CubeTrophy
 
 # todo: to_json
 # todo: remove local config. only one config file, the local is not needed
@@ -40,7 +39,7 @@ class CubeConfig:
         assert self.game_durations_str, "game_durations_str is empty"
         assert self.game_durations_sec, "game_durations_sec is empty"
         assert self.team_names, "team_names is empty"
-        assert self.trophies, "trophies is empty"
+        assert self.all_trophies, "trophies is empty"
         assert self.valid_node_names, "valid_node_names is empty"
         return True
 
@@ -114,8 +113,13 @@ class CubeConfig:
         return self.config_dict.get("valid_node_names", [])
 
     @property
-    def trophies(self) -> list[CubeTrophy]:
-        return [CubeTrophy(**trophy) for trophy in self.config_dict.get("trophies", [])]
+    def all_trophies(self) -> list['CubeTrophy']:
+        try:
+            from thecubeivazio.cube_game import CubeTrophy
+            return [CubeTrophy(**trophy) for trophy in self.config_dict.get("trophies", [])]
+        except Exception as e:
+            self.log.error(f"Error getting trophies: {e}")
+            return []
 
 if __name__ == "__main__":
     config = CubeConfig()
@@ -125,6 +129,6 @@ if __name__ == "__main__":
     config.log.info(f"game_durations: {config.game_durations_sec}")
     config.log.info(f"team_names: {config.team_names}")
     config.log.info(f"local_node_name: {config.local_node_name}")
-    config.log.info(f"trophies: {config.trophies}")
+    config.log.info(f"trophies: {config.all_trophies}")
 
 

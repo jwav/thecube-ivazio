@@ -41,12 +41,10 @@ def create_database(db_filename=None) -> bool:
                   state TEXT,
                   FOREIGN KEY(team_id) REFERENCES teams(id))''')
 
-    c.execute('''CREATE TABLE IF NOT EXISTS trophies
+    # Create table for team trophies (association table)
+    c.execute('''CREATE TABLE IF NOT EXISTS team_trophies
                  (team_id INTEGER,
-                  name TEXT,
-                  description TEXT,
-                  points INTEGER,
-                  image_filename TEXT,
+                  trophy_name TEXT,
                   FOREIGN KEY(team_id) REFERENCES teams(id))''')
 
     conn.commit()
@@ -74,7 +72,7 @@ def backup_database(db_filename=None, backup_filename=None):
 @cubetry
 def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=None) -> bool:
     db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
-    # if the database doesnt exist, create it
+    # if the database doesn't exist, create it
     if not os.path.exists(db_filename):
         create_database(db_filename)
 
@@ -102,9 +100,9 @@ def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=N
                        team.creation_timestamp, team.start_timestamp, team.use_alarm, team.current_cubebox_id))
             team_id = c.lastrowid
 
-        # Clear existing completed_cubeboxes and trophies for the team
+        # Clear existing completed_cubeboxes and team trophies for the team
         c.execute('DELETE FROM completed_cubeboxes WHERE team_id = ?', (team_id,))
-        c.execute('DELETE FROM trophies WHERE team_id = ?', (team_id,))
+        c.execute('DELETE FROM team_trophies WHERE team_id = ?', (team_id,))
 
         # Insert completed_cubeboxes
         for cubebox in team.completed_cubeboxes:
@@ -114,11 +112,11 @@ def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=N
                       (team_id, cubebox.cube_id, cubebox.current_team_name, cubebox.start_timestamp,
                        cubebox.win_timestamp, cubebox.last_valid_rfid_line, cubebox._state.value))
 
-        # Insert trophies
-        for trophy in team.trophies:
-            c.execute('''INSERT INTO trophies (team_id, name, description, points, image_filename)
-                         VALUES (?, ?, ?, ?, ?)''',
-                      (team_id, trophy.name, trophy.description, trophy.points, trophy.image_filename))
+        # Insert trophies names
+        for trophy_name in team.trophies_names:
+            c.execute('''INSERT INTO team_trophies (team_id, trophy_name)
+                         VALUES (?, ?)''',
+                      (team_id, trophy_name))
 
     conn.commit()
     conn.close()
@@ -176,17 +174,9 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
             completed_cubeboxes_rows
         ]
 
-        c.execute("SELECT * FROM trophies WHERE team_id = ?", (team_id,))
-        trophies_rows = c.fetchall()
-        trophies = [
-            cg.CubeTrophy(
-                name=name,
-                description=description,
-                points=points,
-                image_filename=image_filename
-            )
-            for _, name, description, points, image_filename in trophies_rows
-        ]
+        c.execute("SELECT trophy_name FROM team_trophies WHERE team_id = ?", (team_id,))
+        trophies_names_rows = c.fetchall()
+        trophies_names = [trophy_name for (trophy_name,) in trophies_names_rows]
 
         team = cg.CubeTeamStatus(
             name=name,
@@ -197,7 +187,7 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
             start_timestamp=start_timestamp,
             current_cubebox_id=current_cubebox_id,
             completed_cubeboxes=completed_cubeboxes,
-            trophies=trophies,
+            trophies_names=trophies_names,
             use_alarm=use_alarm
         )
 
@@ -206,91 +196,8 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
     conn.close()
     return teams_list
 
-# Test function
-@cubetry
-def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
-                        min_creation_timestamp=None, max_creation_timestamp=None,
-                        db_filename=None) -> cg.CubeTeamsStatusList:
-    """Find teams matching the given parameters in the database.
-    for name and custom_name, the search is case-insensitive and partial (i.e. 'abc' will match 'xAbCy').
-    """
-    db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
-    conn = sqlite3.connect(db_filename)
-    c = conn.cursor()
 
-    query = "SELECT * FROM teams WHERE 1=1"
-    params = []
 
-    if name:
-        query += " AND LOWER(name) LIKE ?"
-        params.append(f"%{name.lower()}%")
-    if custom_name:
-        query += " AND LOWER(custom_name) LIKE ?"
-        params.append(f"%{custom_name.lower()}%")
-    if rfid_uid:
-        query += " AND rfid_uid = ?"
-        params.append(rfid_uid)
-    if min_creation_timestamp:
-        query += " AND creation_timestamp >= ?"
-        params.append(min_creation_timestamp)
-    if max_creation_timestamp:
-        query += " AND creation_timestamp <= ?"
-        params.append(max_creation_timestamp)
-
-    c.execute(query, params)
-    rows = c.fetchall()
-
-    CubeLogger.static_debug(f"Query: {query}")
-    CubeLogger.static_debug(f"Parameters: {params}")
-    CubeLogger.static_debug(f"Rows: {rows}")
-
-    teams_list = cg.CubeTeamsStatusList()
-    for row in rows:
-        team_id, name, custom_name, rfid_uid, max_time_sec, creation_timestamp, start_timestamp, use_alarm, current_cubebox_id = row
-        c.execute("SELECT * FROM completed_cubeboxes WHERE team_id = ?", (team_id,))
-        completed_cubeboxes_rows = c.fetchall()
-        completed_cubeboxes = [
-            cg.CompletedCubeboxStatus(
-                cube_id=cube_id,
-                current_team_name=current_team_name,
-                start_timestamp=start_timestamp,
-                end_timestamp=win_timestamp,
-                last_valid_rfid_line=last_valid_rfid_line,
-                state=cg.CubeboxState(state)
-            )
-            for _, cube_id, current_team_name, start_timestamp, win_timestamp, last_valid_rfid_line, state in
-            completed_cubeboxes_rows
-        ]
-
-        c.execute("SELECT * FROM trophies WHERE team_id = ?", (team_id,))
-        trophies_rows = c.fetchall()
-        trophies = [
-            cg.CubeTrophy(
-                name=name,
-                description=description,
-                points=points,
-                image_filename=image_filename
-            )
-            for _, name, description, points, image_filename in trophies_rows
-        ]
-
-        team = cg.CubeTeamStatus(
-            name=name,
-            custom_name=custom_name,
-            rfid_uid=rfid_uid,
-            max_time_sec=max_time_sec,
-            creation_timestamp=creation_timestamp,
-            start_timestamp=start_timestamp,
-            current_cubebox_id=current_cubebox_id,
-            completed_cubeboxes=completed_cubeboxes,
-            trophies=trophies,
-            use_alarm=use_alarm
-        )
-
-        teams_list.append(team)
-
-    conn.close()
-    return teams_list
 
 @cubetry
 def load_all_teams(db_filename=None) -> cg.CubeTeamsStatusList:
@@ -298,7 +205,7 @@ def load_all_teams(db_filename=None) -> cg.CubeTeamsStatusList:
 
 def expanded_test_find_teams_matching():
     test_db_filepath = os.path.join(SAVES_DIR, 'test_teams_database.db')
-    # delete_database(test_db_filepath)
+    delete_database(test_db_filepath)
     create_database(test_db_filepath)
 
     # Create some test data
@@ -320,14 +227,7 @@ def expanded_test_find_teams_matching():
                     state=cg.CubeboxState.STATE_PLAYING
                 )
             ],
-            trophies=[
-                cg.CubeTrophy(
-                    name="Trophy1",
-                    description="First trophy",
-                    points=100,
-                    image_filename="default_trophy_image.png"
-                )
-            ],
+            trophies_names=["Trophy1"],
             use_alarm=False
         ),
         cg.CubeTeamStatus(
@@ -347,14 +247,7 @@ def expanded_test_find_teams_matching():
                     state=cg.CubeboxState.STATE_READY_TO_PLAY
                 )
             ],
-            trophies=[
-                cg.CubeTrophy(
-                    name="Trophy2",
-                    description="Second trophy",
-                    points=200,
-                    image_filename="default_trophy_image.png"
-                )
-            ],
+            trophies_names=["Trophy2"],
             use_alarm=True
         ),
         cg.CubeTeamStatus(
@@ -366,7 +259,7 @@ def expanded_test_find_teams_matching():
             start_timestamp=time.time() - 2000,
             current_cubebox_id=3,
             completed_cubeboxes=[],
-            trophies=[],
+            trophies_names=[],
             use_alarm=False
         )
     ])
@@ -408,8 +301,21 @@ def expanded_test_find_teams_matching():
     return True
 
 
+def find_team_by_creation_timestamp(team_creation_timestamp) -> Optional[cg.CubeTeamStatus]:
+    """Find a team by its creation timestamp. Handles the fact that the creation timestamp is a float so we need some wiggle room for the equality test"""
+    epsilon = 0.1
+    teams = find_teams_matching(min_creation_timestamp=team_creation_timestamp - epsilon, max_creation_timestamp=team_creation_timestamp + epsilon)
+    if len(teams) == 1:
+        return teams[0]
+    elif len(teams) > 1:
+        CubeLogger.static_error(f"Found multiple teams with creation timestamp {team_creation_timestamp}. This shouldn't happen.")
+        return teams[0]
+    else:
+        return None
 
 if __name__ == "__main__":
     # test_find_teams_matching()
 
     expanded_test_find_teams_matching()
+
+

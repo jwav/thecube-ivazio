@@ -10,6 +10,7 @@ from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_identification as cubeid
 from thecubeivazio import cube_utils as cube_utils
 import thecubeivazio.cube_rfid as cube_rfid
+from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_logger import CubeLogger
 
 
@@ -403,41 +404,55 @@ class CubeTrophy:
         if image_filename is not None:
             self.image_filename = DEFAULT_TROPHY_IMAGE_FILENAME
 
+    @property
+    def image_filepath(self) -> str:
+        return str(os.path.join(IMAGES_DIR, self.image_filename))
+
     def to_string(self):
         sep = ","
         return sep.join([f"{k}={v}" for k, v in self.to_dict().items()])
 
     def __str__(self):
-        return self.to_string()
+        return self.to_json()
 
     def __repr__(self):
-        return f"CubeTrophy({self.to_string()})"
+        return self.to_json()
 
+    @cubetry
     def __eq__(self, other):
-        try:
-            return self.to_dict() == other.to_dict()
-        except Exception as e:
-            CubeLogger.static_error(f"CubeTeamTrophy.__eq__ {e}")
-            return False
+        return self.to_dict() == other.to_dict()
 
+    @cubetry
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
+
+    @cubetry
     def to_dict(self) -> Dict:
         return {
             "name": self.name,
             "description": self.description,
             "points": self.points,
-            "image_path": self.image_filename
+            "image_filename": self.image_filename
         }
 
     @classmethod
+    @cubetry
     def make_from_dict(cls, d: Dict) -> Optional['CubeTrophy']:
         try:
             return cls(d.get("name"),
                        d.get("description"),
                        int(d.get("points")),
-                       d.get("image_path", None))
+                       d.get("image_filename", None))
         except Exception as e:
             print(e)
             return None
+
+    @classmethod
+    @cubetry
+    def make_from_name(cls, trophy_name:str) -> Optional['CubeTrophy']:
+        for config_trophy in CubeConfig.get_config().all_trophies:
+            if config_trophy.name == trophy_name:
+                return config_trophy
 
 
 class CubeTeamStatus:
@@ -447,7 +462,7 @@ class CubeTeamStatus:
                  custom_name: str = "",
                  start_timestamp: Timestamp = None, current_cubebox_id: int = None,
                  completed_cubeboxes: List[CompletedCubeboxStatus] = None,
-                 trophies: List[CubeTrophy] = None,
+                 trophies_names: List[str] = None,
                  use_alarm=False):
         self.creation_timestamp = creation_timestamp or time.time()
         # the team's code name (a city name)
@@ -465,7 +480,7 @@ class CubeTeamStatus:
         # the list of the cubeboxes IDs that the team has successfully played, with their completion times
         self.completed_cubeboxes = completed_cubeboxes or []
         # the trophies collected by the team, awarded by the frontdesk
-        self.trophies: List[CubeTrophy] = [] if not trophies else trophies
+        self.trophies_names: List[str] = [] if not trophies_names else trophies_names
         # for certain teams, we want to use a loud alarm when their time is up
         # TODO: test
         self.use_alarm = use_alarm
@@ -481,6 +496,10 @@ class CubeTeamStatus:
             return self.max_time_sec - (time.time() - self.start_timestamp)
         except:
             return None
+
+    @property
+    def trophies(self) -> List[CubeTrophy]:
+        return [CubeTrophy.make_from_name(trophy_name) for trophy_name in self.trophies_names]
 
     def __eq__(self, other):
         try:
@@ -517,7 +536,7 @@ class CubeTeamStatus:
             "use_alarm": self.use_alarm,
             "current_cubebox_id": self.current_cubebox_id,
             "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes],
-            "trophies": [trophy.to_dict() for trophy in self.trophies],
+            "trophies_names": [self.trophies_names],
         }
 
     @classmethod
@@ -541,8 +560,8 @@ class CubeTeamStatus:
                 ret.current_cubebox_id = int(ret.current_cubebox_id)
             ret.completed_cubeboxes = [
                 CompletedCubeboxStatus.make_from_dict(box) for box in d.get("completed_cubeboxes", [])]
-            ret.trophies = [
-                CubeTrophy.make_from_dict(trophy) for trophy in d.get("trophies", [])]
+            ret.trophies_names = [d.get("trophies_names", [])]
+            ret.use_alarm = d.get("use_alarm", False)
             return ret
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.make_from_dict {e}")
@@ -749,8 +768,8 @@ class CubeTeamStatus:
         for completed_cube in team.completed_cubeboxes:
             self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
                                     completed_cube.win_timestamp)
-        for trophy in team.trophies:
-            self.add_trophy(trophy)
+        for trophy in team.trophies_names:
+            self.add_trophy_name(trophy)
         self.current_cubebox_id = team.current_cubebox_id
         if not self.start_timestamp:
             self.start_timestamp = team.start_timestamp
@@ -760,9 +779,9 @@ class CubeTeamStatus:
 
 
     @cubetry
-    def add_trophy(self, trophy: CubeTrophy):
-        if not trophy in self.trophies:
-            self.trophies.append(trophy)
+    def add_trophy_name(self, trophy_name:str):
+        if not trophy_name in self.trophies_names:
+            self.trophies_names.append(trophy_name)
 
 
 
@@ -1179,8 +1198,8 @@ if __name__ == "__main__":
     teams_list.append(CubeTeamStatus(name="Paris", custom_name="BarCustomName",
                                      rfid_uid="987654321", max_time_sec=60.0))
     team1 = teams_list.get_team_by_name("Budapest")
-    team1.trophies.append(
+    team1.trophies_names.append(
         CubeTeamTrophy(name="FooTrophy", description="FooDescription", points=100, image_path="foo.png"))
-    team1.trophies.append(
+    team1.trophies_names.append(
         CubeTeamTrophy(name="BarTrophy", description="BarDescription", points=200, image_path="bar.png"))
     print(teams_list)

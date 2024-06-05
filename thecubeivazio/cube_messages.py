@@ -803,9 +803,7 @@ def test_all_reply_messages():
                 cube_game.CompletedCubeboxStatus(cube_id=2, start_timestamp=11, end_timestamp=21)
             ],
             current_cubebox_id=3,
-            trophies=[cube_game.CubeTrophy(name="Trophy1", description="Description1", points=100),
-                      cube_game.CubeTrophy(name="Trophy2", description="Description2", points=200),
-                      ]
+            trophies_names=["Trophy1", "Trophy2",]
         ),
         cube_game.CubeTeamStatus(
             name="Team2", custom_name="CustomTeam2", rfid_uid="2345678901", max_time_sec=1200,
@@ -814,15 +812,14 @@ def test_all_reply_messages():
                 cube_game.CompletedCubeboxStatus(cube_id=5, start_timestamp=10, end_timestamp=20),
             ],
             current_cubebox_id=3,
-            trophies=[cube_game.CubeTrophy(name="Trophy1", description="Description1", points=100),
-                      ]
+            trophies_names=["Trophy3", "Trophy4",]
         ),
         cube_game.CubeTeamStatus(
             name="Team3", custom_name="CustomTeam3", rfid_uid="3456789012", max_time_sec=1300,
             start_timestamp=None,
             completed_cubeboxes=[],
             current_cubebox_id=None,
-            trophies=[]
+            trophies_names=[]
         ),
     ]
 

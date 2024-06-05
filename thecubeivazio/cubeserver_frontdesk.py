@@ -494,7 +494,7 @@ class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
                 return False
             points = int(points)
             trophy = cube_game.CubeTrophy(name=name, description=description, points=points, image_filename=image_path)
-            team.trophies.append(trophy)
+            team.trophies_names.append(trophy)
             self.log.info(f"Added trophy {trophy.name} to team {team.name}:")
             self.log.info(f"{team}")
         elif cmd in ["rcms", "requestcubemasterstatus"]:
@@ -588,35 +588,28 @@ def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
             cube_game.CubeboxStatus(cube_id=12, start_timestamp=1000, end_timestamp=2000),
         ]
     ]
-    trophies_list = [
+    trophies_names_list = [
         [
-            cube_game.CubeTrophy(name="Trophy1", description="First trophy", points=100, image_filename="trophy1.png"),
-            cube_game.CubeTrophy(name="Trophy2", description="Second trophy", points=200, image_filename="trophy2.png"),
+            "Trophy1", "Trophy2"
         ],
         [
-            cube_game.CubeTrophy(name="Trophy3", description="Third trophy", points=300, image_filename="trophy3.png"),
-            cube_game.CubeTrophy(name="Trophy4", description="Fourth trophy", points=400, image_filename="trophy4.png"),
+            "Trophy3", "Trophy4", "Trophy5"
         ],
         [
-            cube_game.CubeTrophy(name="Trophy5", description="Fifth trophy", points=500, image_filename="trophy5.png"),
-            cube_game.CubeTrophy(name="Trophy6", description="Sixth trophy", points=600, image_filename="trophy6.png"),
+            "Trophy6", "Trophy7"
         ],
         [
-            cube_game.CubeTrophy(name="Trophy7", description="Seventh trophy", points=700,
-                                 image_filename="trophy7.png"),
-            cube_game.CubeTrophy(name="Trophy8", description="Eighth trophy", points=800, image_filename="trophy8.png"),
+            "Trophy8", "Trophy9", "Trophy10"
         ],
         [
-            cube_game.CubeTrophy(name="Trophy9", description="Ninth trophy", points=900, image_filename="trophy9.png"),
-            cube_game.CubeTrophy(name="Trophy10", description="Tenth trophy", points=1000,
-                                 image_filename="trophy10.png"),
+            "Trophy11", "Trophy12"
         ]
     ]
 
     # Loop to add teams
-    for name, custom_name, rfid_uid, max_time, creation_timestamp, start_timestamp, completed_cubeboxes, trophies in zip(
+    for name, custom_name, rfid_uid, max_time, creation_timestamp, start_timestamp, completed_cubeboxes, trophies_names in zip(
             names, custom_names, rfid_uids, max_times, creation_timestamps, start_timestamps, completed_cubeboxes_list,
-            trophies_list
+            trophies_names_list
     ):
         teams.add_team(cube_game.CubeTeamStatus(
             name=name,
@@ -626,7 +619,7 @@ def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
             creation_timestamp=creation_timestamp,
             start_timestamp=start_timestamp,
             completed_cubeboxes=completed_cubeboxes,
-            trophies=trophies
+            trophies_names=trophies_names
         ))
 
     return teams
@@ -642,6 +635,8 @@ def generate_sample_teams_json_database():
 def generate_sample_teams_sqlite_database():
     """same as the json database, but in sqlite"""
     teams = generate_sample_teams()
+    from thecubeivazio.cube_database import delete_database
+    delete_database(TEAMS_SQLITE_DATABASE_FILEPATH)
     if teams.save_to_sqlite_database(TEAMS_SQLITE_DATABASE_FILEPATH):
         print("Sample teams sqlite database generated:")
         print(teams.to_string())

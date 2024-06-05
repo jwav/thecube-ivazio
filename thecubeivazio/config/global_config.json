@@ -39,6 +39,66 @@
       "description": "Terminer un cube en moins de 5 minutes",
       "points": 20,
       "image_filename": "trophy_under_5_minutes.png"
+    },
+    {
+      "name": "Trophy1",
+      "description": "Description1",
+      "points": 10,
+      "image_filename": "trophy1.png"
+    },
+    {
+      "name": "Trophy2",
+      "description": "Description2",
+      "points": 20,
+      "image_filename": "trophy2.png"
+    },
+    {
+      "name": "Trophy3",
+      "description": "Description3",
+      "points": 30,
+      "image_filename": "trophy3.png"
+    },
+    {
+      "name": "Trophy4",
+      "description": "Description4",
+      "points": 40,
+      "image_filename": "trophy4.png"
+    },
+    {
+      "name": "Trophy5",
+      "description": "Description5",
+      "points": 50,
+      "image_filename": "trophy5.png"
+    },
+    {
+      "name": "Trophy6",
+      "description": "Description6",
+      "points": 60,
+      "image_filename": "trophy6.png"
+    },
+    {
+      "name": "Trophy7",
+      "description": "Description7",
+      "points": 70,
+      "image_filename": "trophy7.png"
+    },
+    {
+      "name": "Trophy8",
+      "description": "Description8",
+      "points": 80,
+      "image_filename": "trophy8.png"
+    },
+    {
+      "name": "Trophy9",
+      "description": "Description9",
+      "points": 90,
+      "image_filename": "trophy9.png"
+    },
+    {
+      "name": "Trophy10",
+      "description": "Description10",
+      "points": 100,
+      "image_filename": "trophy10.png"
     }
   ],
   "valid_node_names": [
