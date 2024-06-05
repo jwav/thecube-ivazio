@@ -203,11 +203,12 @@ def timestamp_to_french_date(timestamp: Union[float, int], weekday=True, day_num
 
 def timestamp_to_date(timestamp: Union[float, int], separator="/") -> str:
     """Convert a timestamp to a string in a dd/mm/yyyy format"""
+    # noinspection PyBroadException
     try:
         date = datetime.datetime.fromtimestamp(timestamp)
         return date.strftime(f"%d{separator}%m{separator}%Y")
     except Exception as e:
-        return ""
+        return "??/??/????"
 
 def get_system_hostname() -> str:
     """Get the hostname of the running machine"""
