@@ -201,6 +201,13 @@ def timestamp_to_french_date(timestamp: Union[float, int], weekday=True, day_num
     except Exception as e:
         return ""
 
+def timestamp_to_date(timestamp: Union[float, int], separator="/") -> str:
+    """Convert a timestamp to a string in a dd/mm/yyyy format"""
+    try:
+        date = datetime.datetime.fromtimestamp(timestamp)
+        return date.strftime(f"%d{separator}%m{separator}%Y")
+    except Exception as e:
+        return ""
 
 def get_system_hostname() -> str:
     """Get the hostname of the running machine"""
@@ -309,6 +316,7 @@ if __name__ == "__main__":
     print("seconds_to_hhmmss_string(3661):", seconds_to_hhmmss_string(3661))
     print("seconds_to_hhmmss_string(3661, separators='::'):", seconds_to_hhmmss_string(3661, separators='::'))
     print("timestamp_to_french_date(time.time()):", timestamp_to_french_date(time.time()))
+    print("timestamp_to_date(time.time()):", timestamp_to_date(time.time()))
     print("get_system_hostname():", get_system_hostname())
     print(f"is raspberry pi? {is_raspberry_pi()}")
     print("timestamps_are_in_same_day(time.time(), time.time()):", timestamps_are_in_same_day(time.time(), time.time()))
