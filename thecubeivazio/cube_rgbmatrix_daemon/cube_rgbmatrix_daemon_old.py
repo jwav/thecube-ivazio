@@ -1,4 +1,6 @@
 # TODO: add imports and test method
+import ctypes
+import fcntl
 import logging
 import sys
 import threading
@@ -26,6 +28,8 @@ if not os.path.exists(RGBMATRIX_DAEMON_DIR_PATH):
 # RGBMATRIX_DAEMON_PY_PATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "cube_rgbmatrix_daemon.py")
 print(f"RGBMATRIX_DAEMON_DIR_PATH: {RGBMATRIX_DAEMON_DIR_PATH}")
 
+RGBMATRIX_DAEMON_TEXT_FILENAME = "cube_rgbmatrix_daemon_text.txt"
+RGBMATRIX_DAEMON_TEXT_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, RGBMATRIX_DAEMON_TEXT_FILENAME)
 RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "rgbmatrix_daemon.log")
 NB_MATRICES = 2
 PANEL_WIDTH = 64
@@ -42,6 +46,46 @@ from rgbmatrix_samplebase import SampleBase
 from rgbmatrix import graphics
 
 
+
+
+
+
+
+class TimeoutFlock:
+    def __init__(self, filepath, file_mode, lock_mode, timeout=5, delay=0.1):
+        self.filepath = filepath
+        self.file_mode = file_mode
+        self.lock_mode = lock_mode
+        self.timeout = timeout
+        self.delay = delay
+        self.file = None
+
+    def acquire(self):
+        end_time = time.time() + self.timeout
+        while True:
+            try:
+                self.file = open(self.filepath, self.file_mode)
+                fcntl.flock(self.file, self.lock_mode)
+                return True
+            except IOError:
+                if self.file:
+                    self.file.close()
+                if time.time() > end_time:
+                    return False
+                time.sleep(self.delay)
+
+    def release(self):
+        if self.file:
+            fcntl.flock(self.file, fcntl.LOCK_UN)
+            self.file.close()
+
+    def __enter__(self):
+        if not self.acquire():
+            raise TimeoutError("Could not acquire the lock within the specified timeout")
+        return self.file  # Return the file object
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.release()
 
 class CubeRgbMatrixDaemon(SampleBase):
     # singleton instance for the subprocess
@@ -93,6 +137,67 @@ class CubeRgbMatrixDaemon(SampleBase):
             cls.log.error(f"Error creating log file: {e}")
             return False
 
+    @classmethod
+    def write_lines_to_daemon_file(cls, lines: list[str]):
+        return cls.simpler_write_lines_to_daemon_file(lines)
+        try:
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w", fcntl.LOCK_EX) as f:
+                f.write("\n".join(lines)+"\n")
+                return True
+        except Exception as e:
+            cls.log.error(f"Error writing to file: {e}")
+            return False
+
+    @classmethod
+    def read_lines_from_daemon_file(cls) -> list[str]:
+        return cls.simpler_read_lines_from_daemon_file()
+        try:
+            with TimeoutFlock(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r", fcntl.LOCK_SH) as f:
+                ret = [s.strip() for s in f.readlines()]
+                for line in ret:
+                    if "stop" in line:
+                        cls.stop_process()
+                        break
+                return ret
+        except Exception as e:
+            cls.log.error(f"Error reading from file: {e}")
+            return []
+
+    @classmethod
+    def does_daemon_file_exist(cls) -> bool:
+        return os.path.exists(RGBMATRIX_DAEMON_TEXT_FILEPATH)
+
+    @classmethod
+    def create_daemon_file(cls):
+        try:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
+                f.write("")
+                return True
+        except Exception as e:
+            cls.log.error(f"Error creating file: {e}")
+            return False
+
+    @classmethod
+    def simpler_write_lines_to_daemon_file(cls, lines: list[str]):
+        try:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "w") as f:
+                f.write("\n".join(lines)+"\n")
+                return True
+        except Exception as e:
+            return False
+
+    @classmethod
+    def simpler_read_lines_from_daemon_file(cls) -> list[str]:
+        try:
+            with open(RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
+                ret = [s.strip() for s in f.readlines()]
+                for line in ret:
+                    if "stop" in line:
+                        cls.stop_process()
+                        break
+                return ret
+        except Exception as e:
+            return []
 
     @classmethod
     def launch_process(cls) -> bool:

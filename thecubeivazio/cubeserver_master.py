@@ -15,6 +15,7 @@ import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
+from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_server as crs
 
 
 
@@ -30,11 +31,13 @@ class CubeServerMaster:
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
         # params for threading
-        self._rfid_thread = None
-        self._networking_thread = None
-        self._webpage_thread = None
-        self._display_thread = None
+        self._thread_rfid = None
+        self._thread_networking = None
+        self._thread_webpage = None
+        self._thread_rgb = None
         self._keep_running = False
+
+        self._update_rgb_flag = True
 
         # heartbeat setup
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
@@ -42,14 +45,14 @@ class CubeServerMaster:
 
         self.game_status = cube_game.CubeGameStatus()
 
-
-        self._rgb_matrix_thread = threading.Thread(target=self._rgb_matrix_loop)
-
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
 
+    def update_rgb(self):
+        self._update_rgb_flag = True
 
-    def _rgb_matrix_loop(self):
+    @cubetry
+    def _loop_rgb(self):
         """Write the remaining times to the RGBMatrix Daemon file"""
         self.log.critical("Skipping RGBMatrix Daemon thread")
         return
@@ -57,47 +60,31 @@ class CubeServerMaster:
             self.log.error("Not running on a Raspberry Pi. Exiting RGBMatrix Daemon thread.")
             return
         self.log.info("Launching RGBMatrix Daemon process")
-        # crd.CubeRgbMatrixDaemon.launch_process()
-
-        # def signal_handler(sig, frame):
-        #     self._keep_running = False
-        # print("Exiting...")
-        # signal.signal(signal.SIGINT, signal_handler)
+        crd.CubeRgbMatrixDaemon.launch_process()
+        rgb_sender = crs.CubeRgbServer()
 
         while self._keep_running:
+            time.sleep(0.5)
+            if not self._update_rgb_flag:
+                continue
 
-            time.sleep(1)
             # write the remaining times to the RGBMatrix Daemon file
-            remaining_times = [team.remaining_time for team in self.teams]
-
-            # DEBUG: write random times to the RGBMatrix Daemon file
-
-            # generate random time btwn 0 and 8000
-            import random
-            time1 = random.randint(0, 8000)
-            time2 = random.randint(0, 8000)
-            remaining_times = [time1, time2]
-            lines = []
-            for rt in remaining_times:
-                if rt is None:
-                    lines.append("")
-                else:
-                    lines.append(cube_utils.seconds_to_hhmmss_string(rt, separators="::"))
-            self.log.debug(f"Writing remaining times to RGBMatrix Daemon file: {lines}"
-                           f"({crd.RGBMATRIX_DAEMON_TEXT_FILEPATH})")
+            remaining_times_strs = []
+            all_team_names = self.config.team_names
+            for team_name in all_team_names:
+                team = self.teams.get_team_by_name(team_name)
+                if not team:
+                    remaining_times_strs.append(f"=")
+                if team.remaining_time > 0:
+                    if self.config.display_team_names_on_rgb:
+                        remaining_times_strs.append(f"{team_name}={team.remaining_time}")
+                    else:
+                        remaining_times_strs.append(f"={team.remaining_time}")
 
 
-            result = crd.CubeRgbMatrixDaemon.write_lines_to_daemon_file(lines)
-            if not result:
-                self.log.error(f"Error writing remaining times to RGBMatrix Daemon file :"
-                               f"({crd.RGBMATRIX_DAEMON_TEXT_FILEPATH})")
-            lines_read = crd.CubeRgbMatrixDaemon.read_lines_from_daemon_file()
-            if lines_read != lines:
-                self.log.error(f"Not the same lines! : {lines_read}")
+            # TODO: implement using the RGB localhost server
 
-            with open(crd.RGBMATRIX_DAEMON_TEXT_FILEPATH, "r") as f:
-                lines_read = f.readlines()
-                self.log.debug(f"Lines read from RGBMatrix Daemon file: {lines_read}")
+
 
 
     @property
@@ -118,16 +105,15 @@ class CubeServerMaster:
 
 
     def run(self):
-        self._rfid_thread = threading.Thread(target=self._rfid_loop)
-        self._networking_thread = threading.Thread(target=self._message_handling_loop)
-        self._webpage_thread = threading.Thread(target=self._webpage_loop)
-        self._display_thread = threading.Thread(target=self._display_loop)
+        self._thread_rfid = threading.Thread(target=self._rfid_loop)
+        self._thread_networking = threading.Thread(target=self._message_handling_loop)
+        self._thread_webpage = threading.Thread(target=self._webpage_loop)
+        self._thread_rgb = threading.Thread(target=self._rgb_loop)
         self._keep_running = True
-        self._rfid_thread.start()
-        self._networking_thread.start()
-        self._webpage_thread.start()
-        self._display_thread.start()
-        self._rgb_matrix_thread.start()
+        self._thread_rfid.start()
+        self._thread_networking.start()
+        self._thread_webpage.start()
+        self._thread_rgb.start()
 
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
@@ -135,11 +121,10 @@ class CubeServerMaster:
         self._keep_running = False
         self.net.stop()
         self.rfid.stop()
-        self._networking_thread.join(timeout=0.1)
-        self._rfid_thread.join(timeout=0.1)
-        self._webpage_thread.join(timeout=0.1)
-        self._display_thread.join(timeout=0.1)
-        self._rgb_matrix_thread.join(timeout=0.1)
+        self._thread_networking.join(timeout=0.1)
+        self._thread_rfid.join(timeout=0.1)
+        self._thread_webpage.join(timeout=0.1)
+        self._thread_rgb.join(timeout=0.1)
         crd.CubeRgbMatrixDaemon.stop_process()
 
 
@@ -401,12 +386,6 @@ class CubeServerMaster:
                     # TODO: handle the RFID read message
                     self.log.info("MUST HANDLE CUBEMASTER RFID READ MESSAGE")
                     self.rfid.remove_line(line)
-
-    def _display_loop(self):
-        # TODO: implement LCD matrix display
-        while self._keep_running:
-            time.sleep(LOOP_PERIOD_SEC)
-            pass
 
     def _webpage_loop(self):
         # TODO: implement webpage

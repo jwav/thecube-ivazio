@@ -116,5 +116,6 @@
     "CubeBox10",
     "CubeBox11",
     "CubeBox12"
-  ]
+  ],
+  "display_team_names_on_rgb": true
 }

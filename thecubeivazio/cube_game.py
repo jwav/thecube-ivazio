@@ -883,19 +883,18 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             return None
 
     @classmethod
+    @cubetry
     def make_from_json(cls, json_str: str) -> Optional['CubeTeamsStatusList']:
-        try:
-            return cls.make_from_dict(json.loads(json_str))
-        except Exception as e:
-            print(e)
-            return None
+        return cls.make_from_dict(json.loads(json_str))
 
+    @cubetry
     def add_team(self, team: CubeTeamStatus) -> bool:
         if self.get_team_by_name(team.name) is not None:
             return False
         self.append(team)
         return True
 
+    @cubetry
     def remove_team_by_name(self, name: str) -> bool:
         for team in self:
             if team.name == name:
@@ -903,33 +902,33 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 return True
         return False
 
+    @cubetry
     def get_team_by_rfid_uid(self, rfid_uid: str) -> Optional[CubeTeamStatus]:
         for team in self:
             if team.rfid_uid == rfid_uid:
                 return team
         return None
 
+    @cubetry
     def get_team_by_name(self, name: str) -> Optional[CubeTeamStatus]:
         for team in self:
             if team.name == name:
                 return team
         return None
 
+    @cubetry
     def get_team_by_current_cube_id(self, cube_id: int) -> Optional[CubeTeamStatus]:
         for team in self:
             if team.current_cubebox_id == cube_id:
                 return team
         return None
 
+    @cubetry
     def save_to_json_file(self, filename: str = None) -> bool:
         filename = filename or self.DEFAULT_JSON_FILE
-        try:
-            with open(filename, 'w') as f:
-                f.write(self.to_json())
-            return True
-        except Exception as e:
-            CubeLogger.static_error(e)
-            return False
+        with open(filename, 'w') as f:
+            f.write(self.to_json())
+        return True
 
     def load_from_json_file(self, filename: str = None) -> bool:
         filename = filename or self.DEFAULT_JSON_FILE

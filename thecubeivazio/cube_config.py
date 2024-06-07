@@ -121,6 +121,10 @@ class CubeConfig:
             self.log.error(f"Error getting trophies: {e}")
             return []
 
+    @property
+    def display_team_names_on_rgb(self) -> Optional[bool]:
+        return self.config_dict.get("display_team_names_on_rgb", None)
+
 if __name__ == "__main__":
     config = CubeConfig()
     config.log.info("-----------------")
