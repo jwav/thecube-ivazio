@@ -20,7 +20,7 @@ from thecubeivazio.cube_common_defines import *
 class CubeServerCubebox:
     def __init__(self, node_name: str=None):
         self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
-        self.config = cube_config.CubeConfig()
+        self.config = cube_config.CubeConfig.get_config()
 
         if not node_name:
             node_name = self.determine_node_name()

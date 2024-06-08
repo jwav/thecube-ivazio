@@ -14,9 +14,9 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
 from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_server as crs
-
 
 
 class CubeServerMaster:
@@ -30,14 +30,22 @@ class CubeServerMaster:
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
-        # params for threading
-        self._thread_rfid = None
-        self._thread_networking = None
-        self._thread_webpage = None
-        self._thread_rgb = None
-        self._keep_running = False
+        # load the config
+        self.config = CubeConfig.get_config()
 
-        self._update_rgb_flag = True
+        # setup an RGB server
+        self.rgb_sender = None
+
+        # params for threading
+        self._thread_rfid = threading.Thread(target=self._rfid_loop, daemon=True)
+        self._thread_message_handling = threading.Thread(target=self._message_handling_loop, daemon=True)
+        self._thread_webpage = threading.Thread(target=self._webpage_loop, daemon=True)
+        self._thread_status_update = threading.Thread(target=self._status_update_loop, daemon=True)
+        self._thread_rgb = threading.Thread(target=self._rgb_loop, daemon=True)
+
+        self._keep_running = False
+        self._last_game_status_sent_to_frontdesk_hash: Optional[Hash] = None
+        self._last_teams_status_sent_to_rgb_daemon_hash: Optional[Hash] = None
 
         # heartbeat setup
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
@@ -48,44 +56,79 @@ class CubeServerMaster:
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
 
-    def update_rgb(self):
-        self._update_rgb_flag = True
-
-    @cubetry
-    def _loop_rgb(self):
-        """Write the remaining times to the RGBMatrix Daemon file"""
-        self.log.critical("Skipping RGBMatrix Daemon thread")
-        return
-        if not cube_utils.is_raspberry_pi():
-            self.log.error("Not running on a Raspberry Pi. Exiting RGBMatrix Daemon thread.")
-            return
-        self.log.info("Launching RGBMatrix Daemon process")
-        crd.CubeRgbMatrixDaemon.launch_process()
-        rgb_sender = crs.CubeRgbServer()
-
+    def _status_update_loop(self):
+        """Periodically performs these actions every time the game status changes:
+        - sends the game status to the frontdesk
+        - updates the RGBMatrix"""
         while self._keep_running:
-            time.sleep(0.5)
-            if not self._update_rgb_flag:
-                continue
+            time.sleep(LOOP_PERIOD_SEC)
+            if self._last_game_status_sent_to_frontdesk_hash != self.game_status.hash:
+                self.log.info("Game status changed. Updating RGBMatrix and sending game status to frontdesk")
+                self.send_status_to_frontdesk()
 
-            # write the remaining times to the RGBMatrix Daemon file
-            remaining_times_strs = []
-            all_team_names = self.config.team_names
-            for team_name in all_team_names:
-                team = self.teams.get_team_by_name(team_name)
-                if not team:
-                    remaining_times_strs.append(f"=")
-                if team.remaining_time > 0:
-                    if self.config.display_team_names_on_rgb:
-                        remaining_times_strs.append(f"{team_name}={team.remaining_time}")
-                    else:
-                        remaining_times_strs.append(f"={team.remaining_time}")
+    def send_status_to_frontdesk(self):
+        report = self.net.send_msg_to_frontdesk(
+            cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status),
+            require_ack=True, nb_tries=1)
+        if not report:
+            self.log.error("Failed to send game status to frontdesk")
+        else:
+            if not report.ok:
+                self.log.warning("Sent game status to frontdesk but no ACK received")
+            else:
+                self.log.success("Sent game status to frontdesk and received ACK")
+            self._last_game_status_sent_to_frontdesk_hash = self.game_status.hash
 
+    def _rgb_loop(self):
+        """Periodically updates the RGBMatrix"""
+        while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
+            if self._last_teams_status_sent_to_rgb_daemon_hash != self.teams.hash:
+                self.update_rgb()
 
-            # TODO: implement using the RGB localhost server
+    # TODO: refactor this system to punctually update the game status instead of having a flag + loop system?
+    def update_rgb(self):
+        if self.rgb_sender is None:
+            if not cube_utils.is_raspberry_pi():
+                self.log.warning("Not running on a Raspberry Pi.")
+            else:
+                self.log.info("Launching RGBMatrix Daemon process")
+                crd.CubeRgbMatrixDaemon.launch_process()
 
+            self.log.info("Starting RGBMatrix Daemon")
+            self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=True)
+            self.log.success("Started RGBMatrix Daemon")
 
-
+        self.log.info("Updating RGBMatrix Daemon")
+        # create a CubeRgbMatrixContentDict from the game status
+        all_team_names = CubeConfig.get_config().team_names
+        # self.log.critical(f"all_team_names : {all_team_names}")
+        rmcd = crs.CubeRgbMatrixContentDict()
+        self.log.info(f"We have those teams registered: {[team.name for team in self.teams]}")
+        for matrix_id, team_name in enumerate(all_team_names):
+            team = self.game_status.teams.get_team_by_name(team_name)
+            try:
+                assert team
+                assert team.end_timestamp is not None
+                self.log.info(f"We have team {team_name} with end_timestamp {team.end_timestamp}")
+                if self.config.display_team_names_on_rgb:
+                    rmcd[matrix_id] = crs.CubeRgbMatrixContent(
+                        matrix_id=matrix_id, team_name=team_name, end_timestamp=team.end_timestamp)
+                else:
+                    rmcd[matrix_id] = crs.CubeRgbMatrixContent(
+                        matrix_id=matrix_id, team_name=None, end_timestamp=team.end_timestamp)
+            except:
+                rmcd[matrix_id] = crs.CubeRgbMatrixContent(
+                    matrix_id=matrix_id, team_name=None, end_timestamp=None)
+        # send the CubeRgbMatrixContentDict to the server run by the RGBMatrix Daemon
+        self.log.info(f"Sending RGBMatrixContentDict to RGBMatrix Daemon : {rmcd.to_string()}")
+        rmcd_reconstructed = crs.CubeRgbMatrixContentDict.make_from_string(rmcd.to_string())
+        self.log.info(f"Reconstructed RGBMatrixContentDict : {rmcd_reconstructed.to_string()}")
+        if self.rgb_sender.send_rgb_matrix_contents_dict(rmcd):
+            self.log.success("Sent RGBMatrixContentDict to RGBMatrix Daemon")
+            self._last_teams_status_sent_to_rgb_daemon_hash = self.teams.hash
+        else:
+            self.log.error("Failed to send RGBMatrixContentDict to RGBMatrix Daemon")
 
     @property
     def teams(self) -> cube_game.CubeTeamsStatusList:
@@ -103,30 +146,25 @@ class CubeServerMaster:
     def cubeboxes(self, value: cube_game.CubeboxesStatusList):
         self.game_status.cubeboxes = value
 
-
     def run(self):
-        self._thread_rfid = threading.Thread(target=self._rfid_loop)
-        self._thread_networking = threading.Thread(target=self._message_handling_loop)
-        self._thread_webpage = threading.Thread(target=self._webpage_loop)
-        self._thread_rgb = threading.Thread(target=self._rgb_loop)
+
         self._keep_running = True
         self._thread_rfid.start()
-        self._thread_networking.start()
+        self._thread_message_handling.start()
         self._thread_webpage.start()
+        self._thread_status_update.start()
         self._thread_rgb.start()
-
-        # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
         self._keep_running = False
         self.net.stop()
         self.rfid.stop()
-        self._thread_networking.join(timeout=0.1)
+        self._thread_message_handling.join(timeout=0.1)
         self._thread_rfid.join(timeout=0.1)
         self._thread_webpage.join(timeout=0.1)
         self._thread_rgb.join(timeout=0.1)
         crd.CubeRgbMatrixDaemon.stop_process()
-
+        self.rgb_sender.stop_listening()
 
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""
@@ -324,7 +362,7 @@ class CubeServerMaster:
 
     def _handle_request_cubemaster_status_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request cubemaster status message from {message.sender}")
-        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
+        self.send_status_to_frontdesk()
 
     def _handle_request_all_cubeboxes_statuses_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request all cubeboxes status message from {message.sender}")
@@ -374,10 +412,10 @@ class CubeServerMaster:
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
+        self.rfid.run()
         # TODO: re-enable RFID listener on the server once the tests are over
         # TESTING : disable the RFID listener on the server for now
-        return
-        self.rfid.run()
+        self.rfid._is_enabled = False
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
             for line in self.rfid.get_completed_lines():
@@ -442,10 +480,50 @@ class CubeServerMasterWithPrompt(CubeServerMaster):
                 print("Unknown command")
 
 
+def test_rgb():
+    import atexit
+    master = CubeServerMaster()
+    atexit.register(master.stop)
+
+    master.log.setLevel(cube_logger.logging.INFO)
+    master.net.log.setLevel(cube_logger.logging.INFO)
+
+    try:
+        master.run()
+
+        # create a few sample teams to test the rgb daemon
+        sample_teams = [
+            cube_game.CubeTeamStatus(
+                name="Budapest", rfid_uid="111111", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=1),
+            cube_game.CubeTeamStatus(
+                name="Paris", rfid_uid="222222", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=2),
+        ]
+        sample_teams = []
+        for team in sample_teams:
+            master.teams.add_team(team)
+        master.log.info(f"Teams registered: {[team.name for team in master.teams]}")
+
+        # master.stop()
+
+        while True:
+            master.update_rgb()
+            time.sleep(3)
+
+
+
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt received. Stopping CubeMaster...")
+    finally:
+        master.stop()
+    exit(0)
 
 
 if __name__ == "__main__":
+    test_rgb()
+    exit(0)
+
     import atexit
+
     master = CubeServerMasterWithPrompt()
     atexit.register(master.stop)
 

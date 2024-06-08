@@ -15,6 +15,10 @@ class CubeRgbMatrixContent:
     @property
     def remaining_secs(self) -> float:
         try:
+            if self.end_timestamp is None:
+                return None
+            if self.is_time_up():
+                return 0
             return self.end_timestamp - time.time()
         except:
             return None
@@ -36,19 +40,27 @@ class CubeRgbMatrixContent:
         return self.end_timestamp is None
 
     def to_string(self) -> str:
-        tn = self.team_name or ""
-        et = int(self.end_timestamp) or ""
-        midsep = self.MATRIX_ID_SEPARATOR
-        tensep = self.TEAM_NAME_END_TIMESTAMP_SEPARATOR
-        return f"{self.matrix_id}{midsep}{tn}{tensep}{et}"
+        try:
+            tn = self.team_name or ""
+            try: et = int(self.end_timestamp)
+            except: et = ""
+            midsep = self.MATRIX_ID_SEPARATOR
+            tensep = self.TEAM_NAME_END_TIMESTAMP_SEPARATOR
+            return f"{self.matrix_id}{midsep}{tn}{tensep}{et}"
+        except Exception as e:
+            print(f"Error in CubeRgbMatrixContent.to_string: {e}")
+            return ""
 
     @classmethod
     def make_from_string(cls, text: str) -> Optional['CubeRgbMatrixContent']:
         try:
             matrix_id, team_name_end_timestamp = text.split(cls.MATRIX_ID_SEPARATOR)
             team_name, end_timestamp = team_name_end_timestamp.split(cls.TEAM_NAME_END_TIMESTAMP_SEPARATOR)
-            return cls(int(matrix_id), team_name, float(end_timestamp))
-        except:
+            try: end_timestamp = float(end_timestamp)
+            except: end_timestamp = None
+            return cls(int(matrix_id), team_name, end_timestamp)
+        except Exception as e:
+            print(f"Error in CubeRgbMatrixContent.make_from_string: {e}")
             return None
 
 
@@ -69,7 +81,8 @@ class CubeRgbMatrixContentDict(dict[int, CubeRgbMatrixContent]):
         try:
             contents = [CubeRgbMatrixContent.make_from_string(content) for content in text.split(cls.SEPARATOR)]
             return cls({content.matrix_id: content for content in contents})
-        except:
+        except Exception as e:
+            print(f"Error in CubeRgbMatrixContentDict.make_from_string: {e}")
             return cls()
 
 
@@ -83,7 +96,9 @@ class CubeRgbServer:
     MSG_ERROR = "ERROR"
     REPLY_TIMEOUT = 1
 
-    def __init__(self, is_master=False, is_rgb=False):
+    def __init__(self, is_master=False, is_rgb=False, debug=False):
+        self._debug = debug
+
         self.ip = self.UDP_IP
         if is_master and not is_rgb:
             self.listen_port = self.UDP_MASTER_LISTEN_PORT
@@ -93,22 +108,22 @@ class CubeRgbServer:
             self.send_port = self.UDP_MASTER_LISTEN_PORT
         else:
             raise ValueError("CubeRgbServer : is_master and is_rgb cannot be both True or both False")
+        self._print(f"CubeRgbServer : is_master={is_master}, is_rgb={is_rgb}, listen_port={self.listen_port}, send_port={self.send_port}")
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         # self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
 
-        self._thread_listen = threading.Thread(target=self._listen_loop)
-        self._thread_listen.daemon = True
+        self._thread_listen = threading.Thread(target=self._listen_loop, daemon=True)
         self._keep_listening = False
 
         self._last_text_received: str = ""
         # dict of CubeRgbMatrixContent objects, indexed by matrix_id
         self._rgb_matrix_contents_dict = CubeRgbMatrixContentDict()
         self._lock = threading.Lock()
-        self._debug = False
 
         self.start_listening()
+        self._print(f"Finished initializing")
 
     # if debug is true, behaves like print but precedes the message with the class name and its port
     def _print(self, *args, **kwargs):
@@ -116,19 +131,27 @@ class CubeRgbServer:
             print(f"{self.__class__.__name__}({self.listen_port}):", *args, **kwargs)
 
     def start_listening(self):
-        self._sock.bind((self.UDP_IP, self.listen_port))
-        self._keep_listening = True
-        self._thread_listen.start()
+        try:
+            self._sock.bind((self.UDP_IP, self.listen_port))
+            self._keep_listening = True
+            self._thread_listen.start()
+            self._print("Started listening")
+        except Exception as e:
+            self._print(f"Error starting listening: {e}")
 
     def _listen_loop(self):
         while self._keep_listening:
             data, addr = self._sock.recvfrom(self.UDP_BUFSIZE)
+            text = data.decode()
             with self._lock:
                 self._last_text_received = data.decode()
-            self._print(f"Received message: '{self._last_text_received}' from {addr}")
+            self._print(f"Received message: '{text}' from {addr}")
+            if text in (self.MSG_OK, self.MSG_ERROR):
+                continue
             try:
-                d = CubeRgbMatrixContentDict.make_from_string(self._last_text_received)
+                d = CubeRgbMatrixContentDict.make_from_string(text)
                 if not d:
+                    self._print(f"Error decoding rgb_matrix_contents_dict: {text}")
                     continue
                 self._rgb_matrix_contents_dict.update(d)
                 self._print(f"Updated rgb_matrix_contents_dict: {self._rgb_matrix_contents_dict}")
@@ -168,14 +191,16 @@ class CubeRgbServer:
             self._print(f"Error sending message '{text}' to {self.UDP_IP}:{self.send_port}: {e}")
             return False
 
-    def send_rgb_matrix_contents_dict(self, rmcd: CubeRgbMatrixContentDict) -> bool:
+    def send_rgb_matrix_contents_dict(self, rmcd: CubeRgbMatrixContentDict, nbtries=5) -> bool:
         try:
-            while True:
+            for tryid in range(nbtries):
                 assert self._send_text(rmcd.to_string())
                 if self.wait_for_ok():
                     return True
                 time.sleep(0.1)
-                self._print(f"No OK received. Retrying sending rgb_matrix_contents_dict")
+                self._print(f"Retrying send_rgb_matrix_contents_dict, try {tryid + 1}/{nbtries}")
+            self._print(f"Failed to send rgb_matrix_contents_dict after {nbtries} tries")
+            return False
         except Exception as e:
             self._print(f"Error sending rgb_matrix_contents_dict: {e}")
             return False
@@ -184,7 +209,7 @@ class CubeRgbServer:
         with self._lock:
             return self._last_text_received
 
-    def get_rgb_matrix_contents(self) -> CubeRgbMatrixContentDict:
+    def get_rgb_matrix_contents_dict(self) -> CubeRgbMatrixContentDict:
         with self._lock:
             return self._rgb_matrix_contents_dict
 

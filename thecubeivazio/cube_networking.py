@@ -56,6 +56,9 @@ class CubeNetworking:
     DISCOVERY_BROADCAST_IP = UDP_BROADCAST_IP
     DISCOVERY_LISTEN_IP = UDP_LISTEN_IP
 
+    # if this is True, the networking will only use broadcasting. This is useful for testing on a single machine
+    ONLY_USE_BROADCAST = True
+
     ACK_WAIT_TIMEOUT = 2  # seconds
     # TODO: set this to a ridiculously high number for production
     ACK_NB_TRIES = 3
@@ -72,15 +75,6 @@ class CubeNetworking:
         self.node_name = node_name
         self._listenThread = None
         self._keep_running = False
-        self._incoming_queue_lock = threading.Lock()
-
-        # in order to avoid waiting multiple times by mistake for the same ack, we put the sent messages to ack in a queue
-        self._ack_wait_queue = deque()
-        self._ack_wait_queue_lock = threading.Lock()
-
-        # sometimes, a sent message will not be acknowledged. Let's put these messages in a queue and retry sending them some time later
-        self._retry_queue = deque()
-        self._retry_queue_lock = threading.Lock()
 
         self._udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -92,7 +86,20 @@ class CubeNetworking:
         # add own IP to the nodes list
         self.nodes_list.set_node_ip_for_node_name(self.node_name, self.get_self_ip())
 
+        # valid messages received are put into this queue
         self.incoming_messages: Deque[cm.CubeMessage] = deque()
+        # in order to avoid waiting multiple times by mistake for the same ack, we put the sent messages to ack in a queue
+        self._ack_wait_queue = deque()
+        # sometimes, a sent message will not be acknowledged. Let's put these messages in a queue and retry sending them some time later
+        self._retry_queue = deque()
+
+        # there's gonna be a lot of multithreading, so we'll set up these locks to avoid collisions
+        self._incoming_queue_lock = threading.Lock()
+        self._udp_send_lock = threading.Lock()
+        self._ack_wait_queue_lock = threading.Lock()
+        self._retry_queue_lock = threading.Lock()
+
+
 
         self.heartbeats: Dict[str, float] = {}
 
@@ -211,6 +218,7 @@ class CubeNetworking:
             data, addr = self._wait_for_udp_packet()
             if not data or not addr:
                 continue
+            # noinspection PyBroadException
             try:
                 message = cm.CubeMessage()
                 message.build_from_bytes(data)
@@ -231,16 +239,12 @@ class CubeNetworking:
             self._remove_useless_ack_messages()
             self._handle_generic_message(message)
 
-    def _wait_for_udp_packet(self, ip=None, port=None, timeout=None) -> Tuple[bytes, Tuple[str, int]]:
+    def _wait_for_udp_packet(self, timeout=None) -> Tuple[bytes, Tuple[str, int]]:
         """Receives a UDP packet. Returns the data and the address of the sender.
         If ip is None, uses the default listen IP.
         If port is None, uses the default port.
         If timeout is None, uses the default timeout.
         If timeout is 0, waits forever."""
-        if ip is None:
-            ip = self.UDP_LISTEN_IP
-        if port is None:
-            port = self.UDP_PORT
         if timeout is None:
             timeout = self.UDP_LISTEN_TIMEOUT
         # noinspection PyBroadException
@@ -312,16 +316,21 @@ class CubeNetworking:
         """Returns the IP of the current node"""
         return socket.gethostbyname(socket.gethostname())
 
-    # NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip
     @cubetry
     def _send_bytes_with_udp(self, data: bytes, ip: str, port: int) -> bool:
         """NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip
         Sends bytes with UDP. Returns True if the bytes were sent, False otherwise."""
         # noinspection PyBroadException
-        ip = self.UDP_BROADCAST_IP
-        assert self._udp_socket.sendto(data, (ip, port)), f"Failed to send bytes to {ip}:{port}: {data.decode()}"
-        self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
-        return True
+        if self.ONLY_USE_BROADCAST:
+            ip = self.UDP_BROADCAST_IP
+        with self._udp_send_lock:
+            result = self._udp_socket.sendto(data, (ip, port)), f"Failed to send bytes to {ip}:{port}: {data.decode()}"
+        if result:
+            self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
+            return True
+        else:
+            self.log.error(f"Failed to send bytes to {ip}:{port}: {data.decode()}")
+            return False
 
     def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack:bool=None,
                           ack_timeout: int = None, nb_tries: int = None) -> SendReport:
@@ -337,10 +346,11 @@ class CubeNetworking:
         if port is None:
             port = self.UDP_PORT
 
-        # if require_ack is None, use the message's require_ack attribute
-        if require_ack is None:
-            require_ack = message.require_ack
-        else:
+        if self.ONLY_USE_BROADCAST:
+            ip = self.UDP_BROADCAST_IP
+
+        # if require_ack is not None, override the message's require_ack attribute
+        if require_ack is not None:
             message.require_ack = require_ack
         # if ack_timeout is None, use the default value
         if ack_timeout is None:

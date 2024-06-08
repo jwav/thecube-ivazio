@@ -18,28 +18,43 @@ from logging.handlers import RotatingFileHandler
 # home_dir = os.path.expanduser("~")
 home_dir = "/home/ivazio"
 mnt_shared_dir = "/mnt/shared"
-RGBMATRIX_DAEMON_DIR_PATH = os.path.join(home_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
-if not os.path.exists(RGBMATRIX_DAEMON_DIR_PATH):
-    print(f"RGBMATRIX_DAEMON_DIR_PATH not found: {RGBMATRIX_DAEMON_DIR_PATH}")
-    print(f"Trying {mnt_shared_dir}")
-    RGBMATRIX_DAEMON_DIR_PATH = os.path.join(mnt_shared_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
-# RGBMATRIX_DAEMON_PY_PATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "cube_rgbmatrix_daemon.py")
-print(f"RGBMATRIX_DAEMON_DIR_PATH: {RGBMATRIX_DAEMON_DIR_PATH}")
 
-RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "rgbmatrix_daemon.log")
-NB_MATRICES = 2
-PANEL_WIDTH = 64
-PANEL_HEIGHT = 32
-X_MARGIN = 10
-Y_TEXT = 20
-LED_SLOWDOWN_GPIO = 5
+possible_daemon_dirs = [
+    os.path.join(home_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon"),
+    os.path.join(mnt_shared_dir, "thecube-ivazio/thecubeivazio/cube_rgbmatrix_daemon")
+]
 
+for path in possible_daemon_dirs:
+    if os.path.exists(path):
+        RGBMATRIX_DAEMON_DIR_PATH = path
+        print(f"RGBMATRIX_DAEMON_DIR_PATH found: {RGBMATRIX_DAEMON_DIR_PATH}")
+        break
+else:
+    print("RGBMATRIX_DAEMON_DIR_PATH not found")
+    RGBMATRIX_DAEMON_DIR_PATH = None
+    raise FileNotFoundError("RGBMATRIX_DAEMON_DIR_PATH not found")
 
 if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
     sys.path.append(RGBMATRIX_DAEMON_DIR_PATH)
 
+RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "rgbmatrix_daemon.log")
+print(f"RGBMATRIX_DAEMON_LOG_FILEPATH: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
+
+NB_MATRICES = 2
+PANEL_WIDTH = 64
+PANEL_HEIGHT = 32
+X_MARGIN = 10
+Y_CENTERED = 20
+Y_TOP = 10
+Y_BOTTOM = 30
+LED_SLOWDOWN_GPIO = 5
+
+
 from rgbmatrix_samplebase import SampleBase
 from rgbmatrix import graphics
+
+from cube_rgbmatrix_server import CubeRgbMatrixContentDict, CubeRgbMatrixContent, CubeRgbServer
+
 
 
 
@@ -76,12 +91,12 @@ class CubeRgbMatrixDaemon(SampleBase):
         ])
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
-        self.texts = ["foo", "bar"]
-        self.start_time = time.time()
+        self.server = CubeRgbServer(is_rgb=True)
+        self.create_log_file()
+
         self.font = graphics.Font()
         self.font.LoadFont(os.path.join("7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
-        self.create_log_file()
 
     @classmethod
     def create_log_file(cls) -> bool:
@@ -136,15 +151,21 @@ class CubeRgbMatrixDaemon(SampleBase):
         # it seems to create new canvas instances, and makes the message disappear
         canvas = self.matrix.CreateFrameCanvas()
         while self._keep_running:
-            # self.texts = self.read_lines_from_daemon_file()
-            # self.texts = ["aaa", "bbb"]
-            self.texts = self.get_random_texts()
-            print(f"CubeRgbTextDrawer texts: {self.texts}")
+            contents_dict = self.server.get_rgb_matrix_contents_dict()
+
+            self.log.debug(f"CubeRgbTextDrawer contents: {contents_dict}")
             canvas.Clear()
-            for matrix_id,text in enumerate(self.texts):
+            for matrix_id, content in contents_dict.items():
                 # print(f"matrix_id: {matrix_id}, text: {text}")
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
-                graphics.DrawText(canvas, self.font, x, Y_TEXT, self.textColor, text)
+                if content.team_name is None:
+                    text = content.remaining_time_str
+                    graphics.DrawText(canvas, self.font, x, Y_CENTERED, self.textColor, text)
+                else:
+                    text = content.team_name
+                    graphics.DrawText(canvas, self.font, x, Y_TOP, self.textColor, text)
+                    text = content.remaining_time_str
+                    graphics.DrawText(canvas, self.font, x, Y_BOTTOM, self.textColor, text)
             time.sleep(1)
             canvas = self.matrix.SwapOnVSync(canvas)
         print("CubeRgbTextDrawer stopped")
@@ -153,17 +174,84 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.log.info("CubeRgbTextDrawer stopping")
         self._keep_running = False
 
+class CubeRgbMatrixMockDaemon(CubeRgbMatrixDaemon):
+    """Has the same interface as the CubeRgbMatrixDaemon, but displays text
+    instead of using the RGB matrix."""
+    def __init__(self):
+        self._keep_running = False
+        self.server = CubeRgbServer(is_rgb=True)
+        self.create_log_file()
+
+    @classmethod
+    def launch_process(cls) -> bool:
+        """same as the original, but without sudo"""
+        if cls._static_process:
+            cls.log.warning(f"{cls.__name__} :  process already running")
+            return False
+        daemon_path = os.path.abspath(__file__)
+        cls._static_process = subprocess.Popen(['python3', daemon_path])
+        cls.log.info(f"{cls.__name__} :  process launched")
+        return True
+
+    @classmethod
+    def stop_process(cls, timeout=2):
+        """same as the original, but without sudo"""
+        cls.log.info(f"{cls.__name__} : stopping process")
+        try:
+            if cls._static_process:
+                cls._static_process.terminate()
+                cls._static_process.wait(timeout=timeout)
+        except Exception as e:
+            print(f"{cls.__name__} : Error stopping process: {e}")
+
+    def start(self):
+        return self.run()
+
+    def run(self):
+        self.log.info("CubeRgbTextDrawer running")
+        self._keep_running = True
+        while self._keep_running:
+            contents_dict = self.server.get_rgb_matrix_contents_dict()
+            self.log.debug(f"CubeRgbTextDrawer contents: {contents_dict}")
+            for matrix_id, content in contents_dict.items():
+                if content.team_name is None:
+                    text = content.remaining_time_str
+                else:
+                    text = content.team_name + " " + content.remaining_time_str
+                print(f"matrix_id: {matrix_id}, text: {text}")
+            time.sleep(1)
+            print("-----------------------")
+        print("CubeRgbTextDrawer stopped")
 
 
 
-# TODO: test display
+
+def is_raspberry_pi():
+    try:
+        with open('/proc/device-tree/model') as f:
+            model = f.read().lower()
+        return 'raspberry pi' in model
+    except Exception:
+        return False
+
+
 if __name__ == "__main__":
-    print(f"log filepath: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
-    daemon = CubeRgbMatrixDaemon()
-    # CubeRgbMatrixDaemon.write_lines_to_daemon_file(["aaa", "bbb"])
-    # lines_read = CubeRgbMatrixDaemon.read_lines_from_daemon_file()
-    # print(f"lines read: {lines_read}")
+    if is_raspberry_pi():
+        daemon = CubeRgbMatrixDaemon()
+    else:
+        daemon = CubeRgbMatrixMockDaemon()
 
-    if not daemon.start():
+    daemon.server._rgb_matrix_contents_dict = CubeRgbMatrixContentDict({
+        0: CubeRgbMatrixContent(matrix_id=0, team_name="Team 1", end_timestamp=time.time() + 3),
+        1: CubeRgbMatrixContent(matrix_id=1, team_name="Team 2", end_timestamp=time.time() + 10),
+    })
+    daemon.server._debug = True
+
+    try:
+        assert daemon.start()
+    except Exception as e:
+        print(f"RGB Daemon : Exception : {e}")
         exit(1)
-    exit(0)
+    finally:
+        daemon.stop()
+        exit(0)

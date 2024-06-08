@@ -14,7 +14,7 @@ CUBEBOX_LOG_FILENAME = path.join(LOGS_DIR, "cubebox.log")
 CUBEFRONTDESK_LOG_FILENAME = path.join(LOGS_DIR, "cubefrontdesk.log")
 CUBEGUI_LOG_FILENAME = path.join(LOGS_DIR, "cubegui.log")
 
-LEVEL_SUCCESS = logging.INFO - 1
+LEVEL_SUCCESS = logging.INFO + 2
 LEVELNAME_SUCCESS = "SUCCESS"
 LEVEL_INFOPLUS = logging.INFO + 1
 LEVELNAME_INFOPLUS = "INFOPLUS"

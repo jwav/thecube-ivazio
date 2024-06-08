@@ -485,6 +485,14 @@ class CubeTeamStatus:
         # TODO: test
         self.use_alarm = use_alarm
 
+    @property
+    def end_timestamp(self) -> Optional[Timestamp]:
+        try:
+            return self.start_timestamp + self.max_time_sec
+        except:
+            return None
+
+
     @cubetry
     def is_valid(self):
         """if this function returns False, then it might have been made from corrupted data"""
