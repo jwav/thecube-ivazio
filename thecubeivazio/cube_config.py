@@ -125,6 +125,9 @@ class CubeConfig:
     def display_team_names_on_rgb(self) -> Optional[bool]:
         return self.config_dict.get("display_team_names_on_rgb", None)
 
+    def set_field(self, field_name: str, value):
+        self.config_dict[field_name] = value
+
 if __name__ == "__main__":
     config = CubeConfig()
     config.log.info("-----------------")

@@ -498,7 +498,7 @@ def test_rgb():
             cube_game.CubeTeamStatus(
                 name="Paris", rfid_uid="222222", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=2),
         ]
-        sample_teams = []
+        # sample_teams = []
         for team in sample_teams:
             master.teams.add_team(team)
         master.log.info(f"Teams registered: {[team.name for team in master.teams]}")
@@ -508,6 +508,7 @@ def test_rgb():
         while True:
             master.update_rgb()
             time.sleep(3)
+            master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
 
 
 

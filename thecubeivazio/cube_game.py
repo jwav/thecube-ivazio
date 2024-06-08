@@ -50,12 +50,12 @@ class CubeboxStatus:
     HARD_MIN_TIME = 12 * 60
 
     def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, start_timestamp: Seconds = None,
-                 end_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
+                 win_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
                  state: CubeboxState = CubeboxState.STATE_UNKNOWN):
         self.cube_id = cube_id
         self.current_team_name = current_team_name
         self.start_timestamp = start_timestamp
-        self.win_timestamp = end_timestamp
+        self.win_timestamp = win_timestamp
         self.last_valid_rfid_line = last_valid_rfid_line
         self._state = state
 
@@ -612,12 +612,6 @@ class CubeTeamStatus:
             CubeLogger.static_error(f"CubeTeamStatus.is_time_up {e}")
             return False
 
-    @property
-    def end_timestamp(self):
-        if isinstance(self.start_timestamp, float) and isinstance(self.max_time_sec, float):
-            return self.start_timestamp + self.max_time_sec
-        return None
-
     # TODO: test. useful?
     def has_played_today(self, current_time: Seconds = None) -> bool:
         if current_time is None:
@@ -668,7 +662,7 @@ class CubeTeamStatus:
             return False
         self.completed_cubeboxes.append(CompletedCubeboxStatus(
             cube_id=cube_id, current_team_name=self.name, start_timestamp=start_timestamp,
-            end_timestamp=win_timestamp))
+            win_timestamp=win_timestamp))
         return True
 
 
@@ -1075,7 +1069,7 @@ def test_cube_team():
     team.max_time_sec = 0.1
     assert team.is_time_up()
     team.completed_cubeboxes.append(
-        CubeboxStatus(cube_id=1, start_timestamp=time.time(), end_timestamp=time.time() + 1))
+        CubeboxStatus(cube_id=1, start_timestamp=time.time(), win_timestamp=time.time() + 1))
     assert team.calculate_score() == 300
     assert team.generate_raw_score_sheet() == "Équipe Budapest : 300 points\nCube 1 : 00:00:01 : 300 points\n"
     assert team.save_markdown_score_sheet()
@@ -1111,9 +1105,9 @@ def test_cube_teams_list():
 def save_scoresheet():
     team = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
     team.completed_cubeboxes.append(
-        CubeboxStatus(cube_id=1, start_timestamp=time.time(), end_timestamp=time.time() + 1150))
+        CubeboxStatus(cube_id=1, start_timestamp=time.time(), win_timestamp=time.time() + 1150))
     team.completed_cubeboxes.append(
-        CubeboxStatus(cube_id=2, start_timestamp=time.time(), end_timestamp=time.time() + 200))
+        CubeboxStatus(cube_id=2, start_timestamp=time.time(), win_timestamp=time.time() + 200))
     team.save_html_score_sheet()
 
 
@@ -1127,9 +1121,9 @@ def test_hashes():
     assert team1.hash != team2.hash
     assert team1.hash == team1_2.hash
 
-    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, end_timestamp=2.0)
+    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, win_timestamp=2.0)
     box1_2 = box1.copy()
-    box2 = CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, end_timestamp=2.0)
+    box2 = CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, win_timestamp=2.0)
     print(f"box1 hash: {box1.hash}")
     print(f"box2 hash: {box2.hash}")
     print(f"box1_2 hash: {box1_2.hash}")
@@ -1146,7 +1140,7 @@ def test_json():
     assert team1 == team1_2
     log.success("team1 == team1_2")
 
-    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, end_timestamp=2.0)
+    box1 = CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, win_timestamp=2.0)
     log.debug(f"box1.to_dict()={box1.to_dict()}")
     log.debug(f"box1.to_json()={box1.to_json()}")
     box1_2 = CubeboxStatus.make_from_json(box1.to_json())
@@ -1164,9 +1158,9 @@ def test_json():
 
     boxes_list = CubeboxesStatusList()
     boxes_list.update_cubebox(
-        CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, end_timestamp=2.0))
+        CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, win_timestamp=2.0))
     boxes_list.update_cubebox(
-        CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, end_timestamp=2.0))
+        CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, win_timestamp=2.0))
     boxes_list_2 = CubeboxesStatusList.make_from_json(boxes_list.to_json())
     log.debug("-------------------")
     log.debug(f"boxes_list.to_json()={boxes_list.to_json()}")

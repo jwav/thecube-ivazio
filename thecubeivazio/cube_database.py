@@ -166,7 +166,7 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
                 cube_id=cube_id,
                 current_team_name=current_team_name,
                 start_timestamp=start_timestamp,
-                end_timestamp=win_timestamp,
+                win_timestamp=win_timestamp,
                 last_valid_rfid_line=last_valid_rfid_line,
                 state=cg.CubeboxState(state)
             )
@@ -223,7 +223,7 @@ def expanded_test_find_teams_matching():
                     cube_id=1,
                     current_team_name="TestTeam1",
                     start_timestamp=time.time() - 10000,
-                    end_timestamp=time.time() - 9000,
+                    win_timestamp=time.time() - 9000,
                     state=cg.CubeboxState.STATE_PLAYING
                 )
             ],
@@ -243,7 +243,7 @@ def expanded_test_find_teams_matching():
                     cube_id=2,
                     current_team_name="TestTeam2",
                     start_timestamp=time.time() - 5000,
-                    end_timestamp=time.time() - 4000,
+                    win_timestamp=time.time() - 4000,
                     state=cg.CubeboxState.STATE_READY_TO_PLAY
                 )
             ],

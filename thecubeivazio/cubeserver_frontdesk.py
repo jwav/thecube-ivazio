@@ -566,26 +566,26 @@ def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
     ]
     completed_cubeboxes_list = [
         [
-            cube_game.CubeboxStatus(cube_id=1, start_timestamp=0, end_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=2, start_timestamp=1000, end_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=1, start_timestamp=0, win_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=2, start_timestamp=1000, win_timestamp=2000),
         ],
         [
-            cube_game.CubeboxStatus(cube_id=3, start_timestamp=0, end_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=4, start_timestamp=1000, end_timestamp=2000),
-            cube_game.CubeboxStatus(cube_id=5, start_timestamp=2000, end_timestamp=3000),
+            cube_game.CubeboxStatus(cube_id=3, start_timestamp=0, win_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=4, start_timestamp=1000, win_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=5, start_timestamp=2000, win_timestamp=3000),
         ],
         [
-            cube_game.CubeboxStatus(cube_id=6, start_timestamp=0, end_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=7, start_timestamp=1000, end_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=6, start_timestamp=0, win_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=7, start_timestamp=1000, win_timestamp=2000),
         ],
         [
-            cube_game.CubeboxStatus(cube_id=8, start_timestamp=0, end_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=9, start_timestamp=1000, end_timestamp=2000),
-            cube_game.CubeboxStatus(cube_id=10, start_timestamp=2000, end_timestamp=3000),
+            cube_game.CubeboxStatus(cube_id=8, start_timestamp=0, win_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=9, start_timestamp=1000, win_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=10, start_timestamp=2000, win_timestamp=3000),
         ],
         [
-            cube_game.CubeboxStatus(cube_id=11, start_timestamp=0, end_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=12, start_timestamp=1000, end_timestamp=2000),
+            cube_game.CubeboxStatus(cube_id=11, start_timestamp=0, win_timestamp=1000),
+            cube_game.CubeboxStatus(cube_id=12, start_timestamp=1000, win_timestamp=2000),
         ]
     ]
     trophies_names_list = [
