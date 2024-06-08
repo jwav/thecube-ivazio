@@ -1,3 +1,7 @@
+# CubeMessages
+
+- [ ] add a `CubeMsgConfig` class to share config updates among all nodes
+
 # CubeGame
 
 - [ ] implement the new time calculation method

@@ -26,6 +26,10 @@ class CubeRgbMatrixContent:
     @property
     def remaining_time_str(self) -> str:
         try:
+            if self.end_timestamp is None:
+                return ""
+            elif self.is_time_up():
+                return "00:00:00"
             return time.strftime("%H:%M:%S", time.gmtime(self.remaining_secs))
         except:
             return ""
@@ -38,6 +42,9 @@ class CubeRgbMatrixContent:
 
     def is_blank(self) -> bool:
         return self.end_timestamp is None
+
+    def __repr__(self):
+        return self.to_string()
 
     def to_string(self) -> str:
         try:
@@ -155,6 +162,10 @@ class CubeRgbServer:
                     continue
                 self._rgb_matrix_contents_dict.update(d)
                 self._print(f"Updated rgb_matrix_contents_dict: {self._rgb_matrix_contents_dict}")
+                for matrix_id, content in self._rgb_matrix_contents_dict.items():
+                    self._print(f"matrix_id: {matrix_id}, content: {content}, end_timestamp: {content.end_timestamp}")
+                    self._print(f"remaining_secs: {content.remaining_secs}, remaining_time_str: {content.remaining_time_str}")
+                    break
                 self._send_text(self.MSG_OK)
             except Exception as e:
                 self._print(f"Error updating rgb_matrix_contents_dict: {e}")
