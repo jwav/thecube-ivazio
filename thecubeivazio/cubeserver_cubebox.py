@@ -12,7 +12,7 @@ import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
-import thecubeivazio.cube_buzzer as cube_buzzer
+import thecubeivazio.cube_sounds as cube_buzzer
 from thecubeivazio import cube_game, cube_config
 from thecubeivazio.cube_common_defines import *
 
@@ -30,7 +30,7 @@ class CubeServerCubebox:
         # self.rfid = cube_rfid.CubeRfidKeyboardListener()
         self.rfid = cube_rfid.CubeRfidEventListener()
         self.button = cube_button.CubeButton()
-        self.buzzer = cube_buzzer.CubeBuzzer()
+        self.buzzer = cube_buzzer.CubeSoundPlayer()
 
         # the last valid RFID and acknowledged line read
         self._status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)

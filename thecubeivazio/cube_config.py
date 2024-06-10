@@ -125,6 +125,16 @@ class CubeConfig:
     def display_team_names_on_rgb(self) -> Optional[bool]:
         return self.config_dict.get("display_team_names_on_rgb", None)
 
+    @property
+    def cubebox_audio_volume_percent(self) -> Optional[int]:
+        try: return int(self.config_dict.get("cubebox_audio_volume_percent"))
+        except: return None
+
+    @property
+    def cubemaster_audio_volume_percent(self) -> Optional[int]:
+        try: return int(self.config_dict.get("cubemaster_audio_volume_percent"))
+        except: return None
+
     def set_field(self, field_name: str, value):
         self.config_dict[field_name] = value
 
