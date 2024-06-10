@@ -9,6 +9,8 @@ import os
 import re
 import subprocess
 
+import serial
+
 from thecubeivazio.cube_logger import CubeLogger
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import XvfbManager
@@ -38,8 +40,8 @@ class CubeRfidLine:
     #VALID_UID_LENGTH = 10
     # valid length for the "Prison Island" RFID reader (sometimes it's 9)
     VALID_UID_LENGTH = 8
-    MAX_UID_LENGTH = 10
-    MIN_UID_LENGTH = 8
+    MAX_UID_LENGTH = 20
+    MIN_UID_LENGTH = 4
     # if set to True, the length of the RFID UID will be checked to determine if it's valid
     # if set to False, the UID will be considered valid if it's all digits
     # TODO: ideally, CHECK_FOR_LENGTH should be set to True, but we need to assert that all RFIDs read are the same length
@@ -49,15 +51,35 @@ class CubeRfidLine:
         self.timestamp:Seconds = timestamp
         self.uid:str = uid
 
-    def is_valid(self):
-        if not self.uid or not self.timestamp or not all([char.isdigit() for char in self.uid]):
+    @staticmethod
+    def is_char_valid_uid_char(char: str) -> bool:
+        return char in "0123456789abcdefABCDEF"
+
+    @staticmethod
+    def is_valid_uid(uid: str) -> bool:
+        if not all([CubeRfidLine.is_char_valid_uid_char(char) for char in uid]):
             return False
-        if self.CHECK_FOR_LENGTH:
-            return len(self.uid) == self.VALID_UID_LENGTH
-        if self.CHECK_FOR_LENGTH_RANGE:
-            return self.MIN_UID_LENGTH <= len(self.uid) <= self.MAX_UID_LENGTH
+        if CubeRfidLine.CHECK_FOR_LENGTH:
+            return len(uid) == CubeRfidLine.VALID_UID_LENGTH
+        if CubeRfidLine.CHECK_FOR_LENGTH_RANGE:
+            return CubeRfidLine.MIN_UID_LENGTH <= len(uid) <= CubeRfidLine.MAX_UID_LENGTH
+        return True
+
+
+    @staticmethod
+    def are_uids_the_same(uid1: str, uid2: str) -> bool:
+        if not CubeRfidLine.is_valid_uid(uid1) or not CubeRfidLine.is_valid_uid(uid2):
+            return False
+        if len(uid1) < len(uid2):
+            shorter = uid1.lower()
+            longer = uid2.lower()
         else:
-            return all([char.isdigit() for char in self.uid])
+            shorter = uid2.lower()
+            longer = uid1.lower()
+        return longer.startswith(shorter)
+
+    def is_valid(self):
+        return self.is_valid_uid(self.uid) and self.timestamp is not None
 
     # TODO: testme
     def to_string(self):
@@ -171,9 +193,6 @@ class CubeRfidListenerBase:
             CubeLogger.static_info(f"Simulated RFID read successful: {uid}")
         else:
             CubeLogger.static_error(f"Simulated RFID read failed: {uid}")
-
-
-
 
 
 class CubeRfidEventListener(CubeRfidListenerBase):
@@ -315,6 +334,7 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
     def setup(self):
         self._is_setup = True
+        self.log.success("RFID Keyboard listener setup successful")
         return True
 
     def run(self):
@@ -336,6 +356,9 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
         try:
             # Signal that a new line has been entered
             if key == keyboard.Key.enter:
+                # empty line? ignore
+                if not self.current_chars_buffer:
+                    return
                 newline = CubeRfidLine(time.time(), "".join(self.current_chars_buffer))
                 self.current_chars_buffer.clear()
                 if newline.is_valid():
@@ -347,11 +370,97 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
             else:
                 # convert azerty to qwerty is need be
                 char = key.char if key.char not in self.AZERTY_DICT else self.AZERTY_DICT[key.char]
-                if char.isdigit():
+                if CubeRfidLine.is_char_valid_uid_char(char):
                     self.current_chars_buffer.append(char)
         except:
             pass
 
+
+class CubeRfidListenerSerial(CubeRfidListenerBase):
+    """Listens for RFID data from a serial port."""
+
+    def __init__(self):
+        super().__init__()
+        self.port = None
+        self.serial_conn = None
+        self.log = CubeLogger(name="RFID Serial Listener")
+        self._thread = threading.Thread(target=self._read_loop)
+        self._keep_running = True
+        self.setup()
+
+    def setup(self) -> bool:
+        try:
+            self.log.info("Setting up CubeRfidListenerSerial...")
+            ports = subprocess.check_output("ls /dev/ttyUSB*", shell=True).decode().split()
+            for port in ports:
+                output = subprocess.check_output(f"udevadm info --name={port} --query=all", shell=True).decode()
+                if "Future Technology Devices International" in output:
+                    self.port = port
+                    break
+            if not self.port:
+                raise Exception("No suitable serial port found.")
+            self.serial_conn = serial.Serial(self.port, 9600)
+            self._is_setup = True
+            self.log.success(f"Serial RFID listener setup successful: {self.port}")
+            return True
+        except Exception as e:
+            self.log.error(f"Error setting up CubeRfidListenerSerial: {e}")
+            self._is_setup = False
+            return False
+
+    def run(self):
+        if not self._is_setup:
+            if not self.setup():
+                return
+        self._keep_running = True
+        self._thread.start()
+
+    def stop(self):
+        self.log.info("Stopping Serial RFID Listener...")
+        self._keep_running = False
+        self._thread.join(timeout=0.5)
+        self.log.info("Serial RFID Listener stopped.")
+        if self.serial_conn:
+            self.serial_conn.close()
+        self._is_setup = False
+
+    def _read_loop(self):
+        while self._keep_running:
+            if not self._is_setup:
+                if not self.setup():
+                    time.sleep(1)
+                    continue
+            try:
+                if self.serial_conn.in_waiting > 0:
+                    char = self.serial_conn.read().decode('utf-8').rstrip()
+                    # if it's a valid char, add it and continue
+                    if CubeRfidLine.is_char_valid_uid_char(char):
+                        self._current_chars_buffer.append(char)
+                        continue
+                    # ok, this is a non-valid (non-hex) char.
+                    # non-valid chars are treated as separators.
+                    # if the buffer is empty, do nothing.
+                    if not self._current_chars_buffer:
+                        self._current_chars_buffer.clear()
+                        continue
+                    # if the buffer is valid, add it to the lines
+                    if not CubeRfidLine.is_valid_uid(''.join(self._current_chars_buffer)):
+                        self.log.error(f"Invalid RFID UID: {''.join(self._current_chars_buffer)}")
+                        self._current_chars_buffer.clear()
+                        continue
+                    newline = CubeRfidLine(time.time(), ''.join(self._current_chars_buffer))
+                    if not newline.is_valid():
+                        self.log.error("The UID is valid, but the RfidLine is invalid!?")
+                        self._current_chars_buffer.clear()
+                        continue
+                    # ok it's a valid entry. add it to the lines and clear the buffer
+                    self.add_completed_line(newline)
+                    self._current_chars_buffer.clear()
+                    self.log.info(f"Valid RFID line entered: {newline.uid}")
+
+            except Exception as e:
+                self.log.error(f"Error in CubeRfidListenerSerial read loop: {e}")
+                self._is_setup = False
 
 def test_rfid_keyboard_listener():
     rfid = CubeRfidKeyboardListener()
@@ -399,8 +508,55 @@ def test_rfid_read_simulation():
     rfid.simulate_read(CubeRfidLine.generate_random_rfid_line().uid)
     print(rfid.get_completed_lines())
 
+def test_serial_rfid():
+    rfid = CubeRfidListenerSerial()
+    rfid.run()
+    try:
+        while True:
+            if lines := rfid.get_completed_lines():
+                for line in lines:
+                    print(f"Line entered at {line.timestamp}: {line.uid} : {'valid' if line.is_valid() else 'invalid'}")
+                rfid._completed_lines.clear()
+    except KeyboardInterrupt:
+        print("Stopping listener...")
+    finally:
+        rfid.stop()
+    exit(0)
+
+
+def test_compare_rfid_listeners():
+    rfid_serial = CubeRfidListenerSerial()
+    rfid_keyboard = CubeRfidKeyboardListener()
+    serial_lines = []
+    keyboard_lines = []
+    rfid_serial.run()
+    rfid_keyboard.run()
+    try:
+        while True:
+            if lines := rfid_serial.get_completed_lines():
+                for line in lines:
+                    serial_lines.append(line)
+                rfid_serial._completed_lines.clear()
+            if lines := rfid_keyboard.get_completed_lines():
+                for line in lines:
+                    keyboard_lines.append(line)
+                rfid_keyboard._completed_lines.clear()
+    except KeyboardInterrupt:
+        print("Stopping listeners...")
+    finally:
+        rfid_serial.stop()
+        rfid_keyboard.stop()
+        # compare the lines: show which lines match which lines for each list
+        for serial_line in serial_lines:
+            for keyboard_line in keyboard_lines:
+                if CubeRfidLine.are_uids_the_same(serial_line.uid, keyboard_line.uid):
+                    print(f"Serial: {serial_line.uid} same as Keyboard: {keyboard_line.uid}")
+        exit(0)
+
 
 if __name__ == "__main__":
+    # test_serial_rfid()
+    test_compare_rfid_listeners()
 
     print("Testing RFID Line Simulation")
     test_rfid_read_simulation()

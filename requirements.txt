@@ -16,3 +16,4 @@ colorlog
 #PyQt5
 RPi.GPIO
 Pillow
+pyserial
