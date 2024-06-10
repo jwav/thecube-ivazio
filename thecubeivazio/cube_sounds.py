@@ -23,12 +23,16 @@ class CubeSoundPlayer:
         self.log.setLevel(logging.INFO)
         self._thread = None
         self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
+        mixer.init()
 
+
+    @cubetry
     def set_volume_percent(self, volume_percent: int):
         """Set the volume of the buzzer."""
         self.log.info(f"Setting volume to {volume_percent}%")
         mixer.music.set_volume(volume_percent / 100)
 
+    @cubetry
     def play_sound_file(self, soundfile: str):
         """Play a sound file or a tune on the buzzer."""
         self._thread = threading.Thread(target=self._play_sound_file, args=(soundfile,))
@@ -43,8 +47,6 @@ class CubeSoundPlayer:
                 self.log.error(f"Sound file not found: '{soundfile}'")
                 return
             self.log.debug(f"Playing sound file: '{soundfile}'")
-            self._is_playing = True
-            mixer.init()
             # soundfile = self.get_sound_file_path(soundfile)
             mixer.music.load(soundfile)
             mixer.music.play()
@@ -54,9 +56,11 @@ class CubeSoundPlayer:
         except Exception as e:
             self.log.error(f"Error playing sound file: '{soundfile}': {e}")
 
+    @cubetry
     def is_playing(self):
         return mixer.music.get_busy()
 
+    @cubetry
     def find_sound_file_matching(self, filename: str, random_choice=False) -> Optional[str]:
         """searches for a sound file matching `filename` in the SOUNDS_DIR directory.
         A filename is a match if its name contains `filename` as a substring, ignoring case.
@@ -75,10 +79,12 @@ class CubeSoundPlayer:
         chosen_file = random.choice(matches) if random_choice else matches[0]
         return chosen_file
 
+    @cubetry
     def stop_playing(self):
         if self.is_playing():
             mixer.music.stop()
 
+    @cubetry
     def play_sound_file_matching(self, partial_filename: str, random_choice: bool = False):
         """Play a sound file matching `partial_filename` in the SOUNDS_DIR directory."""
         soundfile = self.find_sound_file_matching(partial_filename, random_choice)
@@ -101,17 +107,32 @@ class CubeSoundPlayer:
         self.play_sound_file_matching("cubebox_reset")
 
 
+def test_sounds():
+    player = CubeSoundPlayer()
+    player.log.setLevel(logging.DEBUG)
+    player.log.info("Playing RFID OK sound")
+    player.play_rfid_ok_sound()
+    player.log.info("Playing RFID error sound")
+    player.play_rfid_error_sound()
+    player.log.info("Playing victory sound")
+    player.play_victory_sound()
+    player.log.info("Playing game over sound")
+    player.play_game_over_sound()
+    player.log.info("Playing cubebox reset sound")
+    player.play_cubebox_reset_sound()
+    player.log.info("Done")
+
+def test_volume():
+    player = CubeSoundPlayer()
+    player.log.setLevel(logging.DEBUG)
+    player.set_volume_percent(100)
+    player.play_sound_file_matching("rfid_ok")
+    player.set_volume_percent(50)
+    player.play_sound_file_matching("rfid_ok")
+    player.set_volume_percent(10)
+    player.play_sound_file_matching("rfid_ok")
+
 if __name__ == "__main__":
-    buzzer = CubeSoundPlayer()
-    buzzer.log.setLevel(logging.DEBUG)
-    buzzer.log.info("Playing RFID OK sound")
-    buzzer.play_rfid_ok_sound()
-    buzzer.log.info("Playing RFID error sound")
-    buzzer.play_rfid_error_sound()
-    buzzer.log.info("Playing victory sound")
-    buzzer.play_victory_sound()
-    buzzer.log.info("Playing game over sound")
-    buzzer.play_game_over_sound()
-    buzzer.log.info("Playing cubebox reset sound")
-    buzzer.play_cubebox_reset_sound()
-    buzzer.log.info("Done")
+    # test_sounds()
+    test_volume()
+
