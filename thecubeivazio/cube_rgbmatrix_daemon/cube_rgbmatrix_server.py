@@ -232,8 +232,9 @@ class CubeRgbServer:
             return self._last_text_received
 
     def get_rgb_matrix_contents_dict(self) -> CubeRgbMatrixContentDict:
+        """returns a copy of the rgb_matrix_contents_dict"""
         with self._lock:
-            return self._rgb_matrix_contents_dict
+            return CubeRgbMatrixContentDict(self._rgb_matrix_contents_dict)
 
 
 # Example usage
