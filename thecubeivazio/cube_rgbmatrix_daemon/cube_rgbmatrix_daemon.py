@@ -166,7 +166,7 @@ class CubeRgbMatrixDaemon(SampleBase):
                 self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
                 print(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
-                if content.team_name is None:
+                if not content.team_name:
                     text = content.remaining_time_str
                     graphics.DrawText(canvas, self.font, x, Y_CENTERED, self.textColor, text)
                 else:
@@ -263,15 +263,14 @@ def test():
         thread.start()
         print("Running RGB Daemon test")
         while True:
-            time.sleep(1)
             daemon.server._handle_received_text(
                 '0#Oslo>1718103889|1#Stockholm>1718103869|2#>|3#>|4#Budapest>1718103869|5#>|6#>|7#>|8#>|9#>|10#Paris>1718103879|11#>'
             )
-            time.sleep(3)
+            time.sleep(2)
             daemon.server._handle_received_text(
                 '0#>1718103919|1#>1718103899|2#>|3#>|4#>1718103899|5#>|6#>|7#>|8#>|9#>|10#>1718103909|11#>'
             )
-            time.sleep(3)
+            time.sleep(2)
 
     except Exception as e:
         print(f"RGB Daemon : Exception : {e}")
