@@ -27,9 +27,11 @@ class CubeServerCubebox:
 
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
-        # self.rfid = cube_rfid.CubeRfidKeyboardListener()
-        # self.rfid = cube_rfid.CubeRfidEventListener()
+
         self.rfid = cube_rfid.CubeRfidSerialListener()
+        if not self.rfid.is_setup():
+            self.rfid = cube_rfid.CubeRfidKeyboardListener()
+
         self.button = cube_button.CubeButton()
         self.buzzer = cube_sounds.CubeSoundPlayer()
 
@@ -71,6 +73,16 @@ class CubeServerCubebox:
     def determine_cubebox_node_name(self) -> str:
         """determine the node name from the hostname"""
         return cubeid.hostname_to_valid_cubebox_name()
+
+    @cubetry
+    def _handle_config_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received config message from {message.sender}")
+        config_msg = cm.CubeMsgConfig(copy_msg=message)
+        self.config.update_from_config(config_msg.config)
+        self.config.save_to_json()
+        self.log.info(f"Config message: {config_msg.to_string()}")
+        self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+
 
     @property
     def cubebox_index(self):
@@ -129,6 +141,8 @@ class CubeServerCubebox:
                 # ignore ack messages, they're handled in the networking module
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                if message.msgtype == cm.CubeMsgTypes.CONFIG:
+                    self._handle_config_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET:
                     self._handle_order_cubebox_to_wait_for_reset_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_RESET:

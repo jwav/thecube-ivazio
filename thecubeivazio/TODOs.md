@@ -1,19 +1,20 @@
 # CubeMessages
 
-- [ ] add a `CubeMsgConfig` class to share config updates among all nodes
+- [x] add a `CubeMsgConfig` class to share config updates among all nodes
+  - [ ] implement the `CubeMsgConfig` class in cubemaster, cubebox, cubefrontdesk. cubefrontdesk should be the only one sending it
 
 # CubeGame
 
 - [ ] implement the new time calculation method
-- [ ] add team creation timestamp for unique identification
+- [x] add team creation timestamp for unique identification
 
 # CubeConfig
-- [ ] handle encryption
+- [x] handle encryption
 - [ ] implement routine saving and config changes among all nodes
 
 # CubeBoxes
  
-- [ ] make the cubeboxes status messages more frequent and more orderly
+- [x] make the cubeboxes status messages more frequent and more orderly
 - [ ] for the CubeBoxWithPrompt, add commands
 
 # CubeMaster
@@ -29,9 +30,9 @@
 # CubeRGBMatrix
 
 - [x] use a localhost server instead of a shared file
-  - [ ] test with real hardware
+  - [x] test with real hardware
 - [x] add an option to display the team name additionally to the remaining time
-  - [ ] test with real hardware
+  - [x] test with real hardware
 
 # GUI
 
@@ -47,8 +48,8 @@
 
 # Hardware
 
-- [ ] CAD a new case for the RFID reader
-  - [ ] choose solution (off the shelf of custom made) and print what must be printed
+- [x] CAD a new case for the RFID reader
+  - [x] choose solution (off the shelf of custom made) and print what must be printed
 - [ ] CAD rail adapter for button receiver
 - [ ] CAD wireless button case and mechanisme
 - [x] find cheap Rpi GPIO hats

@@ -17,9 +17,14 @@ NB_CUBEBOXES = 12
 FIRST_CUBEBOX_INDEX = 1
 CUBEBOX_IDS = tuple(range(FIRST_CUBEBOX_INDEX, FIRST_CUBEBOX_INDEX + NB_CUBEBOXES))
 CUBEBOX_NODENAMES = tuple(f"{CUBEBOX_NODENAME_PREFIX}{i}" for i in CUBEBOX_IDS)
+ALL_NODENAMES = (CUBEFRONTDESK_NODENAME, CUBEMASTER_NODENAME) + CUBEBOX_NODENAMES
 
 
+@cubetry
 def is_valid_node_name(name: str) -> bool:
+    """Checks if the node name is one of the valid node names."""
+    if not isinstance(name, str):
+        return False
     return name in [CUBEFRONTDESK_NODENAME, CUBEMASTER_NODENAME] or name.startswith(CUBEBOX_NODENAME_PREFIX)
 
 

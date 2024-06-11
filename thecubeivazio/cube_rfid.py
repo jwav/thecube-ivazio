@@ -154,6 +154,12 @@ class CubeRfidListenerBase:
         # and avoiding constant log errors
         self._is_enabled = True
 
+    def disable(self):
+        self._is_enabled = False
+
+    def enable(self):
+        self._is_enabled = True
+
     def run(self):
         raise NotImplementedError
 

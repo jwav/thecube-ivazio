@@ -307,6 +307,7 @@ def decrypt_string(encrypted_string: str, password: str) -> str:
     decrypted_string = fernet.decrypt(encrypted_string.encode())
     return decrypted_string.decode()
 
+@cubetry
 def encrypt_and_write_to_file(str_to_encrypt:str, filepath:str, password:str) -> bool:
     """Encrypt the string str_to_encrypt using the password and write it to the file at file_path."""
     with open(filepath, 'wb') as f:
@@ -314,6 +315,7 @@ def encrypt_and_write_to_file(str_to_encrypt:str, filepath:str, password:str) ->
         f.write(encrypted_data)
     return True
 
+@cubetry
 def read_encrypted_file(filepath:str, password:str) -> str:
     """Decrypt the file at file_path using the provided key."""
     with open(filepath, 'rb') as f:

@@ -31,6 +31,9 @@ class CubeServerMaster:
 
         # load the config
         self.config = CubeConfig.get_config()
+        if not self.config.is_valid():
+            self.log.error("Invalid config. Exiting.")
+            exit(1)
 
         # setup an RGB server
         self.rgb_sender = None
@@ -107,6 +110,7 @@ class CubeServerMaster:
         self.log.info("Updating RGBMatrix Daemon")
         # create a CubeRgbMatrixContentDict from the game status
         all_team_names = CubeConfig.get_config().defined_team_names
+        assert all_team_names, "No team names defined in the config file"
         # self.log.critical(f"all_team_names : {all_team_names}")
         rmcd = crs.CubeRgbMatrixContentDict()
         self.log.info(f"We have those teams registered: {[team.name for team in self.teams]}")
@@ -185,6 +189,8 @@ class CubeServerMaster:
                 # ignore ACK messages. They are to be handled in wait_for_ack_of()
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                elif message.msgtype == cm.CubeMsgTypes.CONFIG:
+                    self._handle_config_message(message)
                 # handle RFID read messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_RFID_READ:
                     self._handle_cubebox_rfid_read_message(message)
@@ -366,6 +372,15 @@ class CubeServerMaster:
         else:
             self.log.error(f"Failed to remove team: {rtmsg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+
+    @cubetry
+    def _handle_config_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received config message from {message.sender}")
+        config_msg = cm.CubeMsgConfig(copy_msg=message)
+        self.config.update_from_config(config_msg.config)
+        self.config.save_to_json()
+        self.log.info(f"Config message: {config_msg.to_string()}")
+        self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
     def _handle_request_cubemaster_status_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request cubemaster status message from {message.sender}")

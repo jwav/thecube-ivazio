@@ -23,13 +23,13 @@
   ],
   "trophies": [
     {
-      "name": "Post sur média social",
-      "description": "Partager son expérience TheCube sur un média social",
+      "name": "Post sur m\u00e9dia social",
+      "description": "Partager son exp\u00e9rience TheCube sur un m\u00e9dia social",
       "points": 10,
       "image_filename": "trophy_social_media.png"
     },
     {
-      "name": "12 cubes terminés",
+      "name": "12 cubes termin\u00e9s",
       "description": "Terminer tous les 12 cubes de TheCube",
       "points": 100,
       "image_filename": "trophy_12_cubes_done.png"
@@ -119,5 +119,6 @@
   ],
   "display_team_names_on_rgb": true,
   "cubebox_audio_volume_percent": 100,
-  "cubemaster_audio_volume_percent": 100
+  "cubemaster_audio_volume_percent": 100,
+  "test": "test1718123623.9091897"
 }

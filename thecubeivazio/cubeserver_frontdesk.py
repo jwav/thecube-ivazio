@@ -15,6 +15,7 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_database as cubedb
+from thecubeivazio.cubeserver_master import CubeServerMaster
 
 
 class CubeServerFrontdesk:
@@ -155,7 +156,7 @@ class CubeServerFrontdesk:
             assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
             assert self.cubeboxes.update_from_cubeboxes(
                 new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
-            report  = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            report = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             assert report.success, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
             return True
         except Exception as e:
@@ -184,8 +185,10 @@ class CubeServerFrontdesk:
             assert new_cubemaster_status.cubeboxes, "_handle_reply_cubemaster_status: new_cubemaster.cubeboxes is None"
             assert new_cubemaster_status.cubeboxes is not None, "_handle_reply_cubemaster_status: new_cubemaster.cubeboxes is None"
             assert new_cubemaster_status.cubeboxes.is_valid(), "_handle_reply_cubemaster_status: new_cubemaster.cubeboxes is invalid"
-            assert self.teams.update_from_teams_list(new_cubemaster_status.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
-            assert self.cubeboxes.update_from_cubeboxes(new_cubemaster_status.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
+            assert self.teams.update_from_teams_list(
+                new_cubemaster_status.teams), "_handle_reply_cubemaster_status: update_from_teams_list failed"
+            assert self.cubeboxes.update_from_cubeboxes(
+                new_cubemaster_status.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
             self.log.success(f"Updated teams and cubeboxes from cubemaster status")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             self.log.info(f"new cubemaster status: {new_cubemaster_status.to_json()}")
@@ -212,6 +215,7 @@ class CubeServerFrontdesk:
             self.log.error(f"Error handling cubebox button press message: {e}")
             self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
 
+    @cubetry
     def add_new_team(self, team: cube_game.CubeTeamStatus) -> cubenet.SendReport:
         """Send a message to the CubeMaster to add a new team. Return True if the CubeMaster added the team, False if not, None if no response."""
         msg = cm.CubeMsgFrontdeskNewTeam(self.net.node_name, team)
@@ -230,6 +234,7 @@ class CubeServerFrontdesk:
             self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")
         return report
 
+    @cubetry
     def move_team_to_database(self, team_name) -> bool:
         """Move a team from the status to the database."""
         try:
@@ -244,6 +249,7 @@ class CubeServerFrontdesk:
             self.log.error(f"Error moving team {team_name} to the database: {e}")
             return False
 
+    @cubetry
     def request_all_cubeboxes_statuses_one_by_one(self, reply_timeout: Seconds = None) -> bool:
         """Send a message to the CubeMaster to request the status of all cubeboxes one by one.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -251,7 +257,8 @@ class CubeServerFrontdesk:
         for cubebox_id in cubeid.CUBEBOX_IDS:
             self.log.info(f"Requesting cubebox status for cubebox {cubebox_id}")
             if not self.request_cubebox_status(cubebox_id, reply_timeout):
-                self.log.warning(f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
+                self.log.warning(
+                    f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
                 return False
             else:
                 self.log.success(f"Received status reply from cubebox {cubebox_id}")
@@ -326,6 +333,21 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_cubemaster_status_message(reply_msg)
 
+    @cubetry
+    def send_config_message_to_all(self, config: cube_config.CubeConfig, nodenames:list[NodeName]=cubeid.ALL_NODENAMES) -> bool:
+        """Send a message to all nodes with the new config"""
+        if self.net.node_name in nodenames:
+            nodenames.remove(self.net.node_name)
+        msg = cm.CubeMsgConfig(self.net.node_name, config)
+        # we have to do this node by node, checking that everyone acks
+        for node_name in nodenames:
+            report = self.net.send_msg_to(msg, node_name, require_ack=True)
+            if not report.ack_ok:
+                self.log.error(f"Failed to send the config message to {node_name}")
+                return False
+        return True
+
+    @cubetry
     def request_team_status(self, team_name: str, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status of a team.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -342,6 +364,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_team_status_message(reply_msg)
 
+    @cubetry
     def request_all_teams_status(self, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status of all teams.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -358,6 +381,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_all_teams_status(reply_msg)
 
+    @cubetry
     def request_all_teams_status_hashes(self, reply_timeout: Optional[Seconds]) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all teams.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -375,6 +399,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_all_teams_status_hashes(reply_msg)
 
+    @cubetry
     def request_cubebox_status(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
         """Send a message to a CubeBox to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -391,7 +416,7 @@ class CubeServerFrontdesk:
                 return False
             return self._handle_reply_cubebox_status(reply_msg)
 
-
+    @cubetry
     def request_all_cubeboxes_status_hashes(self, reply_timeout: Seconds = None) -> bool:
         """Send a message to the CubeMaster to request the status hashes of all cubeboxes.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -659,8 +684,44 @@ def run_prompt():
     atexit.register(fd.stop)
     fd.run()
 
+def test_send_config():
+    from thecubeivazio.cubeserver_cubebox import CubeServerCubebox
+    from thecubeivazio.cubeserver_master import CubeServerMaster
+    import traceback
+
+    fd = CubeServerFrontdesk()
+    cm = CubeServerMaster()
+    cb = CubeServerCubebox("CubeBox1")
+
+    fd.run()
+    cm.run()
+    cb.run()
+    cb.rfid.disable()
+    fd.log.setLevel(logging.ERROR)
+    fd.net.log.setLevel(logging.ERROR)
+    cm.log.setLevel(logging.ERROR)
+    cm.net.log.setLevel(logging.ERROR)
+    cb.log.setLevel(logging.ERROR)
+    cb.net.log.setLevel(logging.ERROR)
+    value = f"test{time.time()}"
+    fd.config.set_field("test", value)
+    nodenames = [cm.net.node_name, cb.net.node_name]
+    assert fd.config.get_field("test") == value
+    assert fd.send_config_message_to_all(fd.config, nodenames)
+    assert cm.config.get_field("test") == value
+    assert cb.config.get_field("test") == value
+    print(f"fd.config.get_field('test')={fd.config.get_field('test')}")
+    print(f"cm.config.get_field('test')={cm.config.get_field('test')}")
+    print(f"cb.config.get_field('test')={cb.config.get_field('test')}")
+    print("test_send_config: OK")
+    fd.stop()
+    cm.stop()
+    cb.stop()
+    exit(0)
+
 
 if __name__ == "__main__":
+    test_send_config()
     # generate_sample_teams_json_database()
     generate_sample_teams_sqlite_database()
     display_teams_sqlite_database()
