@@ -111,13 +111,17 @@ class CubeRgbMatrixDaemon(SampleBase):
 
     @classmethod
     def launch_process(cls) -> bool:
-        if cls._static_process:
-            cls.log.warning(f"{cls.__name__} :  process already running")
+        try:
+            if cls._static_process:
+                cls.log.warning(f"{cls.__name__} :  process already running")
+                return False
+            daemon_path = os.path.abspath(__file__)
+            cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
+            cls.log.info(f"{cls.__name__} :  process launched")
+            return True
+        except Exception as e:
+            cls.log.error(f"{cls.__name__} : Error launching process: {e}")
             return False
-        daemon_path = os.path.abspath(__file__)
-        cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
-        cls.log.info(f"{cls.__name__} :  process launched")
-        return True
 
     @classmethod
     def stop_process(cls, timeout=2):

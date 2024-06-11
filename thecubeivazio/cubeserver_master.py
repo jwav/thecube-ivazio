@@ -86,14 +86,15 @@ class CubeServerMaster:
             if self._last_teams_status_sent_to_rgb_daemon_hash != self.teams.hash:
                 self.update_rgb()
 
-    # TODO: refactor this system to punctually update the game status instead of having a flag + loop system?
+    @cubetry
     def update_rgb(self):
         if self.rgb_sender is None:
             if not cube_utils.is_raspberry_pi():
-                self.log.warning("Not running on a Raspberry Pi.")
+                self.log.warning("Not running on a Raspberry Pi. Not launching the RGB Daemon")
             else:
                 self.log.info("Launching RGBMatrix Daemon process")
-                crd.CubeRgbMatrixDaemon.launch_process()
+                assert crd.CubeRgbMatrixDaemon.launch_process()
+                self.log.success("Launched RGBMatrix Daemon process")
 
             self.log.info("Starting RGBMatrix Daemon")
             self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=True)
@@ -541,7 +542,7 @@ if __name__ == "__main__":
     # if `--test_rgb` is passed as an argument, run the test_rgb() function
     import sys
 
-    if "--test_rgb" in sys.argv:
+    if "--test_rgb" in sys.argv or True:
         test_rgb()
     elif "--prompt" in sys.argv:
         main(use_prompt=True)
