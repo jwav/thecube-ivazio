@@ -66,9 +66,7 @@ class CubeServerMaster:
                 self.send_status_to_frontdesk()
 
     def send_status_to_frontdesk(self) -> bool:
-        # EXPERIMENTAL: first, get the status of all cubeboxes
-        self.request_all_cubeboxes_statuses_one_by_one(reply_timeout=STATUS_REPLY_TIMEOUT)
-
+        """Send the cubemaster status to the frontdesk"""
         self.log.info("Sending game status to frontdesk")
         report = self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status),
@@ -197,7 +195,7 @@ class CubeServerMaster:
                 elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_NEW_TEAM:
                     self._handle_frontdesk_new_team_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.FRONTDESK_REMOVE_TEAM:
-                    self._handle_frontdest_remove_team_message(message)
+                    self._handle_frontdesk_remove_team_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEMASTER_STATUS:
                     self._handle_request_cubemaster_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_TEAMS_STATUSES:
@@ -354,9 +352,9 @@ class CubeServerMaster:
             self.log.error(f"Failed to add new team: {ntmsg.team.name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
 
-    def _handle_frontdest_remove_team_message(self, message: cm.CubeMessage):
+    def _handle_frontdesk_remove_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received remove team message from {message.sender}")
-        rtmsg = cm.CubeMsgFrontdeskRemoveTeam(copy_msg=message)
+        rtmsg = cm.CubeMsgFrontdeskDeleteTeam(copy_msg=message)
         self.log.info(f"Remove team: {rtmsg.team_name}")
         team = self.teams.get_team_by_name(rtmsg.team_name)
         if not team:

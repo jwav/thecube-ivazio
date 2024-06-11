@@ -844,6 +844,12 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             CubeLogger.static_error(f"CubeTeamsStatusList.hash {e}")
             return ""
 
+    @cubetry
+    def has_team(self, team: CubeTeamStatus) -> bool:
+        for t in self:
+            if t.is_same_team_as(team):
+                return True
+
     def is_valid(self):
         try:
             all_valid = all([team.is_valid() for team in self])
@@ -1013,6 +1019,14 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.add_team_to_database {e}")
             return False
+
+    @cubetry
+    def find_team_by_creation_timestamp(self, team_creation_timestamp:Timestamp) -> Optional[CubeTeamStatus]:
+        epsilon = TIMESTAMP_EPSILON
+        for team in self:
+            if abs(team.creation_timestamp - team_creation_timestamp) < epsilon:
+                return team
+        return None
 
 
 class CubeGameStatus:

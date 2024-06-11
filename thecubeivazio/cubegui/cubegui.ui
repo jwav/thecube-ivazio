@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
+    <normaloff>../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
   </property>
   <property name="iconSize">
    <size>
@@ -319,7 +319,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="edit-clear">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -390,7 +390,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="user">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -686,7 +686,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="search">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -824,8 +824,60 @@ QPushButton:focus {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="4">
+           <widget class="QLabel" name="lblTeamsTeamDeleteStatus">
+            <property name="text">
+             <string>          </string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="3">
-           <spacer name="horizontalSpacer_19">
+           <widget class="QPushButton" name="btnIconTeamsTeamDeleteStatus">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QPushButton" name="btnTeamsDeleteTeam">
+            <property name="text">
+             <string>Supprimer cette équipe</string>
+            </property>
+            <property name="icon">
+             <iconset theme="delete"/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Ajouter un trophée pour cette équipe : </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <spacer name="horizontalSpacer_23">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -837,37 +889,30 @@ QPushButton:focus {
             </property>
            </spacer>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Ajouter un trophée pour cette équipe : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="comboTeamsAddTrophy"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="btnTeamsAddTrophy">
-            <property name="text">
-             <string>Ajouter tophée</string>
-            </property>
-            <property name="icon">
-             <iconset theme="add">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
+          <item row="1" column="5">
            <widget class="QPushButton" name="btnTeamsRemoveSelectedTrophy">
             <property name="text">
              <string>Supprimer le trophée sélectrionné</string>
             </property>
             <property name="icon">
              <iconset theme="delete">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="btnTeamsAddTrophy">
+            <property name="text">
+             <string>Ajouter tophée</string>
+            </property>
+            <property name="icon">
+             <iconset theme="add">
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <widget class="QComboBox" name="comboTeamsAddTrophy"/>
           </item>
          </layout>
         </item>
@@ -937,7 +982,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="print">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1246,7 +1291,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="update">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1316,7 +1361,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="remove">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1327,7 +1372,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="add">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1352,7 +1397,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="reload">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1620,6 +1665,7 @@ QPushButton:focus {
  </widget>
  <resources>
   <include location="resources.qrc"/>
+  <include location="../../../../../home/vee/.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

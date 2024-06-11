@@ -2,9 +2,9 @@ LICENSE_en.txt
 setup.py
 thecubeivazio/__init__.py
 thecubeivazio/cube_button.py
-thecubeivazio/cube_buzzer.py
 thecubeivazio/cube_common_defines.py
 thecubeivazio/cube_config.py
+thecubeivazio/cube_database.py
 thecubeivazio/cube_game.py
 thecubeivazio/cube_identification.py
 thecubeivazio/cube_logger.py
@@ -12,6 +12,7 @@ thecubeivazio/cube_messages.py
 thecubeivazio/cube_networking.py
 thecubeivazio/cube_obsolete.py
 thecubeivazio/cube_rfid.py
+thecubeivazio/cube_sounds.py
 thecubeivazio/cube_utils.py
 thecubeivazio/cube_webpage.py
 thecubeivazio/cubeserver_cubebox.py
@@ -23,6 +24,8 @@ thecubeivazio.egg-info/dependency_links.txt
 thecubeivazio.egg-info/top_level.txt
 thecubeivazio/cube_rgbmatrix_daemon/__init__.py
 thecubeivazio/cube_rgbmatrix_daemon/cube_rgbmatrix_daemon.py
+thecubeivazio/cube_rgbmatrix_daemon/cube_rgbmatrix_daemon_old.py
+thecubeivazio/cube_rgbmatrix_daemon/cube_rgbmatrix_server.py
 thecubeivazio/cube_rgbmatrix_daemon/rgbmatrix_samplebase.py
 thecubeivazio/tests/__init__.py
 thecubeivazio/tests/simpler_button.py

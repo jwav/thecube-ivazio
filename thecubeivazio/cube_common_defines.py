@@ -74,6 +74,7 @@ RESETTER_RFID_LIST_FILEPATH = os.path.join(CONFIG_DIR, "resetter_rfids_list.json
 # TODO: implement in existing loops
 LOOP_PERIOD_SEC = 0.1
 STATUS_REPLY_TIMEOUT = 2
+TIMESTAMP_EPSILON = 0.00001
 
 def cubetry(func):
     """Decorator to catch exceptions in functions and log them without having to write a try/except block in the function."""

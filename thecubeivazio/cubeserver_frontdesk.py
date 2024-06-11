@@ -244,6 +244,42 @@ class CubeServerFrontdesk:
             self.log.error(f"Error moving team {team_name} to the database: {e}")
             return False
 
+    def request_all_cubeboxes_statuses_one_by_one(self, reply_timeout: Seconds = None) -> bool:
+        """Send a message to the CubeMaster to request the status of all cubeboxes one by one.
+        if a reply_timout is specified, wait for the reply for that amount of time.
+        If the request send or the reply receive fails, return False."""
+        for cubebox_id in cubeid.CUBEBOX_IDS:
+            self.log.info(f"Requesting cubebox status for cubebox {cubebox_id}")
+            if not self.request_cubebox_status(cubebox_id, reply_timeout):
+                self.log.warning(f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
+                return False
+            else:
+                self.log.success(f"Received status reply from cubebox {cubebox_id}")
+        self.log.success("All cubeboxes statuses requested")
+        return True
+
+    @cubetry
+    def order_cubemaster_to_delete_team(self, team) -> Optional[bool]:
+        """Send a message to the CubeMaster to delete a team.
+        Return True if the CubeMaster deleted the team, False if not, None if no response.
+        If the Cubemaster deleted the team, remove it from the frontdesk status."""
+        # first, check that it's a team in our current status, and not one from the database.
+        # We never delete from the database
+        if not self.teams.has_team(team):
+            self.log.error(f"Team {team.name} not found in the current status")
+            return False
+        msg = cm.CubeMsgFrontdeskDeleteTeam(self.net.node_name, team_name=team.name)
+        report = self.net.send_msg_to_cubemaster(msg, require_ack=True)
+        if not report:
+            self.log.error(f"Failed to send the delete team message : {team.name}")
+            return False
+        if not report.ack_ok:
+            self.log.error(f"The CubeMaster did not respond to the delete team message : {team.name}")
+            return None
+        self.log.success(f"The CubeMaster deleted the team : {team.name}")
+        self.teams.remove_team(team.name)
+        return True
+
     @cubetry
     def order_cubebox_to_reset(self, cubebox_id: int) -> bool:
         """Send a message to a CubeBox to reset itself. Returns True if the msg has been sent,
@@ -270,29 +306,6 @@ class CubeServerFrontdesk:
             return False
         self.log.info(f"Sent cubebox wait for reset message for cubebox {cubebox_id}")
         return True
-
-    @cubetry
-    def order_cubemaster_to_remove_team(self, team_name: str) -> cubenet.SendReport:
-        """Remove a team from this instance's status and send a message to the CubeMaster to remove the team.
-        Return the SendReport of the message sent to the CubeMaster."""
-        team = self.teams.get_team_by_name(team_name)
-        if team is None:
-            self.log.error(f"Team {team_name} not found")
-            return None
-        msg = cm.CubeMsgFrontdeskRemoveTeam(self.net.node_name, team_name)
-        report = self.net.send_msg_to_cubemaster(msg, require_ack=True)
-        if not report:
-            self.log.error(f"Failed to send the remove team message : {team.name}")
-            return report
-        ack_msg = report.ack_msg
-        self.log.debug(f"remove_team ack_msg={ack_msg.to_string() if ack_msg else None}")
-        if ack_msg is None:
-            self.log.error(f"The CubeMaster did not respond to the remove team message : {team.name}")
-        elif ack_msg.info == cm.CubeAckInfos.OK:
-            self.log.info(f"The CubeMaster removed the team : {team.name}")
-        else:
-            self.log.error(f"The CubeMaster did not remove the team : {team.name} ; info={ack_msg.info}")
-        return report
 
     @cubetry
     def request_cubemaster_status(self, reply_timeout: Seconds) -> bool:

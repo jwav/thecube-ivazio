@@ -306,7 +306,7 @@ def expanded_test_find_teams_matching():
 
 def find_team_by_creation_timestamp(team_creation_timestamp) -> Optional[cg.CubeTeamStatus]:
     """Find a team by its creation timestamp. Handles the fact that the creation timestamp is a float so we need some wiggle room for the equality test"""
-    epsilon = 0.1
+    epsilon = TIMESTAMP_EPSILON
     teams = find_teams_matching(min_creation_timestamp=team_creation_timestamp - epsilon, max_creation_timestamp=team_creation_timestamp + epsilon)
     if len(teams) == 1:
         return teams[0]

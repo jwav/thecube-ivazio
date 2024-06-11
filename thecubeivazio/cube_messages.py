@@ -227,7 +227,7 @@ class CubeMsgFrontdeskNewTeam(CubeMessage):
 
 
 # TODO: handle in cubemaster
-class CubeMsgFrontdeskRemoveTeam(CubeMessage):
+class CubeMsgFrontdeskDeleteTeam(CubeMessage):
     """Sent from the Frontdesk to the CubeMaster when a team is removed."""
 
     def __init__(self, sender=None, team_name=None, copy_msg: CubeMessage = None):
@@ -776,7 +776,7 @@ def test_message_to_and_from_string(msg_class: Type[CubeMessage], sender: str, *
 def test_all_message_classes_to_and_from_string():
     """for each subclass of CubeMessage, test that the message can be converted to a string and back"""
     test_message_to_and_from_string(CubeMsgFrontdeskNewTeam, "CubeFrontDesk", team=cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
-    test_message_to_and_from_string(CubeMsgFrontdeskRemoveTeam, "CubeFrontDesk", team_name="Team1")
+    test_message_to_and_from_string(CubeMsgFrontdeskDeleteTeam, "CubeFrontDesk", team_name="Team1")
     test_message_to_and_from_string(CubeMsgButtonPress, "CubeBox1", start_timestamp=10, press_timestamp=20)
     test_message_to_and_from_string(CubeMsgRfidRead, "CubeBox1", uid="1234567890", timestamp=10)
     test_message_to_and_from_string(CubeMsgRequestAllCubeboxesStatuses, "CubeFrontDesk")

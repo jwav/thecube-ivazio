@@ -5,13 +5,14 @@ import time
 from PyQt5 import QtGui
 from PyQt5.QtCore import QFile
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox
 from cubegui_ui import Ui_Form
 
 from thecubeivazio import cube_game
 from thecubeivazio import cube_utils
 from thecubeivazio import cube_logger as cube_logger
 from thecubeivazio import cube_database as cubedb
+from thecubeivazio import cubeserver_frontdesk as cfd
 
 from thecubeivazio.cube_common_defines import *
 import sys
@@ -23,8 +24,11 @@ if TYPE_CHECKING:
     from cubegui import CubeGuiForm
 
 
-# _noinspection PyUnresolvedReferences
+# /_noinspection PyUnresolvedReferences
 class CubeGuiTabTeamsMixin:
+    ui: Ui_Form
+    log: cube_logger.CubeLogger
+    fd: cfd.CubeServerFrontdesk
 
     def setup_tab_teams(self: 'CubeGuiForm'):
         self.ui: Ui_Form
@@ -46,6 +50,9 @@ class CubeGuiTabTeamsMixin:
 
         # connect the "search" button
         self.ui.btnTeamsSearch.clicked.connect(self.click_search_teams)
+
+        # connect the "delete team" button
+        self.ui.btnTeamsDeleteTeam.clicked.connect(self.click_delete_team)
 
         # clear and setup the results table
         self.ui.tableTeamsResults.clearContents()
@@ -86,6 +93,24 @@ class CubeGuiTabTeamsMixin:
         return pixmap
 
     @cubetry
+    def get_selected_team(self, row) -> Optional[cube_game.CubeTeamStatus]:
+        team_creation_timestamp_text = self.ui.tableTeamsResults.item(row, 0).text()
+        team_name = self.ui.tableTeamsResults.item(row, 2).text()
+        self.log.debug(f"team_creation_timestamp_text: {team_creation_timestamp_text}")
+        team_creation_timestamp = float(team_creation_timestamp_text)
+        # check the local teams list
+        # team = self.fd.teams.find_team_by_creation_timestamp(team_creation_timestamp)
+        team = self.fd.teams.get_team_by_name(team_name)
+        # if not found in current teams, check the database
+        if not team:
+            team = cubedb.find_team_by_creation_timestamp(team_creation_timestamp)
+        if not team:
+            self.log.error(f"Could not find team with creation timestamp {team_creation_timestamp}")
+            return None
+        self.log.debug(f"Selected team: {team}")
+        return team
+
+    @cubetry
     def on_teams_results_cell_clicked(self, row, col):
         self.ui: Ui_Form
         self.log: cube_logger.CubeLogger
@@ -93,14 +118,8 @@ class CubeGuiTabTeamsMixin:
         table.clearContents()
 
         # identify the team from the row of the cell clicked
-        team_creation_timestamp_text = self.ui.tableTeamsResults.item(row, 0).text()
-        self.log.debug(f"team_creation_timestamp_text: {team_creation_timestamp_text}")
-        team_creation_timestamp = float(team_creation_timestamp_text)
-        team = cubedb.find_team_by_creation_timestamp(team_creation_timestamp)
-        if not team:
-            self.log.error(f"Could not find team with creation timestamp {team_creation_timestamp}")
-            return
-        self.log.debug(f"Selected team: {team}")
+        team = self.get_selected_team(row)
+
         # update the trophies table
         table.setColumnCount(4)
         table.setHorizontalHeaderLabels(["Trophée", "Image", "Points", "Description"])
@@ -145,6 +164,34 @@ class CubeGuiTabTeamsMixin:
     @cubetry
     def click_remove_trophy(self: 'CubeGuiForm'):
         pass
+
+    @cubetry
+    def click_delete_team(self: 'CubeGuiForm'):
+        team = self.get_selected_team(self.ui.tableTeamsResults.currentRow())
+        assert team.is_valid()
+        if not self.fd.teams.has_team(team):
+            self.set_team_delete_info_status_label("error", "Il n'est pas permis de supprimer une équipe de la base de données.")
+            return
+        # display a confirmation dialog Yes/No
+        reply = QMessageBox.question(self,
+                                     "Suppression d'équipe",
+                                     "Êtes-vous sûr de vouloir supprimer l'équipe ?\nCette action est irréversible.",
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+
+        self.set_team_delete_info_status_label("hourglass", "En attente de réponse du CubeMaster...")
+        if not self.fd.order_cubemaster_to_delete_team(team):
+            self.set_team_delete_info_status_label("error", "Erreur lors de la suppression de l'équipe.")
+            return
+        self.set_team_delete_info_status_label("ok", "Suppression de l'équipe effectuée.")
+        self.fd.request_cubemaster_status()
+        self.click_search_teams()
+
+    def set_team_delete_info_status_label(self, icon: str, info: str):
+        self.ui.lblTeamsTeamDeleteStatus.setText(info)
+        self.ui.btnIconTeamsTeamDeleteStatus.setIcon(QtGui.QIcon.fromTheme(icon))
+        QApplication.processEvents()
 
     @cubetry
     def click_search_teams(self: 'CubeGuiForm'):

@@ -374,6 +374,8 @@ class CubeNetworking:
         """Sends a message with UDP.
         If require_ack is None, uses the message's require_ack attribute.
         Returns True if the message was acknowledged, False otherwise."""
+        message.sender = self.node_name
+
         if not message.is_valid():
             self.log.error(f"Invalid message: {message}")
             return SendReport(False, None)
