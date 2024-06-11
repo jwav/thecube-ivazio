@@ -518,9 +518,13 @@ def test_rgb():
         # create a few sample teams to test the rgb daemon
         sample_teams = [
             cube_game.CubeTeamStatus(
-                name="Budapest", rfid_uid="111111", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=1),
+                name="Oslo", rfid_uid="11111111111", max_time_sec=30, start_timestamp=time.time(), current_cubebox_id=1),
             cube_game.CubeTeamStatus(
-                name="Paris", rfid_uid="222222", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=2),
+                name="Stockholm", rfid_uid="2222222222", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=3),
+            cube_game.CubeTeamStatus(
+                name="Budapest", rfid_uid="88888888888", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=9),
+            cube_game.CubeTeamStatus(
+                name="Paris", rfid_uid="9999999999", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=11),
         ]
         # sample_teams = []
         for team in sample_teams:

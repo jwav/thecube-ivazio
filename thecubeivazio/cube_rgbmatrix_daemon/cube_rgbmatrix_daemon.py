@@ -264,9 +264,13 @@ def test():
         print("Running RGB Daemon test")
         while True:
             time.sleep(1)
-            daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#>1718102445|5#>|6#>|7#>|8#>|9#>|10#>1718102455|11#>")
+            daemon.server._handle_received_text(
+                '0#Oslo>1718103889|1#Stockholm>1718103869|2#>|3#>|4#Budapest>1718103869|5#>|6#>|7#>|8#>|9#>|10#Paris>1718103879|11#>'
+            )
             time.sleep(3)
-            daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#Budapest>1718102445|5#>|6#>|7#>|8#>|9#>|10#Paris>1718102455|11#>")
+            daemon.server._handle_received_text(
+                '0#>1718103919|1#>1718103899|2#>|3#>|4#>1718103899|5#>|6#>|7#>|8#>|9#>|10#>1718103909|11#>'
+            )
             time.sleep(3)
 
     except Exception as e:
