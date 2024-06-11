@@ -176,9 +176,11 @@ class CubeRgbMatrixDaemon(SampleBase):
                     name_text = content.team_name[:MAX_CHARS_FOR_WIDTH]
                     name_width = len(name_text) * PIXELS_PER_CHAR
                     x_name = matrix_id * PANEL_WIDTH + (PANEL_WIDTH - name_width) // 2
+                    graphics.DrawText(canvas, self.font, x_name, Y_TOP, self.textColor, name_text)
 
                     time_text = content.remaining_time_str
-                    graphics.DrawText(canvas, self.font, x_name, Y_TOP, self.textColor, name_text)
+                    time_width = len(time_text) * PIXELS_PER_CHAR
+                    x_time = matrix_id * PANEL_WIDTH + (PANEL_WIDTH - time_width) // 2
                     graphics.DrawText(canvas, self.font, x_time, Y_BOTTOM, self.textColor, time_text)
             time.sleep(1)
             canvas = self.matrix.SwapOnVSync(canvas)
