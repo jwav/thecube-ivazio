@@ -907,7 +907,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     @cubetry
     def get_team_by_rfid_uid(self, rfid_uid: str) -> Optional[CubeTeamStatus]:
         for team in self:
-            if team.rfid_uid == rfid_uid:
+            if cube_rfid.CubeRfidLine.are_uids_the_same(team.rfid_uid,rfid_uid):
                 return team
         return None
 
