@@ -269,15 +269,26 @@ def test():
     try:
         thread = threading.Thread(target=daemon.start, daemon=True)
         thread.start()
+
         print("Running RGB Daemon test")
+        d_names = CubeRgbMatrixContentDict({
+            0: CubeRgbMatrixContent(matrix_id=0, team_name="Oslo", end_timestamp=time.time() + 30),
+            1: CubeRgbMatrixContent(matrix_id=1, team_name="Stockholm", end_timestamp=time.time() + 10),
+            4: CubeRgbMatrixContent(matrix_id=4, team_name="Budapest", end_timestamp=time.time() + 10),
+            10: CubeRgbMatrixContent(matrix_id=10, team_name="Paris", end_timestamp=time.time() + 20),
+        })
+        text_with_names = d_names.to_string()
+        d_no_names = CubeRgbMatrixContentDict({
+            0: CubeRgbMatrixContent(matrix_id=0, team_name="", end_timestamp=time.time() + 30),
+            1: CubeRgbMatrixContent(matrix_id=1, team_name="", end_timestamp=time.time() + 10),
+            4: CubeRgbMatrixContent(matrix_id=4, team_name="", end_timestamp=time.time() + 10),
+            10: CubeRgbMatrixContent(matrix_id=10, team_name="", end_timestamp=time.time() + 20),
+        })
+        text_no_names = d_no_names.to_string()
         while True:
-            daemon.server._handle_received_text(
-                '0#Oslo>1718103889|1#Stockholm>1718103869|2#>|3#>|4#Budapest>1718103869|5#>|6#>|7#>|8#>|9#>|10#Paris>1718103879|11#>'
-            )
+            daemon.server._handle_received_text(text_with_names)
             time.sleep(2)
-            daemon.server._handle_received_text(
-                '0#>1718103919|1#>1718103899|2#>|3#>|4#>1718103899|5#>|6#>|7#>|8#>|9#>|10#>1718103909|11#>'
-            )
+            daemon.server._handle_received_text(text_no_names)
             time.sleep(2)
 
     except Exception as e:
