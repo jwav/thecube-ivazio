@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-journalctl -u thecubeivazio.cubemaster.service -f --no-pager --output=short-iso-plain --no-hostname
+journalctl -u thecubeivazio.cubemaster.service -f --no-pager --no-hostname
