@@ -3,7 +3,7 @@ Description=Ivazio Cubemaster
 
 [Service]
 Environment=HOME=%h
-ExecStart=/usr/bin/env bash ${HOME}/update_and_start_cubemaster.sh
+ExecStart=/usr/bin/env bash %h/update_and_start_cubemaster.sh
 WorkingDirectory=%h/thecube-ivazio
 StandardOutput=journal
 StandardError=journal
