@@ -1,0 +1,13 @@
+[Unit]
+Description=Ivazio Cubemaster
+
+[Service]
+ExecStart=/usr/bin/env bash ${HOME}/update_and_start_cubemaster.sh
+WorkingDirectory=${HOME}/thecube-ivazio/thecubeivazio
+StandardOutput=journal
+StandardError=journal
+Restart=always
+User=ivazio
+
+[Install]
+WantedBy=multi-user.target
