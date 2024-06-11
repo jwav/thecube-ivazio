@@ -549,7 +549,7 @@ if __name__ == "__main__":
     # if `--test_rgb` is passed as an argument, run the test_rgb() function
     import sys
 
-    if "--test_rgb" in sys.argv or True:
+    if "--test_rgb" in sys.argv:
         test_rgb()
     elif "--prompt" in sys.argv:
         main(use_prompt=True)

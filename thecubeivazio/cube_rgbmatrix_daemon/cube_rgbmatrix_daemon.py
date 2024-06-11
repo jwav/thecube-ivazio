@@ -173,8 +173,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             for matrix_id, content in contents_dict.items():
                 if REVERSE_CHAIN_ORDER:
                     matrix_id = NB_MATRICES - matrix_id - 1
-                self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
-                print(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
+                self.log.debug(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
                 if not content.team_name:
                     time_text = content.remaining_time_str
                     time_width = len(time_text) * PIXELS_PER_CHAR
@@ -215,6 +214,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         self._keep_running = False
         self.clear_matrices()
         time.sleep(0.2)
+        self.log.info("CubeRgbTextDrawer stopped")
 
 
 class CubeRgbMatrixMockDaemon(CubeRgbMatrixDaemon):
