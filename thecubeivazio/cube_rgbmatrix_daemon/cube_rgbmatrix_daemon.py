@@ -263,6 +263,8 @@ def test():
         thread.start()
         print("Running RGB Daemon test")
         while True:
+            time.sleep(1)
+            continue
             daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#>1718102445|5#>|6#>|7#>|8#>|9#>|10#>1718102455|11#>")
             time.sleep(3)
             daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#Budapest>1718102445|5#>|6#>|7#>|8#>|9#>|10#Paris>1718102455|11#>")
