@@ -43,7 +43,7 @@ print(f"RGBMATRIX_DAEMON_LOG_FILEPATH: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
 RGBMATRIX_DAEMON_FONTS_DIR = os.path.join(RGBMATRIX_DAEMON_DIR, "rgb_fonts")
 print(f"RGBMATRIX_DAEMON_FONTS_DIR: {RGBMATRIX_DAEMON_FONTS_DIR}")
 
-NB_MATRICES = 2
+NB_MATRICES = 12
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
 Y_CENTERED = 20
@@ -88,10 +88,10 @@ class CubeRgbMatrixDaemon(SampleBase):
         # ])
         # self.args = known_args
         sys.argv.extend([
-            '--led-cols=64',
-            '--led-rows=32',
-            '--led-chain=2',
-            '--led-slowdown-gpio=5'
+            f'--led-cols={PANEL_WIDTH}',
+            f'--led-rows={PANEL_HEIGHT}',
+            f'--led-chain={NB_MATRICES}',
+            f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}'
         ])
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
