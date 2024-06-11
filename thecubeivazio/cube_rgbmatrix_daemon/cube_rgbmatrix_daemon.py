@@ -163,8 +163,8 @@ class CubeRgbMatrixDaemon(SampleBase):
             self.log.debug(f"CubeRgbTextDrawer contents: {contents_dict}")
             canvas.Clear()
             for matrix_id, content in contents_dict.items():
-                # print(f"matrix_id: {matrix_id}, text: {text}")
                 self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
+                print(f"matrix_id: {matrix_id}, content: {content}")
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
                 if content.team_name is None:
                     text = content.remaining_time_str
@@ -176,7 +176,7 @@ class CubeRgbMatrixDaemon(SampleBase):
                     graphics.DrawText(canvas, self.font, x, Y_BOTTOM, self.textColor, text)
             time.sleep(1)
             canvas = self.matrix.SwapOnVSync(canvas)
-        print("CubeRgbTextDrawer stopped")
+        self.log.info("CubeRgbTextDrawer stopped")
 
     def stop(self):
         self.log.info("CubeRgbTextDrawer stopping")
@@ -264,7 +264,6 @@ def test():
         print("Running RGB Daemon test")
         while True:
             time.sleep(1)
-            continue
             daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#>1718102445|5#>|6#>|7#>|8#>|9#>|10#>1718102455|11#>")
             time.sleep(3)
             daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#Budapest>1718102445|5#>|6#>|7#>|8#>|9#>|10#Paris>1718102455|11#>")
