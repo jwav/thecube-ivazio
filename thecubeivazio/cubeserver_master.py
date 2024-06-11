@@ -485,6 +485,8 @@ class CubeServerMaster:
             if not self.request_cubebox_status(cubebox_id, reply_timeout):
                 self.log.warning(f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
                 return False
+            else:
+                self.log.success(f"Received status reply from cubebox {cubebox_id}")
         self.log.success("All cubeboxes statuses requested")
         return True
 
