@@ -202,6 +202,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     def stop(self):
         self.log.info("CubeRgbTextDrawer stopping")
         self._keep_running = False
+        self.clear_matrices()
 
 class CubeRgbMatrixMockDaemon(CubeRgbMatrixDaemon):
     """Has the same interface as the CubeRgbMatrixDaemon, but displays text
