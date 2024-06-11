@@ -17,7 +17,7 @@ sudo cp "$SOURCE_PATH" "$DESTINATION_PATH"
 sudo systemctl daemon-reload
 
 # Enable the service to start on boot
-sudo systemctl enable thecubeivazio.cubemaster.service
+#sudo systemctl enable thecubeivazio.cubemaster.service
 
 # Start the service immediately
 #sudo systemctl start thecubeivazio.cubemaster.service
