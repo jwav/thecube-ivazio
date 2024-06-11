@@ -498,6 +498,8 @@ def main(use_prompt=False):
 
     try:
         master.run()
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
