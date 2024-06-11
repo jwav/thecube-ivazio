@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the source and destination paths
-SOURCE_PATH="${HOME}/thecube-ivazio/thecubeivazio/thecubeivazio.cubemaster.service"
+SOURCE_PATH="${HOME}/thecube-ivazio/thecubeivazio.cubemaster.service"
 DESTINATION_PATH="/etc/systemd/system/thecubeivazio.cubemaster.service"
 
 # Check if the source file exists
