@@ -20,6 +20,9 @@ sudo systemctl daemon-reload || exit 1
 # Enable the service to start on boot
 #sudo systemctl enable thecubeivazio.cubemaster.service
 
+# Disable the service to ensure it does not start on boot
+sudo systemctl disable thecubeivazio.cubemaster.service
+
 # Start the service immediately
 #sudo systemctl start thecubeivazio.cubemaster.service
 
