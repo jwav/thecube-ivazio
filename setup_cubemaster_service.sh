@@ -11,7 +11,8 @@ if [ ! -f "$SOURCE_PATH" ]; then
 fi
 
 # Copy the file to the destination, overwriting if it exists
-sudo cp --force "$SOURCE_PATH" "$DESTINATION_PATH" || exit 1
+sudo install -m 644 "$SOURCE_PATH" "$DESTINATION_PATH" || exit 1
+
 
 # Reload systemd daemon to recognize the new service file
 sudo systemctl daemon-reload || exit 1
