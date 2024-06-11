@@ -481,6 +481,29 @@ class CubeServerMasterWithPrompt(CubeServerMaster):
                 print("Unknown command")
 
 
+
+
+
+def main(use_prompt=False):
+    import atexit
+
+    if use_prompt:
+        master = CubeServerMasterWithPrompt()
+    else:
+        master = CubeServerMaster()
+    atexit.register(master.stop)
+
+    master.log.setLevel(cube_logger.logging.INFO)
+    master.net.log.setLevel(cube_logger.logging.INFO)
+
+    try:
+        master.run()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt received. Stopping CubeMaster...")
+    finally:
+        master.stop()
+
+
 def test_rgb():
     import atexit
     master = CubeServerMaster()
@@ -516,27 +539,6 @@ def test_rgb():
     finally:
         master.stop()
     exit(0)
-
-
-def main(use_prompt=False):
-    import atexit
-
-    if use_prompt:
-        master = CubeServerMasterWithPrompt()
-    else:
-        master = CubeServerMaster()
-    atexit.register(master.stop)
-
-    master.log.setLevel(cube_logger.logging.INFO)
-    master.net.log.setLevel(cube_logger.logging.INFO)
-
-    try:
-        master.run()
-    except KeyboardInterrupt:
-        print("KeyboardInterrupt received. Stopping CubeMaster...")
-    finally:
-        master.stop()
-
 
 if __name__ == "__main__":
     # if `--test_rgb` is passed as an argument, run the test_rgb() function

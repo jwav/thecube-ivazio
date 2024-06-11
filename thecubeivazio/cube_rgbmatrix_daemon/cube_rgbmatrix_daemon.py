@@ -26,19 +26,21 @@ possible_daemon_dirs = [
 
 for path in possible_daemon_dirs:
     if os.path.exists(path):
-        RGBMATRIX_DAEMON_DIR_PATH = path
-        print(f"RGBMATRIX_DAEMON_DIR_PATH found: {RGBMATRIX_DAEMON_DIR_PATH}")
+        RGBMATRIX_DAEMON_DIR = path
+        print(f"RGBMATRIX_DAEMON_DIR_PATH found: {RGBMATRIX_DAEMON_DIR}")
         break
 else:
-    print("RGBMATRIX_DAEMON_DIR_PATH not found")
-    RGBMATRIX_DAEMON_DIR_PATH = None
-    raise FileNotFoundError("RGBMATRIX_DAEMON_DIR_PATH not found")
+    print("RGBMATRIX_DAEMON_DIR not found")
+    RGBMATRIX_DAEMON_DIR = None
+    raise FileNotFoundError("RGBMATRIX_DAEMON_DIR not found")
 
-if RGBMATRIX_DAEMON_DIR_PATH not in sys.path:
-    sys.path.append(RGBMATRIX_DAEMON_DIR_PATH)
+if RGBMATRIX_DAEMON_DIR not in sys.path:
+    sys.path.append(RGBMATRIX_DAEMON_DIR)
 
-RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR_PATH, "rgbmatrix_daemon.log")
+RGBMATRIX_DAEMON_LOG_FILEPATH = os.path.join(RGBMATRIX_DAEMON_DIR, "rgbmatrix_daemon.log")
 print(f"RGBMATRIX_DAEMON_LOG_FILEPATH: {RGBMATRIX_DAEMON_LOG_FILEPATH}")
+RGBMATRIX_DAEMON_FONTS_DIR = os.path.join(RGBMATRIX_DAEMON_DIR, "rgb_fonts")
+print(f"RGBMATRIX_DAEMON_FONTS_DIR: {RGBMATRIX_DAEMON_FONTS_DIR}")
 
 NB_MATRICES = 2
 PANEL_WIDTH = 64
@@ -95,7 +97,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.create_log_file()
 
         self.font = graphics.Font()
-        self.font.LoadFont(os.path.join("7x13.bdf"))
+        self.font.LoadFont(os.path.join(RGBMATRIX_DAEMON_FONTS_DIR, "7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
 
     @classmethod
