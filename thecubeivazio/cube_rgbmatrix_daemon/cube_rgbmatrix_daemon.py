@@ -304,6 +304,7 @@ if __name__ == "__main__":
     if "--test" in sys.argv or do_test:
         # remove "--test" from sys.argv to avoid problems for the SampleBase
         if "--test" in sys.argv:
+            print("Removing --test from sys.argv")
             sys.argv.remove("--test")
         test()
     else:
