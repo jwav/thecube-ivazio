@@ -70,12 +70,10 @@ class CubeRgbMatrixDaemon(SampleBase):
     log = logging.getLogger('RGBMatrixDaemon')
     log.setLevel(logging.DEBUG)
     file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
-    console_handler = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
+
     log.addHandler(file_handler)
-    # log.addHandler(console_handler)
 
 
     def __init__(self, *args, **kwargs):
@@ -101,6 +99,13 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.font = graphics.Font()
         self.font.LoadFont(os.path.join(RGBMATRIX_DAEMON_FONTS_DIR, "7x13.bdf"))
         self.textColor = graphics.Color(255, 255, 0)
+
+    @classmethod
+    def enable_log_stdout(cls, enable=True):
+        if enable:
+            console_handler = logging.StreamHandler()
+            console_handler.setFormatter(cls.formatter)
+            cls.log.addHandler(console_handler)
 
     @classmethod
     def create_log_file(cls) -> bool:
@@ -279,6 +284,7 @@ def test():
     })
     daemon.log.setLevel(logging.DEBUG)
     daemon.server._debug = True
+    daemon.enable_log_stdout()
 
 
     try:
