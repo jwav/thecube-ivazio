@@ -189,6 +189,7 @@ class CubeRgbMatrixDaemon(SampleBase):
 
     def clear_matrices(self):
         try:
+            self.log.info("Clearing matrices")
             canvas = self.matrix.CreateFrameCanvas()
             canvas.Clear()
         except Exception as e:
