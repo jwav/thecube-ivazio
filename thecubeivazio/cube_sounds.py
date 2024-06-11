@@ -24,7 +24,7 @@ class CubeSoundPlayer:
         self._thread = None
         self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
         mixer.init()
-
+        self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
 
     @cubetry
     def set_volume_percent(self, volume_percent: int):

@@ -376,7 +376,7 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
             pass
 
 
-class CubeRfidListenerSerial(CubeRfidListenerBase):
+class CubeRfidSerialListener(CubeRfidListenerBase):
     """Listens for RFID data from a serial port."""
 
     def __init__(self):
@@ -509,7 +509,7 @@ def test_rfid_read_simulation():
     print(rfid.get_completed_lines())
 
 def test_serial_rfid():
-    rfid = CubeRfidListenerSerial()
+    rfid = CubeRfidSerialListener()
     rfid.run()
     try:
         while True:
@@ -525,7 +525,7 @@ def test_serial_rfid():
 
 
 def test_compare_rfid_listeners():
-    rfid_serial = CubeRfidListenerSerial()
+    rfid_serial = CubeRfidSerialListener()
     rfid_keyboard = CubeRfidKeyboardListener()
     serial_lines = []
     keyboard_lines = []

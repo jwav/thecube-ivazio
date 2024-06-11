@@ -28,12 +28,12 @@ do
   fi
 done
 
-#SKIP_PIP=false
-SKIP_PIP=true
+#SKIP_PIP_REQ=false
+SKIP_PIP_REQ=true
 for arg in "$@"
 do
   if [ "$arg" == "--skip-pip" ]; then
-    SKIP_PIP=true
+    SKIP_PIP_REQ=true
     echo "Skipping pip install"
     break
   fi
@@ -61,7 +61,7 @@ else
   echo "OK : git pull succeeded"
 fi
 
-if [ "$SKIP_PIP" = false ]; then
+if [ "$SKIP_PIP_REQ" = false ]; then
 echo "pip install requirements..."
 pip install -r ./requirements.txt
 if [ $? -ne 0 ]; then
