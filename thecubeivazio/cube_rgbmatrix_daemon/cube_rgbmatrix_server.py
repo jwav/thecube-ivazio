@@ -170,7 +170,9 @@ class CubeRgbServer:
                 return False
             self._rgb_matrix_contents_dict.update(d)
             self._print(f"Updated rgb_matrix_contents_dict: {self._rgb_matrix_contents_dict}")
+            # display the first content to check
             for matrix_id, content in self._rgb_matrix_contents_dict.items():
+                self._print(f"Displaying first content")
                 self._print(f"matrix_id: {matrix_id}, content: {content}, end_timestamp: {content.end_timestamp}")
                 self._print(f"remaining_secs: {content.remaining_secs}, remaining_time_str: {content.remaining_time_str}")
                 break

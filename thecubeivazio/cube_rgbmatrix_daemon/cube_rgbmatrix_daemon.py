@@ -261,12 +261,12 @@ def test():
     try:
         thread = threading.Thread(target=daemon.start, daemon=True)
         thread.start()
-        print("FOOOOOOOO")
+        print("Running RGB Daemon test")
         while True:
             daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#>1718102445|5#>|6#>|7#>|8#>|9#>|10#>1718102455|11#>")
-            time.sleep(4)
+            time.sleep(3)
             daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#Budapest>1718102445|5#>|6#>|7#>|8#>|9#>|10#Paris>1718102455|11#>")
-            time.sleep(4)
+            time.sleep(3)
 
     except Exception as e:
         print(f"RGB Daemon : Exception : {e}")
