@@ -52,6 +52,8 @@ Y_BOTTOM = 30
 LED_SLOWDOWN_GPIO = 5
 MAX_CHARS_FOR_WIDTH = 9
 PIXELS_PER_CHAR = PANEL_WIDTH // MAX_CHARS_FOR_WIDTH
+# by default, index 0 is the farthest matrix, not the closest.
+REVERSE_CHAIN_ORDER = True
 
 
 from rgbmatrix_samplebase import SampleBase
@@ -169,6 +171,8 @@ class CubeRgbMatrixDaemon(SampleBase):
             self.log.debug(f"CubeRgbTextDrawer contents: {contents_dict}")
             canvas.Clear()
             for matrix_id, content in contents_dict.items():
+                if REVERSE_CHAIN_ORDER:
+                    matrix_id = NB_MATRICES - matrix_id - 1
                 self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
                 print(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
                 if not content.team_name:
@@ -197,6 +201,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             self.log.info("Clearing matrices")
             canvas = self.matrix.CreateFrameCanvas()
             canvas.Clear()
+            canvas = self.matrix.SwapOnVSync(canvas)
         except Exception as e:
             self.log.error(f"Error clearing matrices: {e}")
 
@@ -209,6 +214,8 @@ class CubeRgbMatrixDaemon(SampleBase):
         self.log.info("CubeRgbTextDrawer stopping")
         self._keep_running = False
         self.clear_matrices()
+        time.sleep(0.2)
+
 
 class CubeRgbMatrixMockDaemon(CubeRgbMatrixDaemon):
     """Has the same interface as the CubeRgbMatrixDaemon, but displays text
