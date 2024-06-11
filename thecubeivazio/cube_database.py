@@ -188,7 +188,7 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
             current_cubebox_id=current_cubebox_id,
             completed_cubeboxes=completed_cubeboxes,
             trophies_names=trophies_names,
-            use_alarm=use_alarm
+            use_alarm=bool(use_alarm)
         )
 
         teams_list.append(team)
@@ -268,6 +268,9 @@ def expanded_test_find_teams_matching():
 
     # Find teams by partial name (case insensitive)
     found_teams = find_teams_matching(name="test", db_filename=test_db_filepath)
+
+    assert found_teams.is_valid()
+
     CubeLogger.static_debug(f"Found teams by partial name 'test': {found_teams}")
     err_msg = f"Test Failed: Expected 2 teams with partial name 'test' (actual len={len(found_teams)})"
     assert len(found_teams) == 2, err_msg

@@ -278,6 +278,10 @@ class CubeboxesStatusList(List[CubeboxStatus]):
         return True
 
     @cubetry
+    def is_valid(self):
+        return all([box.is_valid() for box in self])
+
+    @cubetry
     def extend(self, cubeboxes_list: Iterable[CubeboxStatus]):
         self.update_from_cubeboxes(cubeboxes_list)
 
@@ -480,7 +484,7 @@ class CubeTeamStatus:
         # the list of the cubeboxes IDs that the team has successfully played, with their completion times
         self.completed_cubeboxes = completed_cubeboxes or []
         # the trophies collected by the team, awarded by the frontdesk
-        self.trophies_names: List[str] = [] if not trophies_names else trophies_names
+        self.trophies_names: List[str] = trophies_names or []
         # for certain teams, we want to use a loud alarm when their time is up
         # TODO: test
         self.use_alarm = use_alarm
@@ -493,10 +497,24 @@ class CubeTeamStatus:
             return None
 
 
-    @cubetry
     def is_valid(self):
         """if this function returns False, then it might have been made from corrupted data"""
-        return all((self.name, self.rfid_uid, self.max_time_sec, self.creation_timestamp))
+        try:
+            assert isinstance(self.name, str), f"self.name is not a str: {self.name}"
+            assert isinstance(self.rfid_uid, str), f"self.rfid_uid is not a str: {self.rfid_uid}"
+            assert isinstance(self.max_time_sec, (int, float)), f"self.max_time_sec is not a number: {self.max_time_sec}"
+            assert isinstance(self.creation_timestamp, (int, float)), f"self.creation_timestamp is not a number: {self.creation_timestamp}"
+            assert isinstance(self.custom_name, str), f"self.custom_name is not a str: {self.custom_name}"
+            assert isinstance(self.start_timestamp, (int, float)) or self.start_timestamp is None, f"self.start_timestamp is not a number: {self.start_timestamp}"
+            assert isinstance(self.current_cubebox_id, int) or self.current_cubebox_id is None, f"self.current_cubebox_id is not a number: {self.current_cubebox_id}"
+            assert isinstance(self.completed_cubeboxes, list) and all ([box.is_valid() for box in self.completed_cubeboxes]), f"self.completed_cubeboxes is not a list of CubeboxStatus: {self.completed_cubeboxes}"
+            assert isinstance(self.trophies_names, list) and all([isinstance(t, str) for t in self.trophies_names]), f"self.trophies_names is not a list of str: {self.trophies_names}"
+            assert isinstance(self.use_alarm, bool), f"self.use_alarm is not a bool: {self.use_alarm}"
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamStatus.is_valid {e}")
+            return False
+
 
     @property
     def remaining_time(self) -> Optional[Seconds]:
@@ -544,7 +562,7 @@ class CubeTeamStatus:
             "use_alarm": self.use_alarm,
             "current_cubebox_id": self.current_cubebox_id,
             "completed_cubeboxes": [box.to_dict() for box in self.completed_cubeboxes],
-            "trophies_names": [self.trophies_names],
+            "trophies_names": self.trophies_names,
         }
 
     @classmethod
@@ -568,7 +586,7 @@ class CubeTeamStatus:
                 ret.current_cubebox_id = int(ret.current_cubebox_id)
             ret.completed_cubeboxes = [
                 CompletedCubeboxStatus.make_from_dict(box) for box in d.get("completed_cubeboxes", [])]
-            ret.trophies_names = [d.get("trophies_names", [])]
+            ret.trophies_names = d.get("trophies_names", [])
             ret.use_alarm = d.get("use_alarm", False)
             return ret
         except Exception as e:
@@ -760,6 +778,7 @@ class CubeTeamStatus:
         """If this team is the same as the other team, update its data with the other team's data,
         preserving the completed cubeboxes and trophies
         If this is another team, return False"""
+        assert team.is_valid(), f"CubeTeamStatus.update_from_team: invalid team {team}"
         CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: updating team {self.name}")
         if not self.is_same_team_as(team):
             CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is not the same team. returning.")
@@ -891,6 +910,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
 
     @cubetry
     def add_team(self, team: CubeTeamStatus) -> bool:
+        assert team.is_valid(), f"CubeTeamsStatusList.add_team: invalid team {team}"
         if self.get_team_by_name(team.name) is not None:
             return False
         self.append(team)
@@ -956,14 +976,14 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
 
 
 
+    @cubetry
     def update_team(self, team: CubeTeamStatus) -> bool:
+        assert team.is_valid()
         for i, t in enumerate(self):
             if t.is_same_team_as(team):
                 return self[i].update_from_team(team)
-            else:
-                self.append(team)
-                return True
-        return False
+        self.append(team)
+        return True
 
     def update_from_teams_list(self, teams_list: 'CubeTeamsStatusList') -> bool:
         try:

@@ -669,6 +669,7 @@ class CubeMsgConfig(CubeMessage):
         except Exception as e:
             CubeLogger.static_error(f"Error parsing CubeConfig from CubeMsgConfig: {e}")
 
+
 # test functions
 
 def test_make_from_message():
@@ -794,9 +795,18 @@ def test_all_message_classes_to_and_from_string():
     test_message_to_and_from_string(CubeMsgWhoIs, "CubeFrontDesk", node_name_to_find="CubeMaster")
     test_message_to_and_from_string(CubeMsgReplyCubeboxStatus, "CubeMaster", status=cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", start_timestamp=11, win_timestamp=20, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10), state=cube_game.CubeboxState.STATE_READY_TO_PLAY))
     test_message_to_and_from_string(CubeMsgReplyTeamStatus, "CubeMaster", status=cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200))
-    test_message_to_and_from_string(CubeMsgReplyAllCubeboxesStatuses, "CubeMaster", statuses={"CubeBox1": cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", start_timestamp=11, win_timestamp=20, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10), state=cube_game.CubeboxState.STATE_READY_TO_PLAY)})
+    test_message_to_and_from_string(CubeMsgReplyAllCubeboxesStatuses, "CubeMaster",
+                                    statuses=cube_game.CubeboxesStatusList(cubeboxes=[
+        cube_game.CubeboxStatus(cube_id=1, current_team_name="Team1", start_timestamp=11, win_timestamp=20, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="1234567890", timestamp=10), state=cube_game.CubeboxState.STATE_READY_TO_PLAY),
+        cube_game.CubeboxStatus(cube_id=2, current_team_name="Team2", start_timestamp=12, win_timestamp=21, last_valid_rfid_line=cube_rfid.CubeRfidLine(uid="2345678901", timestamp=11), state=cube_game.CubeboxState.STATE_READY_TO_PLAY),
+        cube_game.CubeboxStatus(cube_id=3, current_team_name=None, start_timestamp=None, win_timestamp=None, last_valid_rfid_line=None, state=cube_game.CubeboxState.STATE_READY_TO_PLAY),
+    ]))
     test_message_to_and_from_string(CubeMsgReplyCubeMasterStatusHash, "CubeMaster", hash="hash1")
-    test_message_to_and_from_string(CubeMsgReplyAllTeamsStatuses, "CubeMaster", statuses={"Team1": cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200)})
+    test_message_to_and_from_string(CubeMsgReplyAllTeamsStatuses, "CubeMaster",
+                                    statuses=cube_game.CubeTeamsStatusList([
+                                        cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200),
+                                        cube_game.CubeTeamStatus(name="Team2", rfid_uid="2345678901", max_time_sec=1200),
+                                    ]))
 
 
 
@@ -824,7 +834,7 @@ def test_all_reply_messages():
                 cube_game.CompletedCubeboxStatus(cube_id=2, start_timestamp=11, win_timestamp=21)
             ],
             current_cubebox_id=3,
-            trophies_names=["Trophy1", "Trophy2",]
+            trophies_names=["Trophy1", "Trophy2", ]
         ),
         cube_game.CubeTeamStatus(
             name="Team2", custom_name="CustomTeam2", rfid_uid="2345678901", max_time_sec=1200,
@@ -833,7 +843,7 @@ def test_all_reply_messages():
                 cube_game.CompletedCubeboxStatus(cube_id=5, start_timestamp=10, win_timestamp=20),
             ],
             current_cubebox_id=3,
-            trophies_names=["Trophy3", "Trophy4",]
+            trophies_names=["Trophy3", "Trophy4", ]
         ),
         cube_game.CubeTeamStatus(
             name="Team3", custom_name="CustomTeam3", rfid_uid="3456789012", max_time_sec=1300,
@@ -923,9 +933,9 @@ def test_config_message():
 
 
 if __name__ == "__main__":
-    test_config_message()
-    # test_all_message_classes_to_and_from_string()
-    test_all_reply_messages()
+    # test_config_message()
+    test_all_message_classes_to_and_from_string()
+    # test_all_reply_messages()
     exit(0)
     print(CubeMsgReplies.OK)
     ack_msg = CubeMsgAck("CubeMaster", CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeMsgReplies.OK)

@@ -158,13 +158,14 @@ class CubeGuiTabTeamsMixin:
             # TODO: query current teams from the cubemaster
             # TODO: apply filters?
             matching_teams = self.fd.teams
+            self.log.critical(f"playing teams: {self.fd.teams}")
+
         else:
             nb_days = self.ui.spinTeamsAmountOfDays.value()
             min_timestamp = time.time() - nb_days * 24 * 3600
             self.log.debug(f"min_timestamp: {min_timestamp}, i.e. {cube_utils.timestamp_to_date(min_timestamp)}")
             matching_teams = cubedb.find_teams_matching(name=team_name, custom_name=custom_name, rfid_uid=rfid_uid,
                                                min_creation_timestamp=min_timestamp, max_creation_timestamp=time.time())
-
         self.display_teams(matching_teams)
 
     @cubetry
@@ -185,6 +186,9 @@ class CubeGuiTabTeamsMixin:
         self.ui.tableTeamsResults.setRowCount(len(teams))
 
         for i, team in enumerate(teams):
+            if not team.is_valid():
+                self.log.error(f"Invalid team: {team}")
+                continue
             #french_date = cube_utils.timestamp_to_french_date(team.start_timestamp)
             short_date = cube_utils.timestamp_to_date(team.start_timestamp)
             creation_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(

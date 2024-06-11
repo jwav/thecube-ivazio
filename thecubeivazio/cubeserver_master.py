@@ -490,6 +490,7 @@ class CubeServerMaster:
         self.log.success("All cubeboxes statuses requested")
         return True
 
+    @cubetry
     def request_cubebox_status(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
         """Send a message to a CubeBox to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
@@ -504,7 +505,14 @@ class CubeServerMaster:
             if not reply_msg:
                 self.log.error(f"Failed to receive the cubebox status reply for cubebox {cubebox_id}")
                 return False
-            return self._handle_reply_cubebox_status(reply_msg)
+            assert self._handle_reply_cubebox_status(reply_msg)
+            rcs_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=reply_msg)
+            reply_cubebox_id = rcs_msg.cubebox.cube_id
+            if reply_cubebox_id != cubebox_id:
+                self.log.error(f"Received cubebox status reply for cubebox {reply_cubebox_id} instead of {cubebox_id}")
+                return False
+            self.log.success(f"Received cubebox status reply for cubebox {cubebox_id}")
+            return True
 
 
 class CubeServerMasterWithPrompt(CubeServerMaster):
@@ -582,6 +590,7 @@ def main(use_prompt=False):
 
 def test_rgb():
     import atexit
+    # master = CubeServerMasterWithPrompt()
     master = CubeServerMaster()
     atexit.register(master.stop)
 
@@ -589,6 +598,7 @@ def test_rgb():
     master.net.log.setLevel(cube_logger.logging.INFO)
 
     try:
+        master.log.critical("Starting CubeMaster...")
         master.run()
 
 
@@ -606,12 +616,13 @@ def test_rgb():
         # sample_teams = []
         for team in sample_teams:
             master.teams.add_team(team)
-        master.log.info(f"Teams registered: {[team.name for team in master.teams]}")
+        master.log.critical(f"Teams registered: {[team.name for team in master.teams]}")
 
         # master.stop()
 
         while True:
             master.update_rgb()
+            master.log.critical(f"Teams: {master.teams.to_json()}")
             time.sleep(3)
             master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
 
@@ -624,8 +635,9 @@ def test_rgb():
 if __name__ == "__main__":
     # if `--test_rgb` is passed as an argument, run the test_rgb() function
     import sys
+    do_test_rgb = True
 
-    if "--test_rgb" in sys.argv:
+    if "--test_rgb" in sys.argv or do_test_rgb:
         test_rgb()
     elif "--prompt" in sys.argv:
         main(use_prompt=True)

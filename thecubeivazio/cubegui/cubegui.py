@@ -126,6 +126,7 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
             if self.fd.rfid.has_new_lines():
                 lines = self.fd.rfid.get_completed_lines()
                 for line in lines:
+                    self.fd.rfid.remove_line(line)
                     if not line.is_valid():
                         self.update_new_team_rfid_status_label("RFID non valide", "error")
                         break
@@ -142,7 +143,6 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
                             break
                     elif self.ui.tabWidget.currentIndex() == self.TABINDEX_TEAMS:
                         self.ui.lineTeamsRfid.setText(f"{line.uid}")
-                    self.fd.rfid.remove_line(line)
 
 
         except Exception as e:
