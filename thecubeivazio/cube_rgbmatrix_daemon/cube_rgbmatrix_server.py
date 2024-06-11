@@ -103,7 +103,7 @@ class CubeRgbServer:
     MSG_ERROR = "ERROR"
     REPLY_TIMEOUT = 1
 
-    def __init__(self, is_master=False, is_rgb=False, debug=False):
+    def __init__(self, is_master=False, is_rgb=False, debug=False, name="CubeRgbServer"):
         self._debug = debug
 
         self.ip = self.UDP_IP

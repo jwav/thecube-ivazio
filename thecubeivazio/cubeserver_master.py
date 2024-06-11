@@ -97,7 +97,7 @@ class CubeServerMaster:
                 self.log.success("Launched RGBMatrix Daemon process")
 
             self.log.info("Starting RGBMatrix Daemon")
-            self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=True)
+            self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=True, name="CubeRgbSenderMaster")
             self.log.success("Started RGBMatrix Daemon")
 
         self.log.info("Updating RGBMatrix Daemon")
