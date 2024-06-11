@@ -164,7 +164,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             canvas.Clear()
             for matrix_id, content in contents_dict.items():
                 self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
-                print(f"matrix_id: {matrix_id}, content: {content}")
+                print(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
                 if content.team_name is None:
                     text = content.remaining_time_str
@@ -250,11 +250,11 @@ def test():
     else:
         print("Using the mock CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixMockDaemon()
-
     daemon.server._rgb_matrix_contents_dict = CubeRgbMatrixContentDict({
         0: CubeRgbMatrixContent(matrix_id=0, team_name="Team 1", end_timestamp=time.time() + 3),
         1: CubeRgbMatrixContent(matrix_id=1, team_name="Team 2", end_timestamp=time.time() + 10),
     })
+    daemon.log.setLevel(logging.DEBUG)
     daemon.server._debug = True
 
 
