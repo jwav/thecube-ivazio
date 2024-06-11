@@ -515,6 +515,7 @@ def test_rgb():
     try:
         master.run()
 
+
         # create a few sample teams to test the rgb daemon
         sample_teams = [
             cube_game.CubeTeamStatus(
