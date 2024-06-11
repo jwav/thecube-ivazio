@@ -46,7 +46,6 @@ print(f"RGBMATRIX_DAEMON_FONTS_DIR: {RGBMATRIX_DAEMON_FONTS_DIR}")
 NB_MATRICES = 2
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
-X_MARGIN_TIME = 5
 Y_CENTERED = 20
 Y_TOP = 10
 Y_BOTTOM = 30
@@ -167,9 +166,11 @@ class CubeRgbMatrixDaemon(SampleBase):
             for matrix_id, content in contents_dict.items():
                 self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
                 print(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
-                x_time = matrix_id * PANEL_WIDTH + X_MARGIN_TIME
                 if not content.team_name:
                     time_text = content.remaining_time_str
+                    time_width = len(time_text) * PIXELS_PER_CHAR
+                    x_time = matrix_id * PANEL_WIDTH + (PANEL_WIDTH - time_width) // 2
+
                     graphics.DrawText(canvas, self.font, x_time, Y_CENTERED, self.textColor, time_text)
                 else:
                     name_text = content.team_name[:MAX_CHARS_FOR_WIDTH]
