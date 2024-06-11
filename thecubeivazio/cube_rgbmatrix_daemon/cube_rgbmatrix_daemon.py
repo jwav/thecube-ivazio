@@ -164,6 +164,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             canvas.Clear()
             for matrix_id, content in contents_dict.items():
                 # print(f"matrix_id: {matrix_id}, text: {text}")
+                self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
                 x = matrix_id * PANEL_WIDTH + X_MARGIN
                 if content.team_name is None:
                     text = content.remaining_time_str
