@@ -91,6 +91,10 @@ if [ "$(hostname)" == "cubemaster" ]; then
   chmod +x ~/view_cubemaster_logs.sh
   cp setup_cubemaster_service.sh ~/setup_cubemaster_service.sh
   chmod +x ~/setup_cubemaster_service.sh
+  cp start_cubemaster_service.sh ~/start_cubemaster_service.sh
+  chmod +x ~/start_cubemaster_service.sh
+  cp stop_cubemaster_service.sh ~/stop_cubemaster_service.sh
+  chmod +x ~/stop_cubemaster_service.sh
 else
   cp update_and_start_cubebox.sh ~/update_and_start_cubebox.sh
   chmod +x ~/update_and_start_cubebox.sh
