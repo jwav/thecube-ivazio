@@ -110,7 +110,7 @@ class CubeGuiTabNewTeamMixin:
                 f"Échec de la création de l'équipe {team_name} : pas de réponse du CubeMaster!",
                 "error")
             return
-        elif not report.ok:
+        elif not report.ack_ok:
             self.update_new_team_status_label(
                 f"Échec de la création de l'équipe {team_name} : {report.ack_info}",
                 "error")

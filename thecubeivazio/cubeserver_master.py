@@ -2,7 +2,6 @@
 This module handles everything related to TheCube's central room server, i.e. the raspberrypi4
 handling the CubeBoxes, the LED matrix displays, and the web page displayed on an HDMI monitor
 """
-import signal
 import threading
 import time
 
@@ -66,18 +65,24 @@ class CubeServerMaster:
                 self.log.info("Game status changed. Updating RGBMatrix and sending game status to frontdesk")
                 self.send_status_to_frontdesk()
 
-    def send_status_to_frontdesk(self):
+    def send_status_to_frontdesk(self) -> bool:
+        # EXPERIMENTAL: first, get the status of all cubeboxes
+        self.request_all_cubeboxes_statuses_one_by_one(reply_timeout=STATUS_REPLY_TIMEOUT)
+
+        self.log.info("Sending game status to frontdesk")
         report = self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status),
             require_ack=True, nb_tries=1)
         if not report:
             self.log.error("Failed to send game status to frontdesk")
+            return False
         else:
-            if not report.ok:
+            if not report.ack_ok:
                 self.log.warning("Sent game status to frontdesk but no ACK received")
             else:
                 self.log.success("Sent game status to frontdesk and received ACK")
             self._last_game_status_sent_to_frontdesk_hash = self.game_status.hash
+        return True
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
@@ -97,7 +102,8 @@ class CubeServerMaster:
                 self.log.success("Launched RGBMatrix Daemon process")
 
             self.log.info("Starting RGBMatrix Daemon")
-            self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=True)
+            self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=False)
+            # self.rgb_sender._debug = True
             self.log.success("Started RGBMatrix Daemon")
 
         self.log.info("Updating RGBMatrix Daemon")
@@ -196,16 +202,18 @@ class CubeServerMaster:
                     self._handle_request_cubemaster_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_TEAMS_STATUSES:
                     self._handle_request_all_teams_statuses_message(message)
-                elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUSES:
-                    self._handle_request_all_cubeboxes_statuses_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_TEAM_STATUS:
                     self._handle_request_team_status_message(message)
-                elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEMASTER_CUBEBOX_STATUS:
-                    self._handle_request_cubebox_status_message(message)
+                # elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEMASTER_CUBEBOX_STATUS:
+                #     self._handle_request_cubebox_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_TEAMS_STATUS_HASHES:
                     self._handle_request_all_teams_status_hashes_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUS_HASHES:
                     self._handle_request_all_cubeboxes_status_hashes_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES:
+                    self._handle_reply_all_cubeboxes_status_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS:
+                    self._handle_reply_cubebox_status(message)
                 else:
                     self.log.warning(f"Unhandled message : ({message.hash}) : {message}. Removing")
                 self.net.remove_msg_from_incoming_queue(message)
@@ -365,10 +373,6 @@ class CubeServerMaster:
         self.log.info(f"Received request cubemaster status message from {message.sender}")
         self.send_status_to_frontdesk()
 
-    def _handle_request_all_cubeboxes_statuses_message(self, message: cm.CubeMessage):
-        self.log.info(f"Received request all cubeboxes status message from {message.sender}")
-        self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllCubeboxesStatuses(self.net.node_name, self.cubeboxes))
-
     def _handle_request_all_teams_statuses_message(self, message: cm.CubeMessage):
         self.log.info(f"Received request all teams status message from {message.sender}")
         self.net.send_msg_to_frontdesk(cm.CubeMsgReplyAllTeamsStatuses(self.net.node_name, self.teams))
@@ -432,6 +436,74 @@ class CubeServerMaster:
             time.sleep(LOOP_PERIOD_SEC)
             pass
 
+    def request_all_cubeboxes_statuses_at_once(self, reply_timeout: Seconds = None) -> bool:
+        msg = cm.CubeMsgRequestAllCubeboxesStatuses(self.net.node_name)
+        report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
+        if not report:
+            self.log.error("Failed to send the request all cubeboxes status message")
+            return True
+        if reply_timeout is not None:
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUSES,
+                                                  timeout=reply_timeout)
+            if not reply_msg:
+                self.log.error("Failed to receive the all cubeboxes status reply")
+                return False
+            return self._handle_reply_all_cubeboxes_status_message(reply_msg)
+
+    def _handle_reply_all_cubeboxes_status_message(self, message: cm.CubeMessage) -> bool:
+        try:
+            self.log.info(f"Received reply all cubeboxes status message from {message.sender}")
+            acsr_msg = cm.CubeMsgReplyAllCubeboxesStatuses(copy_msg=message)
+            new_cubeboxes = acsr_msg.cubeboxes_statuses
+            assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
+            assert self.cubeboxes.update_from_cubeboxes(
+                new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
+            report  = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            assert report.success, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
+            return True
+        except Exception as e:
+            self.log.error(f"Error handling reply all cubeboxes status message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            return False
+
+    @cubetry
+    def _handle_reply_cubebox_status(self, message: cm.CubeMessage) -> bool:
+        self.log.info(f"Received reply cubebox status message from {message.sender}")
+        acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
+        new_cubebox = acsr_msg.cubebox
+        assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
+        assert self.cubeboxes.update_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
+        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        return True
+
+    def request_all_cubeboxes_statuses_one_by_one(self, reply_timeout: Seconds = None) -> bool:
+        """Send a message to the CubeMaster to request the status of all cubeboxes one by one.
+        if a reply_timout is specified, wait for the reply for that amount of time.
+        If the request send or the reply receive fails, return False."""
+        for cubebox_id in cubeid.CUBEBOX_IDS:
+            self.log.info(f"Requesting cubebox status for cubebox {cubebox_id}")
+            if not self.request_cubebox_status(cubebox_id, reply_timeout):
+                self.log.warning(f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
+                return False
+        self.log.success("All cubeboxes statuses requested")
+        return True
+
+    def request_cubebox_status(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
+        """Send a message to a CubeBox to request its status.
+        if a reply_timout is specified, wait for the reply for that amount of time.
+        If the request send or the reply receive fails, return False."""
+        msg = cm.CubeMsgRequestCubeboxStatus(self.net.node_name, cubebox_id)
+        report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
+        if not report:
+            self.log.error(f"Failed to send the request cubebox status message for cubebox {cubebox_id}")
+            return True
+        if reply_timeout is not None:
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS, timeout=reply_timeout)
+            if not reply_msg:
+                self.log.error(f"Failed to receive the cubebox status reply for cubebox {cubebox_id}")
+                return False
+            return self._handle_reply_cubebox_status(reply_msg)
+
 
 class CubeServerMasterWithPrompt(CubeServerMaster):
     def __init__(self):
@@ -493,11 +565,11 @@ def main(use_prompt=False):
         master = CubeServerMaster()
     atexit.register(master.stop)
 
-    master.log.setLevel(cube_logger.logging.INFO)
-    master.net.log.setLevel(cube_logger.logging.INFO)
-
     try:
         master.run()
+        master.log.setLevel(cube_logger.logging.INFO)
+        master.net.log.setLevel(cube_logger.logging.INFO)
+
         while True:
             time.sleep(1)
     except KeyboardInterrupt:

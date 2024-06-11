@@ -41,9 +41,7 @@ class CubeGuiTabAdminMixin:
     def request_servers_infos(self: 'CubeGuiForm'):
         self.ui: Ui_Form
         self.set_servers_info_status_label("hourglass", "En attente de réponse du CubeMaster...")
-        self.fd.request_all_cubeboxes_status()
-        time.sleep(1)
-        if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT):
+        if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT*4):
             self.set_servers_info_status_label("ok", "Mise à jour totale effectuée.")
         else:
             self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")

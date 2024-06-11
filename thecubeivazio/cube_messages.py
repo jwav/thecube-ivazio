@@ -27,7 +27,7 @@ class CubeMsgTypes(enum.Enum):
     REQUEST_VISION = "REQUEST_VISION"
     REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
     REQUEST_CUBEMASTER_STATUS_HASH = "REQUEST_CUBEMASTER_STATUS_HASH"
-    REQUEST_CUBEMASTER_CUBEBOX_STATUS = "REQUEST_CUBEMASTER_CUBEBOX_STATUS"
+    # REQUEST_CUBEMASTER_CUBEBOX_STATUS = "REQUEST_CUBEMASTER_CUBEBOX_STATUS"
     REQUEST_ALL_CUBEBOXES_STATUSES = "REQUEST_ALL_CUBEBOXES_STATUS"
     REQUEST_CUBEBOX_STATUS = "REQUEST_CUBEBOX_STATUS"
     REQUEST_TEAM_STATUS = "REQUEST_TEAM_STATUS"
@@ -107,6 +107,10 @@ class CubeMessage:
         """Returns an alphanumeric hash of the message, using SHA256"""
         import hashlib
         return hashlib.sha256(self.to_string().encode()).hexdigest()
+
+    @property
+    def shortinfo(self):
+        return f"Message [{self.msgtype.name}] ({self.hash})"
 
     def copy(self):
         ret = CubeMessage(self.msgtype, self.sender, **self.kwargs)
@@ -387,7 +391,7 @@ class CubeMsgRequestCubeboxStatus(CubeMessage):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REQUEST_CUBEMASTER_CUBEBOX_STATUS, sender, cube_id=cube_id)
+            super().__init__(CubeMsgTypes.REQUEST_CUBEBOX_STATUS, sender, cube_id=cube_id)
         self.require_ack = True
 
     @property

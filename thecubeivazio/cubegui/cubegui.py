@@ -54,6 +54,11 @@ class ServersInfoHasher:
 
 
 class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, CubeGuiTabAdminMixin):
+    TABINDEX_NEWTEAM = 0
+    TABINDEX_TEAMS = 1
+    TABINDEX_ADMIN = 2
+    TABINDEX_CONFIG = 3
+
     def __init__(self):
         super().__init__()
         self.ui = Ui_Form()
@@ -125,16 +130,20 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
                         self.update_new_team_rfid_status_label("RFID non valide", "error")
                         break
                     self.log.info(f"RFID line: {line}")
-                    self.ui.lineNewteamRfid.setText(f"{line.uid}")
-                    self.ui.lineTeamsRfid.setText(f"{line.uid}")
+                    # update the rfid display according to the current tab
+                    if self.ui.tabWidget.currentIndex() == self.TABINDEX_NEWTEAM:
+                        self.ui.lineNewteamRfid.setText(f"{line.uid}")
+                        if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(line.uid):
+                            self.log.info(f"RFID is in resetter list: {line.uid}")
+                            self.update_new_team_rfid_status_label("Ce RFID est un resetter", "attention")
+                            break
+                        else:
+                            self.update_new_team_rfid_status_label("RFID valide", "ok")
+                            break
+                    elif self.ui.tabWidget.currentIndex() == self.TABINDEX_TEAMS:
+                        self.ui.lineTeamsRfid.setText(f"{line.uid}")
                     self.fd.rfid.remove_line(line)
-                    if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(line.uid):
-                        self.log.info(f"RFID is in resetter list: {line.uid}")
-                        self.update_new_team_rfid_status_label("Ce RFID est un resetter", "attention")
-                        break
-                    else:
-                        self.update_new_team_rfid_status_label("RFID valide", "ok")
-                        break
+
 
         except Exception as e:
             self.log.error(f"Error in handle_rfid: {e}")
