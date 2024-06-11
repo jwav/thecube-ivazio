@@ -82,6 +82,25 @@ else
   echo "OK : project package install succeeded"
 fi
 
+echo "Copying scripts..."
+# if the hostname is cubemaster, copy the cubemaster scripts, otherwise copy the cubebox scripts
+if [ "$(hostname)" == "cubemaster" ]; then
+  cp update_and_start_cubemaster.sh ~/update_and_start_cubemaster.sh
+  chmod +x ~/update_and_start_cubemaster.sh
+  cp view_cubemaster_logs.sh ~/view_cubemaster_logs.sh
+  chmod +x ~/view_cubemaster_logs.sh
+  cp setup_cubemaster_service.sh ~/setup_cubemaster_service.sh
+  chmod +x ~/setup_cubemaster_service.sh
+else
+  cp update_and_start_cubebox.sh ~/update_and_start_cubebox.sh
+  chmod +x ~/update_and_start_cubebox.sh
+  cp view_cubebox_logs.sh ~/view_cubebox_logs.sh
+  chmod +x ~/view_cubebox_logs.sh
+  cp setup_cubebox_service.sh ~/setup_cubebox_service.sh
+  chmod +x ~/setup_cubebox_service.sh
+fi
+
+
 echo -e "${GREEN}Update OK: APT packages installed, git pulled, project package pip installed.${NC}"
 
 )
