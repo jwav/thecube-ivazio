@@ -184,7 +184,20 @@ class CubeRgbMatrixDaemon(SampleBase):
                     graphics.DrawText(canvas, self.font, x_time, Y_BOTTOM, self.textColor, time_text)
             time.sleep(1)
             canvas = self.matrix.SwapOnVSync(canvas)
+        self.clear_matrices()
         self.log.info("CubeRgbTextDrawer stopped")
+
+    def clear_matrices(self):
+        try:
+            canvas = self.matrix.CreateFrameCanvas()
+            canvas.Clear()
+        except Exception as e:
+            self.log.error(f"Error clearing matrices: {e}")
+
+
+
+
+
 
     def stop(self):
         self.log.info("CubeRgbTextDrawer stopping")
