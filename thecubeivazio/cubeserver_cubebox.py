@@ -12,7 +12,7 @@ import thecubeivazio.cube_messages as cm
 import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
-import thecubeivazio.cube_sounds as cube_buzzer
+import thecubeivazio.cube_sounds as cube_sounds
 from thecubeivazio import cube_game, cube_config
 from thecubeivazio.cube_common_defines import *
 
@@ -30,7 +30,7 @@ class CubeServerCubebox:
         # self.rfid = cube_rfid.CubeRfidKeyboardListener()
         self.rfid = cube_rfid.CubeRfidEventListener()
         self.button = cube_button.CubeButton()
-        self.buzzer = cube_buzzer.CubeSoundPlayer()
+        self.buzzer = cube_sounds.CubeSoundPlayer()
 
         # the last valid RFID and acknowledged line read
         self._status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)
@@ -100,9 +100,9 @@ class CubeServerCubebox:
 
     def run(self):
         """Start the RFID, button, and networking threads"""
-        self._thread_rfid = threading.Thread(target=self._rfid_loop)
-        self._thread_button = threading.Thread(target=self._button_loop)
-        self._thread_networking = threading.Thread(target=self._msg_handling_loop)
+        self._thread_rfid = threading.Thread(target=self._rfid_loop, daemon=True)
+        self._thread_button = threading.Thread(target=self._button_loop, daemon=True)
+        self._thread_networking = threading.Thread(target=self._msg_handling_loop, daemon=True)
         self._keep_running = True
         self._thread_rfid.start()
         self._thread_button.start()
@@ -309,9 +309,9 @@ class CubeServerCubebox:
             require_ack=False)
         return report.success
 
-class CubeServerCubeboxWithPrompt:
-    def __init__(self, node_name: str):
-        self.csc = CubeServerCubebox(node_name)
+class CubeServerCubeboxWithPrompt(CubeServerCubebox):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @staticmethod
     def print_help():
@@ -322,11 +322,8 @@ class CubeServerCubeboxWithPrompt:
         print("p: simulate a long press of the button")
         print("rcbs: send a REPLY_CUBEBOX_STATUS message to the CubeMaster")
 
-    def stop(self):
-        self.csc.stop()
 
-    def run(self):
-        self.csc.run()
+    def prompt_loop(self):
         while True:
             cmd = input("Enter a command (h for help): ")
             if cmd == "q":
@@ -335,25 +332,60 @@ class CubeServerCubeboxWithPrompt:
             elif cmd == "h":
                 self.print_help()
             elif cmd == "s":
-                print(self.csc.status)
+                print(self.status)
             elif cmd == "p":
-                self.csc.button.simulate_long_press()
+                self.button.simulate_long_press()
             elif cmd == "rcbs":
-                self.csc.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.csc.net.node_name, self.csc.status))
+                self.net.send_msg_to_cubemaster(cm.CubeMsgReplyCubeboxStatus(self.csc.net.node_name, self.csc.status))
             else:
                 print("Unknown command. Try again.")
+    def run(self):
+        super().run()
+        try:
+            self.prompt_loop()
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt. Stopping the CubeBox...")
+            self.stop()
 
-if __name__ == "__main__":
+
+
+
+def main(use_prompt=False):
     import atexit
-    box = CubeServerCubeboxWithPrompt("CubeBox1")
+    if use_prompt:
+        box = CubeServerCubeboxWithPrompt("CubeBox1")
+    else:
+        box = CubeServerCubebox("CubeBox1")
     atexit.register(box.stop)
 
-    box.csc.log.setLevel(cube_logger.logging.INFO)
-    box.csc.net.log.setLevel(cube_logger.logging.INFO)
-
+    box.log.setLevel(cube_logger.logging.INFO)
+    box.net.log.setLevel(cube_logger.logging.INFO)
 
     try:
         box.run()
     except KeyboardInterrupt:
         print("KeyboardInterrupt. Stopping CubeBox...")
         box.stop()
+
+def test():
+    import atexit
+    box = CubeServerCubebox("CubeBox1")
+    atexit.register(box.stop)
+    box.log.setLevel(cube_logger.logging.DEBUG)
+    box.net.log.setLevel(cube_logger.logging.INFO)
+    try:
+        box.run()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt. Stopping CubeBox...")
+        box.stop()
+
+
+if __name__ == "__main__":
+    import sys
+    if "--test" in sys.argv:
+        test()
+    elif "--prompt" in sys.argv:
+        main(use_prompt=True)
+    else:
+        main(use_prompt=False)
+
