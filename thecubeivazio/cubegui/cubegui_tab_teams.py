@@ -193,6 +193,7 @@ class CubeGuiTabTeamsMixin:
                 team.start_timestamp, separators=":", secs=False)
             end_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
                 team.end_timestamp, separators=":", secs=False)
+            self.log.critical(f"team: {team}, trophies_names: {team.trophies_names}")
             trophies_str = ", ".join((trophy_name for trophy_name in team.trophies_names))
 
             # print(f"team: {team}")
