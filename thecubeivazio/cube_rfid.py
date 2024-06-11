@@ -252,9 +252,9 @@ class CubeRfidEventListener(CubeRfidListenerBase):
                     time.sleep(1)
                     continue
                 if not self.is_setup():
-                    self.log.error("RFID listener not set up. Setting up...")
+                    self.log.error(f"{self.__class__.__name__} not set up. Setting up...")
                     if not self.setup():
-                        self.log.error("RFID listener setup failed. Retrying in 1 second...")
+                        self.log.error(f"{self.__class__.__name__} setup failed. Retrying in 1 second...")
                         time.sleep(1)
                         continue
                 # Continuously read events from the device
