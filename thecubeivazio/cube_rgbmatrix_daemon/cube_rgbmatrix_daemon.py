@@ -302,6 +302,9 @@ if __name__ == "__main__":
     do_test = not is_raspberry_pi()
 
     if "--test" in sys.argv or do_test:
+        # remove "--test" from sys.argv to avoid problems for the SampleBase
+        if "--test" in sys.argv:
+            sys.argv.remove("--test")
         test()
     else:
         main()
