@@ -243,7 +243,7 @@ def is_raspberry_pi():
         return False
 
 
-if __name__ == "__main__":
+def test():
     if is_raspberry_pi():
         print("Using the real CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixDaemon()
@@ -257,11 +257,49 @@ if __name__ == "__main__":
     })
     daemon.server._debug = True
 
+
     try:
-        assert daemon.start()
+        thread = threading.Thread(target=daemon.start, daemon=True)
+        thread.start()
+        print("FOOOOOOOO")
+        while True:
+            daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#>1718102445|5#>|6#>|7#>|8#>|9#>|10#>1718102455|11#>")
+            time.sleep(4)
+            daemon.server._handle_received_text("0#>|1#>|2#>|3#>|4#Budapest>1718102445|5#>|6#>|7#>|8#>|9#>|10#Paris>1718102455|11#>")
+            time.sleep(4)
+
     except Exception as e:
         print(f"RGB Daemon : Exception : {e}")
         exit(1)
     finally:
         daemon.stop()
         exit(0)
+
+def main():
+    if is_raspberry_pi():
+        print("Using the real CubeRgbMatrixDaemon")
+        daemon = CubeRgbMatrixDaemon()
+    else:
+        print("Using the mock CubeRgbMatrixDaemon")
+        daemon = CubeRgbMatrixMockDaemon()
+
+    try:
+        assert daemon.start()
+
+    except Exception as e:
+        print(f"RGB Daemon : Exception : {e}")
+        exit(1)
+    finally:
+        daemon.stop()
+        exit(0)
+
+if __name__ == "__main__":
+    import sys
+
+    # always test if not on raspberry pi
+    do_test = not is_raspberry_pi()
+
+    if "--test" in sys.argv or do_test:
+        test()
+    else:
+        main()

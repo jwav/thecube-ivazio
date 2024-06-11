@@ -154,26 +154,31 @@ class CubeRgbServer:
         while self._keep_listening:
             data, addr = self._sock.recvfrom(self.UDP_BUFSIZE)
             text = data.decode()
-            with self._lock:
-                self._last_text_received = data.decode()
             self._print(f"Received message: '{text}' from {addr}")
+            self._handle_received_text(text)
+
+    def _handle_received_text(self, text:str)->bool:
+        try:
+            self._print(f"Handling received text: {text}")
+            with self._lock:
+                self._last_text_received = text
             if text in (self.MSG_OK, self.MSG_ERROR):
-                continue
-            try:
-                d = CubeRgbMatrixContentDict.make_from_string(text)
-                if not d:
-                    self._print(f"Error decoding rgb_matrix_contents_dict: {text}")
-                    continue
-                self._rgb_matrix_contents_dict.update(d)
-                self._print(f"Updated rgb_matrix_contents_dict: {self._rgb_matrix_contents_dict}")
-                for matrix_id, content in self._rgb_matrix_contents_dict.items():
-                    self._print(f"matrix_id: {matrix_id}, content: {content}, end_timestamp: {content.end_timestamp}")
-                    self._print(f"remaining_secs: {content.remaining_secs}, remaining_time_str: {content.remaining_time_str}")
-                    break
-                self._send_text(self.MSG_OK)
-            except Exception as e:
-                self._print(f"Error updating rgb_matrix_contents_dict: {e}")
-                self._send_text(self.MSG_ERROR)
+                return True
+            d = CubeRgbMatrixContentDict.make_from_string(text)
+            if not d:
+                self._print(f"Error decoding rgb_matrix_contents_dict: {text}")
+                return False
+            self._rgb_matrix_contents_dict.update(d)
+            self._print(f"Updated rgb_matrix_contents_dict: {self._rgb_matrix_contents_dict}")
+            for matrix_id, content in self._rgb_matrix_contents_dict.items():
+                self._print(f"matrix_id: {matrix_id}, content: {content}, end_timestamp: {content.end_timestamp}")
+                self._print(f"remaining_secs: {content.remaining_secs}, remaining_time_str: {content.remaining_time_str}")
+                break
+            self._send_text(self.MSG_OK)
+        except Exception as e:
+            self._print(f"Error in _handle_received_str({text}): {e}")
+            self._send_text(self.MSG_ERROR)
+            return False
 
     def wait_for_ok(self, timeout=None) -> Optional[bool]:
         timeout = timeout or self.REPLY_TIMEOUT
