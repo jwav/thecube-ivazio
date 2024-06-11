@@ -103,16 +103,18 @@ class CubeRgbServer:
     MSG_ERROR = "ERROR"
     REPLY_TIMEOUT = 1
 
-    def __init__(self, is_master=False, is_rgb=False, debug=False, name="CubeRgbServer"):
+    def __init__(self, is_master=False, is_rgb=False, debug=False):
         self._debug = debug
 
         self.ip = self.UDP_IP
         if is_master and not is_rgb:
             self.listen_port = self.UDP_MASTER_LISTEN_PORT
             self.send_port = self.UDP_RGB_LISTEN_PORT
+            self.name = "CubeRgbServer-Master"
         elif is_rgb and not is_master:
             self.listen_port = self.UDP_RGB_LISTEN_PORT
             self.send_port = self.UDP_MASTER_LISTEN_PORT
+            self.name = "CubeRgbServer-RGB"
         else:
             raise ValueError("CubeRgbServer : is_master and is_rgb cannot be both True or both False")
         self._print(f"CubeRgbServer : is_master={is_master}, is_rgb={is_rgb}, listen_port={self.listen_port}, send_port={self.send_port}")
@@ -135,7 +137,9 @@ class CubeRgbServer:
     # if debug is true, behaves like print but precedes the message with the class name and its port
     def _print(self, *args, **kwargs):
         if self._debug:
-            print(f"{self.__class__.__name__}({self.listen_port}):", *args, **kwargs)
+            # print(f"{self.__class__.__name__}({self.listen_port}):", *args, **kwargs)
+            print(f"{self.name}({self.listen_port}):", *args, **kwargs)
+
 
     def start_listening(self):
         try:
