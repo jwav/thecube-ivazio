@@ -6,8 +6,7 @@ from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
 import thecubeivazio.cube_utils as cube_utils
 
-# todo: to_json
-# todo: remove local config. only one config file, the local is not needed
+
 class CubeConfig:
     """Class to hold configuration values."""
     # singleton instance of CubeConfig
@@ -17,7 +16,6 @@ class CubeConfig:
         self.log = cube_logger.CubeLogger(name="CubeConfig")
         self.log.setLevel(logging.INFO)
         self.config_dict = {}
-        self._trophies = []
 
         self.clear()
         self.load_global_config()
@@ -33,27 +31,52 @@ class CubeConfig:
             CubeConfig._instance = CubeConfig()
         return CubeConfig._instance
 
-    @cubetry
     def is_valid(self) -> bool:
-        assert self.config_dict, "config_dict is empty"
-        assert self.game_durations_str, "game_durations_str is empty"
-        assert self.game_durations_sec, "game_durations_sec is empty"
-        assert self.team_names, "team_names is empty"
-        assert self.all_trophies, "trophies is empty"
-        assert self.valid_node_names, "valid_node_names is empty"
-        return True
+        try:
+            assert self.config_dict, "config_dict is empty"
+            assert self.game_durations_str, "game_durations_str is empty"
+            assert self.game_durations_sec, "game_durations_sec is empty"
+            assert self.defined_team_names, "team_names is empty"
+            assert self.defined_trophies, "trophies is empty"
+            assert self.valid_node_names, "valid_node_names is empty"
+            return True
+        except Exception as e:
+            self.log.error(f"Error checking if config is valid: {e}")
+            return False
 
-    @cubetry
     def to_json(self) -> str:
         return json.dumps(self.config_dict)
 
-    @cubetry
-    def save_to_json(self, filepath: str=None) -> bool:
-        if filepath is None:
-            filepath = GLOBAL_CONFIG_FILEPATH
+    @classmethod
+    def make_from_json(cls, json_str: str) -> 'CubeConfig':
+        config = CubeConfig()
+        config.config_dict = json.loads(json_str)
+        return config
+
+    def load_from_json(self, json_str: str):
+        try:
+            self.config_dict = json.loads(json_str)
+        except Exception as e:
+            self.log.error(f"Error loading json: {e}")
+
+    def load_from_json_file(self, filepath: str = GLOBAL_CONFIG_FILEPATH):
+        with open(filepath, "r") as f:
+            self.load_from_json(f.read())
+
+    def save_to_json(self, filepath: str = GLOBAL_CONFIG_FILEPATH) -> bool:
         with open(filepath, "w") as f:
             f.write(self.to_json())
             return True
+
+    @cubetry
+    def load_from_encrypted_json_file(self, password: str, filepath: str = GLOBAL_ENCRYPTED_CONFIG_FILEPATH) -> bool:
+        self.load_from_json(cube_utils.read_encrypted_file(filepath, password))
+        return True
+
+    @cubetry
+    def save_to_encrypted_json(self, password:str, filepath: str = GLOBAL_ENCRYPTED_CONFIG_FILEPATH) -> bool:
+        cube_utils.encrypt_and_write_to_file(self.to_json(), filepath, password)
+        return True
 
     def to_string(self) -> str:
         return self.to_json()
@@ -66,21 +89,17 @@ class CubeConfig:
 
     def clear(self):
         self.config_dict = {}
-        self._trophies = []
 
+    @classmethod
+    @cubetry
+    def make_from_json_file(cls, filepath: str) -> 'CubeConfig':
+        with open(filepath, "r") as f:
+            return cls.make_from_json(f.read())
+
+    @cubetry
     def load_global_config(self):
         self.log.info(f"Loading global configuration from file : '{GLOBAL_CONFIG_FILEPATH}'")
-        try:
-            with open(GLOBAL_CONFIG_FILEPATH, "r") as f:
-                self.config_dict = json.load(f)
-        except FileNotFoundError:
-            self.log.error(f"Configuration file not found: '{GLOBAL_CONFIG_FILEPATH}'")
-            self.config_dict = {}
-        except json.JSONDecodeError:
-            self.log.error(f"Error decoding JSON configuration file: '{GLOBAL_CONFIG_FILEPATH}'")
-            self.config_dict = {}
-        self.log.info(f"Global configuration loaded")
-
+        self.load_from_json_file(GLOBAL_CONFIG_FILEPATH)
 
     @property
     def game_durations_str(self) -> Optional[Tuple[str]]:
@@ -101,19 +120,15 @@ class CubeConfig:
             return None
 
     @property
-    def team_names(self):
-        return self.config_dict.get("team_names", {})
+    def defined_team_names(self) -> Optional[list[str]]:
+        return self.config_dict.get("team_names", None)
 
     @property
-    def local_node_name(self):
-        return self.config_dict.get("local_node_name", None)
+    def valid_node_names(self) -> Optional[list[str]]:
+        return self.config_dict.get("valid_node_names", None)
 
     @property
-    def valid_node_names(self):
-        return self.config_dict.get("valid_node_names", [])
-
-    @property
-    def all_trophies(self) -> list['CubeTrophy']:
+    def defined_trophies(self) -> list['CubeTrophy']:
         try:
             from thecubeivazio.cube_game import CubeTrophy
             return [CubeTrophy(**trophy) for trophy in self.config_dict.get("trophies", [])]
@@ -127,25 +142,42 @@ class CubeConfig:
 
     @property
     def cubebox_audio_volume_percent(self) -> Optional[int]:
-        try: return int(self.config_dict.get("cubebox_audio_volume_percent"))
-        except: return None
+        try:
+            return int(self.config_dict.get("cubebox_audio_volume_percent"))
+        except:
+            return None
 
     @property
     def cubemaster_audio_volume_percent(self) -> Optional[int]:
-        try: return int(self.config_dict.get("cubemaster_audio_volume_percent"))
-        except: return None
+        try:
+            return int(self.config_dict.get("cubemaster_audio_volume_percent"))
+        except:
+            return None
 
     def set_field(self, field_name: str, value):
         self.config_dict[field_name] = value
 
+
+def encryption_test():
+    filepath = f"{GLOBAL_CONFIG_FILEPATH}.enctest"
+    config = CubeConfig()
+    config.set_field("test_field", "test_value")
+    config.save_to_encrypted_json(password="test_password", filepath=filepath)
+    config2 = CubeConfig()
+    config2.load_from_encrypted_json_file(password="test_password", filepath=filepath)
+    assert config.config_dict == config2.config_dict
+    assert config.config_dict["test_field"] == "test_value"
+    assert config.to_json() == config2.to_json()
+    print("encryption test passed")
+    exit(0)
+
+
 if __name__ == "__main__":
+    # encryption_test()
     config = CubeConfig()
     config.log.info("-----------------")
     config.log.info(f"config valid?: {config.is_valid()}")
     config.log.info(f"game_durations: {config.game_durations_str}")
     config.log.info(f"game_durations: {config.game_durations_sec}")
-    config.log.info(f"team_names: {config.team_names}")
-    config.log.info(f"local_node_name: {config.local_node_name}")
-    config.log.info(f"trophies: {config.all_trophies}")
-
-
+    config.log.info(f"team_names: {config.defined_team_names}")
+    config.log.info(f"trophies: {config.defined_trophies}")

@@ -61,7 +61,7 @@ RGB_SERVER_DIR = os.path.join(PROJECT_ROOT_PATH, "cube_rgbmatrix_daemon")
 # RGB_SERVER_TEXT = os.path.join(RGB_SERVER_DIR, RGBMATRIX_DAEMON_TEXT_FILENAME)
 
 GLOBAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json")
-LOCAL_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "local_config.json")
+GLOBAL_ENCRYPTED_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json.enc")
 DEFAULT_TROPHY_IMAGE_FILENAME = "default_trophy_image.png"
 DEFAULT_TROPHY_IMAGE_FILEPATH = os.path.join(IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILENAME)
 CUBEBOXES_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "cubeboxes_backup.json")
@@ -123,7 +123,7 @@ def cubetry(func):
 
 def test_paths():
     all_paths = [PROJECT_ROOT_PATH, SOUNDS_DIR, LOGS_DIR, CUBEGUI_DIR, CONFIG_DIR, GLOBAL_CONFIG_FILEPATH,
-                 LOCAL_CONFIG_FILEPATH, SCORESHEETS_DIR, IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILEPATH,
+                 SCORESHEETS_DIR, IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILEPATH,
                  CUBEBOXES_BACKUP_FILEPATH, TEAMS_JSON_DATABASE_FILEPATH]
     for path in all_paths:
         try:
@@ -142,7 +142,7 @@ def test_cubetry():
         return 1/0
     @cubetry
     def test_func3() -> bool:
-        # noinspection PyTypeChecker
+        # noinspection PyTypeChecker, PyUnusedLocal
         x = 1 + "1"
         return True
     @cubetry

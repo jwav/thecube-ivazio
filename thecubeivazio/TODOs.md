@@ -26,7 +26,6 @@
 
 - [ ] for the CubeFrontdeskWithPrompt, add commands
 
-
 # CubeRGBMatrix
 
 - [x] use a localhost server instead of a shared file
@@ -37,6 +36,7 @@
 # GUI
 
 - [ ] new tab for game config :
+  - [ ] SCREW THAT JUST IMPLEMENT FILE DECRYPTION/ENCRYPTION WERE NOT DOING A WHOLE GUI FOR THAT
   - [ ] trophies
   - [ ] game times
   - [ ] cubeboxes score formulae

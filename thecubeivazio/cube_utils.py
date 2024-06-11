@@ -280,7 +280,7 @@ def this_month_start_timestamp(timestamp: float = None):
     start_date = datetime.datetime(date.year, date.month, 1)
     return start_date.timestamp()
 
-def generate_key(password: str) -> bytes:
+def generate_encryption_key(password: str) -> bytes:
     # Derive a key from the password without using a salt
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -292,17 +292,38 @@ def generate_key(password: str) -> bytes:
     key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
     return key
 
-def encrypt_string(string: str, password: str) -> str:
-    key = generate_key(password)
+def encrypt_string_to_str(string: str, password: str) -> str:
+    return encrypt_string_to_bytes(string, password).decode()
+
+def encrypt_string_to_bytes(string: str, password: str) -> bytes:
+    key = generate_encryption_key(password)
     fernet = Fernet(key)
-    encrypted_string = fernet.encrypt(string.encode())
-    return encrypted_string.decode()
+    encrypted_bytes = fernet.encrypt(string.encode())
+    return encrypted_bytes
 
 def decrypt_string(encrypted_string: str, password: str) -> str:
-    key = generate_key(password)
+    key = generate_encryption_key(password)
     fernet = Fernet(key)
     decrypted_string = fernet.decrypt(encrypted_string.encode())
     return decrypted_string.decode()
+
+def encrypt_and_write_to_file(str_to_encrypt:str, filepath:str, password:str) -> bool:
+    """Encrypt the string str_to_encrypt using the password and write it to the file at file_path."""
+    with open(filepath, 'wb') as f:
+        encrypted_data = encrypt_string_to_bytes(str_to_encrypt, password)
+        f.write(encrypted_data)
+    return True
+
+def read_encrypted_file(filepath:str, password:str) -> str:
+    """Decrypt the file at file_path using the provided key."""
+    with open(filepath, 'rb') as f:
+        encrypted_data = f.read()
+        key = generate_encryption_key(password)
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data)
+        return decrypted_data.decode()
+
+
 
 def test_utils():
     print("git branch version:", get_git_branch_version())
@@ -329,8 +350,8 @@ def test_utils():
     print("today_start_timestamp():", today_start_timestamp())
     print("this_week_start_timestamp():", this_week_start_timestamp())
     print("this_month_start_timestamp():", this_month_start_timestamp())
-    print("encrypt_string('test', 'password'):", encrypt_string('test', 'password'))
-    print("decrypt_string(encrypt_string('test', 'password'), 'password'):", decrypt_string(encrypt_string('test', 'password'), 'password'))
+    print("encrypt_string('test', 'password'):", encrypt_string_to_str('test', 'password'))
+    print("decrypt_string(encrypt_string('test', 'password'), 'password'):", decrypt_string(encrypt_string_to_str('test', 'password'), 'password'))
 
 
 if __name__ == "__main__":

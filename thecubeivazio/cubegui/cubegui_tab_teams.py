@@ -31,7 +31,7 @@ class CubeGuiTabTeamsMixin:
 
         # fill the team names combo box
         team_names = [""]  # empty string for "all teams"
-        team_names.extend(self.fd.config.team_names)
+        team_names.extend(self.fd.config.defined_team_names)
         # print(team_names)
         self.ui.comboTeamsTeamName.clear()
         self.ui.comboTeamsTeamName.addItems(team_names)
@@ -53,7 +53,7 @@ class CubeGuiTabTeamsMixin:
 
 
         # fill the trophy combo box
-        trophies = self.fd.config.all_trophies
+        trophies = self.fd.config.defined_trophies
         self.ui.comboTeamsAddTrophy.clear()
         self.ui.comboTeamsAddTrophy.addItems((t.name for t in trophies))
 

@@ -76,11 +76,9 @@ class CubeNetworking:
         self._listenThread = None
         self._keep_running = False
 
-        self._udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
-        self._udp_socket.bind((self.UDP_LISTEN_IP, self.UDP_PORT))
+        self._udp_socket = None
+        self.init_socket()
+
 
         self.nodes_list = cubeid.NodesList()
         # add own IP to the nodes list
@@ -102,6 +100,15 @@ class CubeNetworking:
 
 
         self.heartbeats: Dict[str, float] = {}
+
+    @cubetry
+    def init_socket(self) -> bool:
+        self._udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
+        self._udp_socket.bind((self.UDP_LISTEN_IP, self.UDP_PORT))
+        return True
 
     def run(self):
         """launches the listening and sending threads.
@@ -316,20 +323,23 @@ class CubeNetworking:
         """Returns the IP of the current node"""
         return socket.gethostbyname(socket.gethostname())
 
-    @cubetry
     def _send_bytes_with_udp(self, data: bytes, ip: str, port: int) -> bool:
         """NOTE: we'll just be broadcasting now. there are problems when sending to a specific ip
         Sends bytes with UDP. Returns True if the bytes were sent, False otherwise."""
         # noinspection PyBroadException
-        if self.ONLY_USE_BROADCAST:
-            ip = self.UDP_BROADCAST_IP
-        with self._udp_send_lock:
-            result = self._udp_socket.sendto(data, (ip, port)), f"Failed to send bytes to {ip}:{port}: {data.decode()}"
-        if result:
-            self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
-            return True
-        else:
-            self.log.error(f"Failed to send bytes to {ip}:{port}: {data.decode()}")
+        try:
+            if self._udp_socket is None or self._udp_socket.fileno() == -1:
+                assert self.init_socket()
+
+            if self.ONLY_USE_BROADCAST:
+                ip = self.UDP_BROADCAST_IP
+            with self._udp_send_lock:
+                result = self._udp_socket.sendto(data, (ip, port))
+                assert result
+                self.log.debug(f"Sent bytes to {ip}:{port}: {data.decode()}")
+                return True
+        except Exception as e:
+            self.log.error(f"Error sending bytes to {ip}:{port}: {e}")
             return False
 
     def send_msg_with_udp(self, message: cm.CubeMessage, ip: str = None, port: int = None, require_ack:bool=None,

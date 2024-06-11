@@ -91,7 +91,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         ])
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
-        self.server = CubeRgbServer(is_rgb=True)
+        self.server = CubeRgbServer(is_rgb=True, debug=False)
         self.create_log_file()
 
         self.font = graphics.Font()
@@ -179,7 +179,7 @@ class CubeRgbMatrixMockDaemon(CubeRgbMatrixDaemon):
     instead of using the RGB matrix."""
     def __init__(self):
         self._keep_running = False
-        self.server = CubeRgbServer(is_rgb=True)
+        self.server = CubeRgbServer(is_rgb=True, debug=True)
         self.create_log_file()
 
     @classmethod
@@ -237,8 +237,10 @@ def is_raspberry_pi():
 
 if __name__ == "__main__":
     if is_raspberry_pi():
+        print("Using the real CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixDaemon()
     else:
+        print("Using the mock CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixMockDaemon()
 
     daemon.server._rgb_matrix_contents_dict = CubeRgbMatrixContentDict({

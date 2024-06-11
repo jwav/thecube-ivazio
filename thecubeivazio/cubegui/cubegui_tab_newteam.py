@@ -26,7 +26,7 @@ class CubeGuiTabNewTeamMixin:
         """Sets up the widgets of the tab 'Créer une nouvelle équipe'"""
 
         # fill the team names combo box
-        team_names = self.fd.config.team_names
+        team_names = self.fd.config.defined_team_names
         self.ui.comboNewteamTeamName.clear()
         self.ui.comboNewteamTeamName.addItems(team_names)
 

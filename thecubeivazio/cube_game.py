@@ -450,7 +450,7 @@ class CubeTrophy:
     @classmethod
     @cubetry
     def make_from_name(cls, trophy_name:str) -> Optional['CubeTrophy']:
-        for config_trophy in CubeConfig.get_config().all_trophies:
+        for config_trophy in CubeConfig.get_config().defined_trophies:
             if config_trophy.name == trophy_name:
                 return config_trophy
 

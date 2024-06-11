@@ -23,7 +23,7 @@ class CubeServerCubebox:
         self.config = cube_config.CubeConfig.get_config()
 
         if not node_name:
-            node_name = self.determine_node_name()
+            node_name = self.determine_cubebox_node_name()
 
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
@@ -67,13 +67,9 @@ class CubeServerCubebox:
             cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
             require_ack=False)
 
-    def determine_node_name(self) -> str:
-        """if no node name is specified, check the local config file for the node name.
-        If no node name is in the config file, determine the node name from the hostname"""
-        if self.config.local_node_name:
-            return self.config.local_node_name
-        else:
-            return cubeid.hostname_to_valid_cubebox_name()
+    def determine_cubebox_node_name(self) -> str:
+        """determine the node name from the hostname"""
+        return cubeid.hostname_to_valid_cubebox_name()
 
     @property
     def cubebox_index(self):

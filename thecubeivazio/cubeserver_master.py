@@ -101,7 +101,7 @@ class CubeServerMaster:
 
         self.log.info("Updating RGBMatrix Daemon")
         # create a CubeRgbMatrixContentDict from the game status
-        all_team_names = CubeConfig.get_config().team_names
+        all_team_names = CubeConfig.get_config().defined_team_names
         # self.log.critical(f"all_team_names : {all_team_names}")
         rmcd = crs.CubeRgbMatrixContentDict()
         self.log.info(f"We have those teams registered: {[team.name for team in self.teams]}")
@@ -510,8 +510,6 @@ def test_rgb():
             time.sleep(3)
             master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
 
-
-
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
@@ -519,13 +517,13 @@ def test_rgb():
     exit(0)
 
 
-if __name__ == "__main__":
-    test_rgb()
-    exit(0)
-
+def main(use_prompt=False):
     import atexit
 
-    master = CubeServerMasterWithPrompt()
+    if use_prompt:
+        master = CubeServerMasterWithPrompt()
+    else:
+        master = CubeServerMaster()
     atexit.register(master.stop)
 
     master.log.setLevel(cube_logger.logging.INFO)
@@ -537,3 +535,15 @@ if __name__ == "__main__":
         print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
         master.stop()
+
+
+if __name__ == "__main__":
+    # if `--test_rgb` is passed as an argument, run the test_rgb() function
+    import sys
+
+    if "--test_rgb" in sys.argv:
+        test_rgb()
+    elif "--prompt" in sys.argv:
+        main(use_prompt=True)
+    else:
+        main()

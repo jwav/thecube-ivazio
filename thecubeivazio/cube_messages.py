@@ -11,17 +11,18 @@ import thecubeivazio.cube_identification as cubeid
 
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_logger import CubeLogger
+from thecubeivazio.cube_config import CubeConfig
 
 
 class CubeMsgTypes(enum.Enum):
     """Enumeration of the different types of messages that can be sent."""
-    TEST = "TEST"
 
+    HEARTBEAT = "HEARTBEAT"
     # sent from a node to another node to acknowledge that the message has been received and handled.
     # can include an info, see the MsgAck class for standard values for `info`
-    HEARTBEAT = "HEARTBEAT"
     ACK = "ACK"
     WHO_IS = "WHO_IS"
+    CONFIG = "CONFIG"
 
     REQUEST_VISION = "REQUEST_VISION"
     REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
@@ -647,6 +648,23 @@ class CubeMsgWhoIs(CubeMessage):
         return str(self.kwargs.get("node_name_to_find"))
 
 
+class CubeMsgConfig(CubeMessage):
+    """Sent from any node to everyone to detail a configuration change."""
+
+    def __init__(self, sender=None, config: CubeConfig = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.CONFIG, sender, config=config.to_json())
+        self.require_ack = False
+
+    @property
+    def config(self) -> CubeConfig:
+        try:
+            return CubeConfig.make_from_json(self.kwargs.get("config"))
+        except Exception as e:
+            CubeLogger.static_error(f"Error parsing CubeConfig from CubeMsgConfig: {e}")
+
 # test functions
 
 def test_make_from_message():
@@ -766,7 +784,6 @@ def test_all_message_classes_to_and_from_string():
     test_message_to_and_from_string(CubeMsgRequestTeamStatus, "CubeFrontDesk", team_name="Team1")
     test_message_to_and_from_string(CubeMsgRequestCubemasterStatus, "CubeFrontDesk")
     test_message_to_and_from_string(CubeMsgRequestCubeboxStatus, "CubeFrontDesk", cube_id=1)
-    test_message_to_and_from_string(CubeMsgAck, "CubeMaster", acked_msg=CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeAckInfos.OK)
     test_message_to_and_from_string(CubeMsgHeartbeat, "CubeFrontDesk")
     test_message_to_and_from_string(CubeMsgRequestVersion, "CubeFrontDesk")
     test_message_to_and_from_string(CubeMsgReplyVersion, "CubeMaster")
@@ -887,7 +904,22 @@ def test_all_reply_messages():
     log.success("test_all_reply_messages PASSED")
 
 
+def test_config_message():
+    config = CubeConfig()
+    msg = CubeMsgConfig("CubeFrontDesk", config=config)
+    msg_str = msg.to_string()
+    msg2 = CubeMsgConfig(copy_msg=msg)
+    config2 = msg2.config
+    assert config.is_valid()
+    assert config2.is_valid()
+    assert config.to_json() == config2.to_json()
+    assert msg_str == msg2.to_string()
+    print("test_config_message PASSED")
+    exit(0)
+
+
 if __name__ == "__main__":
+    test_config_message()
     # test_all_message_classes_to_and_from_string()
     test_all_reply_messages()
     exit(0)
