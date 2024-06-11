@@ -46,11 +46,13 @@ print(f"RGBMATRIX_DAEMON_FONTS_DIR: {RGBMATRIX_DAEMON_FONTS_DIR}")
 NB_MATRICES = 2
 PANEL_WIDTH = 64
 PANEL_HEIGHT = 32
-X_MARGIN = 10
+X_MARGIN_TIME = 5
 Y_CENTERED = 20
 Y_TOP = 10
 Y_BOTTOM = 30
 LED_SLOWDOWN_GPIO = 5
+MAX_CHARS_FOR_WIDTH = 10
+PIXELS_PER_CHAR = PANEL_WIDTH // MAX_CHARS_FOR_WIDTH
 
 
 from rgbmatrix_samplebase import SampleBase
@@ -165,15 +167,18 @@ class CubeRgbMatrixDaemon(SampleBase):
             for matrix_id, content in contents_dict.items():
                 self.log.critical(f"matrix_id: {matrix_id}, content: {content}")
                 print(f"matrix_id: {matrix_id}, content: {content}, content.team_name: {content.team_name}, content.remaining_time_str: {content.remaining_time_str}")
-                x = matrix_id * PANEL_WIDTH + X_MARGIN
+                x_time = matrix_id * PANEL_WIDTH + X_MARGIN_TIME
                 if not content.team_name:
-                    text = content.remaining_time_str
-                    graphics.DrawText(canvas, self.font, x, Y_CENTERED, self.textColor, text)
+                    time_text = content.remaining_time_str
+                    graphics.DrawText(canvas, self.font, x_time, Y_CENTERED, self.textColor, time_text)
                 else:
-                    text = content.team_name
-                    graphics.DrawText(canvas, self.font, x, Y_TOP, self.textColor, text)
-                    text = content.remaining_time_str
-                    graphics.DrawText(canvas, self.font, x, Y_BOTTOM, self.textColor, text)
+                    name_text = content.team_name[:MAX_CHARS_FOR_WIDTH]
+                    name_width = len(name_text) * PIXELS_PER_CHAR
+                    x_name = matrix_id * PANEL_WIDTH + (PANEL_WIDTH - name_width) // 2
+
+                    time_text = content.remaining_time_str
+                    graphics.DrawText(canvas, self.font, x_name, Y_TOP, self.textColor, name_text)
+                    graphics.DrawText(canvas, self.font, x_time, Y_BOTTOM, self.textColor, time_text)
             time.sleep(1)
             canvas = self.matrix.SwapOnVSync(canvas)
         self.log.info("CubeRgbTextDrawer stopped")
