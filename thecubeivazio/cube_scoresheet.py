@@ -15,12 +15,16 @@ from thecubeivazio import cube_utils as cu
 from thecubeivazio import cube_identification as cid
 from thecubeivazio import cube_database as cdb
 from thecubeivazio.cube_logger import CubeLogger
+import pyppeteer
+from pyppeteer import launch
+
 
 from typing import List, Dict, Optional
 
 SCORESHEETS_CSS_FILEPATH = os.path.join(SCORESHEETS_DIR, "scoresheet.css")
 
 class CubeScoresheet:
+    browser_names = ['brave', 'chromium', 'firefox']
     def __init__(self, team: cg.CubeTeamStatus):
         self.team = team
         self.log = CubeLogger("CubeScoresheet")
@@ -32,11 +36,11 @@ class CubeScoresheet:
         subtitle = f"Équipe : « {team.custom_name} » | {team.name}"
 
         summary_rows = ''.join([
-            f'<tr><td class="col-left">Date:</td><td class="col-right">{creation_datetime_french}</td></tr>',
-            f'<tr><td class="col-left">Temps alloué:</td><td class="col-right">{cu.seconds_to_hhmmss_string(team.max_time_sec,separators=["h ", "m"], secs=False)}</td></tr>',
-            f'<tr><td class="col-left">Score total:</td><td class="col-right">{team.calculate_score()} points</td></tr>',
-            f'<tr><td class="col-left">Cubeboxes terminées:</td><td class="col-right">{len(team.completed_cubeboxes)} ({sum(box.calculate_score() for box in team.completed_cubeboxes)} points)</td></tr>',
-            f'<tr><td class="col-left">Trophées obtenus:</td><td class="col-right">{len(team.trophies_names)} ({sum(trophy.points for trophy in team.trophies)} points)</td></tr>'
+            f'<tr><td class="col-left">Date : </td><td class="col-right">{creation_datetime_french}</td></tr>',
+            f'<tr><td class="col-left">Temps alloué : </td><td class="col-right">{cu.seconds_to_hhmmss_string(team.max_time_sec,separators=["h ", "m"], secs=False)}</td></tr>',
+            f'<tr><td class="col-left">Score total : </td><td class="col-right">{team.calculate_score()} points</td></tr>',
+            f'<tr><td class="col-left">Cubeboxes terminées : </td><td class="col-right">{len(team.completed_cubeboxes)} ({sum(box.calculate_score() for box in team.completed_cubeboxes)} points)</td></tr>',
+            f'<tr><td class="col-left">Trophées obtenus : </td><td class="col-right">{len(team.trophies_names)} ({sum(trophy.points for trophy in team.trophies)} points)</td></tr>'
         ])
 
         all_time_teams = cdb.find_teams_matching()
@@ -71,11 +75,11 @@ class CubeScoresheet:
 
 
         ranking_rows = ''.join([
-            f'<tr><td class="col-left">Classement global:</td><td class="col-right">#{all_time_rank}</td></tr>'
-            f'<tr><td class="col-left">Classement pour cette année:</td><td class="col-right">#{this_years_rank}</td></tr>',
-            f'<tr><td class="col-left">Classement pour ce mois:</td><td class="col-right">#{this_months_rank}</td></tr>',
-            f'<tr><td class="col-left">Classement pour cette semaine:</td><td class="col-right">#{this_weeks_rank}</td></tr>',
-            f'<tr><td class="col-left">Classement pour aujourd\'hui:</td><td class="col-right">#{todays_rank}</td></tr>'
+            f'<tr><td class="col-left">Classement global : </td><td class="col-right">#{all_time_rank}</td></tr>'
+            f'<tr><td class="col-left">Classement pour cette année : </td><td class="col-right">#{this_years_rank}</td></tr>',
+            f'<tr><td class="col-left">Classement pour ce mois : </td><td class="col-right">#{this_months_rank}</td></tr>',
+            f'<tr><td class="col-left">Classement pour cette semaine : </td><td class="col-right">#{this_weeks_rank}</td></tr>',
+            f'<tr><td class="col-left">Classement pour aujourd\'hui : </td><td class="col-right">#{todays_rank}</td></tr>'
         ])
 
 
@@ -100,6 +104,7 @@ class CubeScoresheet:
                 <meta charset='utf-8'>
                 <title>{title}</title>
                 <link rel='stylesheet' type='text/css' href='./scoresheet.css'>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap">
             </head>
             <body>
             <div class="thecube-logo">
@@ -237,8 +242,8 @@ class CubeScoresheet:
 
 
     @cubetry
-    def save_as_pdf_file_with_pyppeteer(self, filepath: str = None, browser_choice='chromium') -> bool:
-        from pyppeteer import launch
+    def save_as_pdf_file_with_pyppeteer(self, filepath: str = None, browser_choice:str=None) -> str:
+        browser_choice = browser_choice or self.browser_names[0]
         if filepath is None:
             filename = f"{self.team.name}_{int(time.time())}_scoresheet.pdf"
             filepath = os.path.join(SCORESHEETS_DIR, filename)
@@ -255,13 +260,19 @@ class CubeScoresheet:
             browser = await launch(executablePath=browser_path, headless=True)
             page = await browser.newPage()
             await page.goto(f"file://{temp_html_path}")
-            await page.pdf({'path': filepath, 'format': 'A4'})
+
+            # Wait for the font to load
+            await page.evaluate("""async () => {
+                await document.fonts.ready;
+            }""")
+
+            await page.pdf({'path': filepath, 'format': 'A4', 'pageRanges': '1'})
             await browser.close()
 
         asyncio.get_event_loop().run_until_complete(main())
 
         self.log.success(f"Scoresheet saved as PDF: {filepath}")
-        return True
+        return filepath
 
     def find_browser_path(self, browser_name):
         # Check if the browser is in PATH
@@ -331,7 +342,7 @@ if __name__ == "__main__":
     print(f"Sample team: {sample_team}")
     scoresheet = CubeScoresheet(sample_team)
     scoresheet.log.setLevel(CubeLogger.LEVEL_DEBUG)
-    # scoresheet.save_as_html_file(os.path.join(SCORESHEETS_DIR, "test_scoresheet.html"))
+    scoresheet.save_as_html_file(os.path.join(SCORESHEETS_DIR, "test_scoresheet.html"))
     # scoresheet.save_as_pdf_file_with_weasyprint(os.path.join(SCORESHEETS_DIR, "test_scoresheet.pdf"))
     # scoresheet.save_as_pdf_file_with_selenium(os.path.join(SCORESHEETS_DIR, "test_scoresheet.pdf"))
     scoresheet.save_as_pdf_file_with_pyppeteer(

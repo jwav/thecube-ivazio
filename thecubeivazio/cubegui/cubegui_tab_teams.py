@@ -2,10 +2,15 @@
 
 import time
 
+import fitz  # PyMuPDF
+
+
+
 from PyQt5 import QtGui
-from PyQt5.QtCore import QFile
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox
+from PyQt5.QtCore import QFile, QIODevice
+from PyQt5.QtGui import QIcon, QPainter, QPdfWriter, QImage
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
+from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox, QFileDialog
 from cubegui_ui import Ui_Form
 
 from thecubeivazio import cube_game
@@ -26,6 +31,7 @@ if TYPE_CHECKING:
 
 # /_noinspection PyUnresolvedReferences
 class CubeGuiTabTeamsMixin:
+    self: 'CubeGuiForm'
     ui: Ui_Form
     log: cube_logger.CubeLogger
     fd: cfd.CubeServerFrontdesk
@@ -93,7 +99,11 @@ class CubeGuiTabTeamsMixin:
         return pixmap
 
     @cubetry
-    def get_selected_team(self, row) -> Optional[cube_game.CubeTeamStatus]:
+    def get_selected_team(self, row:int=None) -> Optional[cube_game.CubeTeamStatus]:
+        row = self.ui.tableTeamsResults.currentRow() if row is None else row
+        if row < 0:
+            self.log.error("get_selected_team: No row selected.")
+            return None
         team_creation_timestamp_text = self.ui.tableTeamsResults.item(row, 0).text()
         team_name = self.ui.tableTeamsResults.item(row, 2).text()
         self.log.debug(f"team_creation_timestamp_text: {team_creation_timestamp_text}")
@@ -118,7 +128,7 @@ class CubeGuiTabTeamsMixin:
         table.clearContents()
 
         # identify the team from the row of the cell clicked
-        team = self.get_selected_team(row)
+        team = self.get_selected_team()
 
         # update the trophies table
         table.setColumnCount(4)
@@ -155,8 +165,62 @@ class CubeGuiTabTeamsMixin:
     def update_tab_teams(self: 'CubeGuiForm'):
         pass
 
-    def click_print_scoresheet(self: 'CubeGuiForm'):
-        pass
+    @cubetry
+    def click_print_scoresheet(self):
+        from thecubeivazio.cube_scoresheet import CubeScoresheet
+        team = self.get_selected_team()
+        if not team:
+            self.log.error("click_print_scoresheet: No team selected.")
+            return
+        scoresheet = CubeScoresheet(team)
+
+        pdf_path = scoresheet.save_as_pdf_file_with_pyppeteer()
+        # pdf_path = "/mnt/shared/thecube-ivazio/thecubeivazio/scoresheets/Dakar_1718297441_scoresheet.pdf"
+        assert pdf_path, "Could not save the scoresheet as a PDF file."
+        assert os.path.exists(pdf_path), f"PDF file not found: {pdf_path}"
+
+        printer = QPrinter(QPrinter.HighResolution)
+
+        # Show the print preview dialog
+        preview_dialog = QPrintPreviewDialog(printer, self)
+        preview_dialog.paintRequested.connect(lambda: self.print_pdf(preview_dialog.printer(), pdf_path))
+        preview_dialog.showMaximized()
+        preview_dialog.exec()
+
+    def print_pdf(self, printer, pdf_path):
+        # Open the PDF document using PyMuPDF
+        pdf_doc = fitz.open(pdf_path)
+
+        # Create a QPainter object
+        painter = QPainter(printer)
+
+        # Iterate through the pages and render each one
+        for page_num in range(len(pdf_doc)):
+            page = pdf_doc.load_page(page_num)
+            pix = page.get_pixmap(alpha=False)  # Disable alpha to avoid blank images
+
+            # Convert the pixmap to a QImage
+            img = QImage(pix.samples, pix.width, pix.height, pix.stride, QImage.Format_RGB888)
+
+            # Check if the image dimensions are valid
+            if img.width() == 0 or img.height() == 0:
+                continue
+
+            # Calculate the scale factor
+            scale = min(printer.pageRect().width() / img.width(), printer.pageRect().height() / img.height())
+            painter.save()
+            painter.translate(printer.pageRect().x(), printer.pageRect().y())
+            painter.scale(scale, scale)
+
+            # Draw the image
+            painter.drawImage(0, 0, img)
+            painter.restore()
+
+            if page_num < len(pdf_doc) - 1:
+                printer.newPage()
+
+        painter.end()
+
 
     def click_add_trophy(self: 'CubeGuiForm'):
         pass
@@ -167,7 +231,7 @@ class CubeGuiTabTeamsMixin:
 
     @cubetry
     def click_delete_team(self: 'CubeGuiForm'):
-        team = self.get_selected_team(self.ui.tableTeamsResults.currentRow())
+        team = self.get_selected_team()
         assert team.is_valid()
         if not self.fd.teams.has_team(team):
             self.set_team_delete_info_status_label("error", "Il n'est pas permis de supprimer une équipe de la base de données.")

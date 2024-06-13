@@ -102,7 +102,7 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         self.setup_tab_teams()
         self.setup_tab_admin()
         self.setup_debug()
-        self.request_servers_infos()
+        # self.request_servers_infos()
         return True
 
     def setup_debug(self):
