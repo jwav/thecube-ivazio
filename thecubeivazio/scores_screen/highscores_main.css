@@ -41,6 +41,11 @@ body {
     font-size: 4em;
     margin-bottom: 10px;
     //font-weight: bold;
+    img{
+        height: 40px;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
 }
 .subtitle {
     font-family: 'Roboto Slab', 'Georgia', serif; /* For BORDEAUX */
@@ -50,17 +55,23 @@ body {
 }
 .highscores {
     display: flex;
-    justify-content: space-between;
-    //justify-content: center;
+    //display: block;
+    justify-content: center;
+    //justify-content: space-between;
+
     align-items: center;
     width: 100%;
-    max-width: 1200px;
-    margin: 0;
+    //max-width: 1500px;
+    //max-width: 100%;
+    max-width: 75%;
+    margin: 0 auto;
     padding:0;
 }
+
 iframe {
     //width: 100%;
-    width:200%;
+    width:100%;
+    //width:auto;
     height: 100%;
     border: none;
     //background-color: rgba(28, 46, 60, 0.9);
@@ -77,18 +88,20 @@ iframe {
     //height: calc(100vh - 200px);
     //height: 70vh;
     height:520px;
-    //margin-left: 50px;
-    margin: 0;
-    //padding-left: 200px;
-    //box-sizing: border-box;
     justify-content: center;
-    //align-items: center;
-    //overflow: hidden;
+    align-items: center;
+    overflow: hidden;
+    //padding-right:50px;
+    //margin-right: 200px;
+    //width: 100%;
+    display: flex;
+    width: 100%;
 }
 .playing-teams {
     width: 100%;
     height: auto;
     display: flex;
+    //display:block;
     justify-content: center;
     //align-items: center;
     //height: calc(100vh - 150px);
@@ -109,3 +122,4 @@ iframe {
         overflow: hidden;
 
 }
+
