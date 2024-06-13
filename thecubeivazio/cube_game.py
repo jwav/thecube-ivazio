@@ -232,7 +232,7 @@ class CubeboxStatus:
     def completion_time_str(self) -> str:
         completion_time = self.completion_time_sec
         if completion_time is None:
-            return "N/A"
+            return ""
         return cube_utils.seconds_to_hhmmss_string(completion_time)
 
     def calculate_score(self) -> Optional[int]:
@@ -688,71 +688,22 @@ class CubeTeamStatus:
         return self.start_timestamp is not None
 
 
-    def calculate_score(self) -> Optional[int]:
+    @cubetry
+    def calculate_score(self) -> int:
         """Calculate the total score of the team, based on the completion times of the cubeboxes it has played."""
         # memo: cid means cube_id, cts means completion_time_sec
         try:
             boxes_scores = [box.calculate_score() for box in self.completed_cubeboxes]
+        except:
+            boxes_scores = []
+        try:
             trophy_scores = [trophy.points for trophy in self.trophies]
-            CubeLogger.static_info(f"CubeTeamStatus.calculate_score boxes_scores={boxes_scores} trophy_scores={trophy_scores}")
+        except:
+            trophy_scores = []
+        CubeLogger.static_info(f"CubeTeamStatus.calculate_score boxes_scores={boxes_scores} trophy_scores={trophy_scores}")
 
-            return sum(boxes_scores) + sum(trophy_scores)
-        except Exception as e:
-            CubeLogger.static_error(f"CubeTeamStatus.calculate_score {e.with_traceback(None)}")
-            return None
+        return sum(boxes_scores) + sum(trophy_scores)
 
-
-    def generate_raw_score_sheet(self) -> str:
-        ret = f"Équipe {self.name} : {self.calculate_score()} points\n"
-        for box in self.completed_cubeboxes:
-            ret += f"Cube {box.cube_id} : {box.completion_time_str} : {box.calculate_score()} points\n"
-        return ret
-
-
-    def save_markdown_score_sheet(self) -> bool:
-        # if the scoresheet folder is not present, create it
-        if not os.path.exists(SCORESHEETS_DIR):
-            os.makedirs(SCORESHEETS_DIR)
-        filename = os.path.join(SCORESHEETS_DIR, f"{self.name}_scoresheet.md")
-        text = f"# Équipe {self.name}\n\n"
-        text += f"**Total Score:** {self.calculate_score()} points\n\n"
-        text += "## Completed Cubes\n\n"
-        for cube in self.completed_cubeboxes:
-            text += f"- **Cube {cube.cube_id}:** {cube.completion_time_str} - {cube.calculate_score()} points\n"
-        try:
-            with open(filename, 'w') as f:
-                f.write(text)
-            return True
-        except Exception as e:
-            print(e)
-            return False
-
-
-    # TODO: testme
-    def save_html_score_sheet(self) -> bool:
-        # if the scoresheet folder is not present, create it
-        if not os.path.exists(SCORESHEETS_DIR):
-            os.makedirs(SCORESHEETS_DIR)
-        filename = os.path.join(SCORESHEETS_DIR, f"{self.name}_scoresheet.html")
-        content = f"<h1>Équipe {self.name}</h1>\n\n"
-        content += f"<p><strong>Date:</strong> {time.strftime('%Y-%m-%d %H:%M:%S')}</p>\n\n"
-        content += f"<p><strong>Temps alloué:</strong> {cube_utils.seconds_to_hhmmss_string(self.max_time_sec)}</p>\n\n"
-        content += f"<p><strong>Score total:</strong> {self.calculate_score()} points</p>\n\n"
-        content += "<h2>Score détaillé</h2>\n\n"
-        content += "<ul>\n"
-        for cube in self.completed_cubeboxes:
-            content += f"<li><strong>Cube {cube.cube_id} : </strong> {cube.completion_time_str} - {cube.calculate_score()} points</li>\n"
-        content += "</ul>\n"
-        content = "<center>\n" + content + "</center>\n"
-        html = f"<!DOCTYPE html>\n<html>\n<head>\n<meta charset='utf-8'>\n<title>Ivazio - The Cube</title>\n<link rel='stylesheet' type='text/css' href='../resources/scoresheet_style.css'>\n</head>\n<body>\n{content}\n</body>\n</html>"
-
-        try:
-            with open(filename, 'w', encoding="utf-8") as f:
-                f.write(html)
-            return True
-        except Exception as e:
-            print(e)
-            return False
 
 
     @cubetry
@@ -849,6 +800,18 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         for t in self:
             if t.is_same_team_as(team):
                 return True
+
+    @cubetry
+    def get_team_ranking_among_list(self, team: CubeTeamStatus) -> int:
+        """Returns the ranking of the team among the teams in this list.
+        The ranking is based on the total score of the team."""
+        try:
+            assert self.has_team(team), f"CubeTeamsStatusList.get_team_ranking_among_list: team with cts {team.creation_timestamp} not in list"
+            return sorted(self, key=lambda t: t.calculate_score(), reverse=True).index(team) + 1
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.get_team_ranking_among_list {e}")
+            CubeLogger.static_error(f"creation_timestamps: {[t.creation_timestamp for t in self]}")
+            return 0
 
     def is_valid(self):
         try:

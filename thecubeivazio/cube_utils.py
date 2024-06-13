@@ -4,7 +4,7 @@ import time
 import subprocess
 import os
 import atexit
-from typing import Optional, Union
+from typing import Optional, Union, List
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
@@ -159,10 +159,12 @@ def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
 
 
 # TODO: test
-def seconds_to_hhmmss_string(seconds: Seconds, separators="hms",
+def seconds_to_hhmmss_string(seconds: Seconds, separators:Union[str,List[str]]="hms",
                              hours=True, mins=True, secs=True) -> str:
     """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
     try:
+        if isinstance(separators, str):
+            separators = list(separators)
         sep1 = separators[0] if len(separators) > 0 else ""
         sep2 = separators[1] if len(separators) > 1 else ""
         sep3 = separators[2] if len(separators) > 2 else ""
@@ -269,6 +271,12 @@ def this_week_start_timestamp(timestamp: float = None):
     start_date = datetime.datetime.strptime(f"{year}-{week_number}-1", "%Y-%W-%w")
     return start_date.timestamp()
 
+def one_week_ago_start_timestamp(timestamp: float = None):
+    """Get the timestamp of 7 days ago exactly" """
+    if timestamp is None:
+        timestamp = time.time()
+    return timestamp - 7 * 24 * 3600
+
 
 def this_month_start_timestamp(timestamp: float = None):
     """Get the timestamp of the start of the month of the timestamp"""
@@ -278,6 +286,16 @@ def this_month_start_timestamp(timestamp: float = None):
     date = datetime.datetime.fromtimestamp(timestamp)
     # create a new datetime object with the same year and month, but at 00:00:00 on the first day of the month
     start_date = datetime.datetime(date.year, date.month, 1)
+    return start_date.timestamp()
+
+def this_year_start_timestamp(timestamp: float = None):
+    """Get the timestamp of the start of the year of the timestamp"""
+    if timestamp is None:
+        timestamp = time.time()
+    # use datetime to get the date of the timestamp
+    date = datetime.datetime.fromtimestamp(timestamp)
+    # create a new datetime object with the same year, but at 00:00:00 on the first day of the year
+    start_date = datetime.datetime(date.year, 1, 1)
     return start_date.timestamp()
 
 def generate_encryption_key(password: str) -> bytes:

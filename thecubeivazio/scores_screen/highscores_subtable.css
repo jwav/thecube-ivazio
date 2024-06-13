@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap');
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+.container {
+    text-align: center;
+    padding: 40px;
+    //background-color: rgba(28, 46, 60, 0.9);
+    background:transparent;
+    width: 100%; /* Change this value */
+    max-width: 400px; /* Add this line */
+    border-radius: 10px;
+}
+.orange-line {
+    height: 2px;
+    background-color: #f39c12;
+    margin-bottom: 10px;
+}
+.highscore-header {
+            font-family: 'Roboto Slab', 'Georgia', serif; /* For BORDEAUX */
+
+    color: #f39c12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    //font-size: 2em;
+    //font-weight: bold;
+}
+.highscore-header img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+.highscore-header h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.highscore-table {
+    width: 100%;
+}
+.highscore-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+.bold-white {
+    font-weight: bold;
+    color: white;
+    font-size: 1.2em;
+}
+.col1, .col3 {
+    text-align: right;
+    width: 10%;
+}
+.col2 {
+    text-align: left;
+    width: 70%;
+}
+.team-name {
+    display: block;
+}
+.datetime {
+    font-weight: bold;
+    color: #f39c12;
+    font-size: 0.8em;
+}
+.orange-line-bottom {
+    height: 2px;
+    background-color: #f39c12;
+    //background-width: 100px;
+    margin-top: 10px;
+}

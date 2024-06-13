@@ -4,74 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playing Teams</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap');
-
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            //background-color: #1c2e3c;
-            //height: 100vh;
-
-
-        }
-        .container {
-            text-align: center;
-            padding: 40px;
-            background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
-            width: 100%;
-            max-width: 800px;
-            height: 100%;
-            border-radius: 10px;
-            margin-top: 0px;
-            //padding-top: 0px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 0px;
-            padding-top: 0px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
-        }
-        tr:nth-child(odd) {
-            background-color: rgba(16, 16, 16, 0.8); /* 80% transparent #101010 */
-        }
-        .bold-white {
-            font-weight: bold;
-            color: white;
-            font-size: 1.2em;
-        }
-        .datetime {
-            font-weight: bold;
-            color: #f39c12;
-            font-size: 0.8em;
-        }
-    </style>
+    <link rel="stylesheet" href="playing_teams_subtable.css">
 </head>
 <body>
+
 <div class="container">
+    <div class="highscore-header">
+        <img src="ribbon.png" alt="Ribbon Icon">
+        <h2 class="bold-white">EN JEU</h2>
+    </div>
     <table>
         <thead>
         <tr>
             <th>Rang</th>
             <th>Équipe</th>
+            <th>Cubes Faits</th>
             <th>Score</th>
         </tr>
         </thead>
@@ -82,6 +29,7 @@
                 <span>Les Gearlocs 4</span><br>
                 <span class="datetime">Feb 27 2024 2:00</span>
             </td>
+            <td class="bold-white">8</td> <!-- Random value -->
             <td class="bold-white">2725</td>
         </tr>
         <tr>
@@ -90,6 +38,7 @@
                 <span>Soul project</span><br>
                 <span class="datetime">Mar 25 2024 2:00</span>
             </td>
+            <td class="bold-white">3</td> <!-- Random value -->
             <td class="bold-white">2599</td>
         </tr>
         <tr>
@@ -98,6 +47,7 @@
                 <span>FC Varsovie</span><br>
                 <span class="datetime">May 09 2024 2:00</span>
             </td>
+            <td class="bold-white">10</td> <!-- Random value -->
             <td class="bold-white">2270</td>
         </tr>
         <tr>
@@ -106,6 +56,7 @@
                 <span>Les Losers</span><br>
                 <span class="datetime">Feb 27 2024 2:00</span>
             </td>
+            <td class="bold-white">6</td> <!-- Random value -->
             <td class="bold-white">2259</td>
         </tr>
         <tr>
@@ -114,6 +65,7 @@
                 <span>Les cordons bleu</span><br>
                 <span class="datetime">May 14 2024 2:00</span>
             </td>
+            <td class="bold-white">2</td> <!-- Random value -->
             <td class="bold-white">2258</td>
         </tr>
         </tbody>

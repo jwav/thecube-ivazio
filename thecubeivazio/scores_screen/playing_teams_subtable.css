@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap');
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //background-color: #1c2e3c;
+    //height: 100vh;
+
+
+}
+.container {
+    text-align: center;
+    padding: 40px;
+    //background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    border-radius: 10px;
+    margin-top: 0px;
+    //padding-top: 0px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0px;
+    padding-top: 0px;
+    background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
+
+}
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
+    font-weight: bold;
+}
+tr:nth-child(even) {
+    background-color: rgba(50, 50, 50, 0.8); /* 80% transparent grey */
+}
+tr:nth-child(odd) {
+    background-color: rgba(16, 16, 16, 0.8); /* 80% transparent #101010 */
+}
+.bold-white {
+    font-weight: bold;
+    color: white;
+    font-size: 1.2em;
+}
+.datetime {
+    font-weight: bold;
+    color: #f39c12;
+    font-size: 0.8em;
+}
+.highscore-header {
+            font-family: 'Roboto Slab', 'Georgia', serif; /* For BORDEAUX */
+
+    color: #f39c12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    //font-size: 2em;
+    //font-weight: bold;
+}
+
+
+.highscore-header img {
+    width: 40px;  /* Set the desired width */
+    height: 40px; /* Set the desired height */
+    margin-right: 10px; /* Optional: add some space between the icon and the text */
+}
+//*/
