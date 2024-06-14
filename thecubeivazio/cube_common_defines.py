@@ -55,6 +55,7 @@ CONFIG_DIR = os.path.join(PROJECT_ROOT_PATH, "config")
 IMAGES_DIR = os.path.join(CUBEGUI_DIR, "images")
 SAVES_DIR = os.path.join(PROJECT_ROOT_PATH, "saves")
 SCORESHEETS_DIR = os.path.join(PROJECT_ROOT_PATH, "scoresheets")
+HIGHSCORES_DIR = os.path.join(PROJECT_ROOT_PATH, "scores_screen")
 RGB_FONTS_DIR = os.path.join(PROJECT_ROOT_PATH, "rgb_fonts")
 RGB_SERVER_DIR = os.path.join(PROJECT_ROOT_PATH, "cube_rgbmatrix_daemon")
 # from thecubeivazio.cube_rgbmatrix_daemon.cube_rgbmatrix_daemon import RGBMATRIX_DAEMON_TEXT_FILENAME

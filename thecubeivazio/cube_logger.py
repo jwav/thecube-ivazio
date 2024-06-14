@@ -20,6 +20,8 @@ LEVEL_INFOPLUS = logging.INFO + 1
 LEVELNAME_INFOPLUS = "INFOPLUS"
 LEVEL_DEBUGPLUS = logging.DEBUG + 1
 LEVELNAME_DEBUGPLUS = "DEBUGPLUS"
+LEVEL_DEBUGMINUS = logging.DEBUG - 1
+LEVELNAME_DEBUGMINUS = "DEBUGMINUS"
 
 logging.addLevelName(LEVEL_SUCCESS, LEVELNAME_SUCCESS)
 logging.addLevelName(LEVEL_INFOPLUS, LEVELNAME_INFOPLUS)
@@ -70,6 +72,10 @@ class CubeLogger(logging.Logger):
     @classmethod
     def static_debugplus(cls, msg, *args, **kwargs):
         cls.get_static_logger().debugplus(msg, *args, **kwargs)
+
+    @classmethod
+    def static_debugminus(cls, msg, *args, **kwargs):
+        cls.get_static_logger().debugminus(msg, *args, **kwargs)
 
     def __init__(self, name: str, log_filename: str = None):
         super().__init__(name)
@@ -132,6 +138,10 @@ class CubeLogger(logging.Logger):
     def debugplus(self, msg, *args, **kwargs):
         if self.isEnabledFor(LEVEL_DEBUGPLUS):
             self._log(LEVEL_DEBUGPLUS, msg, args, **kwargs)
+
+    def debugminus(self, msg, *args, **kwargs):
+        if self.isEnabledFor(LEVEL_DEBUGMINUS):
+            self._log(LEVEL_DEBUGMINUS, msg, args, **kwargs)
 
 
 if __name__ == "__main__":

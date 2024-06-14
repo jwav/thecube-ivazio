@@ -255,7 +255,7 @@ def valid_simulation():
     test_eq(lambda: CUBEBOX.status.last_valid_rfid_line.uid, rfid_uid, "Cubebox should have the correct RFID UID")
     test_eq(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id, cube_id,
          "Team should be associated with the cubebox")
-    test_eq(lambda: MASTER.teams.get_team_by_name(team_name).completed_cubeboxes, [],
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name)._completed_cubeboxes, [],
          "Team should not have completed any cubeboxes")
     test_eq(lambda: str(MASTER.teams.get_team_by_name(team_name).max_time_sec), str(max_time),
          "Team should have the correct max time")

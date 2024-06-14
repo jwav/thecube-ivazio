@@ -11,6 +11,9 @@ vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x
 sudo apt-get install -y libgraphicsmagick++-dev libwebp-dev libjpeg-dev \
     libpng-dev libtiff-dev libgif-dev libossp-uuid-dev
 
+sudo apt-get install chromium-browser
+
+
 if [ -d "venv" ]; then
     echo "The venv folder exists."
 else

@@ -105,7 +105,7 @@ def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=N
         c.execute('DELETE FROM team_trophies WHERE team_id = ?', (team_id,))
 
         # Insert completed_cubeboxes
-        for cubebox in team.completed_cubeboxes:
+        for cubebox in team._completed_cubeboxes:
             c.execute('''INSERT INTO completed_cubeboxes (team_id, cube_id, current_team_name, start_timestamp,
                                                           win_timestamp, last_valid_rfid_line, state)
                          VALUES (?, ?, ?, ?, ?, ?, ?)''',

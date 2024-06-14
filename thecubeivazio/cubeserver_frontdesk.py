@@ -641,6 +641,7 @@ def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
             names, custom_names, rfid_uids, max_times, creation_timestamps, start_timestamps, completed_cubeboxes_list,
             trophies_names_list
     ):
+        completed_cubeboxes = cube_game.CompletedCubeboxStatusList(completed_cubeboxes)
         teams.add_team(cube_game.CubeTeamStatus(
             name=name,
             custom_name=custom_name,

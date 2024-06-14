@@ -36,15 +36,16 @@ body {
     //font-family: 'Impact', 'Arial', serif;
     font-family: 'Saira Condensed', 'Arial', sans-serif;
     font-weight: 400;
-
+    display:flex;
+    align-items: center;
 
     font-size: 4em;
     margin-bottom: 10px;
     //font-weight: bold;
     img{
-        height: 40px;
-        margin-right: 20px;
-        margin-left: 20px;
+        height: 60px;
+        margin-right: 40px;
+        margin-left: 40px;
     }
 }
 .subtitle {
