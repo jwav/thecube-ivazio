@@ -63,7 +63,7 @@ class CubeHttpServer:
         self._quiet = quiet
 
     def start_server(self) -> bool:
-        """tries to start the server until it returns True"""
+        """Tries to start the server until it returns True."""
         while True:
             print(f"Trying to start HTTP server on port {self._port}...")
             if self._start_server():
@@ -72,10 +72,7 @@ class CubeHttpServer:
         return True
 
     def _start_server(self) -> bool:
-        if self.is_server_running():
-            print(f"HTTP server already running on port {self._port}. Attempting to stop it.")
-            if not self.stop_server():
-                return False
+        self.stop_server()
 
         os.chdir(self._directory)
         if self._quiet:
@@ -84,8 +81,11 @@ class CubeHttpServer:
             handler = http.server.SimpleHTTPRequestHandler
 
         try:
-            # Create the server object
-            self._httpd = socketserver.TCPServer(("", self._port), handler)
+            # Create the server object with SO_REUSEADDR option
+            self._httpd = socketserver.TCPServer(("", self._port), handler, bind_and_activate=False)
+            self._httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self._httpd.server_bind()
+            self._httpd.server_activate()
         except OSError as e:
             print(f"Error: {e}")
             return False
@@ -105,52 +105,16 @@ class CubeHttpServer:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             return sock.connect_ex(('localhost', self._port)) == 0
 
+    @cubetry
     def stop_server(self) -> bool:
         print(f"Stopping HTTP server on port {self._port}")
-        try:
+        if self._httpd:
             self._httpd.shutdown()
             self._httpd.server_close()
             self._thread.join(timeout=1)
             print(f"Stopped HTTP server on port {self._port}")
             return True
-        except Exception as e:
-            print(f"Error stopping the server: {e}")
-            return False
 
-    def force_stop_server(self) -> bool:
-        stopped = False
-        for proc in psutil.process_iter(['pid', 'name']):
-            if proc.info['name'] == 'python' or proc.info['name'] == 'python3':
-                try:
-                    # Check if this process is using the port
-                    for conn in proc.connections(kind='inet'):
-                        if conn.laddr.port == self._port:
-                            proc.terminate()
-                            proc.wait(timeout=3)
-                            print(f"Stopped HTTP server on port {self._port}")
-                            stopped = True
-                except (psutil.AccessDenied, psutil.NoSuchProcess):
-                    continue
-
-        # Ensure port is free by forcefully terminating any process using it
-        if not stopped:
-            print("Killing process using port...")
-            for proc in psutil.process_iter(['pid', 'name']):
-                if proc.info['name'] == 'python' or proc.info['name'] == 'python3':
-                    try:
-                        # Force terminate if still using the port
-                        for conn in proc.connections(kind='inet'):
-                            if conn.laddr.port == self._port:
-                                proc.kill()
-                                print(f"Forcefully killed process using port {self._port}")
-                                stopped = True
-                    except (psutil.AccessDenied, psutil.NoSuchProcess):
-                        print(f"Error killing the process: {e}")
-                        continue
-
-        if not stopped:
-            print(f"HTTP server not found on port {self._port}")
-        return stopped
 
 def launch_chromium(url):
     # Suppress GTK warnings
@@ -241,7 +205,13 @@ class CubeHighscorePlayingTeamsSubtable:
             for cubebox in self.cubeboxes:
                 completed_cubebox = team.completed_cubeboxes.get_cubebox_by_cube_id(cubebox.cube_id)
                 cubebox_score = None if not completed_cubebox else completed_cubebox.calculate_score()
-                if not team.has_completed_cube(cubebox.cube_id) or cubebox_score is None:
+                if team.current_cubebox_id == cubebox.cube_id:
+                    cubeboxes_data += textwrap.dedent("""
+                        <td class='current-cubebox'>
+                        <img src="icon_playing.png" alt="X"/>
+                        </td>""")
+                    continue
+                elif not team.has_completed_cube(cubebox.cube_id) or cubebox_score is None:
                     cubeboxes_data += "<td></td>"
                     continue
                 cubebox_timestr = self.format_cubebox_completion_time(completed_cubebox.completion_time_sec)
@@ -602,23 +572,41 @@ def test_run():
     server = CubeHttpServer(HIGHSCORES_DIR, HTTP_SERVER_PORT)
     server.start_server()
     playing_teams_1 = cfd.generate_sample_teams()
+    playing_teams_1[0].current_cubebox_id = 1
+    cubeboxes_1 = cg.CubeboxesStatusList()
+
     playing_teams_2 = playing_teams_1.copy()
     playing_teams_2[0].completed_cubeboxes[0].win_timestamp += 100
     playing_teams_2[1].completed_cubeboxes[0].win_timestamp += 100
-    cubeboxes = playing_teams_1[0].completed_cubeboxes.copy()
-    for box in cubeboxes:
+    playing_teams_2[2].current_cubebox_id = 2
+    completed_cubeboxes_2 = playing_teams_1[0].completed_cubeboxes.copy()
+    for box in completed_cubeboxes_2:
         playing_teams_2[2].completed_cubeboxes.update_from_cubebox(box)
-    cubeboxes = cg.CubeboxesStatusList()
-    cube_highscore_screen = CubeHighscoreScreen(playing_teams_1, cubeboxes)
+
+    cubeboxes_2 = cg.CubeboxesStatusList()
+    for box in cubeboxes_1:
+        roll = random.choice([1,2,3,4,5])
+        if roll < 3:
+            box.set_state_ready_to_play()
+        elif roll == 4:
+            box.set_state_playing()
+        else:
+            box.set_state_waiting_for_reset()
+
+    cube_highscore_screen = CubeHighscoreScreen(playing_teams_1, cubeboxes_1)
     cube_highscore_screen.run()
     try:
         while True:
             time.sleep(1.1)
             cube_highscore_screen.playing_teams = playing_teams_2
+            cube_highscore_screen.cubeboxes = cubeboxes_2
             cube_highscore_screen.save_to_html_file(full_update=False)
             time.sleep(1.1)
             cube_highscore_screen.playing_teams = playing_teams_1
+            cube_highscore_screen.cubeboxes = cubeboxes_1
             cube_highscore_screen.save_to_html_file(full_update=False)
+    except KeyboardInterrupt:
+        pass
     except Exception as e:
         print(e)
     finally:

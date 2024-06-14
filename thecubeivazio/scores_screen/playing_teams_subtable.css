@@ -12,8 +12,6 @@ body {
     align-items: center;
     //background-color: #1c2e3c;
     //height: 100vh;
-
-
 }
 .container {
     text-align: center;
@@ -44,10 +42,17 @@ table {
 th, td {
     padding: 10px;
     text-align: center;
+    min-width: 70px;
+    //max-width: 50px;
 }
 th {
     background-color: rgba(128, 128, 128, 0.8); /* 80% transparent grey */
     font-weight: bold;
+    font-size: 1.2em;
+}
+td{
+font-size: 1.0em;
+
 }
 tr:nth-child(even) {
     background-color: rgba(50, 50, 50, 0.8); /* 80% transparent grey */
@@ -105,4 +110,10 @@ tr:nth-child(odd) {
 .waiting-for-reset{
     color: #808080;
     background-color: #000000;
+}
+
+.current-cubebox{
+    img{
+        height: 30px;
+    }
 }

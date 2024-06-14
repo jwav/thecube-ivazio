@@ -79,3 +79,9 @@ body {
     //background-width: 100px;
     margin-top: 10px;
 }
+
+.current-cubebox{
+    img{
+        height: 30px;
+    }
+}
