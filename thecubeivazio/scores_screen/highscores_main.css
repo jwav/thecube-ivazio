@@ -59,12 +59,14 @@ body {
     //display: block;
     justify-content: center;
     //justify-content: space-between;
+    background:transparent;
 
     align-items: center;
     width: 100%;
     //max-width: 1500px;
     //max-width: 100%;
-    max-width: 75%;
+    //max-width: 75%;
+    max-width: 90vw;
     margin: 0 auto;
     padding:0;
 }
@@ -82,6 +84,7 @@ iframe {
     padding:0;
     align-items: center;
     justify-content: center;
+    background:transparent;
 }
 .iframe-container {
     //width: 48%;
@@ -97,6 +100,7 @@ iframe {
     //width: 100%;
     display: flex;
     width: 100%;
+    background:transparent;
 }
 .playing-teams {
     width: 100%;

@@ -5,15 +5,17 @@
 body {
     font-family: 'Roboto', sans-serif;
     color: white;
+    background:transparent;
 }
 .container {
     text-align: center;
     padding: 40px;
     //background-color: rgba(28, 46, 60, 0.9);
     background:transparent;
-    width: 100%; /* Change this value */
-    max-width: 400px; /* Add this line */
+    width: 100vw; /* Change this value */
+    max-width: 85vw; /* Add this line */
     border-radius: 10px;
+    overflow: hidden;
 }
 .orange-line {
     height: 2px;

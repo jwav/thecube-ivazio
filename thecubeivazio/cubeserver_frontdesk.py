@@ -170,7 +170,7 @@ class CubeServerFrontdesk:
         acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
         new_cubebox = acsr_msg.cubebox
         assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
-        assert self.cubeboxes.update_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
+        assert self.cubeboxes.update_from_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
         self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
         return True
 

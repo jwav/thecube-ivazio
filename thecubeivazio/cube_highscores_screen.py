@@ -14,19 +14,143 @@ import random
 
 NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
 
-HIGHSCORES_SUBTABLE_LEFT_FILEPATH = os.path.join(HIGHSCORES_DIR, "highscores_subtable_left.html")
-HIGHSCORES_SUBTABLE_CENTER_FILEPATH = os.path.join(HIGHSCORES_DIR, "highscores_subtable_center.html")
-HIGHSCORES_SUBTABLE_RIGHT_FILEPATH = os.path.join(HIGHSCORES_DIR, "highscores_subtable_right.html")
-HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH = os.path.join(HIGHSCORES_DIR, "playing_teams_subtable.html")
-HIGHSCORES_MAIN_FILEPATH = os.path.join(HIGHSCORES_DIR, "highscores_main.html")
-BROWSER_NAMES = ['brave', 'chromium', 'firefox']
+
+HIGHSCORES_MAIN_FILENAME = "highscores_main.html"
+HIGHSCORES_SUBTABLE_LEFT_FILENAME = "highscores_subtable_left.html"
+HIGHSCORES_SUBTABLE_CENTER_FILENAME = "highscores_subtable_center.html"
+HIGHSCORES_SUBTABLE_RIGHT_FILENAME = "highscores_subtable_right.html"
+HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME = "playing_teams_subtable.html"
+TITLE_ICON_FILENAME = "icon_thecube_highscores_title.png"
+
+
+HIGHSCORES_SUBTABLE_LEFT_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_LEFT_FILENAME)
+HIGHSCORES_SUBTABLE_CENTER_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_CENTER_FILENAME)
+HIGHSCORES_SUBTABLE_RIGHT_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_RIGHT_FILENAME)
+HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME)
+HIGHSCORES_MAIN_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_MAIN_FILENAME)
+
+BROWSER_NAMES = ["chromium-browser"]
 PLAYING_TEAMS_UPDATE_PERIOD_SEC = 5
 FULL_UPDATE_PERIOD_SEC = 30
 DEFAULT_BROWSER_NAME = "brave"
+HTTP_SERVER_PORT = 8000
+HTTP_HIGHSCORES_MAIN_URL = "http://localhost:8000/highscores_main.html"
 
 import webbrowser
 import psutil
 
+
+import http.server
+import socketserver
+import os
+import socketserver
+import os
+import socket
+
+
+
+
+class CubeHttpServer:
+    class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, format, *args):
+            pass
+
+    def __init__(self, directory, port=8000, quiet=True):
+        self._directory = directory
+        self._port = port
+        self._httpd = None
+        self._thread = None
+        self._quiet = quiet
+
+    def start_server(self) -> bool:
+        """tries to start the server until it returns True"""
+        while True:
+            print(f"Trying to start HTTP server on port {self._port}...")
+            if self._start_server():
+                break
+            time.sleep(1)
+        return True
+
+    def _start_server(self) -> bool:
+        if self.is_server_running():
+            print(f"HTTP server already running on port {self._port}. Attempting to stop it.")
+            if not self.stop_server():
+                return False
+
+        os.chdir(self._directory)
+        if self._quiet:
+            handler = self.QuietHTTPRequestHandler
+        else:
+            handler = http.server.SimpleHTTPRequestHandler
+
+        try:
+            # Create the server object
+            self._httpd = socketserver.TCPServer(("", self._port), handler)
+        except OSError as e:
+            print(f"Error: {e}")
+            return False
+
+        # Start the server in a separate thread
+        def server_thread():
+            print(f"Serving HTTP on port {self._port} (http://localhost:{self._port}/) from {self._directory}")
+            self._httpd.serve_forever()
+
+        self._thread = threading.Thread(target=server_thread)
+        self._thread.daemon = True
+        self._thread.start()
+        print(f"HTTP server started on port {self._port}")
+        return True
+
+    def is_server_running(self) -> bool:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            return sock.connect_ex(('localhost', self._port)) == 0
+
+    def stop_server(self) -> bool:
+        print(f"Stopping HTTP server on port {self._port}")
+        try:
+            self._httpd.shutdown()
+            self._httpd.server_close()
+            self._thread.join(timeout=1)
+            print(f"Stopped HTTP server on port {self._port}")
+            return True
+        except Exception as e:
+            print(f"Error stopping the server: {e}")
+            return False
+
+    def force_stop_server(self) -> bool:
+        stopped = False
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info['name'] == 'python' or proc.info['name'] == 'python3':
+                try:
+                    # Check if this process is using the port
+                    for conn in proc.connections(kind='inet'):
+                        if conn.laddr.port == self._port:
+                            proc.terminate()
+                            proc.wait(timeout=3)
+                            print(f"Stopped HTTP server on port {self._port}")
+                            stopped = True
+                except (psutil.AccessDenied, psutil.NoSuchProcess):
+                    continue
+
+        # Ensure port is free by forcefully terminating any process using it
+        if not stopped:
+            print("Killing process using port...")
+            for proc in psutil.process_iter(['pid', 'name']):
+                if proc.info['name'] == 'python' or proc.info['name'] == 'python3':
+                    try:
+                        # Force terminate if still using the port
+                        for conn in proc.connections(kind='inet'):
+                            if conn.laddr.port == self._port:
+                                proc.kill()
+                                print(f"Forcefully killed process using port {self._port}")
+                                stopped = True
+                    except (psutil.AccessDenied, psutil.NoSuchProcess):
+                        print(f"Error killing the process: {e}")
+                        continue
+
+        if not stopped:
+            print(f"HTTP server not found on port {self._port}")
+        return stopped
 
 def launch_chromium(url):
     # Suppress GTK warnings
@@ -258,10 +382,44 @@ class CubeHighscoreScreen:
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Highscores TheCube</title>
-            <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Slab:wght@700&family=Saira+Condensed:wght@400&display=swap" rel="stylesheet">
+            <!--<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Slab:wght@700&family=Saira+Condensed:wght@400&display=swap" rel="stylesheet">-->
             <link rel="stylesheet" href="highscores_main.css">
             <!-- TOO MUCH FLICKER -->
             <!--<meta http-equiv="refresh" content="1">-->
+            <script>
+        function refreshPlayingTeamsIframe() {
+            const visibleIframe = document.getElementById('playing_teams_subtable');
+            const hiddenIframe = document.getElementById('hidden_iframe');
+
+            console.log('Refreshing playing teams iframe...');
+            hiddenIframe.src = visibleIframe.src;
+
+            hiddenIframe.onload = () => {
+                try {
+                    const hiddenDoc = hiddenIframe.contentDocument || hiddenIframe.contentWindow.document;
+                    const newContent = hiddenDoc.body ? hiddenDoc.body.innerHTML : null;
+
+                    if (newContent) {
+                        console.log('New content:', newContent);
+                        visibleIframe.contentDocument.body.innerHTML = newContent;
+                        console.log('Visible iframe updated.');
+                    } else {
+                        console.error('Hidden iframe content not accessible.');
+                    }
+                } catch (error) {
+                    console.error('Error accessing hidden iframe content:', error);
+                }
+            };
+
+            hiddenIframe.onerror = () => {
+                console.error('Error loading hidden iframe.');
+            };
+        }
+
+        
+                // Refresh the playing teams iframe every 5 seconds
+                setInterval(refreshPlayingTeamsIframe, 500);
+            </script>
         </head>
         """)
 
@@ -271,11 +429,22 @@ class CubeHighscoreScreen:
                           cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.playing_teams}"
         self.playing_teams.sort_by_score()
         self.cubeboxes = cubeboxes.copy()
-        self.highscores_subtable_left_filepath = HIGHSCORES_SUBTABLE_LEFT_FILEPATH
-        self.highscores_subtable_center_filepath = HIGHSCORES_SUBTABLE_CENTER_FILEPATH
-        self.highscores_subtable_right_filepath = HIGHSCORES_SUBTABLE_RIGHT_FILEPATH
-        self.playing_teams_subtable_filepath = HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH
-        self.title_icon_filepath = os.path.join(IMAGES_DIR, "icon_thecube_dark_396x395.png")
+
+        self.use_full_filepaths = False
+
+        if self.use_full_filepaths:
+            self.highscores_subtable_left_filepath = HIGHSCORES_SUBTABLE_LEFT_FILEPATH
+            self.highscores_subtable_center_filepath = HIGHSCORES_SUBTABLE_CENTER_FILEPATH
+            self.highscores_subtable_right_filepath = HIGHSCORES_SUBTABLE_RIGHT_FILEPATH
+            self.playing_teams_subtable_filepath = HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH
+            self.title_icon_filepath = os.path.join(IMAGES_DIR, TITLE_ICON_FILENAME)
+        else:
+            self.highscores_subtable_left_filepath = HIGHSCORES_SUBTABLE_LEFT_FILENAME
+            self.highscores_subtable_center_filepath = HIGHSCORES_SUBTABLE_CENTER_FILENAME
+            self.highscores_subtable_right_filepath = HIGHSCORES_SUBTABLE_RIGHT_FILENAME
+            self.playing_teams_subtable_filepath = HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME
+            self.title_icon_filepath = TITLE_ICON_FILENAME
+
         self._is_initialized = False
         self._last_full_update_timestamp = None
         self._last_playing_teams_update_timestamp = None
@@ -356,8 +525,11 @@ class CubeHighscoreScreen:
 
             </div>
             <div class="playing-teams">
-                <iframe src="{self.playing_teams_subtable_filepath}"></iframe>
+                <iframe id="playing_teams_subtable" src="{self.playing_teams_subtable_filepath}"></iframe>
             </div>
+            
+            <!-- Hidden iframe for double buffering -->
+            <iframe id="hidden_iframe" style="display:none;"></iframe>
             </body>
             
             </html>
@@ -427,22 +599,31 @@ def test_CubeHighscoreScreen():
     cube_highscore_screen.save_to_html_file(os.path.join("scores_screen", "test_highscores_screen.html"))
 
 def test_run():
+    server = CubeHttpServer(HIGHSCORES_DIR, HTTP_SERVER_PORT)
+    server.start_server()
     playing_teams_1 = cfd.generate_sample_teams()
     playing_teams_2 = playing_teams_1.copy()
     playing_teams_2[0].completed_cubeboxes[0].win_timestamp += 100
+    playing_teams_2[1].completed_cubeboxes[0].win_timestamp += 100
+    cubeboxes = playing_teams_1[0].completed_cubeboxes.copy()
+    for box in cubeboxes:
+        playing_teams_2[2].completed_cubeboxes.update_from_cubebox(box)
     cubeboxes = cg.CubeboxesStatusList()
     cube_highscore_screen = CubeHighscoreScreen(playing_teams_1, cubeboxes)
     cube_highscore_screen.run()
     try:
         while True:
-            time.sleep(1)
+            time.sleep(1.1)
             cube_highscore_screen.playing_teams = playing_teams_2
-            time.sleep(1)
+            cube_highscore_screen.save_to_html_file(full_update=False)
+            time.sleep(1.1)
             cube_highscore_screen.playing_teams = playing_teams_1
-    except KeyboardInterrupt:
-        pass
+            cube_highscore_screen.save_to_html_file(full_update=False)
+    except Exception as e:
+        print(e)
     finally:
         cube_highscore_screen.stop()
+        server.stop_server()
 
 if __name__ == "__main__":
     # test_CubeHighscorePlayingTeamsSubtable()

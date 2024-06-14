@@ -242,7 +242,7 @@ class CubeServerMaster:
             # so if we're here, it means that the previous cubebox is not being played by another team
             team.resign_current_cube()
             current_cubebox.set_state_waiting_for_reset()
-            self.cubeboxes.update_cubebox(current_cubebox)
+            self.cubeboxes.update_from_cubebox(current_cubebox)
         # now, whatever the case, we just register this team to the cubebox they badged onto
         # update the local cubeboxes teams status lists
         new_cubebox = self.cubeboxes.get_cubebox_by_cube_id(new_cubebox_id)
@@ -251,7 +251,7 @@ class CubeServerMaster:
         #  I don't think it matters since the timestamps used to compute the scores
         #  are those from the CubeBox, not the CubeMaster
         new_cubebox.start_timestamp = time.time()
-        self.cubeboxes.update_cubebox(new_cubebox)
+        self.cubeboxes.update_from_cubebox(new_cubebox)
         # update the local teams and cubeboxes status lists
         team.current_cubebox_id = new_cubebox.cube_id
         # if this is the first assignment for this team, also record the start time
@@ -336,7 +336,7 @@ class CubeServerMaster:
         # indicate that the cubebox needs to be reset by a staff member
         cubebox.set_state_waiting_for_reset()
         # and update the local cubeboxes teams status lists
-        self.cubeboxes.update_cubebox(cubebox)
+        self.cubeboxes.update_from_cubebox(cubebox)
 
     def _handle_frontdesk_new_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received new team message from {message.sender}")
@@ -485,7 +485,7 @@ class CubeServerMaster:
         acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
         new_cubebox = acsr_msg.cubebox
         assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
-        assert self.cubeboxes.update_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
+        assert self.cubeboxes.update_from_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
         self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
         return True
 

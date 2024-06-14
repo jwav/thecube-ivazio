@@ -280,7 +280,7 @@ class CubeboxesStatusList(List[CubeboxStatus]):
     @cubetry
     def update_from_cubeboxes(self, cubeboxes: Iterable[CubeboxStatus]) -> bool:
         for box in cubeboxes:
-            self.update_cubebox(box)
+            self.update_from_cubebox(box)
         return True
 
     @cubetry
@@ -293,7 +293,7 @@ class CubeboxesStatusList(List[CubeboxStatus]):
 
     @cubetry
     def append(self, box: CubeboxStatus):
-        self.update_cubebox(box)
+        self.update_from_cubebox(box)
 
     @cubetry
     @property
@@ -353,7 +353,7 @@ class CubeboxesStatusList(List[CubeboxStatus]):
             # print(f"d (type={type(d)}: {d}")
             for box_data in d[cls.JSON_ROOT_OBJECT_NAME]:
                 # print(f"box_data (type={type(box_data)}) : {box_data}")
-                ret.update_cubebox(CubeboxStatus.make_from_dict(box_data))
+                ret.update_from_cubebox(CubeboxStatus.make_from_dict(box_data))
             return ret
         except Exception as e:
             CubeLogger.static_error(f"CubeboxesStatusList.make_from_dict {e.with_traceback(None)}")
@@ -372,7 +372,7 @@ class CubeboxesStatusList(List[CubeboxStatus]):
         return cls.make_from_dict(kwargs)
 
     @cubetry
-    def update_cubebox(self, cubebox: CubeboxStatus) -> bool:
+    def update_from_cubebox(self, cubebox: CubeboxStatus) -> bool:
         if not cubebox:
             return False
         # if we have it, update it
@@ -1193,9 +1193,9 @@ def test_json():
     assert teams_list == teams_list_2
 
     boxes_list = CubeboxesStatusList()
-    boxes_list.update_cubebox(
+    boxes_list.update_from_cubebox(
         CubeboxStatus(cube_id=1, current_team_name="Budapest", start_timestamp=1.0, win_timestamp=2.0))
-    boxes_list.update_cubebox(
+    boxes_list.update_from_cubebox(
         CubeboxStatus(cube_id=2, current_team_name="Paris", start_timestamp=1.0, win_timestamp=2.0))
     boxes_list_2 = CubeboxesStatusList.make_from_json(boxes_list.to_json())
     log.debug("-------------------")
