@@ -13,7 +13,8 @@ from thecubeivazio import cubeserver_frontdesk as cfd
 import random
 
 NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
-
+# TODO: implement
+NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE = 10
 
 HIGHSCORES_MAIN_FILENAME = "highscores_main.html"
 HIGHSCORES_SUBTABLE_LEFT_FILENAME = "highscores_subtable_left.html"
@@ -21,7 +22,6 @@ HIGHSCORES_SUBTABLE_CENTER_FILENAME = "highscores_subtable_center.html"
 HIGHSCORES_SUBTABLE_RIGHT_FILENAME = "highscores_subtable_right.html"
 HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME = "playing_teams_subtable.html"
 TITLE_ICON_FILENAME = "icon_thecube_highscores_title.png"
-
 
 HIGHSCORES_SUBTABLE_LEFT_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_LEFT_FILENAME)
 HIGHSCORES_SUBTABLE_CENTER_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_CENTER_FILENAME)
@@ -36,84 +36,9 @@ DEFAULT_BROWSER_NAME = "brave"
 HTTP_SERVER_PORT = 8000
 HTTP_HIGHSCORES_MAIN_URL = "http://localhost:8000/highscores_main.html"
 
-import webbrowser
 import psutil
 
-
-import http.server
-import socketserver
-import os
-import socketserver
-import os
-import socket
-
-
-
-
-class CubeHttpServer:
-    class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-        def log_message(self, format, *args):
-            pass
-
-    def __init__(self, directory, port=8000, quiet=True):
-        self._directory = directory
-        self._port = port
-        self._httpd = None
-        self._thread = None
-        self._quiet = quiet
-
-    def start_server(self) -> bool:
-        """Tries to start the server until it returns True."""
-        while True:
-            print(f"Trying to start HTTP server on port {self._port}...")
-            if self._start_server():
-                break
-            time.sleep(1)
-        return True
-
-    def _start_server(self) -> bool:
-        self.stop_server()
-
-        os.chdir(self._directory)
-        if self._quiet:
-            handler = self.QuietHTTPRequestHandler
-        else:
-            handler = http.server.SimpleHTTPRequestHandler
-
-        try:
-            # Create the server object with SO_REUSEADDR option
-            self._httpd = socketserver.TCPServer(("", self._port), handler, bind_and_activate=False)
-            self._httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self._httpd.server_bind()
-            self._httpd.server_activate()
-        except OSError as e:
-            print(f"Error: {e}")
-            return False
-
-        # Start the server in a separate thread
-        def server_thread():
-            print(f"Serving HTTP on port {self._port} (http://localhost:{self._port}/) from {self._directory}")
-            self._httpd.serve_forever()
-
-        self._thread = threading.Thread(target=server_thread)
-        self._thread.daemon = True
-        self._thread.start()
-        print(f"HTTP server started on port {self._port}")
-        return True
-
-    def is_server_running(self) -> bool:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            return sock.connect_ex(('localhost', self._port)) == 0
-
-    @cubetry
-    def stop_server(self) -> bool:
-        print(f"Stopping HTTP server on port {self._port}")
-        if self._httpd:
-            self._httpd.shutdown()
-            self._httpd.server_close()
-            self._thread.join(timeout=1)
-            print(f"Stopped HTTP server on port {self._port}")
-            return True
+from thecubeivazio.cube_http import CubeHttpServer
 
 
 def launch_chromium(url):
@@ -137,6 +62,7 @@ def launch_chromium(url):
     # Execute the command
     subprocess.run(command)
 
+
 def refresh_chromium():
     return
     # Find the Chromium process
@@ -146,7 +72,8 @@ def refresh_chromium():
             process.send_signal(psutil.signal.SIGHUP)
             break
 
-class CubeHighscorePlayingTeamsSubtable:
+
+class CubeHighscoresPlayingTeamsSubtable:
     def __init__(self, teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
         self.teams = teams.copy()
         assert isinstance(self.teams, cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
@@ -263,7 +190,7 @@ class CubeHighscorePlayingTeamsSubtable:
             f.write(self.generate_html())
 
 
-class CubeHighscoreSubtable:
+class CubeHighscoresSubtable:
     def __init__(self, teams: cg.CubeTeamsStatusList, title: str, max_teams: int = NB_TEAMS_PER_HIGHSCORE_SUBTABLE):
         self.teams = teams.copy()
         assert isinstance(self.teams, cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
@@ -344,54 +271,7 @@ class CubeHighscoreSubtable:
         return True
 
 
-class CubeHighscoreScreen:
-    HEAD_HTML = textwrap.dedent("""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Highscores TheCube</title>
-            <!--<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Slab:wght@700&family=Saira+Condensed:wght@400&display=swap" rel="stylesheet">-->
-            <link rel="stylesheet" href="highscores_main.css">
-            <!-- TOO MUCH FLICKER -->
-            <!--<meta http-equiv="refresh" content="1">-->
-            <script>
-        function refreshPlayingTeamsIframe() {
-            const visibleIframe = document.getElementById('playing_teams_subtable');
-            const hiddenIframe = document.getElementById('hidden_iframe');
-
-            console.log('Refreshing playing teams iframe...');
-            hiddenIframe.src = visibleIframe.src;
-
-            hiddenIframe.onload = () => {
-                try {
-                    const hiddenDoc = hiddenIframe.contentDocument || hiddenIframe.contentWindow.document;
-                    const newContent = hiddenDoc.body ? hiddenDoc.body.innerHTML : null;
-
-                    if (newContent) {
-                        console.log('New content:', newContent);
-                        visibleIframe.contentDocument.body.innerHTML = newContent;
-                        console.log('Visible iframe updated.');
-                    } else {
-                        console.error('Hidden iframe content not accessible.');
-                    }
-                } catch (error) {
-                    console.error('Error accessing hidden iframe content:', error);
-                }
-            };
-
-            hiddenIframe.onerror = () => {
-                console.error('Error loading hidden iframe.');
-            };
-        }
-
-        
-                // Refresh the playing teams iframe every 5 seconds
-                setInterval(refreshPlayingTeamsIframe, 500);
-            </script>
-        </head>
-        """)
+class CubeHighscoresScreenManager:
 
     def __init__(self, playing_teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
         self.playing_teams = playing_teams.copy()
@@ -400,52 +280,31 @@ class CubeHighscoreScreen:
         self.playing_teams.sort_by_score()
         self.cubeboxes = cubeboxes.copy()
 
-        self.use_full_filepaths = False
-
-        if self.use_full_filepaths:
-            self.highscores_subtable_left_filepath = HIGHSCORES_SUBTABLE_LEFT_FILEPATH
-            self.highscores_subtable_center_filepath = HIGHSCORES_SUBTABLE_CENTER_FILEPATH
-            self.highscores_subtable_right_filepath = HIGHSCORES_SUBTABLE_RIGHT_FILEPATH
-            self.playing_teams_subtable_filepath = HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH
-            self.title_icon_filepath = os.path.join(IMAGES_DIR, TITLE_ICON_FILENAME)
-        else:
-            self.highscores_subtable_left_filepath = HIGHSCORES_SUBTABLE_LEFT_FILENAME
-            self.highscores_subtable_center_filepath = HIGHSCORES_SUBTABLE_CENTER_FILENAME
-            self.highscores_subtable_right_filepath = HIGHSCORES_SUBTABLE_RIGHT_FILENAME
-            self.playing_teams_subtable_filepath = HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME
-            self.title_icon_filepath = TITLE_ICON_FILENAME
-
         self._is_initialized = False
         self._last_full_update_timestamp = None
         self._last_playing_teams_update_timestamp = None
+
         self._thread = threading.Thread(target=self._update_loop, daemon=True)
         self._keep_running = False
+
+        self.http_server = CubeHttpServer(HIGHSCORES_DIR)
 
     def run(self):
         self._keep_running = True
         self._thread.start()
+        self.http_server.run()
 
     def stop(self):
+        self.http_server.stop()
         self._keep_running = False
         self._thread.join()
 
     def _update_loop(self):
         while self._keep_running:
-            if any((self.is_time_for_full_update(),
-                    self.is_time_for_playing_teams_update(),
-                    not self._is_initialized)):
-                full_update = self.is_time_for_full_update()
-                result = self.save_to_html_file(full_update=self.is_time_for_full_update())
-                if not result:
-                    continue
-                if full_update:
-                    self._last_full_update_timestamp = time.time()
-                self._last_playing_teams_update_timestamp = time.time()
-                self.refresh_browser()
+            #TODO: do something here. not just periodic updates,
+            # but actual checks on the game status.
+            # actually no, updates shall be triggered by the cubemaster
             time.sleep(LOOP_PERIOD_SEC)
-
-    def refresh_browser(self):
-        refresh_chromium()
 
     @cubetry
     def is_time_for_full_update(self) -> bool:
@@ -459,65 +318,85 @@ class CubeHighscoreScreen:
             return True
         return time.time() - self._last_playing_teams_update_timestamp > PLAYING_TEAMS_UPDATE_PERIOD_SEC
 
+    # TODO: make into a class static string
     def generate_html(self, update_all=True) -> str:
-        if update_all or not self._is_initialized:
-            all_time_teams = cdb.find_teams_matching()
-            month_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
-            week_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_week_start_timestamp())
-            CubeHighscoreSubtable(all_time_teams, "DEPUIS TOUJOURS").save_subtable_to_html_file(
-                self.highscores_subtable_left_filepath)
-            CubeHighscoreSubtable(month_teams, "CE MOIS-CI").save_subtable_to_html_file(
-                self.highscores_subtable_center_filepath)
-            CubeHighscoreSubtable(week_teams, "CETTE SEMAINE").save_subtable_to_html_file(
-                self.highscores_subtable_right_filepath)
-
-        CubeHighscorePlayingTeamsSubtable(self.playing_teams, self.cubeboxes).save_playing_teams_subtable_to_html_file(
-            self.playing_teams_subtable_filepath)
         ret = textwrap.dedent(f""" 
-            {self.HEAD_HTML}
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Highscores TheCube</title>
+                <link rel="stylesheet" href="highscores_main.css">
+                <script src="highscores_smart_refresh.js" defer></script>
+                <!--<script src="highscores_periodic_refresh.js" defer></script>-->
+            </head>
             <body>
             <div class="title">
-                <img src="{self.title_icon_filepath}"/>
+                <img src="{TITLE_ICON_FILENAME}"/>
                 HIGHSCORES
-                <img src="{self.title_icon_filepath}"/>
+                <img src="{TITLE_ICON_FILENAME}"/>
             </div>
             <!--<div class="subtitle">THE CUBE</div>-->
-            <div class="highscores">
+            <div id="highscores" class="highscores">
                 <div class="iframe-container">
-                    <iframe src="{self.highscores_subtable_left_filepath}"></iframe>
+                    <iframe src="{HIGHSCORES_SUBTABLE_LEFT_FILENAME}"></iframe>
                 </div>
                 <div class="iframe-container">
-                    <iframe src="{self.highscores_subtable_right_filepath}"></iframe>
+                    <iframe src="{HIGHSCORES_SUBTABLE_CENTER_FILENAME}"></iframe>
                 </div>
                 <div class="iframe-container">
-                    <iframe src="{self.highscores_subtable_right_filepath}"></iframe>
+                    <iframe src="{HIGHSCORES_SUBTABLE_RIGHT_FILENAME}"></iframe>
                 </div>
 
             </div>
             <div class="playing-teams">
-                <iframe id="playing_teams_subtable" src="{self.playing_teams_subtable_filepath}"></iframe>
+                <iframe id="playing_teams_subtable" src="{HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME}"></iframe>
             </div>
             
-            <!-- Hidden iframe for double buffering -->
-            <iframe id="hidden_iframe" style="display:none;"></iframe>
+            <!-- Hidden iframes for double buffering -->
+            <iframe id="hidden_highscores" style="display:none;"></iframe>
+            <iframe id="hidden_playing_teams" style="display:none;"></iframe>
             </body>
             
             </html>
             """)
-        self._is_initialized = True
         return ret
 
+    def update_playing_teams_html_file(self):
+        subtable = CubeHighscoresPlayingTeamsSubtable(self.playing_teams, self.cubeboxes)
+        subtable.save_playing_teams_subtable_to_html_file()
+        self.http_server.send_refresh_playing_teams()
+
+    def update_highscores_html_files(self,
+                                     all_time_teams: cg.CubeTeamsStatusList = None,
+                                     month_teams: cg.CubeTeamsStatusList = None,
+                                     week_teams: cg.CubeTeamsStatusList = None):
+        """Update the highscores subtables with the given teams. If no teams are given, fetch them from the database.
+        This is actually the way it's supposed to be, i'm just providing these arguments for debug"""
+        if not all_time_teams:
+            all_time_teams = cdb.find_teams_matching()
+        if not month_teams:
+            month_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
+        if not week_teams:
+            week_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_week_start_timestamp())
+
+        CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS").save_subtable_to_html_file(
+            HIGHSCORES_SUBTABLE_LEFT_FILEPATH)
+        CubeHighscoresSubtable(month_teams, "CE MOIS-CI").save_subtable_to_html_file(
+            HIGHSCORES_SUBTABLE_CENTER_FILEPATH)
+        CubeHighscoresSubtable(week_teams, "CETTE SEMAINE").save_subtable_to_html_file(
+            HIGHSCORES_SUBTABLE_RIGHT_FILEPATH)
+        self.http_server.send_refresh_highscores()
+
     @cubetry
-    def save_to_html_file(self, filepath: str = None) -> bool:
+    def save_main_html_file(self, filepath: str = None) -> bool:
         filepath = filepath or HIGHSCORES_MAIN_FILEPATH
         with open(filepath, "w") as f:
             f.write(self.generate_html())
+            self._is_initialized = True
         return True
 
-    def launch_browser(self, browser_name: str) -> bool:
-        """check that the browser is not already open, if it is, do nothing, if it is not, open the browser.
-        Returns True if success"""
-        import subprocess
 
 
 def test_CubeHighscorePlayingTeamsSubtable():
@@ -541,7 +420,7 @@ def test_CubeHighscorePlayingTeamsSubtable():
                 else:
                     box.set_state_waiting_for_reset()
 
-    cube_highscore_screen = CubeHighscorePlayingTeamsSubtable(teams_status_list, cubeboxes)
+    cube_highscore_screen = CubeHighscoresPlayingTeamsSubtable(teams_status_list, cubeboxes)
     filepath = os.path.join("scores_screen", "test_playing_teams_subtable.html")
     cube_highscore_screen.save_playing_teams_subtable_to_html_file(filepath)
 
@@ -552,9 +431,9 @@ def test_CubeHighscoreSubtable():
     month_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
     week_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_week_start_timestamp())
 
-    highscores_all_time = CubeHighscoreSubtable(all_time_teams, "DEPUIS TOUJOURS")
-    highscores_month = CubeHighscoreSubtable(month_teams, "CE MOIS-CI")
-    highscores_week = CubeHighscoreSubtable(week_teams, "CETTE SEMAINE")
+    highscores_all_time = CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS")
+    highscores_month = CubeHighscoresSubtable(month_teams, "CE MOIS-CI")
+    highscores_week = CubeHighscoresSubtable(week_teams, "CETTE SEMAINE")
 
     highscores_all_time.save_subtable_to_html_file(os.path.join("scores_screen", "test_highscores_all_time.html"))
     highscores_month.save_subtable_to_html_file(os.path.join("scores_screen", "test_highscores_month.html"))
@@ -565,12 +444,11 @@ def test_CubeHighscoreScreen():
     from thecubeivazio import cube_database as cdb
     teams = cdb.find_teams_matching()
     cubeboxes = cg.CubeboxesStatusList()
-    cube_highscore_screen = CubeHighscoreScreen(teams, cubeboxes)
-    cube_highscore_screen.save_to_html_file(os.path.join("scores_screen", "test_highscores_screen.html"))
+    cube_highscore_screen = CubeHighscoresScreenManager(teams, cubeboxes)
+    cube_highscore_screen.save_main_html_file(os.path.join("scores_screen", "test_highscores_screen.html"))
+
 
 def test_run():
-    server = CubeHttpServer(HIGHSCORES_DIR, HTTP_SERVER_PORT)
-    server.start_server()
     playing_teams_1 = cfd.generate_sample_teams()
     playing_teams_1[0].current_cubebox_id = 1
     cubeboxes_1 = cg.CubeboxesStatusList()
@@ -585,7 +463,7 @@ def test_run():
 
     cubeboxes_2 = cg.CubeboxesStatusList()
     for box in cubeboxes_1:
-        roll = random.choice([1,2,3,4,5])
+        roll = random.choice([1, 2, 3, 4, 5])
         if roll < 3:
             box.set_state_ready_to_play()
         elif roll == 4:
@@ -593,25 +471,31 @@ def test_run():
         else:
             box.set_state_waiting_for_reset()
 
-    cube_highscore_screen = CubeHighscoreScreen(playing_teams_1, cubeboxes_1)
+    cube_highscore_screen = CubeHighscoresScreenManager(playing_teams_1, cubeboxes_1)
+    cube_highscore_screen.save_main_html_file()
     cube_highscore_screen.run()
     try:
+        print("beginning loop")
         while True:
-            time.sleep(1.1)
+            time.sleep(0.8)
             cube_highscore_screen.playing_teams = playing_teams_2
             cube_highscore_screen.cubeboxes = cubeboxes_2
-            cube_highscore_screen.save_to_html_file(full_update=False)
-            time.sleep(1.1)
+            # cube_highscore_screen.save_to_html_file()
+            cube_highscore_screen.update_playing_teams_html_file()
+            # cube_highscore_screen.update_highscores_html_files()
+            time.sleep(0.8)
             cube_highscore_screen.playing_teams = playing_teams_1
             cube_highscore_screen.cubeboxes = cubeboxes_1
-            cube_highscore_screen.save_to_html_file(full_update=False)
+            # cube_highscore_screen.save_to_html_file()
+            cube_highscore_screen.update_playing_teams_html_file()
+            # cube_highscore_screen.update_highscores_html_files()
     except KeyboardInterrupt:
         pass
     except Exception as e:
         print(e)
     finally:
         cube_highscore_screen.stop()
-        server.stop_server()
+
 
 if __name__ == "__main__":
     # test_CubeHighscorePlayingTeamsSubtable()

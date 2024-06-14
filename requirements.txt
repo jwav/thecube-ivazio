@@ -17,3 +17,5 @@ colorlog
 RPi.GPIO
 Pillow
 pyserial
+flask
+watchdog

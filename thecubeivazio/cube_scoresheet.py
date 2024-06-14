@@ -211,7 +211,7 @@ class CubeScoresheet:
         self.log.info(f"Saving scoresheet as PDF: '{filepath}' ...")
         html_content = self.generate_html()
         # Write the HTML content to a temporary file
-        temp_html_path = 'temp.html'
+        temp_html_path = 'scores_screen/temp.html'
         with open(temp_html_path, 'w') as f:
             f.write(html_content)
 
