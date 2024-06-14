@@ -340,13 +340,13 @@ class CubeHighscoresScreenManager:
             <!--<div class="subtitle">THE CUBE</div>-->
             <div id="highscores" class="highscores">
                 <div class="iframe-container">
-                    <iframe src="{HIGHSCORES_SUBTABLE_LEFT_FILENAME}"></iframe>
+                    <iframe id="highscores_left" src="{HIGHSCORES_SUBTABLE_LEFT_FILENAME}"></iframe>
                 </div>
                 <div class="iframe-container">
-                    <iframe src="{HIGHSCORES_SUBTABLE_CENTER_FILENAME}"></iframe>
+                    <iframe id="highscores_center" src="{HIGHSCORES_SUBTABLE_CENTER_FILENAME}"></iframe>
                 </div>
                 <div class="iframe-container">
-                    <iframe src="{HIGHSCORES_SUBTABLE_RIGHT_FILENAME}"></iframe>
+                    <iframe id="highscores_right" src="{HIGHSCORES_SUBTABLE_RIGHT_FILENAME}"></iframe>
                 </div>
 
             </div>
@@ -355,7 +355,9 @@ class CubeHighscoresScreenManager:
             </div>
             
             <!-- Hidden iframes for double buffering -->
-            <iframe id="hidden_highscores" style="display:none;"></iframe>
+            <iframe id="hidden_highscores_left" style="display:none;"></iframe>
+            <iframe id="hidden_highscores_center" style="display:none;"></iframe>
+            <iframe id="hidden_highscores_right" style="display:none;"></iframe>
             <iframe id="hidden_playing_teams" style="display:none;"></iframe>
             </body>
             
@@ -477,18 +479,23 @@ def test_run():
     try:
         print("beginning loop")
         while True:
-            time.sleep(0.8)
             cube_highscore_screen.playing_teams = playing_teams_2
             cube_highscore_screen.cubeboxes = cubeboxes_2
-            # cube_highscore_screen.save_to_html_file()
+            time.sleep(0.5)
             cube_highscore_screen.update_playing_teams_html_file()
-            # cube_highscore_screen.update_highscores_html_files()
-            time.sleep(0.8)
+            time.sleep(0.5)
+            cube_highscore_screen.update_highscores_html_files(
+                all_time_teams=playing_teams_2,
+                month_teams=playing_teams_1,
+                week_teams=playing_teams_1,
+            )
             cube_highscore_screen.playing_teams = playing_teams_1
             cube_highscore_screen.cubeboxes = cubeboxes_1
             # cube_highscore_screen.save_to_html_file()
             cube_highscore_screen.update_playing_teams_html_file()
-            # cube_highscore_screen.update_highscores_html_files()
+            time.sleep(0.5)
+            cube_highscore_screen.update_highscores_html_files()
+            time.sleep(0.5)
     except KeyboardInterrupt:
         pass
     except Exception as e:

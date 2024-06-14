@@ -35,6 +35,12 @@ function refreshSection(visibleId, hiddenId, url) {
     };
 }
 
+function refreshHighscores() {
+    refreshSection('highscores_left', 'hidden_highscores_left', 'highscores_subtable_left.html');
+    refreshSection('highscores_center', 'hidden_highscores_center', 'highscores_subtable_center.html');
+    refreshSection('highscores_right', 'hidden_highscores_right', 'highscores_subtable_right.html');
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     const eventSource = new EventSource('/stream');
 
@@ -42,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (event.data === 'refresh_playing_teams') {
             refreshSection('playing_teams_subtable', 'hidden_playing_teams', 'playing_teams_subtable.html');
         } else if (event.data === 'refresh_highscores') {
-            refreshSection('highscores', 'hidden_highscores', 'highscores_main.html');
+            refreshHighscores();
         }
     };
 
