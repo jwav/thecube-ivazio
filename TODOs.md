@@ -6,6 +6,7 @@
 # CubeGame
 
 - [ ] implement the new time calculation method
+- [ ] implement the new score calculation method
 - [x] add team creation timestamp for unique identification
 
 # CubeConfig
@@ -42,8 +43,8 @@
   - [ ] game times
   - [ ] cubeboxes score formulae
   - [ ] password system for config edition
-- [ ] "sound the alarm" checkbox
-- [ ] shorter dates: dd/mm/yyyy
+- [x] "sound the alarm" checkbox
+- [x] shorter dates: dd/mm/yyyy
 
 
 # Hardware
@@ -59,3 +60,7 @@
 - [x] interface new RFID readers
   - [x] RFID detection and reading
   - [ ] neopixel control
+
+
+# Highscores screen
+- [ ] revamp the main layout to display 10+ teams

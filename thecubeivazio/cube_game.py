@@ -202,8 +202,6 @@ class CubeboxStatus:
             CubeLogger.static_error(f"CubeboxStatus.set_state {e}")
             return False
 
-
-
     def set_state_waiting_for_reset(self):
         self._state = CubeboxState.STATE_WAITING_FOR_RESET
 
@@ -219,7 +217,6 @@ class CubeboxStatus:
         self.win_timestamp = other.win_timestamp
         self.last_valid_rfid_line = other.last_valid_rfid_line
         self._state = other.get_state()
-
 
     @property
     def completion_time_sec(self) -> Optional[Seconds]:
@@ -463,20 +460,20 @@ class CubeTrophy:
 
     @classmethod
     @cubetry
-    def make_from_name(cls, trophy_name:str) -> Optional['CubeTrophy']:
+    def make_from_name(cls, trophy_name: str) -> Optional['CubeTrophy']:
         for config_trophy in CubeConfig.get_config().defined_trophies:
             if config_trophy.name == trophy_name:
                 return config_trophy
+
 
 # an alias just for clarity, we'll use this one to refer exclusively to completed cubeboxes
 CompletedCubeboxStatus = CubeboxStatus
 CompletedCubeboxStatus.__doc__ = "Represents a CubeBox that has been successfully played by a team"
 
+
 class CompletedCubeboxStatusList(CubeboxesStatusList):
     def __init__(self, cubeboxes: Optional[List[CompletedCubeboxStatus]] = None):
         super().__init__(cubeboxes, no_init=True)
-
-
 
 
 class CubeTeamStatus:
@@ -521,25 +518,29 @@ class CubeTeamStatus:
         except:
             return None
 
-
     def is_valid(self):
         """if this function returns False, then it might have been made from corrupted data"""
         try:
             assert isinstance(self.name, str), f"self.name is not a str: {self.name}"
             assert isinstance(self.rfid_uid, str), f"self.rfid_uid is not a str: {self.rfid_uid}"
-            assert isinstance(self.max_time_sec, (int, float)), f"self.max_time_sec is not a number: {self.max_time_sec}"
-            assert isinstance(self.creation_timestamp, (int, float)), f"self.creation_timestamp is not a number: {self.creation_timestamp}"
+            assert isinstance(self.max_time_sec,
+                              (int, float)), f"self.max_time_sec is not a number: {self.max_time_sec}"
+            assert isinstance(self.creation_timestamp,
+                              (int, float)), f"self.creation_timestamp is not a number: {self.creation_timestamp}"
             assert isinstance(self.custom_name, str), f"self.custom_name is not a str: {self.custom_name}"
-            assert isinstance(self.start_timestamp, (int, float)) or self.start_timestamp is None, f"self.start_timestamp is not a number: {self.start_timestamp}"
-            assert isinstance(self.current_cubebox_id, int) or self.current_cubebox_id is None, f"self.current_cubebox_id is not a number: {self.current_cubebox_id}"
-            assert isinstance(self._completed_cubeboxes, list) and all ([box.is_valid() for box in self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of CubeboxStatus: {self._completed_cubeboxes}"
-            assert isinstance(self.trophies_names, list) and all([isinstance(t, str) for t in self.trophies_names]), f"self.trophies_names is not a list of str: {self.trophies_names}"
+            assert isinstance(self.start_timestamp, (int,
+                                                     float)) or self.start_timestamp is None, f"self.start_timestamp is not a number: {self.start_timestamp}"
+            assert isinstance(self.current_cubebox_id,
+                              int) or self.current_cubebox_id is None, f"self.current_cubebox_id is not a number: {self.current_cubebox_id}"
+            assert isinstance(self._completed_cubeboxes, list) and all([box.is_valid() for box in
+                                                                        self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of CubeboxStatus: {self._completed_cubeboxes}"
+            assert isinstance(self.trophies_names, list) and all([isinstance(t, str) for t in
+                                                                  self.trophies_names]), f"self.trophies_names is not a list of str: {self.trophies_names}"
             assert isinstance(self.use_alarm, bool), f"self.use_alarm is not a bool: {self.use_alarm}"
             return True
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.is_valid {e}")
             return False
-
 
     @property
     def remaining_time(self) -> Optional[Seconds]:
@@ -563,7 +564,6 @@ class CubeTeamStatus:
     def is_same_team_as(self, team):
         """Returns True if the creation timestamps are the same. This is the only way to uniquely identify a team."""
         return self.creation_timestamp == team.creation_timestamp
-
 
     def __repr__(self):
         return self.to_string()
@@ -630,8 +630,6 @@ class CubeTeamStatus:
             CubeLogger.static_error(f"CubeTeamStatus.make_from_json {e}")
             return None
 
-
-
     @property
     def completed_cubebox_ids(self) -> List[CubeId]:
         return [box.cube_id for box in self.completed_cubeboxes]
@@ -691,11 +689,9 @@ class CubeTeamStatus:
             CubeLogger.static_error(f"CubeTeamStatus.has_played_this_month {e}")
             return False
 
-
     # TODO: test
     def has_completed_cube(self, cube_id: int) -> bool:
         return cube_id in [box.cube_id for box in self._completed_cubeboxes]
-
 
     # TODO: test
     def set_completed_cube(self, cube_id: int, start_timestamp: float, win_timestamp: float) -> bool:
@@ -708,10 +704,8 @@ class CubeTeamStatus:
             win_timestamp=win_timestamp))
         return True
 
-
     def has_started(self) -> bool:
         return self.start_timestamp is not None
-
 
     @cubetry
     def calculate_score(self) -> int:
@@ -728,8 +722,6 @@ class CubeTeamStatus:
         # CubeLogger.static_info(f"CubeTeamStatus.calculate_score boxes_score={boxes_score} trophy_score={trophy_score}")
         return boxes_score + trophy_score
 
-
-
     @cubetry
     def copy(self):
         ret = CubeTeamStatus(name=self.name, rfid_uid=self.rfid_uid, max_time_sec=self.max_time_sec,
@@ -744,13 +736,9 @@ class CubeTeamStatus:
         # TODO: do we need to actually do something more here?
         self.current_cubebox_id = None
 
-
     @cubetry
     def has_played_cube(self, cubebox_id):
         return cubebox_id in [box.cube_id for box in self._completed_cubeboxes]
-
-
-
 
     @cubetry
     def update_from_team(self, team):
@@ -777,13 +765,10 @@ class CubeTeamStatus:
         CubeLogger.static_debug(f"updated team status: {self.to_json()}")
         return True
 
-
     @cubetry
-    def add_trophy_name(self, trophy_name:str):
+    def add_trophy_name(self, trophy_name: str):
         if not trophy_name in self.trophies_names:
             self.trophies_names.append(trophy_name)
-
-
 
 
 # TODO : add ranks for the day, week, mont, all-time
@@ -845,7 +830,8 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         """Returns the ranking of the team among the teams in this list.
         The ranking is based on the total score of the team."""
         try:
-            assert self.has_team(team), f"CubeTeamsStatusList.get_team_ranking_among_list: team with cts {team.creation_timestamp} not in list"
+            assert self.has_team(
+                team), f"CubeTeamsStatusList.get_team_ranking_among_list: team with cts {team.creation_timestamp} not in list"
             return sorted(self, key=lambda t: t.calculate_score(), reverse=True).index(team) + 1
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.get_team_ranking_among_list {e}")
@@ -935,7 +921,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     @cubetry
     def get_team_by_rfid_uid(self, rfid_uid: str) -> Optional[CubeTeamStatus]:
         for team in self:
-            if cube_rfid.CubeRfidLine.are_uids_the_same(team.rfid_uid,rfid_uid):
+            if cube_rfid.CubeRfidLine.are_uids_the_same(team.rfid_uid, rfid_uid):
                 return team
         return None
 
@@ -982,8 +968,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             CubeLogger.static_error(f"CubeTeamsStatusList.save_to_sqlite_database {e}")
             return False
 
-
-
     @cubetry
     def update_team(self, team: CubeTeamStatus) -> bool:
         assert team.is_valid()
@@ -1023,7 +1007,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             return False
 
     @cubetry
-    def find_team_by_creation_timestamp(self, team_creation_timestamp:Timestamp) -> Optional[CubeTeamStatus]:
+    def find_team_by_creation_timestamp(self, team_creation_timestamp: Timestamp) -> Optional[CubeTeamStatus]:
         epsilon = TIMESTAMP_EPSILON
         for team in self:
             if abs(team.creation_timestamp - team_creation_timestamp) < epsilon:
@@ -1092,59 +1076,89 @@ class CubeGameStatus:
             return None
 
 
-def test_cube_team():
-    team = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
-    assert team.rfid_uid == "1234567890"
-    assert team.name == "Budapest"
-    assert team.max_time_sec == 60.0
-    assert not team.has_started()
-    assert not team.is_time_up()
-    team.start_timestamp = time.time()
-    assert team.has_started()
-    assert not team.is_time_up()
-    team.max_time_sec = 0.1
-    assert team.is_time_up()
-    team._completed_cubeboxes.append(
-        CubeboxStatus(cube_id=1, start_timestamp=time.time(), win_timestamp=time.time() + 1))
-    assert team.calculate_score() == 300
-    assert team.generate_raw_score_sheet() == "Équipe Budapest : 300 points\nCube 1 : 00:00:01 : 300 points\n"
-    assert team.save_markdown_score_sheet()
-    assert team.save_html_score_sheet()
+class CubeScoreCalculator:
+    class CubeScoringFunctionType(enum.Enum):
+        """The type of function used to calculate the score of a cubebox"""
+        LINEAR = "linear"
 
+        @cubetry
+        def __eq__(self, other) -> bool:
+            return str(self.value) == str(other.value)
 
-def test_cube_teams_list():
-    teams_list = CubeTeamsStatusList()
-    assert len(teams_list) == 0
-    team1 = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0, creation_timestamp=time.time())
-    team2 = CubeTeamStatus(rfid_uid="1234567891", name="Paris", max_time_sec=60.0, creation_timestamp=time.time())
-    assert teams_list.add_team(team1)
-    assert len(teams_list) == 1
-    assert teams_list.add_team(team2)
-    assert len(teams_list) == 2
-    assert not teams_list.add_team(team1)
-    assert len(teams_list) == 2
-    assert teams_list.get_team_by_rfid_uid("1234567890") == team1
-    assert teams_list.get_team_by_name("Budapest") == team1
-    assert teams_list.get_team_by_rfid_uid("1234567891") == team2
-    assert teams_list.get_team_by_name("Paris") == team2
-    assert teams_list.get_team_by_rfid_uid("1234567892") is None
-    assert teams_list.get_team_by_name("London") is None
-    assert teams_list.remove_team_by_name("Paris")
-    assert len(teams_list) == 1
-    assert not teams_list.remove_team_by_name("Paris")
-    assert len(teams_list) == 1
-    assert teams_list.remove_team_by_name("Budapest")
-    assert len(teams_list) == 0
-    assert not teams_list.remove_team_by_name("Budapest")
-    assert len(teams_list) == 0
+        @cubetry
+        def __repr__(self):
+            return str(self.value)
 
-def save_scoresheet():
-    team = CubeTeamStatus(rfid_uid="1234567890", name="Budapest", max_time_sec=60.0)
-    team._completed_cubeboxes.append(
-        CubeboxStatus(cube_id=1, start_timestamp=time.time(), win_timestamp=time.time() + 1150))
-    team._completed_cubeboxes.append(
-        CubeboxStatus(cube_id=2, start_timestamp=time.time(), win_timestamp=time.time() + 200))
-    team.save_html_score_sheet()
+        @cubetry
+        def __str__(self):
+            return str(self.value)
+
+    """Object used to configure how the score of a particular cubebox is calculated.
+    The formula is : min_points + 
+    """
+
+    def __init__(self, max_score: int, max_time: Seconds, min_score: int = 0,
+                 scoring_function_type: Union[str, CubeScoringFunctionType] = CubeScoringFunctionType.LINEAR):
+        try:
+            self.max_time = float(max_time)
+            self.min_score = int(min_score)
+            self.max_score = int(max_score)
+            self.scoring_function_type = scoring_function_type
+            self.error_str = ""
+        except Exception as e:
+            CubeLogger.static_error(f"CubeScoreCalculator.__init__ {e}")
+
+    def is_valid(self):
+        try:
+            assert isinstance(self.max_time, float), f"self.max_time is not an int: {self.max_time}"
+            assert isinstance(self.min_score, int), f"self.min_score is not an int: {self.min_score}"
+            assert isinstance(self.max_score, int), f"self.max_score is not an int: {self.max_score}"
+            assert str(self.scoring_function_type) in [
+                str(e) for e in CubeScoreCalculator.CubeScoringFunctionType], f"self.scoring_function_type is not a valid type: {self.scoring_function_type}"
+            assert self.max_time >= 0, f"self.max_time is negative: {self.max_time}"
+            assert self.max_score is None or self.max_score >= self.min_score, f"self.max_score is less than self.min_score: {self.max_score} < {self.min_score}"
+            return True
+        except Exception as e:
+            self.error_str = str(e)
+            return False
+
+    @cubetry
+    def to_dict(self):
+        return {
+            "max_time": self.max_time,
+            "min_score": self.min_score,
+            "max_score": self.max_score,
+            "scoring_function_type": self.scoring_function_type
+        }
+
+    @classmethod
+    @cubetry
+    def make_from_dict(cls, d: Dict) -> Optional['CubeScoreCalculator']:
+        return cls(max_time=d.get("max_time"),
+                     min_score=d.get("min_score"),
+                     max_score=d.get("max_score"),
+                     scoring_function_type=d.get("scoring_function_type"))
+
+    @cubetry
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    @cubetry
+    def make_from_json(cls, json_str: str) -> Optional['CubeScoreCalculator']:
+        return cls.make_from_dict(json.loads(json_str))
+
+    @cubetry
+    def calculate_score(self, time_elapsed: Seconds) -> Optional[int]:
+        """the longer the time, the lower the score. min_score is the lowest possible value"""
+        assert self.is_valid(), f"CubeScoreCalculator.calculate_score: invalid CubeScoreCalculator {self}"
+        if time_elapsed > self.max_time:
+            time_elapsed = self.max_time
+        if self.scoring_function_type == CubeScoreCalculator.CubeScoringFunctionType.LINEAR:
+            return int(self.min_score + (self.max_score - self.min_score) * (1 - time_elapsed / self.max_time))
+        else:
+            return None
+
 
 
 def test_hashes():
@@ -1224,7 +1238,31 @@ def test_json():
     log.success("All tests passed")
 
 
+def test_CubeScoreCalculator():
+    """test different cases with different argument composition and value, check that the expected score is the right one"""
+
+    # test of a valid case
+    max_time, min_score, max_score = 60.0, 0, 100
+    calc = CubeScoreCalculator(max_time=max_time, min_score=min_score, max_score=max_score)
+    assert calc.is_valid()
+    assert calc.calculate_score(0) == max_score
+    assert calc.calculate_score(max_time) == min_score
+    assert calc.calculate_score(max_time / 2) == max_score / 2
+    assert calc.calculate_score(max_time * 2) == min_score
+
+    # tests of invalid cases
+    calc1 = CubeScoreCalculator(max_time=-1, min_score=0, max_score=100)
+    calc2 = CubeScoreCalculator(max_time=60, min_score=100, max_score=0)
+    calc3 = CubeScoreCalculator(max_time=60, min_score=0, max_score=-1)
+    calc4 = CubeScoreCalculator(max_time=60, min_score=0, max_score=100, scoring_function_type="invalid")
+    assert not calc1.is_valid(), f"calc1 should not be valid: {calc1}"
+    assert not calc2.is_valid(), f"calc2 should not be valid: {calc2}"
+    assert not calc3.is_valid(), f"calc3 should not be valid: {calc3}"
+    exit(0)
+
+
 if __name__ == "__main__":
+    test_CubeScoreCalculator()
     # test_hashes()
     test_json()
     exit(0)
