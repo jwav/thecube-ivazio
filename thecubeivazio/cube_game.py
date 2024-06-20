@@ -82,6 +82,11 @@ class CubeboxStatus:
             CubeLogger.static_error(f"CubeboxStatus.hash {e}")
             return ""
 
+    @property
+    @cubetry
+    def node_name(self) -> NodeName:
+        return cubeid.cubebox_index_to_node_name(self.cube_id)
+
     def __repr__(self):
         ret = f"CubeboxStatus({self.to_string()}, last_valid_rfid_line={self.last_valid_rfid_line})"
 
@@ -233,26 +238,20 @@ class CubeboxStatus:
             return ""
         return cube_utils.seconds_to_hhmmss_string(completion_time)
 
-    def calculate_score(self) -> Optional[int]:
-        try:
-            cts = self.completion_time_sec
-            # CubeLogger.static_info(f"CubeboxStatus.calculate_score cts={cts}, start_timestamp={self.start_timestamp}, win_timestamp={self.win_timestamp}")
-            cube_id = self.cube_id
-            if cube_id in CubeboxStatus.EASY_CUBES:
-                return CubeboxStatus.MAX_SCORE if cts < CubeboxStatus.EASY_MIN_TIME else int(
-                    CubeboxStatus.EASY_MIN_TIME - 1 / 3 * (cts - CubeboxStatus.EASY_MIN_TIME))
-            elif cube_id in CubeboxStatus.MEDIUM_CUBES:
-                return CubeboxStatus.MAX_SCORE if cts < CubeboxStatus.MEDIUM_MIN_TIME else int(
-                    CubeboxStatus.MEDIUM_MIN_TIME - 1 / 3 * (cts - CubeboxStatus.MEDIUM_MIN_TIME))
-            elif cube_id in CubeboxStatus.HARD_CUBES:
-                return CubeboxStatus.MAX_SCORE if cts < CubeboxStatus.HARD_MIN_TIME else int(
-                    CubeboxStatus.HARD_MIN_TIME - 1 / 3 * (cts - CubeboxStatus.HARD_MIN_TIME))
-            else:
-                raise ValueError(f"CubeboxStatus.calculate_score: unknown cube_id {cube_id}")
-        except Exception as e:
-            # CubeLogger.static_error(f"CubeboxStatus.calculate_score {e.with_traceback(e.__traceback__)}")
-            CubeLogger.static_debugminus(f"CubeboxStatus.calculate_score {e.with_traceback(e.__traceback__)}")
-            return None
+    @cubetry
+    def calculate_box_score(self) -> Optional[int]:
+        # find the preset associated to this cubebox. If not found, use the default one
+        presets = CubeboxesScoringPresets.make_from_config()
+        assert presets, "CubeboxStatus.calculate_score: failed to build scoring presets from config!"
+        calculator = presets.get_calculator_for_cube_id(self.cube_id)
+        if not calculator:
+            calculator = presets.get_default_calculator()
+            CubeLogger.static_warning(
+                f"CubeboxStatus.calculate_score: no preset found for cubebox {self.node_name}. Using default preset.")
+        if not calculator:
+            raise Exception(f"CubeboxStatus.calculate_score: failed to build default score calculator")
+        # calculate the score
+        return calculator.compute_score(self.completion_time_sec)
 
     @cubetry
     def is_completed(self) -> bool:
@@ -462,7 +461,7 @@ class CubeTrophy:
     @cubetry
     def make_from_name(cls, trophy_name: str) -> Optional['CubeTrophy']:
         for config_trophy in CubeConfig.get_config().defined_trophies:
-            if config_trophy.name == trophy_name:
+            if config_trophy.preset_name == trophy_name:
                 return config_trophy
 
 
@@ -708,11 +707,11 @@ class CubeTeamStatus:
         return self.start_timestamp is not None
 
     @cubetry
-    def calculate_score(self) -> int:
+    def calculate_team_score(self) -> int:
         """Calculate the total score of the team, based on the completion times of the cubeboxes it has played."""
         # memo: cid means cube_id, cts means completion_time_sec
         try:
-            boxes_score = sum([box.calculate_score() for box in self._completed_cubeboxes])
+            boxes_score = sum([box.calculate_box_score() for box in self._completed_cubeboxes])
         except:
             boxes_score = 0
         try:
@@ -809,7 +808,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
 
     @cubetry
     def sort_by_score(self):
-        self.sort(key=lambda team: team.calculate_score(), reverse=True)
+        self.sort(key=lambda team: team.compute_score(), reverse=True)
 
     @property
     def hash(self) -> Hash:
@@ -832,7 +831,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         try:
             assert self.has_team(
                 team), f"CubeTeamsStatusList.get_team_ranking_among_list: team with cts {team.creation_timestamp} not in list"
-            return sorted(self, key=lambda t: t.calculate_score(), reverse=True).index(team) + 1
+            return sorted(self, key=lambda t: t.compute_score(), reverse=True).index(team) + 1
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.get_team_ranking_among_list {e}")
             CubeLogger.static_error(f"creation_timestamps: {[t.creation_timestamp for t in self]}")
@@ -1077,30 +1076,18 @@ class CubeGameStatus:
 
 
 class CubeScoreCalculator:
-    class CubeScoringFunctionType(enum.Enum):
-        """The type of function used to calculate the score of a cubebox"""
-        LINEAR = "linear"
-
-        @cubetry
-        def __eq__(self, other) -> bool:
-            return str(self.value) == str(other.value)
-
-        @cubetry
-        def __repr__(self):
-            return str(self.value)
-
-        @cubetry
-        def __str__(self):
-            return str(self.value)
+    ScoringFunction = str
+    SCORE_FUNCTION_LINEAR = "linear"
+    VALID_SCORING_FUNCTIONS = [SCORE_FUNCTION_LINEAR]
 
     """Object used to configure how the score of a particular cubebox is calculated.
     The formula is : min_points + 
     """
 
-    def __init__(self, max_score: int, max_time: Seconds, min_score: int = 0,
-                 scoring_function_type: Union[str, CubeScoringFunctionType] = CubeScoringFunctionType.LINEAR):
+    def __init__(self, max_score: int, max_time_sec: Seconds, min_score: int = 0,
+                 scoring_function_type: ScoringFunction = SCORE_FUNCTION_LINEAR):
         try:
-            self.max_time = float(max_time)
+            self.max_time_sec = float(max_time_sec)
             self.min_score = int(min_score)
             self.max_score = int(max_score)
             self.scoring_function_type = scoring_function_type
@@ -1110,12 +1097,13 @@ class CubeScoreCalculator:
 
     def is_valid(self):
         try:
-            assert isinstance(self.max_time, float), f"self.max_time is not an int: {self.max_time}"
+            assert isinstance(self.max_time_sec, float), f"self.max_time is not an int: {self.max_time_sec}"
             assert isinstance(self.min_score, int), f"self.min_score is not an int: {self.min_score}"
             assert isinstance(self.max_score, int), f"self.max_score is not an int: {self.max_score}"
             assert str(self.scoring_function_type) in [
-                str(e) for e in CubeScoreCalculator.CubeScoringFunctionType], f"self.scoring_function_type is not a valid type: {self.scoring_function_type}"
-            assert self.max_time >= 0, f"self.max_time is negative: {self.max_time}"
+                str(e) for e in
+                CubeScoreCalculator.VALID_SCORING_FUNCTIONS], f"self.scoring_function_type is not a valid type: {self.scoring_function_type}"
+            assert self.max_time_sec >= 0, f"self.max_time is negative: {self.max_time_sec}"
             assert self.max_score is None or self.max_score >= self.min_score, f"self.max_score is less than self.min_score: {self.max_score} < {self.min_score}"
             return True
         except Exception as e:
@@ -1125,19 +1113,20 @@ class CubeScoreCalculator:
     @cubetry
     def to_dict(self):
         return {
-            "max_time": self.max_time,
+            "max_time_sec": self.max_time_sec,
             "min_score": self.min_score,
             "max_score": self.max_score,
-            "scoring_function_type": self.scoring_function_type
+            "scoring_function_type": self.scoring_function_type,
         }
 
     @classmethod
     @cubetry
     def make_from_dict(cls, d: Dict) -> Optional['CubeScoreCalculator']:
-        return cls(max_time=d.get("max_time"),
-                     min_score=d.get("min_score"),
-                     max_score=d.get("max_score"),
-                     scoring_function_type=d.get("scoring_function_type"))
+        return cls(max_time_sec=d.get("max_time_sec"),
+                   min_score=d.get("min_score"),
+                   max_score=d.get("max_score"),
+                   scoring_function_type=d.get("scoring_function_type"),
+                   )
 
     @cubetry
     def to_json(self) -> str:
@@ -1149,16 +1138,107 @@ class CubeScoreCalculator:
         return cls.make_from_dict(json.loads(json_str))
 
     @cubetry
-    def calculate_score(self, time_elapsed: Seconds) -> Optional[int]:
+    def compute_score(self, time_elapsed: Seconds) -> Optional[int]:
         """the longer the time, the lower the score. min_score is the lowest possible value"""
         assert self.is_valid(), f"CubeScoreCalculator.calculate_score: invalid CubeScoreCalculator {self}"
-        if time_elapsed > self.max_time:
-            time_elapsed = self.max_time
-        if self.scoring_function_type == CubeScoreCalculator.CubeScoringFunctionType.LINEAR:
-            return int(self.min_score + (self.max_score - self.min_score) * (1 - time_elapsed / self.max_time))
+        if time_elapsed > self.max_time_sec:
+            time_elapsed = self.max_time_sec
+        if self.scoring_function_type == CubeScoreCalculator.SCORE_FUNCTION_LINEAR:
+            return int(self.min_score + (self.max_score - self.min_score) * (1 - time_elapsed / self.max_time_sec))
         else:
             return None
 
+
+
+class CubeboxesScoringPresets(Dict[ScoringPresetName, CubeScoreCalculator]):
+    """A dict assigning, for each cubebox identified by its nodename, the name of the scoring preset to use"""
+
+    JSON_ROOT_OBJECT_NAME = "cubeboxes_scoring_presets"
+
+    def __init__(self):
+        super().__init__()
+
+    def is_valid(self):
+        try:
+            for preset_name, calc in self.items():
+                assert isinstance(preset_name, str), f"CubeboxesScoringPresets.is_valid: preset_name is not a str: {preset_name}"
+                assert isinstance(calc, CubeScoreCalculator), f"CubeboxesScoringPresets.is_valid: calc is not a CubeScoreCalculator: {calc}"
+                assert calc.is_valid(), f"CubeboxesScoringPresets.is_valid: invalid CubeScoreCalculator {calc}"
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxesScoringPresets.is_valid {e}")
+            return False
+
+    @classmethod
+    @cubetry
+    def make_from_config(cls, config: CubeConfig = None) -> Optional['CubeboxesScoringPresets']:
+        config = config or CubeConfig.get_config()
+        ret = cls()
+        dsp_dict = config.get_field(cls.JSON_ROOT_OBJECT_NAME)
+        assert isinstance(dsp_dict, dict), f"CubeboxesScoringPresets.make_from_config: dsp_dict is not a dict: {dsp_dict}"
+        # CubeLogger.static_debug(f"CubeboxesScoringPresets.make_from_config: dsp_dict : type({type(dsp_dict)}) = {dsp_dict}")
+
+        for preset_name, calc_dict in dsp_dict.items():
+            assert isinstance(preset_name, str), f"CubeboxesScoringPresets.make_from_config: preset_name is not a str: {preset_name}"
+            assert isinstance(calc_dict, dict), f"CubeboxesScoringPresets.make_from_config: calc_dict is not a dict: {calc_dict}"
+            # CubeLogger.static_debug(f"CubeboxesScoringPresets.make_from_config: preset_name={preset_name} calc_dict={calc_dict}")
+            ret[preset_name] = CubeScoreCalculator.make_from_dict(calc_dict)
+            assert isinstance(ret[preset_name], CubeScoreCalculator), f"CubeboxesScoringPresets.make_from_config: invalid CubeScoreCalculator {ret[preset_name]}"
+            assert ret[preset_name].is_valid(), f"CubeboxesScoringPresets.make_from_config: invalid CubeScoreCalculator {ret[preset_name]}"
+        return ret
+
+    @cubetry
+    def get_default_calculator(self) -> CubeScoreCalculator:
+        return CubeScoreCalculator(
+            max_score=100, max_time_sec=60.0, min_score=0,
+            scoring_function_type=CubeScoreCalculator.SCORE_FUNCTION_LINEAR)
+
+    @cubetry
+    def get_calculator_by_preset_name(self, preset_name: str) -> CubeScoreCalculator:
+        return self.get(preset_name)
+
+    @cubetry
+    def get_calculator_for_cube_id(self, cube_id: int, config=None) -> CubeScoreCalculator:
+        config = config or CubeConfig.get_config()
+        preset_name = CubeboxesScoringSettings.make_from_config(config).get_preset_name_for_cube_id(cube_id)
+        return self.get_calculator_by_preset_name(preset_name)
+
+class CubeboxesScoringSettings(Dict[CubeId, ScoringPresetName]):
+    def __init__(self):
+        super().__init__()
+        self.clear()
+
+    def is_valid(self):
+        try:
+            for cbid in cubeid.CUBEBOX_IDS:
+                assert cbid in self.keys()
+            assert len(self.keys()) == len(cubeid.CUBEBOX_IDS)
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxesScoringSettingsDict.is_valid {e}")
+            return False
+
+    @cubetry
+    def get_preset_name_for_cube_id(self, cube_id: CubeId) -> ScoringPresetName:
+        return self.get(cube_id)
+
+
+    @classmethod
+    @cubetry
+    def make_from_config(cls, config: CubeConfig = None) -> 'CubeboxesScoringSettings':
+        config = config or CubeConfig.get_config()
+        settings_dict = config.get_field("cubeboxes_scoring_settings")
+        return cls.make_from_dict(settings_dict)
+
+    @classmethod
+    @cubetry
+    def make_from_dict(cls, settings_dict):
+        ret = cls()
+        for str_id, preset_name in settings_dict.items():
+            str_id = "".join([c for c in str_id if c in "0123456789"])
+            int_id = int(str_id)
+            ret[int_id] = preset_name
+        return ret
 
 
 def test_hashes():
@@ -1243,25 +1323,62 @@ def test_CubeScoreCalculator():
 
     # test of a valid case
     max_time, min_score, max_score = 60.0, 0, 100
-    calc = CubeScoreCalculator(max_time=max_time, min_score=min_score, max_score=max_score)
+    calc = CubeScoreCalculator(max_time_sec=max_time, min_score=min_score, max_score=max_score)
     assert calc.is_valid()
-    assert calc.calculate_score(0) == max_score
-    assert calc.calculate_score(max_time) == min_score
-    assert calc.calculate_score(max_time / 2) == max_score / 2
-    assert calc.calculate_score(max_time * 2) == min_score
+    assert calc.compute_score(0) == max_score
+    assert calc.compute_score(max_time) == min_score
+    assert calc.compute_score(max_time / 2) == max_score / 2
+    assert calc.compute_score(max_time * 2) == min_score
 
     # tests of invalid cases
-    calc1 = CubeScoreCalculator(max_time=-1, min_score=0, max_score=100)
-    calc2 = CubeScoreCalculator(max_time=60, min_score=100, max_score=0)
-    calc3 = CubeScoreCalculator(max_time=60, min_score=0, max_score=-1)
-    calc4 = CubeScoreCalculator(max_time=60, min_score=0, max_score=100, scoring_function_type="invalid")
+    calc1 = CubeScoreCalculator(max_time_sec=-1, min_score=0, max_score=100)
+    calc2 = CubeScoreCalculator(max_time_sec=60, min_score=100, max_score=0)
+    calc3 = CubeScoreCalculator(max_time_sec=60, min_score=0, max_score=-1)
+    calc4 = CubeScoreCalculator(max_time_sec=60, min_score=0, max_score=100, scoring_function_type="invalid")
     assert not calc1.is_valid(), f"calc1 should not be valid: {calc1}"
     assert not calc2.is_valid(), f"calc2 should not be valid: {calc2}"
     assert not calc3.is_valid(), f"calc3 should not be valid: {calc3}"
     exit(0)
 
 
+def test_ScoringPresets():
+    """load the presets from the config, check that they are valid"""
+    presets = CubeboxesScoringPresets.make_from_config()
+    assert presets is not None
+    for preset_name, calculator in presets.items():
+        assert calculator.is_valid(), f"preset {preset_name} is not valid: {calculator}"
+
+    print("All tests passed")
+    exit(0)
+
+def test_cubeboxes_scoring():
+    """generates sample cubeboxes 1 to 12, then checks that the calculate_box_score method returns the expected value"""
+    cubeboxes = [CubeboxStatus(cube_id=i) for i in cubeid.CUBEBOX_IDS]
+    for box in cubeboxes:
+        import random
+        box.start_timestamp = random.uniform(0, 100)
+        box.win_timestamp = random.uniform(0, 2000) + box.start_timestamp
+    score_settings = CubeboxesScoringSettings.make_from_config()
+    assert score_settings is not None
+    defined_presets = CubeboxesScoringPresets.make_from_config()
+    assert defined_presets is not None
+    for box in cubeboxes:
+        calc = defined_presets.get_calculator_for_cube_id(box.cube_id)
+        assert calc is not None
+        preset_name = score_settings.get_preset_name_for_cube_id(box.cube_id)
+        assert preset_name is not None
+        score = box.calculate_box_score()
+        assert score is not None
+        assert calc.compute_score(box.win_timestamp - box.start_timestamp) == score
+        print(f"box {box.cube_id} : scoring preset = {preset_name} ; score = {score}")
+    exit(0)
+
+
+
+
 if __name__ == "__main__":
+    test_cubeboxes_scoring()
+    test_ScoringPresets()
     test_CubeScoreCalculator()
     # test_hashes()
     test_json()

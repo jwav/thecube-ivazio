@@ -16,6 +16,7 @@ TeamName = str
 NodeName = str
 Hash = str
 HashDict = dict[str, Hash]
+ScoringPresetName = str
 
 # constants
 

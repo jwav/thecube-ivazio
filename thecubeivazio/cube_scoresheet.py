@@ -38,8 +38,8 @@ class CubeScoresheet:
         summary_rows = ''.join([
             f'<tr><td class="col-left">Date : </td><td class="col-right">{creation_datetime_french}</td></tr>',
             f'<tr><td class="col-left">Temps alloué : </td><td class="col-right">{cu.seconds_to_hhmmss_string(team.max_time_sec,separators=["h ", "m"], secs=False)}</td></tr>',
-            f'<tr><td class="col-left">Score total : </td><td class="col-right">{team.calculate_score()} points</td></tr>',
-            f'<tr><td class="col-left">Cubeboxes terminées : </td><td class="col-right">{len(team._completed_cubeboxes)} ({sum(box.calculate_score() for box in team._completed_cubeboxes)} points)</td></tr>',
+            f'<tr><td class="col-left">Score total : </td><td class="col-right">{team.calculate_team_score()} points</td></tr>',
+            f'<tr><td class="col-left">Cubeboxes terminées : </td><td class="col-right">{len(team._completed_cubeboxes)} ({sum(box.calculate_box_score() for box in team._completed_cubeboxes)} points)</td></tr>',
             f'<tr><td class="col-left">Trophées obtenus : </td><td class="col-right">{len(team.trophies_names)} ({sum(trophy.points for trophy in team.trophies)} points)</td></tr>'
         ])
 
@@ -91,7 +91,7 @@ class CubeScoresheet:
         cube_rows = ''
         for i, box in enumerate(team._completed_cubeboxes):
             box: cg.CompletedCubeboxStatus
-            cube_rows += f'<tr><td>{i + 1}</td><td>{box.completion_time_str}</td><td>{box.calculate_score()}</td><td>12</td><td>6</td><td>4</td><td>2</td></tr>'
+            cube_rows += f'<tr><td>{i + 1}</td><td>{box.completion_time_str}</td><td>{box.calculate_box_score()}</td><td>12</td><td>6</td><td>4</td><td>2</td></tr>'
 
         for i in range(len(team._completed_cubeboxes) + 1, cid.NB_CUBEBOXES):
             cube_rows += f'<tr><td>{i}</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'

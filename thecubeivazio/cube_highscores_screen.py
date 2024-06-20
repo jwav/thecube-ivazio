@@ -131,7 +131,7 @@ class CubeHighscoresPlayingTeamsSubtable:
             cubeboxes_data = ""
             for cubebox in self.cubeboxes:
                 completed_cubebox = team.completed_cubeboxes.get_cubebox_by_cube_id(cubebox.cube_id)
-                cubebox_score = None if not completed_cubebox else completed_cubebox.calculate_score()
+                cubebox_score = None if not completed_cubebox else completed_cubebox.calculate_box_score()
                 if team.current_cubebox_id == cubebox.cube_id:
                     cubeboxes_data += textwrap.dedent("""
                         <td class='current-cubebox'>
@@ -157,7 +157,7 @@ class CubeHighscoresPlayingTeamsSubtable:
                         <span class="datetime">{self.format_datetime(team.creation_timestamp)}</span>
                     </td>
                     <td class="bold-white
-                    ">{team.calculate_score()}</td>
+                    ">{team.calculate_team_score()}</td>
                     <td class="bold-white
                     ">{len(team.completed_cubeboxes)}</td>
                     {cubeboxes_data}
@@ -239,7 +239,7 @@ class CubeHighscoresSubtable:
                         <span class="team-name bold-white">{team.custom_name}</span>
                         <span class="datetime">{self.format_datetime(team.creation_timestamp)}</span>
                     </div>
-                    <div class="col3 bold-white">{team.calculate_score()}</div>
+                    <div class="col3 bold-white">{team.calculate_team_score()}</div>
                 </div>
                 """)
         # if there werent enough teams to fill the table, fill the remaining rows with empty rows

@@ -68,7 +68,7 @@ class CubeGuiTabTeamsMixin:
         # fill the trophy combo box
         trophies = self.fd.config.defined_trophies
         self.ui.comboTeamsAddTrophy.clear()
-        self.ui.comboTeamsAddTrophy.addItems((t.name for t in trophies))
+        self.ui.comboTeamsAddTrophy.addItems((t.preset_name for t in trophies))
 
         # connect the "add trophy" button
         self.ui.btnTeamsAddTrophy.clicked.connect(self.click_add_trophy)
@@ -317,7 +317,7 @@ class CubeGuiTabTeamsMixin:
             self.ui.tableTeamsResults.setItem(i, 1, QTableWidgetItem(short_date))
             self.ui.tableTeamsResults.setItem(i, 2, QTableWidgetItem(team.name))
             self.ui.tableTeamsResults.setItem(i, 3, QTableWidgetItem(team.custom_name))
-            self.ui.tableTeamsResults.setItem(i, 4, QTableWidgetItem(str(team.calculate_score())))
+            self.ui.tableTeamsResults.setItem(i, 4, QTableWidgetItem(str(team.calculate_team_score())))
             self.ui.tableTeamsResults.setItem(i, 5, QTableWidgetItem(str(team.completed_cubebox_ids)))
             self.ui.tableTeamsResults.setItem(i, 6, QTableWidgetItem(trophies_str))
             self.ui.tableTeamsResults.setItem(i, 7, QTableWidgetItem(creation_tod))
