@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "$SCRIPT_DIR" || exit 1
-source venv/bin/activate
+source "${SCRIPT_DIR}/venv/bin/activate"
 
 # Run the script logic inside a subshell
 (
