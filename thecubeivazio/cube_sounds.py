@@ -19,12 +19,28 @@ class CubeSoundPlayer:
     SUPPORTED_EXTENSIONS = ['.wav', '.mp3', '.ogg', '.flac', '.mod', '.s3m', '.it', '.xm']
 
     def __init__(self):
-        self.log = cube_logger.CubeLogger("Buzzer")
-        self.log.setLevel(logging.INFO)
-        self._thread = None
-        self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
-        mixer.init()
-        self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
+        self._is_initialized = False
+        try:
+            self.log = cube_logger.CubeLogger("Buzzer")
+            self.log.setLevel(logging.INFO)
+            self._thread = None
+            self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
+            mixer.init()
+            self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
+            self._is_initialized = True
+        except Exception as e:
+            self.log.error(f"Error initializing CubeSoundPlayer: {e}")
+            self._is_initialized = False
+
+    def __del__(self):
+        try:
+            self.stop_playing()
+            mixer.quit()
+        except Exception as e:
+            self.log.error(f"Error cleaning up CubeSoundPlayer: {e}")
+
+    def is_initialized(self):
+        return self._is_initialized
 
     @cubetry
     def set_volume_percent(self, volume_percent: int):
