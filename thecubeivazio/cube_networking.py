@@ -14,9 +14,12 @@ from thecubeivazio.cube_messages import CubeMessage
 
 
 class SendReport:
-    def __init__(self, success: bool, reply_msg: Optional[CubeMessage]):
-        self.success = success
+    def __init__(self, sent_ok: bool, reply_msg: Optional[CubeMessage]=None, raw_info=None):
+        self.sent_ok = sent_ok
         self.reply_msg = reply_msg
+        # this member is not meant to be used usually. It's kind of a hack to
+        # pass information such as "the send didnt go well and this is why"
+        self._raw_info = raw_info
 
     @property
     def ack_msg(self):
@@ -27,6 +30,8 @@ class SendReport:
     def ack_info(self) -> Optional[cm.CubeAckInfos]:
         # noinspection PyBroadException
         try:
+            if self._raw_info:
+                return self._raw_info
             return self.ack_msg.info
         except:
             return None
@@ -41,7 +46,7 @@ class SendReport:
 
     def __bool__(self):
         """enables the use of SendReport as a boolean, like `if send_report:`"""
-        return self.success
+        return self.sent_ok
 
 
 class CubeNetworking:
@@ -234,7 +239,7 @@ class CubeNetworking:
         ack_msg = cm.CubeMsgAck(self.node_name, message, info=info)
         ack_msg.require_ack = False
         report = self.send_msg_to(ack_msg, message.sender)
-        if report.success:
+        if report.sent_ok:
             self.log.infoplus(f"Acknowledgement sent. Removing acked message: ({ack_msg.hash})")
             self.remove_msg_from_incoming_queue(message)
         else:
@@ -447,7 +452,7 @@ class CubeNetworking:
 
     # TESTME
     # TODO: redo. this will be made redundant with the new ack handling system directly in listenloop
-    def wait_for_ack_of(self, msg_to_ack: cm.CubeMessage, timeout: int = None) -> Optional[cm.CubeMsgAck]:
+    def wait_for_ack_of(self, msg_to_ack: cm.CubeMessage, timeout: int = None, ack_sender=None) -> Optional[cm.CubeMsgAck]:
         """Waits for an acknowledgement of a message. Returns the ack message if it was received, None otherwise.
         If timeout is None, uses the default timeout.
         If timeout is 0, wait forever."""
@@ -463,12 +468,16 @@ class CubeNetworking:
             if timeout != 0 and time.time() > end_time:
                 self.log.error(f"wait_for_ack_of timeout for : ({msg_to_ack.hash})")
                 return None
-            for msg in self.get_incoming_msg_queue():
+            incoming_messages = self.get_incoming_msg_queue()
+            for msg in incoming_messages:
                 # print("/", end="")
                 # if it's an ACK message acknowledging the message we're waiting for, success
                 if msg.is_ack_of(msg_to_ack):
                     self.log.info(f"Received ack of message: ({msg_to_ack.hash})")
-                    self.log.info(f"Removing this ack msg and our msg waiting to be acked")
+                    if ack_sender is not None and msg.sender != ack_sender:
+                        self.log.warning(f"Received ack from unexpected sender: {msg.sender} instead of {ack_sender}")
+                        continue
+                    self.log.info(f"It's the awaited message. Removing this ack msg and our msg waiting to be acked")
                     self.remove_msg_from_incoming_queue(msg, force_remove=True)
                     self.remove_msg_from_ack_wait_queue(msg_to_ack)
                     ack_msg = cm.CubeMsgAck(copy_msg=msg)

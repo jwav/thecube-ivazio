@@ -68,7 +68,7 @@ class CubeGuiTabTeamsMixin:
         # fill the trophy combo box
         trophies = self.fd.config.defined_trophies
         self.ui.comboTeamsAddTrophy.clear()
-        self.ui.comboTeamsAddTrophy.addItems((t.preset_name for t in trophies))
+        self.ui.comboTeamsAddTrophy.addItems((t.name for t in trophies))
 
         # connect the "add trophy" button
         self.ui.btnTeamsAddTrophy.clicked.connect(self.click_add_trophy)

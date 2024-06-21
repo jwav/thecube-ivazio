@@ -377,9 +377,10 @@ class CubeServerMaster:
     def _handle_config_message(self, message: cm.CubeMessage):
         self.log.info(f"Received config message from {message.sender}")
         config_msg = cm.CubeMsgConfig(copy_msg=message)
+        self.log.info(f"Config message: {config_msg.to_string()}")
         self.config.update_from_config(config_msg.config)
         self.config.save_to_json()
-        self.log.info(f"Config message: {config_msg.to_string()}")
+        self.log.success("Config updated and saved.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
     def _handle_request_cubemaster_status_message(self, message: cm.CubeMessage):
@@ -472,7 +473,7 @@ class CubeServerMaster:
             assert self.cubeboxes.update_from_cubeboxes(
                 new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
             report  = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-            assert report.success, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
+            assert report.sent_ok, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
             return True
         except Exception as e:
             self.log.error(f"Error handling reply all cubeboxes status message: {e}")

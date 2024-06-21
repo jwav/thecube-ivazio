@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
+    <normaloff>../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
   </property>
   <property name="iconSize">
    <size>
@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -319,7 +319,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="edit-clear">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -390,7 +390,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="user">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -686,7 +686,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="search">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -827,7 +827,7 @@ QPushButton:focus {
           <item row="0" column="4">
            <widget class="QLabel" name="lblTeamsTeamDeleteStatus">
             <property name="text">
-             <string>          </string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -865,7 +865,8 @@ QPushButton:focus {
              <string>Supprimer cette équipe</string>
             </property>
             <property name="icon">
-             <iconset theme="delete"/>
+             <iconset theme="delete">
+              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -896,7 +897,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="delete">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -907,7 +908,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="add">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -982,7 +983,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="print">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1291,7 +1292,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="update">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1361,7 +1362,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="remove">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1372,7 +1373,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="add">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1397,7 +1398,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="reload">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1528,6 +1529,20 @@ QPushButton:focus {
             </property>
            </spacer>
           </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="btnConfigLoad">
+            <property name="text">
+             <string>&amp;Charger configuration</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Mot de passe :</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="2">
            <widget class="QLineEdit" name="lineConfigPassword">
             <property name="minimumSize">
@@ -1547,7 +1562,7 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
+          <item row="0" column="5">
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1560,86 +1575,82 @@ QPushButton:focus {
             </property>
            </spacer>
           </item>
-          <item row="0" column="3">
-           <widget class="QPushButton" name="btnConfigPassword">
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblConfigInfo">
             <property name="text">
-             <string>Déverrouiller</string>
+             <string>---</string>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>Mot de passe :</string>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayoutAdminMain">
-          <item>
-           <layout class="QGridLayout" name="gridLayout_9">
-            <item row="1" column="1">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <layout class="QGridLayout" name="gridLayout_10">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton">
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+         <widget class="QPlainTextEdit" name="plainTextConfigContent">
+          <property name="font">
+           <font>
+            <family>DejaVu Sans Mono</family>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="2">
+           <widget class="QPushButton" name="btnConfigSave">
+            <property name="text">
+             <string>&amp;Sauvegarder la configuration</string>
+            </property>
+           </widget>
           </item>
-          <item>
-           <spacer name="verticalSpacer_2">
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_14">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>20</width>
-              <height>40</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btnConfigCheck">
+            <property name="text">
+             <string>&amp;Vérifier</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QPushButton" name="btnConfigSendToServers">
+            <property name="text">
+             <string>&amp;Envoyer la configuration aux serveurs</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -1665,7 +1676,6 @@ QPushButton:focus {
  </widget>
  <resources>
   <include location="resources.qrc"/>
-  <include location="../../../../../home/vee/.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

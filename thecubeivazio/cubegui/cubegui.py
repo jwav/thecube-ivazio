@@ -10,12 +10,13 @@ from PyQt5.QtCore import QFile, QTextStream, QThread, QMetaObject, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
-from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils, cube_rfid
+from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils, cube_rfid, cube_config
 from thecubeivazio.cube_logger import CubeLogger, CUBEGUI_LOG_FILENAME
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
 from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin
 from thecubeivazio.cubegui.cubegui_tab_admin import CubeGuiTabAdminMixin
+from thecubeivazio.cubegui.cubegui_tab_config import CubeGuiTabConfigMixin
 from thecubeivazio import cube_identification as ci
 
 import sys
@@ -52,8 +53,12 @@ class ServersInfoHasher:
         return ServersInfoHasher(fd).hash
 
 
-
-class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, CubeGuiTabAdminMixin):
+class CubeGuiForm(QMainWindow,
+                  CubeGuiTabNewTeamMixin,
+                  CubeGuiTabTeamsMixin,
+                  CubeGuiTabAdminMixin,
+                  CubeGuiTabConfigMixin
+                  ):
     TABINDEX_NEWTEAM = 0
     TABINDEX_TEAMS = 1
     TABINDEX_ADMIN = 2
@@ -86,6 +91,12 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         self._tabs_update_timer.timeout.connect(self.update_all_tabs)
         self._tabs_update_timer.start(1000)
 
+    @staticmethod
+    def update_gui():
+        """just a handier alias for `QApplication.processEvents()`"""
+        QApplication.processEvents()
+
+
     def update_all_tabs(self):
         # print(f"{self._last_displayed_servers_info_hash.hash}, {ServersInfoHash.get_current_servers_info(self.fd).hash}")
         # print(f"{self.fd.teams.hash}, {self.fd.cubeboxes.hash}, {self.fd.net.nodes_list.hash}\n")
@@ -101,6 +112,7 @@ class CubeGuiForm(QMainWindow, CubeGuiTabNewTeamMixin, CubeGuiTabTeamsMixin, Cub
         self.setup_tab_newteam()
         self.setup_tab_teams()
         self.setup_tab_admin()
+        self.setup_tab_config()
         self.setup_debug()
         # self.request_servers_infos()
         return True

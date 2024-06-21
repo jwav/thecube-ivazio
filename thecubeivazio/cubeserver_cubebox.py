@@ -78,9 +78,10 @@ class CubeServerCubebox:
     def _handle_config_message(self, message: cm.CubeMessage):
         self.log.info(f"Received config message from {message.sender}")
         config_msg = cm.CubeMsgConfig(copy_msg=message)
+        self.log.info(f"Config message: {config_msg.to_string()}")
         self.config.update_from_config(config_msg.config)
         self.config.save_to_json()
-        self.log.info(f"Config message: {config_msg.to_string()}")
+        self.log.success("Config updated and saved.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
 
@@ -226,7 +227,7 @@ class CubeServerCubebox:
         report = self.net.send_msg_to_cubemaster(
             cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp),
             require_ack=True)
-        if not report.success:
+        if not report.sent_ok:
             self.log.error("Failed to send RFID read message to CubeMaster")
             self.buzzer.play_rfid_error_sound()
             return False
@@ -310,7 +311,7 @@ class CubeServerCubebox:
             cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
             node_name=message.sender,
             require_ack=False)
-        return report.success
+        return report.sent_ok
 
     @cubetry
     def _handle_request_cubebox_status_message(self, message: cm.CubeMessage) -> bool:
@@ -322,7 +323,7 @@ class CubeServerCubebox:
             cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
             node_name=rcs_msg.sender,
             require_ack=False)
-        return report.success
+        return report.sent_ok
 
 class CubeServerCubeboxWithPrompt(CubeServerCubebox):
     def __init__(self, *args, **kwargs):

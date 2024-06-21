@@ -1,3 +1,8 @@
+# General / Unsorted
+
+- [ ] list the rest of the TODOs
+- [ ] make the rpis start automatically their respective servers (cubemaster and cubeboxes)
+
 # CubeMessages
 
 - [x] add a `CubeMsgConfig` class to share config updates among all nodes
@@ -20,7 +25,7 @@
 
 # CubeMaster
 
-- [ ] create scoresheets
+- [x] create scoresheets
 - [ ] display scoreboard on hdmi screen
 - [ ] for the CubeMasterWithPrompt, add commands
 
@@ -43,7 +48,8 @@
   - [ ] game times
   - [ ] cubeboxes score formulae
   - [ ] password system for config edition
-- [x] "sound the alarm" checkbox
+- [ ] "sound the alarm" checkbox
+  - [ ]
 - [x] shorter dates: dd/mm/yyyy
 
 

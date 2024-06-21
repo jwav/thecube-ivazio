@@ -100,7 +100,7 @@ class CubeGuiTabNewTeamMixin:
         # send the new team creation message to the cubemaster and check that the ack is ok
         report = self.fd.add_new_team(team)
 
-        if not report.success:
+        if not report.sent_ok:
             self.update_new_team_status_label(
                 f"Échec de la création de l'équipe {team_name} : pas réussi à envoyer le message!",
                 "error")

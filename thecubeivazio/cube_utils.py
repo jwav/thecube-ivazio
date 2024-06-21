@@ -1,5 +1,6 @@
 """Utility functions for the cube project"""
 import datetime
+import json
 import time
 import subprocess
 import os
@@ -343,6 +344,12 @@ def read_encrypted_file(filepath:str, password:str) -> str:
         decrypted_data = fernet.decrypt(encrypted_data)
         return decrypted_data.decode()
 
+def validate_json(json_str):
+    try:
+        json_obj = json.loads(json_str)
+        return True, None
+    except json.JSONDecodeError as e:
+        return False, str(e)
 
 
 def test_utils():

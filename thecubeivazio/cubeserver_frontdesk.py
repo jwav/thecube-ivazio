@@ -157,7 +157,7 @@ class CubeServerFrontdesk:
             assert self.cubeboxes.update_from_cubeboxes(
                 new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
             report = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-            assert report.success, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
+            assert report.sent_ok, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
             return True
         except Exception as e:
             self.log.error(f"Error handling reply all cubeboxes status message: {e}")
@@ -334,18 +334,35 @@ class CubeServerFrontdesk:
             return self._handle_reply_cubemaster_status_message(reply_msg)
 
     @cubetry
-    def send_config_message_to_all(self, config: cube_config.CubeConfig, nodenames:list[NodeName]=cubeid.ALL_NODENAMES) -> bool:
+    def send_config_message_to_all(self, config: cube_config.CubeConfig=None, nodenames:list[NodeName]=cubeid.ALL_NODENAMES) -> cubenet.SendReport:
         """Send a message to all nodes with the new config"""
-        if self.net.node_name in nodenames:
-            nodenames.remove(self.net.node_name)
+        # first of all, save this config as an encrypted file
+        config = config or self.config
+        if not self.config.save_to_encrypted_json_file():
+            return cubenet.SendReport(sent_ok=False, raw_info="Failed to save the config to file")
+        self.log.info(f"Sending config message to all nodes : {nodenames}...")
+
         msg = cm.CubeMsgConfig(self.net.node_name, config)
         # we have to do this node by node, checking that everyone acks
         for node_name in nodenames:
-            report = self.net.send_msg_to(msg, node_name, require_ack=True)
-            if not report.ack_ok:
+            # don't send to self
+            if node_name == self.net.node_name:
+                continue
+            self.log.info(f"Sending config message to {node_name}...")
+            report = self.net.send_msg_to(msg, node_name, require_ack=False)
+            if not report.sent_ok:
                 self.log.error(f"Failed to send the config message to {node_name}")
-                return False
-        return True
+                return cubenet.SendReport(sent_ok=False, raw_info=f"Failed to send the config message to {node_name}")
+            ack_msg = self.net.wait_for_ack_of(msg, ack_sender=node_name)
+            if not ack_msg:
+                self.log.error(f"Timed out waiting for ack from {node_name}.")
+                return cubenet.SendReport(sent_ok=False, raw_info=f"Timed out waiting for ack from {node_name}")
+            if ack_msg.info != cm.CubeAckInfos.OK:
+                self.log.error(f"{node_name} acked but with info {ack_msg.info}")
+                return cubenet.SendReport(sent_ok=False, raw_info=f"{node_name} acked but with info {ack_msg.info}")
+            self.log.success(f"Sent config message to {node_name}")
+        self.log.success(f"Sent config message to all nodes")
+        return cubenet.SendReport(sent_ok=True)
 
     @cubetry
     def request_team_status(self, team_name: str, reply_timeout: Optional[Seconds]) -> bool:

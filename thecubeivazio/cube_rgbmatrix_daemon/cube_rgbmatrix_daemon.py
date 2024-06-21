@@ -350,6 +350,8 @@ if __name__ == "__main__":
     # always test if not on raspberry pi
     do_test = not is_raspberry_pi()
 
+    do_test = False
+
     if "--test" in sys.argv or do_test:
         # remove "--test" from sys.argv to avoid problems for the SampleBase
         if "--test" in sys.argv:
