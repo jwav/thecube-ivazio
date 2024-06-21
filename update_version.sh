@@ -91,14 +91,14 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   HOSTNAME=$(hostname)
   if [[ "$HOSTNAME" == "cubemaster" ]]; then
     echo "Hostname is cubemaster. Copying cubemaster scripts..."
-    for file in *cubemaster*; do
+    for file in *cubemaster*.sh; do
       echo "Copying $file to home directory and making it executable."
       cp "$file" ~/
       chmod +x ~/"$file"
     done
   elif [[ "$HOSTNAME" == *"cubebox"* ]]; then
     echo "Hostname contains cubebox. Copying cubebox scripts..."
-    for file in *cubebox*; do
+    for file in *cubebox*.sh; do
       echo "Copying $file to home directory and making it executable."
       cp "$file" ~/
       chmod +x ~/"$file"
