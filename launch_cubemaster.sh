@@ -3,4 +3,4 @@
 cd "${HOME}/thecube-ivazio" || exit
 source ../venv/bin/activate
 cd "${HOME}/thecube-ivazio/thecubeivazio" || exit
-python3 cubeserver_cubemaster.py
+python3 cubeserver_master.py
