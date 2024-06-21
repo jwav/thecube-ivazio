@@ -18,7 +18,7 @@ sudo install -m 644 "$SOURCE_PATH" "$DESTINATION_PATH" || exit 1
 sudo systemctl daemon-reload || exit 1
 
 # Enable the service to start on boot
-#sudo systemctl enable thecubeivazio.cubebox.service
+sudo systemctl enable thecubeivazio.cubebox.service
 
 # Disable the service to ensure it does not start on boot
 sudo systemctl disable thecubeivazio.cubebox.service
