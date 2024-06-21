@@ -279,7 +279,6 @@ def is_raspberry_pi():
 
 
 def test():
-    exit(0)
     if is_raspberry_pi():
         print("Using the real CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixDaemon()

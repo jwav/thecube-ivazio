@@ -638,7 +638,8 @@ def test_rgb():
             master.update_rgb()
             master.log.critical(f"Teams: {master.teams.to_json()}")
             time.sleep(3)
-            master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
+            # toggle the display_team_names_on_rgb config
+            # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
 
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeMaster...")
@@ -650,6 +651,7 @@ if __name__ == "__main__":
     # if `--test_rgb` is passed as an argument, run the test_rgb() function
     import sys
     do_test_rgb = True
+    # do_test_rgb = False
 
     if "--test_rgb" in sys.argv or do_test_rgb:
         test_rgb()
