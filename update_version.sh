@@ -53,6 +53,8 @@ if [ "$SKIP_APT" = false ]; then
   fi
 fi
 
+echo "Stashing local changes..."
+git stash
 echo "Pulling git..."
 git pull
 if [ $? -ne 0 ]; then
