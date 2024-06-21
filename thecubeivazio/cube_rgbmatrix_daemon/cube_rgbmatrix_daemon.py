@@ -293,6 +293,7 @@ def test():
     daemon.server._debug = True
     daemon.enable_log_stdout()
     daemon.log.critical("---- Starting RGB Daemon TEST ----")
+    print("Starting RGB Daemon TEST")
 
 
     try:
