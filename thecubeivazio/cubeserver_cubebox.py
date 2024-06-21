@@ -379,6 +379,8 @@ def main(use_prompt=False):
 
     try:
         box.run()
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
         print("KeyboardInterrupt. Stopping CubeBox...")
         box.stop()
