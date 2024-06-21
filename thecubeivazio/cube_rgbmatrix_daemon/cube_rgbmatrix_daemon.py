@@ -349,6 +349,7 @@ def main():
         exit(0)
 
 if __name__ == "__main__":
+    exit(0)
     import sys
 
     # always test if not on raspberry pi
