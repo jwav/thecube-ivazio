@@ -648,11 +648,13 @@ def test_rgb():
     exit(0)
 
 if __name__ == "__main__":
+    main()
+    exit(0)
+
     # if `--test_rgb` is passed as an argument, run the test_rgb() function
     import sys
     do_test_rgb = True
     # do_test_rgb = False
-
     if "--test_rgb" in sys.argv or do_test_rgb:
         test_rgb()
     elif "--prompt" in sys.argv:
