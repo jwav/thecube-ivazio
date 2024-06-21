@@ -279,6 +279,8 @@ def is_raspberry_pi():
 
 
 def test():
+    CubeRgbMatrixDaemon.enable_log_stdout()
+    CubeRgbMatrixDaemon.log.critical("Starting RGB Daemon test")
     if is_raspberry_pi():
         print("Using the real CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixDaemon()
