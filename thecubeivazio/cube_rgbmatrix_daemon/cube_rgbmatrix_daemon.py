@@ -329,6 +329,7 @@ def test():
         exit(0)
 
 def main():
+    print("Starting RGB Daemon")
     if is_raspberry_pi():
         print("Using the real CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixDaemon()
@@ -338,7 +339,8 @@ def main():
 
     try:
         assert daemon.start()
-
+        while True:
+            time.sleep(0.1)
     except Exception as e:
         print(f"RGB Daemon : Exception : {e}")
         exit(1)
