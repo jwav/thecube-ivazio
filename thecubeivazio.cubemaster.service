@@ -2,7 +2,7 @@
 Description=Ivazio CubeMaster
 
 [Service]
-ExecStart=/usr/bin/env bash /home/ivazio/update_and_start_cubemaster.sh
+ExecStart=/usr/bin/bash /home/ivazio/update_and_start_cubemaster.sh
 WorkingDirectory=/home/ivazio/thecube-ivazio
 StandardOutput=journal
 StandardError=journal
