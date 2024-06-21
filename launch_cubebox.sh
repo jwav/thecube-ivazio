@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 cd "${HOME}/thecube-ivazio" || exit
-source ../venv/bin/activate
+source venv/bin/activate || exit
 cd "${HOME}/thecube-ivazio/thecubeivazio" || exit
-python3 cubeserver_cubebox.py
+python3 cubeserver_cubebox.py || exit
