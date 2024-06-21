@@ -612,7 +612,7 @@ def test_rgb():
     master.net.log.setLevel(cube_logger.logging.INFO)
 
     try:
-        master.log.critical("Starting CubeMaster...")
+        master.log.critical("TestRGB: Starting CubeMaster...")
         master.run()
 
 
@@ -630,19 +630,19 @@ def test_rgb():
         # sample_teams = []
         for team in sample_teams:
             master.teams.add_team(team)
-        master.log.critical(f"Teams registered: {[team.name for team in master.teams]}")
+        master.log.critical(f"TestRGB: Teams registered: {[team.name for team in master.teams]}")
 
         # master.stop()
 
         while True:
             master.update_rgb()
-            master.log.critical(f"Teams: {master.teams.to_json()}")
+            master.log.critical(f"TestRGB: Teams: {master.teams.to_json()}")
             time.sleep(3)
             # toggle the display_team_names_on_rgb config
             # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
 
     except KeyboardInterrupt:
-        print("KeyboardInterrupt received. Stopping CubeMaster...")
+        print("TestRGB: KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
         master.stop()
     exit(0)
