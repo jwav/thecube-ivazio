@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 # Colors
 RED='\033[0;31m'
@@ -107,4 +107,4 @@ fi
 
 echo -e "${GREEN}Update OK: APT packages installed, git pulled, project package pip installed.${NC}"
 
-)
+) # End of subshell
