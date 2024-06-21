@@ -84,24 +84,16 @@ fi
 
 echo "Copying scripts..."
 # if the hostname is cubemaster, copy the cubemaster scripts, otherwise copy the cubebox scripts
-if [ "$(hostname)" == "cubemaster" ]; then
-  cp update_and_start_cubemaster.sh ~/update_and_start_cubemaster.sh
-  chmod +x ~/update_and_start_cubemaster.sh
-  cp view_cubemaster_logs.sh ~/view_cubemaster_logs.sh
-  chmod +x ~/view_cubemaster_logs.sh
-  cp setup_cubemaster_service.sh ~/setup_cubemaster_service.sh
-  chmod +x ~/setup_cubemaster_service.sh
-  cp start_cubemaster_service.sh ~/start_cubemaster_service.sh
-  chmod +x ~/start_cubemaster_service.sh
-  cp stop_cubemaster_service.sh ~/stop_cubemaster_service.sh
-  chmod +x ~/stop_cubemaster_service.sh
-elif [[ "$(hostname)" == *"cubebox"* ]]; then
-  cp update_and_start_cubebox.sh ~/update_and_start_cubebox.sh
-  chmod +x ~/update_and_start_cubebox.sh
-  cp view_cubebox_logs.sh ~/view_cubebox_logs.sh
-  chmod +x ~/view_cubebox_logs.sh
-  cp setup_cubebox_service.sh ~/setup_cubebox_service.sh
-  chmod +x ~/setup_cubebox_service.sh
+if [[ "$HOSTNAME" == "cubemaster" ]]; then
+  for file in *cubemaster*; do
+    cp "$file" ~/
+    chmod +x ~/"$file"
+  done
+elif [[ "$HOSTNAME" == *"cubebox"* ]]; then
+  for file in *cubebox*; do
+    cp "$file" ~/
+    chmod +x ~/"$file"
+  done
 fi
 
 
