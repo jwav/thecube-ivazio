@@ -391,6 +391,8 @@ def test():
     box.net.log.setLevel(cube_logger.logging.INFO)
     try:
         box.run()
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
         print("KeyboardInterrupt. Stopping CubeBox...")
         box.stop()
