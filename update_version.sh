@@ -17,71 +17,69 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   cd "$SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
 
-# TODO: while debugging, i'm skipping the APT update and install
-#SKIP_APT=false
+# TODO: by default, skip the APT update and pip install
 SKIP_APT=true
+SKIP_PIP_REQ=true
+
 for arg in "$@"
 do
-  if [ "$arg" == "--skip-apt" ]; then
+  if [ "$arg" == "--full-update" ]; then
+    SKIP_APT=false
+    SKIP_PIP_REQ=false
+    echo "Full update"
+    break
+  elif [ "$arg" == "--skip-apt" ]; then
     SKIP_APT=true
     echo "Skipping APT update and install"
-    break
-  fi
-done
-
-#SKIP_PIP_REQ=false
-SKIP_PIP_REQ=true
-for arg in "$@"
-do
-  if [ "$arg" == "--skip-pip" ]; then
+  elif [ "$arg" == "--skip-pip" ]; then
     SKIP_PIP_REQ=true
     echo "Skipping pip install"
-    break
   fi
 done
 
-
-
-if [ "$SKIP_APT" = false ]; then
-  echo "Updating APT and installing required packages.."
-  ./install_required_apt_packages.sh
-  if [ $? -ne 0 ]; then
-      echo "ERROR: APT udpate and install failed"
-      exit 1
-  else
-    echo "OK : The script succeeded"
-  fi
-fi
 
 echo "Stashing local changes..."
 git stash
 echo "Pulling git..."
 git pull
 if [ $? -ne 0 ]; then
-  echo "ERROR: git pull failed"
+  echo -e "${RED}ERROR: git pull failed${NC}"
   exit 1
 else
-  echo "OK : git pull succeeded"
+  echo -e "${GREEN}OK : git pull succeeded${NC}"
 fi
+
+
+if [ "$SKIP_APT" = false ]; then
+  echo "Updating APT and installing required packages.."
+  ./install_required_apt_packages.sh
+  if [ $? -ne 0 ]; then
+      echo -e "${RED}ERROR: APT udpate and install failed${NC}"
+      exit 1
+  else
+    echo -e "${GREEN}OK : The script succeeded${NC}"
+  fi
+fi
+
 
 if [ "$SKIP_PIP_REQ" = false ]; then
 echo "pip install requirements..."
 pip install -r ./requirements.txt
 if [ $? -ne 0 ]; then
-  echo "ERROR: pip install requirements failed"
+  echo -e "${RED}ERROR: pip install requirements failed${NC}"
   exit 1
 else
-  echo "OK : pip install requirements succeeded"
+  echo -e "${GREEN}OK : pip install requirements succeeded${NC}"
 fi
 fi
 
 echo "Installing the project package..."
 pip install .
 if [ $? -ne 0 ]; then
-  echo "ERROR: project package install failed"
+  echo -e "${RED}ERROR: project package install failed${NC}"
   exit 1
 else
-  echo "OK : project package install succeeded"
+  echo -e "${GREEN}OK : project package install succeeded${NC}"
 fi
 
 echo "Copying scripts..."
@@ -97,7 +95,7 @@ if [ "$(hostname)" == "cubemaster" ]; then
   chmod +x ~/start_cubemaster_service.sh
   cp stop_cubemaster_service.sh ~/stop_cubemaster_service.sh
   chmod +x ~/stop_cubemaster_service.sh
-else
+elif [[ "$(hostname)" == *"cubebox"* ]]; then
   cp update_and_start_cubebox.sh ~/update_and_start_cubebox.sh
   chmod +x ~/update_and_start_cubebox.sh
   cp view_cubebox_logs.sh ~/view_cubebox_logs.sh
