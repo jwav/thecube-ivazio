@@ -133,6 +133,35 @@ def date_to_french_date_string(date: datetime.datetime,
         # Restore the original locale
         locale.setlocale(locale.LC_TIME, current_locale)
     return french_date_string
+
+
+def hhmmss_string_to_seconds_alternative(hhmmss: str) -> Optional[int]:
+    """Convert a string like 1h30m15s, 0h30, 01:32:55, 00:21 to the number of seconds it represents"""
+    try:
+        # Split the string by non-digit characters
+        parts = re.split(r'\D+', hhmmss)
+        parts = [part for part in parts if part]  # Remove empty strings
+
+        # Check the number of parts and convert accordingly
+        if len(parts) == 3:
+            hours, minutes, seconds = map(int, parts)
+        elif len(parts) == 2:
+            hours, minutes = map(int, parts)
+            seconds = 0
+        elif len(parts) == 1:
+            hours = int(parts[0])
+            minutes = 0
+            seconds = 0
+        else:
+            raise ValueError("Invalid format for the time string")
+
+        total_seconds = hours * 3600 + minutes * 60 + seconds
+        return total_seconds
+    except Exception as e:
+        print(f"Error while converting {hhmmss} to seconds: {e}")
+        return None
+
+
 def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
     """Convert a string like 1h30m15s, 0h30m, 01:32:55, 00:21 to the number of seconds it represents"""
     try:
