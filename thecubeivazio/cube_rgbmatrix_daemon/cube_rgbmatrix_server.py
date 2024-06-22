@@ -1,3 +1,4 @@
+import json
 import socket
 import threading
 import time
@@ -55,6 +56,25 @@ class CubeRgbMatrixContent:
         return self.to_string()
 
     def to_string(self) -> str:
+        """returns a json representation of the object matching the logic in make_from_string"""
+        return json.dumps({
+            "matrix_id": self.matrix_id,
+            "team_name": self.team_name,
+            "end_timestamp": self.end_timestamp,
+            "max_time_sec": self.max_time_sec
+        })
+
+    @classmethod
+    def make_from_string(cls, text: str) -> Optional['CubeRgbMatrixContent']:
+        """parses a json string representation of the object and returns a CubeRgbMatrixContent object"""
+        try:
+            d = json.loads(text)
+            return cls(d["matrix_id"], d["team_name"], d["end_timestamp"], d["max_time_sec"])
+        except Exception as e:
+            print(f"Error in CubeRgbMatrixContent.make_from_string: {e}")
+            return None
+
+    def _old_to_string(self) -> str:
         try:
             tn = self.team_name or ""
             try:
@@ -68,8 +88,11 @@ class CubeRgbMatrixContent:
             print(f"Error in CubeRgbMatrixContent.to_string: {e}")
             return ""
 
+
+
+
     @classmethod
-    def make_from_string(cls, text: str) -> Optional['CubeRgbMatrixContent']:
+    def _old_make_from_string(cls, text: str) -> Optional['CubeRgbMatrixContent']:
         try:
             matrix_id, team_name_end_timestamp = text.split(cls.MATRIX_ID_SEPARATOR)
             team_name, end_timestamp = team_name_end_timestamp.split(cls.TEAM_NAME_END_TIMESTAMP_SEPARATOR)
@@ -81,6 +104,21 @@ class CubeRgbMatrixContent:
         except Exception as e:
             print(f"Error in CubeRgbMatrixContent.make_from_string: {e}")
             return None
+
+    def is_valid(self):
+        try:
+            assert isinstance(self.matrix_id, int), f"matrix_id is not an int: {self.matrix_id}"
+            assert isinstance(self.team_name, str), f"team_name is not a str: {self.team_name}"
+            assert isinstance(self.end_timestamp, (float, int, type(None))), \
+                f"end_timestamp is not a float, int or None: {self.end_timestamp}"
+            assert isinstance(self.max_time_sec, (float, int, type(None))), \
+                f"max_time_sec is not a float, int or None: {self.max_time_sec}"
+            assert not (self.max_time_sec is None and self.end_timestamp is None), \
+                f"max_time_sec and end_timestamp are both None"
+            return True
+        except Exception as e:
+            print(f"Error in CubeRgbMatrixContent.is_valid: {e}")
+            return False
 
 
 class CubeRgbMatrixContentDict(dict[int, CubeRgbMatrixContent]):
@@ -103,6 +141,12 @@ class CubeRgbMatrixContentDict(dict[int, CubeRgbMatrixContent]):
         except Exception as e:
             print(f"Error in CubeRgbMatrixContentDict.make_from_string: {e}")
             return cls()
+
+    def is_valid(self):
+        for content in self.values():
+            if not content.is_valid():
+                return False
+        return True
 
 
 class CubeRgbServer:
@@ -250,7 +294,6 @@ class CubeRgbServer:
             return CubeRgbMatrixContentDict(self._rgb_matrix_contents_dict)
 
 
-# Example usage
 if __name__ == "__main__":
     master = CubeRgbServer(is_master=True)
     rgb_server = CubeRgbServer(is_rgb=True)
@@ -259,10 +302,21 @@ if __name__ == "__main__":
 
     # send some content
     contents_dict = CubeRgbMatrixContentDict({
-        0: CubeRgbMatrixContent(0, "team1", time.time() + 10),
-        1: CubeRgbMatrixContent(1, "team2", time.time() + 20),
-        2: CubeRgbMatrixContent(2, "team3", time.time() + 30),
+        0: CubeRgbMatrixContent(matrix_id=0, team_name="Team1", end_timestamp=time.time() + 10, max_time_sec=10),
+        # 1: CubeRgbMatrixContent(matrix_id=1, team_name="Team2", end_timestamp=None, max_time_sec=None),
+        2: CubeRgbMatrixContent(matrix_id=2, team_name="Team3", end_timestamp=None, max_time_sec=30),
+        3: CubeRgbMatrixContent(matrix_id=3, team_name="Team4", end_timestamp=time.time() + 20, max_time_sec=None),
     })
+
+    # check that the contents_dict is correct
+    assert contents_dict.is_valid()
+    dict_str = contents_dict.to_string()
+    dict_str2 = CubeRgbMatrixContentDict.make_from_string(dict_str).to_string()
+    assert dict_str == dict_str2
+    print(f"dict_str: {dict_str}")
+    print("All tests passed")
+
+
 
     master.send_rgb_matrix_contents_dict(contents_dict)
 
