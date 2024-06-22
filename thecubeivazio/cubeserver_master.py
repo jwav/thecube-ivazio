@@ -118,17 +118,16 @@ class CubeServerMaster:
             team = self.game_status.teams.get_team_by_name(team_name)
             try:
                 assert team
-                assert team.end_timestamp is not None
-                self.log.info(f"We have team {team_name} with end_timestamp {team.end_timestamp}")
+                self.log.info(f"We have team {team_name} with end_timestamp {team.end_timestamp} and max_time_sec {team.max_time_sec}")
                 if self.config.display_team_names_on_rgb:
                     rmcd[matrix_id] = crs.CubeRgbMatrixContent(
-                        matrix_id=matrix_id, team_name=team_name, end_timestamp=team.end_timestamp)
+                        matrix_id=matrix_id, team_name=team_name, end_timestamp=team.end_timestamp, max_time_sec=team.max_time_sec)
                 else:
                     rmcd[matrix_id] = crs.CubeRgbMatrixContent(
-                        matrix_id=matrix_id, team_name=None, end_timestamp=team.end_timestamp)
+                        matrix_id=matrix_id, team_name=None, end_timestamp=team.end_timestamp, max_time_sec=team.max_time_sec)
             except:
                 rmcd[matrix_id] = crs.CubeRgbMatrixContent(
-                    matrix_id=matrix_id, team_name=None, end_timestamp=None)
+                    matrix_id=matrix_id, team_name=None, end_timestamp=None, max_time_sec=None)
         # send the CubeRgbMatrixContentDict to the server run by the RGBMatrix Daemon
         self.log.info(f"Sending RGBMatrixContentDict to RGBMatrix Daemon : {rmcd.to_string()}")
         rmcd_reconstructed = crs.CubeRgbMatrixContentDict.make_from_string(rmcd.to_string())

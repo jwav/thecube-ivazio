@@ -7,14 +7,22 @@ from typing import Optional, Union
 class CubeRgbMatrixContent:
     MATRIX_ID_SEPARATOR = "#"
     TEAM_NAME_END_TIMESTAMP_SEPARATOR = ">"
-    def __init__(self, matrix_id: int, team_name: Optional[str], end_timestamp: Optional[float]):
+
+    def __init__(self, matrix_id: int,
+                 team_name: str = None,
+                 end_timestamp: float = None,
+                 max_time_sec: float = None
+                 ):
         self.matrix_id = matrix_id
         self.team_name = team_name
         self.end_timestamp = end_timestamp
+        self.max_time_sec = max_time_sec
 
     @property
     def remaining_secs(self) -> float:
         try:
+            if self.max_time_sec and self.end_timestamp is None:
+                return self.max_time_sec
             if self.end_timestamp is None:
                 return None
             if self.is_time_up():
@@ -26,10 +34,10 @@ class CubeRgbMatrixContent:
     @property
     def remaining_time_str(self) -> str:
         try:
-            if self.end_timestamp is None:
-                return ""
-            elif self.is_time_up():
+            if self.is_time_up():
                 return "00:00:00"
+            if self.remaining_secs is None:
+                return ""
             return time.strftime("%H:%M:%S", time.gmtime(self.remaining_secs))
         except:
             return ""
@@ -49,8 +57,10 @@ class CubeRgbMatrixContent:
     def to_string(self) -> str:
         try:
             tn = self.team_name or ""
-            try: et = int(self.end_timestamp)
-            except: et = ""
+            try:
+                et = int(self.end_timestamp)
+            except:
+                et = ""
             midsep = self.MATRIX_ID_SEPARATOR
             tensep = self.TEAM_NAME_END_TIMESTAMP_SEPARATOR
             return f"{self.matrix_id}{midsep}{tn}{tensep}{et}"
@@ -63,8 +73,10 @@ class CubeRgbMatrixContent:
         try:
             matrix_id, team_name_end_timestamp = text.split(cls.MATRIX_ID_SEPARATOR)
             team_name, end_timestamp = team_name_end_timestamp.split(cls.TEAM_NAME_END_TIMESTAMP_SEPARATOR)
-            try: end_timestamp = float(end_timestamp)
-            except: end_timestamp = None
+            try:
+                end_timestamp = float(end_timestamp)
+            except:
+                end_timestamp = None
             return cls(int(matrix_id), team_name, end_timestamp)
         except Exception as e:
             print(f"Error in CubeRgbMatrixContent.make_from_string: {e}")
@@ -117,7 +129,8 @@ class CubeRgbServer:
             self.name = "CubeRgbServer-RGB"
         else:
             raise ValueError("CubeRgbServer : is_master and is_rgb cannot be both True or both False")
-        self._print(f"CubeRgbServer : is_master={is_master}, is_rgb={is_rgb}, listen_port={self.listen_port}, send_port={self.send_port}")
+        self._print(
+            f"CubeRgbServer : is_master={is_master}, is_rgb={is_rgb}, listen_port={self.listen_port}, send_port={self.send_port}")
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
@@ -140,7 +153,6 @@ class CubeRgbServer:
             # print(f"{self.__class__.__name__}({self.listen_port}):", *args, **kwargs)
             print(f"{self.name}({self.listen_port}):", *args, **kwargs)
 
-
     def start_listening(self):
         try:
             self._sock.bind((self.UDP_IP, self.listen_port))
@@ -157,7 +169,7 @@ class CubeRgbServer:
             self._print(f"Received message: '{text}' from {addr}")
             self._handle_received_text(text)
 
-    def _handle_received_text(self, text:str)->bool:
+    def _handle_received_text(self, text: str) -> bool:
         try:
             self._print(f"Handling received text: {text}")
             with self._lock:
@@ -174,7 +186,8 @@ class CubeRgbServer:
             for matrix_id, content in self._rgb_matrix_contents_dict.items():
                 self._print(f"Displaying first content")
                 self._print(f"matrix_id: {matrix_id}, content: {content}, end_timestamp: {content.end_timestamp}")
-                self._print(f"remaining_secs: {content.remaining_secs}, remaining_time_str: {content.remaining_time_str}")
+                self._print(
+                    f"remaining_secs: {content.remaining_secs}, remaining_time_str: {content.remaining_time_str}")
                 break
             self._send_text(self.MSG_OK)
         except Exception as e:
