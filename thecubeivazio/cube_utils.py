@@ -133,11 +133,11 @@ def date_to_french_date_string(date: datetime.datetime,
         # Restore the original locale
         locale.setlocale(locale.LC_TIME, current_locale)
     return french_date_string
-
 def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
     """Convert a string like 1h30m15s, 0h30m, 01:32:55, 00:21 to the number of seconds it represents"""
     try:
         hhmmss = hhmmss.lower()
+
         if 'h' in hhmmss or 'm' in hhmmss or 's' in hhmmss:
             pattern = re.compile(r'(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?')
             match = pattern.match(hhmmss)
@@ -159,7 +159,15 @@ def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
                 seconds = int(parts[0])
             else:
                 raise ValueError("Invalid format for the time string")
-        return hours * 3600 + minutes * 60 + seconds
+
+        # Handle case like '1h30' where '30' is interpreted as minutes
+        if 'h' in hhmmss and 'm' not in hhmmss and 's' not in hhmmss:
+            hours = int(hhmmss.split('h')[0])
+            minutes = int(hhmmss.split('h')[1])
+            seconds = 0
+
+        total_seconds = hours * 3600 + minutes * 60 + seconds
+        return total_seconds
     except Exception as e:
         print(f"Error while converting {hhmmss} to seconds: {e}")
         return None
@@ -362,11 +370,21 @@ def str_to_bool(s: str) -> bool:
     return s.lower() in ['true', '1']
 
 def test_time_conversions():
-    assert hhmmss_string_to_seconds('1h30m15s') == 5415
-    assert hhmmss_string_to_seconds('0h30m') == 1800
-    assert hhmmss_string_to_seconds('01:32:55') == 5575
-    assert hhmmss_string_to_seconds('00:21') == 21
-    assert hhmmss_string_to_seconds('21') == 21
+    test_cases = [
+        ('1h30m15s', 5415),
+        ('0h30m', 1800),
+        ('1h30', 5400),
+        ('01:32:55', 5575),
+        ('00:21', 21),
+        ('21', 21)
+    ]
+
+    for hhmmss, expected in test_cases:
+        result = hhmmss_string_to_seconds(hhmmss)
+        print(f"Input string: {hhmmss}")
+        print(f"Expected: {expected}, Got: {result}")
+        assert result == expected
+
 
 def test_utils():
     print("git branch version:", get_git_branch_version())
