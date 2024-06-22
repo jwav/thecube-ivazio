@@ -58,6 +58,9 @@ class CubeMsgTypes(enum.Enum):
     FRONTDESK_NEW_TEAM = "FRONTDESK_NEW_TEAM"
     FRONTDESK_REMOVE_TEAM = "FRONTDESK_REMOVE_TEAM"
 
+    # Command message
+    COMMAND = "COMMAND"
+
     # unneeded by way of empirical evidence, but hey, i needed to do it for CubeMsgReplies and I guess i can't hurt
     def __eq__(self, other):
         """This is needed to compare a CubeMsgTypes with a str."""
@@ -668,6 +671,27 @@ class CubeMsgConfig(CubeMessage):
             return CubeConfig.make_from_json(self.kwargs.get("config"))
         except Exception as e:
             CubeLogger.static_error(f"Error parsing CubeConfig from CubeMsgConfig: {e}")
+
+
+class CubeMsgCommand(CubeMessage):
+    """Sent from any node to everyone to detail a command."""
+
+    def __init__(self, sender=None, target:NodeName=None, command: str = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.COMMAND, sender, target=target, command=command)
+        self.require_ack = False
+
+    @cubetry
+    @property
+    def target(self) -> NodeName:
+        return str(self.kwargs.get("target"))
+
+    @cubetry
+    @property
+    def command(self) -> str:
+        return str(self.kwargs.get("command"))
 
 
 # test functions

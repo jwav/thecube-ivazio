@@ -189,6 +189,8 @@ class CubeServerMaster:
                 # ignore ACK messages. They are to be handled in wait_for_ack_of()
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                elif message.msgtype == cm.CubeMsgTypes.COMMAND:
+                    self._handle_command_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.CONFIG:
                     self._handle_config_message(message)
                 # handle RFID read messages from the cubeboxes
@@ -372,6 +374,32 @@ class CubeServerMaster:
         else:
             self.log.error(f"Failed to remove team: {rtmsg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+
+    @cubetry
+    def _handle_command_message(self, message: cm.CubeMessage):
+        self.log.info(f"Received command message from {message.sender}")
+        command_msg = cm.CubeMsgCommand(copy_msg=message)
+        self.log.info(f"Command message: {command_msg.to_string()}")
+        command = command_msg.command
+        target = command_msg.target
+        if target not in (self.net.node_name, cubeid.EVERYONE_NODENAME):
+            self.log.info(f"Command target not for me: {target}")
+            return False
+        return self.handle_command(command)
+
+    def handle_command(self, command: str) -> bool:
+        if command == "reset":
+            self.log.info("Received reset command. Resetting.")
+            self.teams = cube_game.CubeTeamsStatusList()
+            self.cubeboxes = cube_game.CubeboxesStatusList()
+            return True
+        elif command == "update_rgb":
+            self.log.info("Received update_rgb command. Updating RGBMatrix.")
+            self.update_rgb()
+            return True
+        else:
+            self.log.error(f"Unknown command: {command}")
+            return False
 
     @cubetry
     def _handle_config_message(self, message: cm.CubeMessage):
