@@ -14,6 +14,7 @@ import traceback as tb
 
 from typing import TYPE_CHECKING
 
+from thecubeivazio.cube_common_defines import cubetry
 from thecubeivazio.cube_messages import CubeAckInfos
 
 if TYPE_CHECKING:
@@ -60,6 +61,7 @@ class CubeGuiTabNewTeamMixin:
             self.ui.btnIconNewteamNewTeamStatus.setIcon(QtGui.QIcon.fromTheme("error"))
             self.ui.lblNewteamNewTeamStatusText.setText("{e}")
 
+    @cubetry
     def update_new_team_rfid_status_label(self: 'CubeGuiForm', text: str, icon_name: str = None):
         try:
             self.ui.lblNewteamRfidStatusText.setText(text)
@@ -71,6 +73,7 @@ class CubeGuiTabNewTeamMixin:
             self.ui.btnIconNewteamRfidStatus.setIcon(QtGui.QIcon.fromTheme("error"))
             self.ui.lblNewteamRfidStatusText.setText("{e}")
 
+    @cubetry
     def create_new_team(self: 'CubeGuiForm'):
         team_name = self.ui.comboNewteamTeamName.currentText()
         custom_name = self.ui.lineNewteamTeamCustomName.text()

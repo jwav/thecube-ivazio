@@ -352,6 +352,9 @@ def validate_json(json_str):
         return False, str(e)
 
 
+def str_to_bool(s: str) -> bool:
+    return s.lower() in ['true', '1']
+
 def test_utils():
     print("git branch version:", get_git_branch_version())
     print("git branch date:", get_git_branch_date())

@@ -211,11 +211,11 @@ class CubeMsgFrontdeskNewTeam(CubeMessage):
     def team(self) -> Optional[cube_game.CubeTeamStatus]:
         try:
             name = self.kwargs.get("name")
-            custom_name = self.kwargs.get("custom_name")
+            custom_name = self.kwargs.get("custom_name", "")
             rfid_uid = self.kwargs.get("rfid_uid")
             max_time_sec = float(self.kwargs.get("max_time_sec"))
             creation_timestamp = float(self.kwargs.get("creation_timestamp"))
-            use_alarm = self.kwargs.get("use_alarm")
+            use_alarm = cube_utils.str_to_bool(self.kwargs.get("use_alarm", "False"))
             if not all([name, rfid_uid, max_time_sec]):
                 return None
             return cube_game.CubeTeamStatus(
