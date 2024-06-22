@@ -408,6 +408,7 @@ def test_time_conversions():
         ('21', 21)
     ]
 
+
     for hhmmss, expected in test_cases:
         result = hhmmss_string_to_seconds(hhmmss)
         print(f"Input string: {hhmmss}")
