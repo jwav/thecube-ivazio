@@ -291,13 +291,13 @@ class CubeboxesStatusList(List[CubeboxStatus]):
     def append(self, box: CubeboxStatus):
         self.update_from_cubebox(box)
 
-    @cubetry
     @property
+    @cubetry
     def hash_dict(self) -> Dict[NodeName, Hash]:
         return {cubeid.cubebox_index_to_node_name(box.cube_id): box.hash for box in self}
 
-    @cubetry
     @property
+    @cubetry
     def hash(self) -> Hash:
         return hashlib.sha256(self.to_string().encode()).hexdigest()
 
