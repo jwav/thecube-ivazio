@@ -11,6 +11,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 from cryptography.fernet import Fernet
 import base64
+import re
 
 from thecubeivazio.cube_common_defines import *
 
@@ -133,27 +134,32 @@ def date_to_french_date_string(date: datetime.datetime,
         locale.setlocale(locale.LC_TIME, current_locale)
     return french_date_string
 
-
 def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
-    """Convert a string like 1h30m15s ,0h30, 01:32:55, 00:21 to the number of seconds it represents"""
-    # find which characters are digits, which are not, and split the string using the non-digits as separators
-    import itertools
+    """Convert a string like 1h30m15s, 0h30m, 01:32:55, 00:21 to the number of seconds it represents"""
     try:
-        parts = ["".join(g) for k, g in itertools.groupby(hhmmss, key=str.isdigit)]
-        # remove parts that are not pure digits
-        parts = [part for part in parts if part.isdigit()]
-        # convert the parts to integers
-        parts = [int(part) for part in parts]
-        # print(parts)
-        # check the number of parts : 3 means hours, minutes, seconds, 2 means hours, seconds, 1 means seconds
-        if len(parts) == 3:
-            return parts[0] * 3600 + parts[1] * 60 + parts[2]
-        elif len(parts) == 2:
-            return parts[0] * 3600 + parts[1]
-        elif len(parts) == 1:
-            return parts[0]
+        hhmmss = hhmmss.lower()
+        if 'h' in hhmmss or 'm' in hhmmss or 's' in hhmmss:
+            pattern = re.compile(r'(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?')
+            match = pattern.match(hhmmss)
+            if not match:
+                raise ValueError("Invalid format for the time string")
+            hours = int(match.group(1) or 0)
+            minutes = int(match.group(2) or 0)
+            seconds = int(match.group(3) or 0)
         else:
-            raise ValueError("Invalid format for the time string")
+            parts = hhmmss.split(':')
+            if len(parts) == 3:
+                hours, minutes, seconds = map(int, parts)
+            elif len(parts) == 2:
+                hours = 0
+                minutes, seconds = map(int, parts)
+            elif len(parts) == 1:
+                hours = 0
+                minutes = 0
+                seconds = int(parts[0])
+            else:
+                raise ValueError("Invalid format for the time string")
+        return hours * 3600 + minutes * 60 + seconds
     except Exception as e:
         print(f"Error while converting {hhmmss} to seconds: {e}")
         return None
@@ -355,6 +361,13 @@ def validate_json(json_str):
 def str_to_bool(s: str) -> bool:
     return s.lower() in ['true', '1']
 
+def test_time_conversions():
+    assert hhmmss_string_to_seconds('1h30m15s') == 5415
+    assert hhmmss_string_to_seconds('0h30m') == 1800
+    assert hhmmss_string_to_seconds('01:32:55') == 5575
+    assert hhmmss_string_to_seconds('00:21') == 21
+    assert hhmmss_string_to_seconds('21') == 21
+
 def test_utils():
     print("git branch version:", get_git_branch_version())
     print("git branch date:", get_git_branch_date())
@@ -385,6 +398,8 @@ def test_utils():
 
 
 if __name__ == "__main__":
+    test_time_conversions()
+    exit(0)
     test_utils()
 
 

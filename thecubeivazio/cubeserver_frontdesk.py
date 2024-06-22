@@ -293,18 +293,18 @@ class CubeServerFrontdesk:
         # first, check that it's a team in our current status, and not one from the database.
         # We never delete from the database
         if not self.teams.has_team(team):
-            self.log.error(f"Team {team.preset_name} not found in the current status")
+            self.log.error(f"Team {team.name} not found in the current status")
             return False
-        msg = cm.CubeMsgFrontdeskDeleteTeam(self.net.node_name, team_name=team.preset_name)
+        msg = cm.CubeMsgFrontdeskDeleteTeam(self.net.node_name, team_name=team.name)
         report = self.net.send_msg_to_cubemaster(msg, require_ack=True)
         if not report:
-            self.log.error(f"Failed to send the delete team message : {team.preset_name}")
+            self.log.error(f"Failed to send the delete team message : {team.name}")
             return False
         if not report.ack_ok:
-            self.log.error(f"The CubeMaster did not respond to the delete team message : {team.preset_name}")
+            self.log.error(f"The CubeMaster did not respond to the delete team message : {team.name}")
             return None
-        self.log.success(f"The CubeMaster deleted the team : {team.preset_name}")
-        self.teams.remove_team(team.preset_name)
+        self.log.success(f"The CubeMaster deleted the team : {team.name}")
+        self.teams.remove_team(team.name)
         return True
 
     @cubetry
