@@ -29,6 +29,13 @@ class CubeGuiTabAdminMixin:
         self.ui.btnAdminOrderCubeboxReset.clicked.connect(self.order_cubebox_reset)
         self.ui.comboAdminCubeboxToOrder.addItems(ci.CUBEBOX_NODENAMES)
 
+        self.ui.btnAdminSendCommand.clicked.connect(self.send_command_clicked)
+        self.ui.lblAdminCommandStatusText.setText("")
+        self.ui.lblAdminServersInfoStatusText.setText("")
+        self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon())
+        # set up the command line so that enter key triggers the send command button
+        self.ui.lineAdminCommand.returnPressed.connect(self.ui.btnAdminSendCommand.click)
+
 
     def order_cubebox_reset(self: 'CubeGuiForm'):
         self.ui: Ui_Form
@@ -94,7 +101,16 @@ class CubeGuiTabAdminMixin:
             self.ui.lblAdminServersInfoStatusText.setText("{e}")
             self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme("error"))
 
-
+    @cubetry
+    def send_command_clicked(self: 'CubeGuiForm'):
+        self.ui: Ui_Form
+        command = self.ui.lineAdminCommand.text()
+        result = self.fd.send_full_command(command)
+        if not result:
+            self.ui.lblAdminCommandStatusText.setText("❌ Erreur lors de l'envoi de la commande.")
+            return False
+        self.ui.lblAdminCommandStatusText.setText("✔️ Commande envoyée et exécutée avec succès.")
+        return True
 
 
 if __name__ == "__main__":
@@ -102,4 +118,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = CubeGuiForm()
     window.show()
+    window.ui.lineAdminCommand.setText("CubeMaster update_rgb")
+    window.send_command_clicked()
     sys.exit(app.exec_())

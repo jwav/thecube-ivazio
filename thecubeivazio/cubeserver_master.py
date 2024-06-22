@@ -376,25 +376,29 @@ class CubeServerMaster:
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
 
     @cubetry
-    def _handle_command_message(self, message: cm.CubeMessage):
+    def _handle_command_message(self, message: cm.CubeMessage) -> bool:
         self.log.info(f"Received command message from {message.sender}")
         command_msg = cm.CubeMsgCommand(copy_msg=message)
         self.log.info(f"Command message: {command_msg.to_string()}")
-        command = command_msg.command
+        command = command_msg.command_without_target
         target = command_msg.target
         if target not in (self.net.node_name, cubeid.EVERYONE_NODENAME):
             self.log.info(f"Command target not for me: {target}")
             return False
-        return self.handle_command(command)
+        if not self.handle_command(command):
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+            return False
+        self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+        return True
+
 
     def handle_command(self, command: str) -> bool:
+        self.log.info(f"Handling command: '{command}'")
         if command == "reset":
-            self.log.info("Received reset command. Resetting.")
             self.teams = cube_game.CubeTeamsStatusList()
             self.cubeboxes = cube_game.CubeboxesStatusList()
             return True
         elif command == "update_rgb":
-            self.log.info("Received update_rgb command. Updating RGBMatrix.")
             self.update_rgb()
             return True
         else:

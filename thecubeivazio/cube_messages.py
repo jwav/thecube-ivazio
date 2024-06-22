@@ -674,24 +674,34 @@ class CubeMsgConfig(CubeMessage):
 
 
 class CubeMsgCommand(CubeMessage):
-    """Sent from any node to everyone to detail a command."""
+    """Sent from the frontdesk to any node to send a command as text, which is then handled."""
 
-    def __init__(self, sender=None, target:NodeName=None, command: str = None, copy_msg: CubeMessage = None):
+    def __init__(self, sender=None, full_command: str = None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.COMMAND, sender, target=target, command=command)
+            super().__init__(CubeMsgTypes.COMMAND, sender, full_command=full_command)
         self.require_ack = False
 
-    @cubetry
     @property
-    def target(self) -> NodeName:
-        return str(self.kwargs.get("target"))
+    @cubetry
+    def full_command(self) -> str:
+        return self.kwargs.get("full_command")
 
-    @cubetry
     @property
-    def command(self) -> str:
-        return str(self.kwargs.get("command"))
+    @cubetry
+    def words(self) -> list:
+        return self.full_command.split()
+
+    @property
+    @cubetry
+    def target(self) -> NodeName:
+        return self.words[0]
+
+    @property
+    @cubetry
+    def command_without_target(self) -> str:
+        return " ".join(self.words[1:])
 
 
 # test functions

@@ -235,6 +235,26 @@ class CubeServerFrontdesk:
         return report
 
     @cubetry
+    def send_full_command(self, full_command:str) -> bool:
+        """Send a full command to the CubeMaster. Returns True if the command was sent, False if not."""
+        self.log.info(f"Sending full command: {full_command}")
+        msg = cm.CubeMsgCommand(self.net.node_name, full_command=full_command)
+        self.log.critical(f"words={msg.words}")
+        destination_node = msg.target
+        if destination_node not in cubeid.ALL_NODENAMES:
+            self.log.error(f"Invalid destination node: {destination_node}")
+            return False
+        report = self.net.send_msg_to(msg, destination_node, require_ack=True)
+        if not report:
+            self.log.error(f"Failed to send the full command : {full_command}")
+            return False
+        if not report.ack_ok:
+            self.log.error(f"Node {destination_node} did not acknowledge the full command : {full_command}")
+            return False
+        self.log.success(f"Node {destination_node} acknowledged the full command : {full_command}")
+        return True
+
+    @cubetry
     def move_team_to_database(self, team_name) -> bool:
         """Move a team from the status to the database."""
         try:
