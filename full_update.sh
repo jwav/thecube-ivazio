@@ -11,4 +11,4 @@ fi
 #cd "$SCRIPT_DIR" || exit 1
 #source "${SCRIPT_DIR}/update_version.sh --full-update"
 #cd "${THECUBE_DIR}" || exit 1
-bash "${THECUBE_DIR}/update_version.sh --full-update"
+bash "${THECUBE_DIR}/update_version.sh" --full-update
