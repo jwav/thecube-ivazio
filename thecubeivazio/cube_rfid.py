@@ -339,7 +339,8 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
 
     def setup(self):
-        self._is_setup = self.enable_usb_rfid()
+        # self._is_setup = self.enable_usb_rfid()
+        self._is_setup = True
         if not self._is_setup:
             self.log.error("RFID Keyboard listener setup failed")
             return False
