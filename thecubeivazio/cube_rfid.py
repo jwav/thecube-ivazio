@@ -339,7 +339,10 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
 
 
     def setup(self):
-        self._is_setup = True
+        self._is_setup = self.enable_usb_rfid()
+        if not self._is_setup:
+            self.log.error("RFID Keyboard listener setup failed")
+            return False
         self.log.success("RFID Keyboard listener setup successful")
         return True
 
@@ -350,6 +353,51 @@ class CubeRfidKeyboardListener(CubeRfidListenerBase):
         self.log.info("Stopping RFID listener...")
         self._keyboard_listener.stop()
         self.log.info("RFID listener stopped")
+
+    @cubetry
+    def enable_usb_rfid(self) -> bool:
+        self.log.info("Enabling RFID reader...")
+        usb_path = None
+
+        # Find the correct USB device path, display the results of lsusb
+        with os.popen('lsusb') as f:
+            for line in f:
+                # print(line)
+                if 'Sycreader RFID Technology' in line:
+                    self.log.debug(f"Found RFID reader in '{line}'")
+                    parts = line.split()
+                    if len(parts) >= 4:
+                        bus = parts[1]
+                        device = parts[3][:-1]
+                        self.log.info(f"Bus: {bus}, Device: {device}")
+                        usb_path = f'/sys/bus/usb/devices/{bus}-{device}/authorized'
+                        break
+                    else:
+                        self.log.error("Unexpected format in lsusb output")
+        if not usb_path:
+            self.log.error("USB RFID reader not found")
+            return False
+
+        if usb_path and os.path.exists(usb_path):
+            try:
+                with open(usb_path, 'r') as f:
+                    status = f.read().strip()
+                if status == '1':
+                    self.log.success("RFID reader is already enabled.")
+                    return True
+                else:
+                    with open(usb_path, 'w') as f:
+                        f.write('1')
+                    self.log.info(f"RFID reader enabled at {usb_path}")
+            except Exception as e:
+                self.log.error(f"Failed to enable RFID reader: {e}")
+                return False
+        else:
+            self.log.error("RFID reader not found")
+            return False
+        self.log.success("RFID reader enabled successfully")
+        return True
+
 
     def _on_press(self, key: Union[keyboard.KeyCode, keyboard.Key]):
         try:
@@ -560,8 +608,15 @@ def test_compare_rfid_listeners():
         exit(0)
 
 
+def test_enable_usb_rfid():
+    rfid = CubeRfidKeyboardListener()
+    # rfid.enable_usb_rfid()
+    exit(0)
+
 if __name__ == "__main__":
-    # test_serial_rfid()
+    # test_enable_usb_rfid()
+    test_serial_rfid()
+    exit(0)
     test_compare_rfid_listeners()
 
     print("Testing RFID Line Simulation")
