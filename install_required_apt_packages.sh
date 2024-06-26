@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
-sudo locale-gen en_US.UTF-8
-sudo update-locale LANG=en_US.UTF-8
+current_locale=$(locale | grep LANG | cut -d= -f2)
+if ! grep -q "en_US.UTF-8" /etc/locale.gen; then
+  sudo locale-gen en_US.UTF-8
+fi
+
+if [[ "$current_locale" != "en_US.UTF-8" ]]; then
+  echo "Setting locale to en_US.UTF-8"
+  sudo update-locale LANG=en_US.UTF-8
+fi
 
 sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
