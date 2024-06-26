@@ -468,7 +468,7 @@ class CubeServerMaster:
         self.rfid.run()
         # TODO: re-enable RFID listener on the server once the tests are over
         # TESTING : disable the RFID listener on the server for now
-        self.rfid._is_enabled = False
+        # self.rfid._is_enabled = False
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
             for line in self.rfid.get_completed_lines():
