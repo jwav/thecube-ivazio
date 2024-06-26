@@ -398,6 +398,18 @@ def validate_json(json_str):
 def str_to_bool(s: str) -> bool:
     return s.lower() in ['true', '1']
 
+
+@cubetry
+def reboot():
+    """Reboot the system"""
+    subprocess.run(['sudo', 'reboot'])
+    return True
+
+
+###########
+# TESTS
+##########
+
 def test_time_conversions():
     test_cases = [
         ('1h30m15s', 5415),

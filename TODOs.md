@@ -27,7 +27,7 @@
 
 # CubeConfig
 - [x] handle encryption
-- [ ] implement routine saving and config changes among all nodes
+- [x] implement routine saving and config changes among all nodes
 
 # CubeBoxes
  
@@ -37,7 +37,9 @@
 # CubeMaster
 
 - [x] create scoresheets
-- [ ] display scoreboard on hdmi screen
+- [x] display scoreboard on hdmi screen
+    - [ ] test with real hardware
+    - [ ] improve display, have room for 12 teams max
 - [ ] for the CubeMasterWithPrompt, add commands
 
 

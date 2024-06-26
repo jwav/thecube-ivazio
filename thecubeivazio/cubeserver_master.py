@@ -400,6 +400,9 @@ class CubeServerMaster:
         elif command == "update_rgb":
             self.update_rgb()
             return True
+        elif command == "reboot":
+            cube_utils.reboot()
+            return True
         else:
             self.log.error(f"Unknown command: {command}")
             return False
