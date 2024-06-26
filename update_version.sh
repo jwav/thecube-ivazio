@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+
+# if the hostname contains "cube", use this defined directory
+if [[ $(hostname) == *"cube"* ]]; then
+  THECUBE_DIR="${HOME}/thecube-ivazio"
+else
+  THECUBE_DIR="/mnt/shared/thecube-ivazio"
+fi
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -18,7 +26,8 @@ echo_green() {
 
 
 # Get the directory of the script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="${THECUBE_DIR}"
 
 cd "$SCRIPT_DIR" || exit 1
 source "${SCRIPT_DIR}/venv/bin/activate"
