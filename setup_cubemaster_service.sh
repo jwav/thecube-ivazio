@@ -28,6 +28,8 @@ sudo systemctl enable thecubeivazio.cubemaster.service
 
 echo "Service file copied and systemctl reloaded."
 
+# reload systemd configuration
+sudo systemctl daemon-reload
 
 # Output the status of the service
 sudo systemctl status thecubeivazio.cubemaster.service
@@ -36,3 +38,4 @@ sudo systemctl status thecubeivazio.cubemaster.service
 if ! sudo systemctl is-enabled --quiet thecubeivazio.cubemaster.service; then
     echo "ERROR: Service is not enabled!"
 fi
+

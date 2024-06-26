@@ -12,7 +12,7 @@ StandardError=journal
 Restart=always
 User=ivazio
 Group=ivazio
-TimeoutStopSec=300
+TimeoutStopSec=5
 
 
 
