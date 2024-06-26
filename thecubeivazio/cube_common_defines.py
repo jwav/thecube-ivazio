@@ -78,6 +78,14 @@ LOOP_PERIOD_SEC = 0.1
 STATUS_REPLY_TIMEOUT = 2
 TIMESTAMP_EPSILON = 0.00001
 
+# defines how we calculate the time a team spent opening a cube
+# CUBE_TIME_BETWEEN_PRESSES means "time between two button presses"
+# (obviously, the first time is calculated between the RFID read and the first button press
+CUBE_TIME_BETWEEN_PRESSES = "CUBE_TIME_BETWEEN_PRESSES"
+# CUBE_TIME_RFID_TO_PRESS means "time between the RFID card is read and the cube is pressed"
+CUBE_TIME_RFID_TO_PRESS = "CUBE_TIME_RFID_TO_PRESS"
+CUBE_TIME_METHOD = CUBE_TIME_BETWEEN_PRESSES
+
 def cubetry(func):
     """Decorator to catch exceptions in functions and log them without having to write a try/except block in the function."""
     @wraps(func)

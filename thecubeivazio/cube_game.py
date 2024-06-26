@@ -58,6 +58,8 @@ class CubeboxStatus:
         self.win_timestamp = win_timestamp
         self.last_valid_rfid_line = last_valid_rfid_line
         self._state = state
+        # helper variable to implement the CUBE_TIME_BETWEEN_PRESSES time counting rule
+        self._prev_cubebox_win_timestamp = None
 
     def __str__(self):
         return self.to_string()
@@ -224,12 +226,14 @@ class CubeboxStatus:
         self._state = other.get_state()
 
     @property
-    def completion_time_sec(self) -> Optional[Seconds]:
-        try:
+    @cubetry
+    def completion_time_sec(self) -> Seconds:
+        if CUBE_TIME_METHOD == CUBE_TIME_RFID_TO_PRESS or self._prev_cubebox_win_timestamp is None:
             return self.win_timestamp - self.start_timestamp
-        except Exception as e:
-            CubeLogger.static_debugminus(f"CubeboxStatus.completion_time_sec {e}")
-            return None
+        elif CUBE_TIME_METHOD == CUBE_TIME_BETWEEN_PRESSES:
+            return self.win_timestamp - self._prev_cubebox_win_timestamp
+        else:
+            raise Exception(f"CubeboxStatus.completion_time_sec: unknown CUBE_TIME_METHOD {CUBE_TIME_METHOD}")
 
     @property
     def completion_time_str(self) -> str:
@@ -506,10 +510,34 @@ class CubeTeamStatus:
         # TODO: test
         self.use_alarm = use_alarm
 
+
     @property
+    @cubetry
     def completed_cubeboxes(self) -> CompletedCubeboxStatusList:
-        return CompletedCubeboxStatusList([
-            box for box in self._completed_cubeboxes if box.is_completed()])
+        assert self._update_completed_cubeboxes()
+        return CompletedCubeboxStatusList([box for box in self._completed_cubeboxes])
+
+    @cubetry
+    def _update_completed_cubeboxes(self) -> bool:
+        """updates the time elapsed for each cubebox, according to the rule defined in
+        cube_common_defines"""
+        # if any completed box isnt set properly, remove it.
+        # This shouldn't happen so if one of these cubeboxes is not completed, log it as a critical error
+        for box in self._completed_cubeboxes:
+            if not box.is_completed():
+                CubeLogger.static_critical(
+                    f"CubeTeamStatus._update_completed_cubeboxes: cubebox {box.node_name} is not completed!")
+        self._completed_cubeboxes = [box for box in self._completed_cubeboxes if box.is_completed()]
+        # order the completed cubeboxes by time of completion
+        self._completed_cubeboxes.sort(key=lambda box: box.win_timestamp)
+        # for each completed box, set the _prev_cubebox_win_timestamp
+        for i,box in enumerate(self._completed_cubeboxes):
+            if i == 0:
+                box._prev_cubebox_win_timestamp = None
+            else:
+                box._prev_cubebox_win_timestamp = self._completed_cubeboxes[i-1].win_timestamp
+        return True
+
 
     @property
     def end_timestamp(self) -> Optional[Timestamp]:
@@ -584,10 +612,11 @@ class CubeTeamStatus:
             "max_time_sec": self.max_time_sec,
             "creation_timestamp": self.creation_timestamp,
             "start_timestamp": self.start_timestamp,
-            "use_alarm": self.use_alarm,
             "current_cubebox_id": self.current_cubebox_id,
+            # TODO: should be calling directly to_dict() on the cubeboxes
             "completed_cubeboxes": [box.to_dict() for box in self._completed_cubeboxes],
             "trophies_names": self.trophies_names,
+            "use_alarm": self.use_alarm,
         }
 
     @classmethod
@@ -1376,8 +1405,48 @@ def test_cubeboxes_scoring():
 
 
 
+def test_completion_time_sec():
+    """generate a few completed cubeboxes in a team, then test the box.completion_time_sec method"""
+    global CUBE_TIME_METHOD
+    team = CubeTeamStatus(name="Budapest", max_time_sec=60.0, rfid_uid="123456789")
+    ids = [1,4,3,12]
+    start_times = [10, 112, 980, 450]
+    win_times = [100, 350, 1020, 900]
+    for i in range(len(ids)):
+        team.set_completed_cube(ids[i], start_times[i], win_times[i])
+
+    boxes = team.completed_cubeboxes
+    ids_out = [box.cube_id for box in boxes]
+    start_times_out = [box.start_timestamp for box in boxes]
+    win_times_out = [box.win_timestamp for box in boxes]
+    # check that the boxes are in the right order: the previous's win time is less than the next's start time
+    for i in range(1, len(boxes)):
+        assert win_times_out[i-1] < start_times_out[i], f"box {i-1} : {win_times_out[i-1]} >= {start_times_out[i]}"
+
+    CUBE_TIME_METHOD = CUBE_TIME_RFID_TO_PRESS
+    for i in range(len(ids)):
+        box = boxes[i]
+        expected = win_times_out[i] - start_times_out[i]
+        assert box.completion_time_sec == expected, \
+            f"box {i} ({box.start_timestamp} -> {box.win_timestamp}): {box.completion_time_sec} != {expected} (expected)"
+
+    CUBE_TIME_METHOD = CUBE_TIME_BETWEEN_PRESSES
+    for i in range(len(ids)):
+        box = boxes[i]
+        if i == 0:
+            expected = win_times_out[i] - start_times_out[i]
+        else:
+            expected = win_times_out[i] - win_times_out[i-1]
+        assert box.completion_time_sec == expected, \
+            f"box {i} ({box.start_timestamp} -> {box.win_timestamp}): {box.completion_time_sec} != {expected} (expected)"
+
+    print("test_completion_time_sec() : all tests passed")
+    exit(0)
+
+
 
 if __name__ == "__main__":
+    test_completion_time_sec()
     test_cubeboxes_scoring()
     test_ScoringPresets()
     test_CubeScoreCalculator()

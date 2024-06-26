@@ -143,6 +143,10 @@ class CubeLogger(logging.Logger):
         if self.isEnabledFor(LEVEL_DEBUGMINUS):
             self._log(LEVEL_DEBUGMINUS, msg, args, **kwargs)
 
+    @classmethod
+    def static_critical(cls, msg, *args, **kwargs):
+        cls.get_static_logger().critical(msg, *args, **kwargs)
+
 
 if __name__ == "__main__":
     # test the logger

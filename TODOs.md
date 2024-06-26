@@ -1,12 +1,23 @@
 # General / Unsorted
 
+- [ ] check that the cubeboxes boot with the rfid reader attached
 - [ ] list the rest of the TODOs
 - [ ] make the rpis start automatically their respective servers (cubemaster and cubeboxes)
+- [ ] autostart on cubemaster
+- [ ] autostart on cubeboxes
+- [ ] auto display on hdmi on cubemaster
+- [ ] test cubemaster speaker
+- [ ] test cubemaster alarm light
+
+- [ ] implement commands :
+    - [ ] `reset` : reset cubebox
+    - [ ] `reboot` : shutdown cubebox
+    - [ ] `button` : simulate button press
 
 # CubeMessages
 
 - [x] add a `CubeMsgConfig` class to share config updates among all nodes
-  - [ ] implement the `CubeMsgConfig` class in cubemaster, cubebox, cubefrontdesk. cubefrontdesk should be the only one sending it
+  - [x] implement the `CubeMsgConfig` class in cubemaster, cubebox, cubefrontdesk. cubefrontdesk should be the only one sending it
 
 # CubeGame
 
@@ -28,6 +39,7 @@
 - [x] create scoresheets
 - [ ] display scoreboard on hdmi screen
 - [ ] for the CubeMasterWithPrompt, add commands
+
 
 # CubeFrontdesk
 
