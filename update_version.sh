@@ -14,6 +14,9 @@ echo_green() {
     echo -e "${GREEN}$1${NC}"
 }
 
+
+
+
 # Get the directory of the script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -24,6 +27,11 @@ source "${SCRIPT_DIR}/venv/bin/activate"
 (
   cd "$SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
+
+  # stop the services
+  echo "Stopping the services..."
+  sudo systemctl stop thecubeivazio.cubemaster.service
+  sudo systemctl stop thecubeivazio.cubebox.service
 
   # TODO: by default, skip the APT update and pip install
   SKIP_APT=true
@@ -119,4 +127,17 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   fi
 
   echo_green "Update OK: APT packages installed, git pulled, project package pip installed, scripts copied, service set up."
+
+  # Start the service according to hostname
+  if [[ "$HOSTNAME" == "cubemaster" ]]; then
+    echo "Starting cubemaster service..."
+    sudo systemctl start thecubeivazio.cubemaster.service
+  elif [[ "$HOSTNAME" == *"cubebox"* ]]; then
+    echo "Starting cubebox service..."
+    sudo systemctl start thecubeivazio.cubebox.service
+  else
+    echo "Hostname does not match cubemaster or cubebox patterns."
+  fi
+
 ) # End of subshell
+
