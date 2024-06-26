@@ -33,6 +33,6 @@ echo "Service file copied and systemctl reloaded."
 sudo systemctl status thecubeivazio.cubemaster.service
 
 # if the status is not enabled, print so
-if [ $? -ne 0 ]; then
-    echo "ERROR : Service is not enabled!"
+if ! sudo systemctl is-enabled --quiet thecubeivazio.cubemaster.service; then
+    echo "ERROR: Service is not enabled!"
 fi
