@@ -21,14 +21,21 @@ sudo systemctl daemon-reload || exit 1
 sudo systemctl enable thecubeivazio.cubebox.service
 
 # Disable the service to ensure it does not start on boot
-sudo systemctl disable thecubeivazio.cubebox.service
+#sudo systemctl disable thecubeivazio.cubebox.service
 
 # Start the service immediately
 #sudo systemctl start thecubeivazio.cubebox.service
 
 echo "Service file copied and systemctl reloaded."
 
+# reload systemd configuration
+sudo systemctl daemon-reload
 
 # Output the status of the service
 sudo systemctl status thecubeivazio.cubebox.service
+
+# if the status is not enabled, print so
+if ! sudo systemctl is-enabled --quiet thecubeivazio.cubebox.service; then
+    echo "ERROR: Service is not enabled!"
+fi
 
