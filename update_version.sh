@@ -123,6 +123,12 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   else
     echo "Hostname does not match cubemaster or cubebox patterns."
   fi
+  # copy all scripts containing `update`
+  for file in *update*.sh; do
+    echo "Copying $file to home directory and making it executable."
+    cp "$file" ~/
+    chmod +x ~/"$file"
+  done
 
   # setup the service, according to the hostname
   if [[ "$HOSTNAME" == "cubemaster" ]]; then
