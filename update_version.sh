@@ -66,7 +66,7 @@ source "${SCRIPT_DIR}/venv/bin/activate"
 
   if [ "$SKIP_APT" = false ]; then
     echo "Updating APT and installing required packages.."
-    ./install_required_apt_packages.sh
+    bash ./install_required_apt_packages.sh
     if [ $? -ne 0 ]; then
       echo_red "ERROR: APT update and install failed"
       exit 1
