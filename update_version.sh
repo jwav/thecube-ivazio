@@ -110,10 +110,10 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   # setup the service, according to the hostname
   if [[ "$HOSTNAME" == "cubemaster" ]]; then
     echo "Setting up cubemaster service..."
-    ./setup_cubemaster_service.sh
+    bash ./setup_cubemaster_service.sh
   elif [[ "$HOSTNAME" == *"cubebox"* ]]; then
     echo "Setting up cubebox service..."
-    ./setup_cubebox_service.sh
+    bash ./setup_cubebox_service.sh
   else
     echo "Hostname does not match cubemaster or cubebox patterns."
   fi
