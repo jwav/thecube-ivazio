@@ -107,5 +107,16 @@ source "${SCRIPT_DIR}/venv/bin/activate"
     echo "Hostname does not match cubemaster or cubebox patterns."
   fi
 
-  echo_green "Update OK: APT packages installed, git pulled, project package pip installed."
+  # setup the service, according to the hostname
+  if [[ "$HOSTNAME" == "cubemaster" ]]; then
+    echo "Setting up cubemaster service..."
+    ./setup_cubemaster_service.sh
+  elif [[ "$HOSTNAME" == *"cubebox"* ]]; then
+    echo "Setting up cubebox service..."
+    ./setup_cubebox_service.sh
+  else
+    echo "Hostname does not match cubemaster or cubebox patterns."
+  fi
+
+  echo_green "Update OK: APT packages installed, git pulled, project package pip installed, scripts copied, service set up."
 ) # End of subshell
