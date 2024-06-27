@@ -14,8 +14,10 @@ import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
-from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
-from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_server as crs
+if __name__ == "__main__":
+    print("Importing thecubeivazio.cube_rgbmatrix_daemon")
+    from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
+    from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_server as crs
 
 
 class CubeServerMaster:
