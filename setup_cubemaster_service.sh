@@ -32,7 +32,7 @@ echo "Service file copied and systemctl reloaded."
 sudo systemctl daemon-reload
 
 # Output the status of the service
-sudo systemctl status thecubeivazio.cubemaster.service
+#sudo systemctl status thecubeivazio.cubemaster.service
 
 # if the status is not enabled, print so
 if ! sudo systemctl is-enabled --quiet thecubeivazio.cubemaster.service; then

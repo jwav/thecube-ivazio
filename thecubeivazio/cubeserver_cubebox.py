@@ -105,7 +105,7 @@ class CubeServerCubebox:
         return self.to_string()
 
     @property
-    def play_start_timestamp(self) -> Optional[Seconds]:
+    def play_start_timesamp(self) -> Optional[Seconds]:
         if self.status.last_valid_rfid_line is not None:
             return self.status.last_valid_rfid_line.timestamp
         else:
