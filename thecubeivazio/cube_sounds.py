@@ -39,6 +39,7 @@ class CubeSoundPlayer:
             mixer.init()
             self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
             self._is_initialized = True
+            self.log.success("CubeSoundPlayer initialized")
         except Exception as e:
             self.log.error(f"Error initializing CubeSoundPlayer: {e}")
             self._is_initialized = False
