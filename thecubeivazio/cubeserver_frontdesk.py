@@ -15,7 +15,7 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_database as cubedb
-from thecubeivazio.cubeserver_master import CubeServerMaster
+from thecubeivazio.cubeserver_cubemaster import CubeServerMaster
 
 
 class CubeServerFrontdesk:
@@ -724,7 +724,7 @@ def run_prompt():
 
 def test_send_config():
     from thecubeivazio.cubeserver_cubebox import CubeServerCubebox
-    from thecubeivazio.cubeserver_master import CubeServerMaster
+    from thecubeivazio.cubeserver_cubemaster import CubeServerMaster
     import traceback
 
     fd = CubeServerFrontdesk()

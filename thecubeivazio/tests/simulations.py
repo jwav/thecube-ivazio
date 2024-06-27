@@ -6,7 +6,7 @@ import traceback
 from typing import List, Callable
 
 from thecubeivazio import cube_logger
-from thecubeivazio import cubeserver_cubebox, cubeserver_frontdesk, cubeserver_master
+from thecubeivazio import cubeserver_cubebox, cubeserver_frontdesk, cubeserver_cubemaster
 from thecubeivazio import cube_identification as cubeid
 from thecubeivazio import cube_messages as cm
 from thecubeivazio import cube_utils
