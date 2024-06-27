@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+DEBUG=true
 
 # if the hostname contains "cube", use this defined directory
 if [[ $(hostname) == *"cube"* ]]; then
@@ -40,9 +41,12 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   sudo systemctl stop thecubeivazio.cubemaster.service
   sudo systemctl stop thecubeivazio.cubebox.service
 
-  # TODO: by default, skip the APT update and pip install
-  SKIP_APT=true
-  SKIP_PIP_REQ=true
+  # if debug, skip apt and pip
+  if [ "$DEBUG" = true ]; then
+    echo "DEBUG: Skipping APT and pip updates"
+    SKIP_APT=true
+    SKIP_PIP_REQ=true
+  fi
 
   for arg in "$@"
   do

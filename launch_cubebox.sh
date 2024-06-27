@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#set -x
+set -x
 
 echo "Launching CubeBox service..."
 cd "${HOME}/thecube-ivazio/thecubeivazio" || { echo "Failed to change directory"; exit 1; }
