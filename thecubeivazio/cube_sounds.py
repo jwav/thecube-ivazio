@@ -55,6 +55,7 @@ class CubeSoundPlayer:
     @cubetry
     def play_sound_file(self, soundfile: str):
         """Play a sound file or a tune on the buzzer."""
+        self.log.info(f"Playing sound file: '{soundfile}'")
         self._playing_thread = threading.Thread(target=self._play_sound_file, args=(soundfile,))
         self._playing_thread.start()
         self._playing_thread.join(timeout=STATUS_REPLY_TIMEOUT)
