@@ -1,5 +1,5 @@
 [Unit]
-Description=Ivazio CubeBox
+Description=Ivazio CubeMaster
 After=network-online.target
 Wants=network-online.target
 

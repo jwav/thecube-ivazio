@@ -12,7 +12,7 @@ files=(
     "start_cubemaster_service.sh"
     "setup_cubemaster_service.sh"
     "check_cubemaster_status.sh"
-    "update_and_start_cubemaster.sh"
+    "update_and_launchthecube-ivazio –thecube-ivazio –_cubemaster.sh"
     "stop_cubemaster_service.sh"
     "view_cubemaster_logs.sh"
 )
