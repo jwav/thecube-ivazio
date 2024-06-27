@@ -36,10 +36,10 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   cd "$SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
 
-  # stop the services
-  echo "Stopping the services..."
-  sudo systemctl stop thecubeivazio.cubemaster.service
-  sudo systemctl stop thecubeivazio.cubebox.service
+  # stop the services (no, dont do that, it causes an infinite loop when this script is run from the systemctl)
+#  echo "Stopping the services..."
+#  sudo systemctl stop thecubeivazio.cubemaster.service
+#  sudo systemctl stop thecubeivazio.cubebox.service
 
   # if debug, skip apt and pip
   if [ "$DEBUG" = true ]; then
