@@ -21,8 +21,8 @@
 
 # CubeGame
 
-- [ ] implement the new time calculation method
-- [ ] implement the new score calculation method
+- [x] implement the new time calculation method
+- [x] implement the new score calculation method
 - [x] add team creation timestamp for unique identification
 
 # CubeConfig

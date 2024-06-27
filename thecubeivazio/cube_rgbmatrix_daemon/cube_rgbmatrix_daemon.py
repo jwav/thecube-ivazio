@@ -62,6 +62,33 @@ from rgbmatrix import graphics
 from cube_rgbmatrix_server import CubeRgbMatrixContentDict, CubeRgbMatrixContent, CubeRgbServer
 
 
+class MockLogger:
+    def __init__(self, name):
+        self.name = name
+
+    def debug(self, msg, *args, **kwargs):
+        print(f"DEBUG: {self.name} - {msg}")
+
+    def info(self, msg, *args, **kwargs):
+        print(f"INFO: {self.name} - {msg}")
+
+    def warning(self, msg, *args, **kwargs):
+        print(f"WARNING: {self.name} - {msg}")
+
+    def error(self, msg, *args, **kwargs):
+        print(f"ERROR: {self.name} - {msg}")
+
+    def critical(self, msg, *args, **kwargs):
+        print(f"CRITICAL: {self.name} - {msg}")
+
+    def exception(self, msg, *args, **kwargs):
+        print(f"EXCEPTION: {self.name} - {msg}")
+
+    def addHandler(self, handler):
+        pass
+
+    def setLevel(self, level):
+        pass
 
 
 class CubeRgbMatrixDaemon(SampleBase):
@@ -69,13 +96,13 @@ class CubeRgbMatrixDaemon(SampleBase):
     _static_process = None
 
     # Create a logger object
-    log = logging.getLogger('RGBMatrixDaemon')
-    log.setLevel(logging.DEBUG)
-    file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
+    # log = logging.getLogger('RGBMatrixDaemon')
+    log = MockLogger('RGBMatrixDaemon')
+    # log.setLevel(logging.DEBUG)
+    # file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-
-    log.addHandler(file_handler)
+    # file_handler.setFormatter(formatter)
+    # log.addHandler(file_handler)
 
 
     def __init__(self, *args, **kwargs):
@@ -96,7 +123,7 @@ class CubeRgbMatrixDaemon(SampleBase):
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
         self.server = CubeRgbServer(is_rgb=True, debug=False)
-        self.create_log_file()
+        # self.create_log_file()
 
         self.font = graphics.Font()
         self.font.LoadFont(os.path.join(RGBMATRIX_DAEMON_FONTS_DIR, "7x13.bdf"))

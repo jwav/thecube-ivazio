@@ -392,7 +392,7 @@ class CubeServerMaster:
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
         return True
 
-
+    @cubetry
     def handle_command(self, command: str) -> bool:
         self.log.info(f"Handling command: '{command}'")
         if command == "reset":

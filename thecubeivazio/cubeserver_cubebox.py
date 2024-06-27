@@ -83,6 +83,35 @@ class CubeServerCubebox:
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
 
+    @cubetry
+    def _handle_command_message(self, message: cm.CubeMessage) -> bool:
+        self.log.info(f"Received command message from {message.sender}")
+        command_msg = cm.CubeMsgCommand(copy_msg=message)
+        self.log.info(f"Command message: {command_msg.to_string()}")
+        command = command_msg.command_without_target
+        target = command_msg.target
+        if target not in (self.net.node_name, cubeid.EVERYONE_NODENAME):
+            self.log.info(f"Command target not for me: {target}")
+            return False
+        if not self.handle_command(command):
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+            return False
+        self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+        return True
+
+    @cubetry
+    def handle_command(self, command: str) -> bool:
+        self.log.info(f"Handling command: '{command}'")
+        if command == "reset":
+            self.perform_reset()
+            return True
+        elif command == "reboot":
+            cube_utils.reboot()
+            return True
+        else:
+            self.log.error(f"Unknown command: {command}")
+            return False
+
     @property
     def cubebox_index(self):
         return cubeid.node_name_to_cubebox_index(self.net.node_name)
@@ -140,6 +169,8 @@ class CubeServerCubebox:
                 # ignore ack messages, they're handled in the networking module
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                elif message.msgtype == cm.CubeMsgTypes.COMMAND:
+                    self._handle_command_message(message)
                 if message.msgtype == cm.CubeMsgTypes.CONFIG:
                     self._handle_config_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET:
