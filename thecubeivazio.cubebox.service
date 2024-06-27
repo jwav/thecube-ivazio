@@ -4,6 +4,8 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
+Environment="SDL_AUDIODRIVER=alsa"
+Environment="AUDIODEV=hw:0,0"
 WorkingDirectory=/home/ivazio/thecube-ivazio
 ExecStart=/home/ivazio/update_and_launch_cubebox.sh
 StandardOutput=journal
