@@ -2,4 +2,4 @@
 
 sudo systemctl stop thecubeivazio.cubemaster.service
 sudo systemctl start thecubeivazio.cubemaster.service
-sudo systemctl status thecubeivazio.cubemaster.service
+#sudo systemctl status thecubeivazio.cubemaster.service
