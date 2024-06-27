@@ -65,24 +65,28 @@ from cube_rgbmatrix_server import CubeRgbMatrixContentDict, CubeRgbMatrixContent
 class MockLogger:
     def __init__(self, name):
         self.name = name
+        self.enabled = True
 
     def debug(self, msg, *args, **kwargs):
-        print(f"DEBUG: {self.name} - {msg}")
+        if self.enabled:
+            print(f"DEBUG: {self.name} - {msg}")
 
     def info(self, msg, *args, **kwargs):
-        print(f"INFO: {self.name} - {msg}")
+        if self.enabled:
+            print(f"INFO: {self.name} - {msg}")
 
     def warning(self, msg, *args, **kwargs):
-        print(f"WARNING: {self.name} - {msg}")
+        if self.enabled:
+            print(f"WARNING: {self.name} - {msg}")
 
     def error(self, msg, *args, **kwargs):
-        print(f"ERROR: {self.name} - {msg}")
+        if self.enabled:
+            print(f"ERROR: {self.name} - {msg}")
 
     def critical(self, msg, *args, **kwargs):
-        print(f"CRITICAL: {self.name} - {msg}")
+        if self.enabled:
+            print(f"CRITICAL: {self.name} - {msg}")
 
-    def exception(self, msg, *args, **kwargs):
-        print(f"EXCEPTION: {self.name} - {msg}")
 
     def addHandler(self, handler):
         pass
@@ -98,6 +102,7 @@ class CubeRgbMatrixDaemon(SampleBase):
     # Create a logger object
     # log = logging.getLogger('RGBMatrixDaemon')
     log = MockLogger('RGBMatrixDaemon')
+    log.enabled = False
     # log.setLevel(logging.DEBUG)
     # file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
