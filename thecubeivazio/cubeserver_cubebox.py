@@ -28,9 +28,8 @@ class CubeServerCubebox:
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 999
 
-        self.rfid = cube_rfid.CubeRfidSerialListener()
-        if not self.rfid.is_setup():
-            self.rfid = cube_rfid.CubeRfidKeyboardListener()
+        self.rfid = None
+        self._rfid_setup_loop()
 
         self.button = cube_button.CubeButton()
         self.buzzer = cube_sounds.CubeSoundPlayer()
@@ -219,16 +218,22 @@ class CubeServerCubebox:
                 self.badge_in_new_team(rfid_line)
                 self.rfid.remove_line(rfid_line)
 
-    def _rfid_setup_loop(self):
+    def _rfid_setup_loop(self) -> bool:
         """while the rfid is not setup, try to set it up, first as a serial listener, then as a keyboard listener"""
-        while not self.rfid.is_setup():
+        while True:
             self.log.info("RFID not setup. Trying to set it up...")
             self.rfid = cube_rfid.CubeRfidSerialListener()
-            if not self.rfid.is_setup():
-                self.log.warning("Failed to set up RFID as a serial listener. Trying as a keyboard listener...")
-                self.rfid = cube_rfid.CubeRfidKeyboardListener()
-            if not self.rfid.is_setup():
-                self.log.error("Failed to set up RFID as a keyboard listener. Trying again in 3 seconds...")
+            self.log.info("Trying to set up RFID as a serial listener...")
+            if self.rfid.is_setup():
+                self.log.success("RFID set up as a serial listener")
+                return True
+            self.log.warning("Failed to set up RFID as a serial listener. Trying event listener...")
+            self.log.info("Trying to set up RFID as an event listener...")
+            self.rfid = cube_rfid.CubeRfidEventListener(show_debug=True)
+            if self.rfid.is_setup():
+                self.log.success("RFID set up as an event listener")
+                return True
+            self.log.error("Failed to set up RFID listener. Trying again in 3 seconds...")
             time.sleep(3)
 
     def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine) -> bool:

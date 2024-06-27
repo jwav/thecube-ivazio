@@ -212,10 +212,12 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         evdev.ecodes.KEY_0: '0'
     }
 
-    def __init__(self):
+    def __init__(self, show_debug=False):
         super().__init__()
         self.log = CubeLogger("RFID Event Listener")
         self.log.setLevel(logging.INFO)
+        if show_debug:
+            self.log.setLevel(logging.DEBUG)
 
         self._thread = threading.Thread(target=self._event_read_loop)
         self._keep_running = True
@@ -223,6 +225,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         self._device_path: Optional[str] = None
         self._device = None
         self._is_setup = False
+        self.setup()
 
     def setup(self) -> bool:
         try:
