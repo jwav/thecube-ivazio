@@ -102,6 +102,8 @@ source "${SCRIPT_DIR}/venv/bin/activate"
     echo_green "OK : project package install succeeded"
   fi
 
+  echo "Generating cubeboxes scripts from the cubemaster scripts..."
+  bash ./generate_cubebox_scripts.sh
   echo "Copying scripts..."
   HOSTNAME=$(hostname)
   if [[ "$HOSTNAME" == "cubemaster" ]]; then
@@ -139,18 +141,9 @@ source "${SCRIPT_DIR}/venv/bin/activate"
     echo "Hostname does not match cubemaster or cubebox patterns."
   fi
 
+
   echo_green "Update OK: APT packages installed, git pulled, project package pip installed, scripts copied, service set up."
 
-#  # Start the service according to hostname
-#  if [[ "$HOSTNAME" == "cubemaster" ]]; then
-#    echo "Starting cubemaster service..."
-#    sudo systemctl start thecubeivazio.cubemaster.service
-#  elif [[ "$HOSTNAME" == *"cubebox"* ]]; then
-#    echo "Starting cubebox service..."
-#    sudo systemctl start thecubeivazio.cubebox.service
-#  else
-#    echo "Hostname does not match cubemaster or cubebox patterns."
-#  fi
 
 ) # End of subshell
 
