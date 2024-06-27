@@ -36,6 +36,10 @@ class CubeSoundPlayer:
 
     def initialize(self):
         try:
+            # Explicitly set the SDL audio driver and ALSA device
+            os.environ['SDL_AUDIODRIVER'] = 'alsa'
+            os.environ['AUDIODEV'] = 'hw:1,0'
+
             mixer.init()
             self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
             self._is_initialized = True
