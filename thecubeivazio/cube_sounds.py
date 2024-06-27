@@ -29,7 +29,7 @@ class CubeSoundPlayer:
 
     def __del__(self):
         try:
-            self.stop_playing()
+            # self.stop_playing()
             mixer.quit()
         except Exception as e:
             self.log.error(f"Error cleaning up CubeSoundPlayer: {e}")
