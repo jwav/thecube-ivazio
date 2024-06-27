@@ -20,17 +20,12 @@ class CubeSoundPlayer:
 
     def __init__(self):
         self._is_initialized = False
-        try:
-            self.log = cube_logger.CubeLogger("Buzzer")
-            self.log.setLevel(logging.INFO)
-            self._thread = None
-            self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
-            mixer.init()
-            self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
-            self._is_initialized = True
-        except Exception as e:
-            self.log.error(f"Error initializing CubeSoundPlayer: {e}")
-            self._is_initialized = False
+        self.log = cube_logger.CubeLogger("Buzzer")
+        self.log.setLevel(logging.INFO)
+        self._playing_thread = None
+        self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
+        self.initialize()
+
 
     def __del__(self):
         try:
@@ -38,6 +33,15 @@ class CubeSoundPlayer:
             mixer.quit()
         except Exception as e:
             self.log.error(f"Error cleaning up CubeSoundPlayer: {e}")
+
+    def initialize(self):
+        try:
+            mixer.init()
+            self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
+            self._is_initialized = True
+        except Exception as e:
+            self.log.error(f"Error initializing CubeSoundPlayer: {e}")
+            self._is_initialized = False
 
     def is_initialized(self):
         return self._is_initialized
@@ -51,9 +55,9 @@ class CubeSoundPlayer:
     @cubetry
     def play_sound_file(self, soundfile: str):
         """Play a sound file or a tune on the buzzer."""
-        self._thread = threading.Thread(target=self._play_sound_file, args=(soundfile,))
-        self._thread.start()
-        self._thread.join(timeout=STATUS_REPLY_TIMEOUT)
+        self._playing_thread = threading.Thread(target=self._play_sound_file, args=(soundfile,))
+        self._playing_thread.start()
+        self._playing_thread.join(timeout=STATUS_REPLY_TIMEOUT)
 
     def _play_sound_file(self, soundfile: str):
         try:
