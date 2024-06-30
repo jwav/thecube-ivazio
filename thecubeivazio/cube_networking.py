@@ -321,8 +321,10 @@ class CubeNetworking:
 
         # if the sender's ip is out of date, update it
         if self.nodes_list.get_node_ip_from_node_name(message.sender) != message.sender_ip:
-            self.nodes_list.set_node_ip_for_node_name(message.sender, message.sender_ip)
-            self.log.info(f"Added node {message.sender} to the nodes list")
+            if self.nodes_list.set_node_ip_for_node_name(message.sender, message.sender_ip):
+                self.log.info(f"Added node {message.sender} to the nodes list : {message.sender_ip}")
+            else:
+                self.log.error(f"Failed to add node {message.sender} to the nodes list")
         # update the last message timestamp of the sender
         self.nodes_list.set_last_msg_timestamp_for_node_name(message.sender, time.time())
         # if it's an ack message, ignore it. It has te be handled in wait_for_ack_of()

@@ -122,15 +122,19 @@ class NodesList(Dict[str, NodeInfo]):
     def is_complete(self) -> bool:
         return all([is_valid_ip(node.ip) for node in [self.frontdesk, self.cubemaster] + self.cubeboxes])
 
-    def set_node_ip_for_node_name(self, node_name:str, ip:str):
+    def set_node_ip_for_node_name(self, node_name:str, ip:str) -> bool:
         if node_name == CUBEFRONTDESK_NODENAME:
             self.frontdesk.ip = ip
+            return True
         elif node_name == CUBEMASTER_NODENAME:
             self.cubemaster.ip = ip
+            return True
         elif node_name.startswith(CUBEBOX_NODENAME_PREFIX):
             cubebox_index = node_name_to_cubebox_index(node_name)
             if cubebox_index is not None:
                 self.cubeboxes[cubebox_index - 1].ip = ip
+            return True
+        return False
 
     def get_node_ip_from_node_name(self, node_name:str) -> Optional[str]:
         if node_name == CUBEFRONTDESK_NODENAME:

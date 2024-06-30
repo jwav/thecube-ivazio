@@ -14,6 +14,9 @@ import thecubeivazio.cube_game as cube_game
 from thecubeivazio import cube_messages as cm
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
+from thecubeivazio.cube_sounds import CubeSoundPlayer
+from thecubeivazio.cube_gpio import CubeGpio
+
 if __name__ == "__main__":
     print("Importing thecubeivazio.cube_rgbmatrix_daemon")
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
@@ -40,12 +43,16 @@ class CubeServerMaster:
         # setup an RGB server
         self.rgb_sender = None
 
+        # objects to handle the alarm
+        self.sound_player = CubeSoundPlayer()
+
         # params for threading
         self._thread_rfid = threading.Thread(target=self._rfid_loop, daemon=True)
         self._thread_message_handling = threading.Thread(target=self._message_handling_loop, daemon=True)
         self._thread_webpage = threading.Thread(target=self._webpage_loop, daemon=True)
         self._thread_status_update = threading.Thread(target=self._status_update_loop, daemon=True)
         self._thread_rgb = threading.Thread(target=self._rgb_loop, daemon=True)
+        self._thread_alarm = threading.Thread(target=self._run_alarm, daemon=True)
 
         self._keep_running = False
         self._last_game_status_sent_to_frontdesk_hash: Optional[Hash] = None
@@ -86,6 +93,24 @@ class CubeServerMaster:
                 self.log.success("Sent game status to frontdesk and received ACK")
             self._last_game_status_sent_to_frontdesk_hash = self.game_status.hash
         return True
+
+    def run_alarm(self):
+        self._thread_alarm.start()
+
+    def _run_alarm(self):
+        """sounds the alarm and activate the lights for a given amount of time"""
+        self.log.info("Running alarm")
+        default_duration_sec = 5
+        duration_sec = self.config.get_field("alarm_duration_sec")
+        if not duration_sec:
+            self.log.error(f"No alarm duration set in the config file. Using {default_duration_sec} seconds")
+            duration_sec = default_duration_sec
+        end_time = time.time() + duration_sec
+        CubeGpio.set_pin(17, True)
+        self.sound_player.play_sound_file_matching("alarm")
+        while time.time() < end_time:
+            time.sleep(1)
+        CubeGpio.set_pin(17, False)
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
@@ -405,6 +430,9 @@ class CubeServerMaster:
         elif command == "reboot":
             cube_utils.reboot()
             return True
+        elif command == "alarm":
+            self.run_alarm()
+            return True
         else:
             self.log.error(f"Unknown command: {command}")
             return False
@@ -565,6 +593,50 @@ class CubeServerMaster:
             self.log.success(f"Received cubebox status reply for cubebox {cubebox_id}")
             return True
 
+    def test_rgb(self):
+        # master = CubeServerMasterWithPrompt()
+        master = CubeServerMaster()
+
+        master.log.setLevel(cube_logger.logging.INFO)
+        master.net.log.setLevel(cube_logger.logging.INFO)
+
+        try:
+            master.log.critical("TestRGB: Starting CubeMaster...")
+            master.run()
+
+
+            # create a few sample teams to test the rgb daemon
+            sample_teams = [
+                cube_game.CubeTeamStatus(
+                    name="Oslo", rfid_uid="11111111111", max_time_sec=30, start_timestamp=time.time(), current_cubebox_id=1),
+                cube_game.CubeTeamStatus(
+                    name="Stockholm", rfid_uid="2222222222", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=3),
+                cube_game.CubeTeamStatus(
+                    name="Budapest", rfid_uid="88888888888", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=9),
+                cube_game.CubeTeamStatus(
+                    name="Paris", rfid_uid="9999999999", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=11),
+            ]
+            # sample_teams = []
+            for team in sample_teams:
+                master.teams.add_team(team)
+            master.log.critical(f"TestRGB: Teams registered: {[team.name for team in master.teams]}")
+
+            # master.stop()
+
+            while True:
+                master.update_rgb()
+                master.log.critical(f"TestRGB: Teams: {master.teams.to_json()}")
+                time.sleep(3)
+                # toggle the display_team_names_on_rgb config
+                # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
+
+        except Exception as e:
+            master.log.error(f"TestRGB: Exception: {e}")
+
+
+
+
+
 
 class CubeServerMasterWithPrompt(CubeServerMaster):
     def __init__(self):
@@ -639,50 +711,7 @@ def main(use_prompt=False):
         master.stop()
 
 
-def test_rgb():
-    import atexit
-    # master = CubeServerMasterWithPrompt()
-    master = CubeServerMaster()
-    atexit.register(master.stop)
 
-    master.log.setLevel(cube_logger.logging.INFO)
-    master.net.log.setLevel(cube_logger.logging.INFO)
-
-    try:
-        master.log.critical("TestRGB: Starting CubeMaster...")
-        master.run()
-
-
-        # create a few sample teams to test the rgb daemon
-        sample_teams = [
-            cube_game.CubeTeamStatus(
-                name="Oslo", rfid_uid="11111111111", max_time_sec=30, start_timestamp=time.time(), current_cubebox_id=1),
-            cube_game.CubeTeamStatus(
-                name="Stockholm", rfid_uid="2222222222", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=3),
-            cube_game.CubeTeamStatus(
-                name="Budapest", rfid_uid="88888888888", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=9),
-            cube_game.CubeTeamStatus(
-                name="Paris", rfid_uid="9999999999", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=11),
-        ]
-        # sample_teams = []
-        for team in sample_teams:
-            master.teams.add_team(team)
-        master.log.critical(f"TestRGB: Teams registered: {[team.name for team in master.teams]}")
-
-        # master.stop()
-
-        while True:
-            master.update_rgb()
-            master.log.critical(f"TestRGB: Teams: {master.teams.to_json()}")
-            time.sleep(3)
-            # toggle the display_team_names_on_rgb config
-            # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
-
-    except KeyboardInterrupt:
-        print("TestRGB: KeyboardInterrupt received. Stopping CubeMaster...")
-    finally:
-        master.stop()
-    exit(0)
 
 if __name__ == "__main__":
     main()
@@ -693,7 +722,9 @@ if __name__ == "__main__":
     do_test_rgb = True
     # do_test_rgb = False
     if "--test_rgb" in sys.argv or do_test_rgb:
-        test_rgb()
+        master = CubeServerMaster()
+        master.test_rgb()
+        master.stop()
     elif "--prompt" in sys.argv:
         main(use_prompt=True)
     else:

@@ -108,6 +108,9 @@ class CubeServerCubebox:
         elif command == "reboot":
             cube_utils.reboot()
             return True
+        elif command == "button":
+            self.button.simulate_long_press()
+            return True
         else:
             self.log.error(f"Unknown command: {command}")
             return False
