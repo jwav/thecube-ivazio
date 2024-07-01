@@ -37,7 +37,8 @@ class CubeSoundPlayer:
     def initialize(self):
         try:
             # Explicitly set the SDL audio driver and ALSA device
-            os.environ['SDL_AUDIODRIVER'] = 'alsa'
+            # os.environ['SDL_AUDIODRIVER'] = 'alsa'
+            os.environ['SDL_AUDIODRIVER'] = 'pulseaudio'
             os.environ['AUDIODEV'] = 'hw:1,0'
 
             # mixer.init()
