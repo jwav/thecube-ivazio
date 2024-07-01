@@ -16,7 +16,7 @@ libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
 xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
 vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils \
 libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev libtiff-dev libgif-dev \
-libossp-uuid-dev chromium-browser
+libossp-uuid-dev chromium-browser alsa-utils
 
 
 
