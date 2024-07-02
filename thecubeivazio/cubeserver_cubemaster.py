@@ -97,7 +97,8 @@ class CubeServerMaster:
     def run_alarm(self):
         try:
             # force the thread to stop if it's running
-            self._thread_alarm.join(timeout=0.1)
+            if self._thread_alarm.is_alive():
+                self._thread_alarm.join(timeout=0.1)
             self._thread_alarm = threading.Thread(target=self._run_alarm, daemon=True)
             self._thread_alarm.start()
         except Exception as e:
