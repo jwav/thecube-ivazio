@@ -11,7 +11,7 @@
 
 # CubeGui
 
-- [ ] implement reset buttons and all buttons on admin tab
+- [x] implement reset buttons and all buttons on admin tab
 
 # CubeBoxes
  
