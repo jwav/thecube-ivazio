@@ -95,7 +95,13 @@ class CubeServerMaster:
         return True
 
     def run_alarm(self):
-        self._thread_alarm.start()
+        try:
+            # force the thread to stop if it's running
+            self._thread_alarm.join(timeout=0.1)
+            self._thread_alarm = threading.Thread(target=self._run_alarm, daemon=True)
+            self._thread_alarm.start()
+        except Exception as e:
+            self.log.error(f"Error while running the alarm: {e}")
 
     def _run_alarm(self):
         """sounds the alarm and activate the lights for a given amount of time"""
@@ -106,11 +112,11 @@ class CubeServerMaster:
             self.log.error(f"No alarm duration set in the config file. Using {default_duration_sec} seconds")
             duration_sec = default_duration_sec
         end_time = time.time() + duration_sec
-        CubeGpio.set_pin(17, True)
+        CubeGpio.set_pin(25, True)
         self.sound_player.play_sound_file_matching("alarm")
         while time.time() < end_time:
             time.sleep(1)
-        CubeGpio.set_pin(17, False)
+        CubeGpio.set_pin(25, False)
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
