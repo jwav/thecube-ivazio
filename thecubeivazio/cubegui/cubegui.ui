@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
+    <normaloff>../../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
   </property>
   <property name="iconSize">
    <size>
@@ -319,7 +319,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="edit-clear">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -390,7 +390,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="user">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -661,6 +661,9 @@ QPushButton:focus {
             <property name="toolTip">
              <string>Sélectionnez ce champ de texte et badgez un tag RFID pour le remplir, ou entrez le numéro à la main</string>
             </property>
+            <property name="text">
+             <string>1234567890</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
@@ -686,7 +689,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="search">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -866,7 +869,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="delete">
-              <normaloff>../../../../../home/vee/.designer/backup</normaloff>../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -897,7 +900,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="delete">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -908,7 +911,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="add">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -983,7 +986,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="print">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1292,7 +1295,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="update">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1335,7 +1338,7 @@ QPushButton:focus {
              <set>Qt::AlignCenter</set>
             </property>
             <property name="readOnly">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="placeholderText">
              <string>----------</string>
@@ -1362,7 +1365,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="remove">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1373,17 +1376,17 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="add">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QComboBox" name="comboAdminCubeboxToOrder"/>
+           <widget class="QComboBox" name="comboAdminServerToOrder"/>
           </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="btnAdminOrderCubeboxReset">
+           <widget class="QPushButton" name="btnAdminOrderServerReset">
             <property name="text">
-             <string>Ordonner reset CubeBox</string>
+             <string>Ordonner reset serveur</string>
             </property>
             <property name="icon">
              <iconset resource="resources.qrc">
@@ -1392,13 +1395,13 @@ QPushButton:focus {
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QPushButton" name="btnAdminOrderCubeboxReboot">
+           <widget class="QPushButton" name="btnAdminOrderServerReboot">
             <property name="text">
-             <string>Redémarrer CubeBox</string>
+             <string>Redémarrer serveur</string>
             </property>
             <property name="icon">
              <iconset theme="reload">
-              <normaloff>../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -1683,6 +1686,7 @@ QPushButton:focus {
  </widget>
  <resources>
   <include location="resources.qrc"/>
+  <include location="../../../../../home/vee/.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

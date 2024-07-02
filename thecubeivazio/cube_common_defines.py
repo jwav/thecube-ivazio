@@ -70,7 +70,6 @@ CUBEBOXES_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "cubeboxes_backup.json")
 TEAMS_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "teams_backup.json")
 TEAMS_JSON_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
 TEAMS_SQLITE_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.db")
-RESETTER_RFID_LIST_FILEPATH = os.path.join(CONFIG_DIR, "resetter_rfids_list.json")
 
 # used in looping functions to induce a little delay
 # TODO: implement in existing loops

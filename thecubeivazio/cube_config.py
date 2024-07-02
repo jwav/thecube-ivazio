@@ -13,6 +13,8 @@ class CubeConfig:
     _instance = None
     ALWAYS_USE_ENCRYPTION = False
     DEFAULT_PASSWORD = "pwd"
+    AUTO_GENERATE_ENCRYPTED_CONFIG_AT_FIRST_LOAD = True
+    ENCRYPTED_JSON_FILE_EXTENSION = ".json.enc"
 
     def __init__(self, do_not_load=False):
         self.log = cube_logger.CubeLogger(name="CubeConfig")
@@ -24,13 +26,16 @@ class CubeConfig:
         self.password = self.DEFAULT_PASSWORD
 
         self.clear()
+
+        self._auto_generate_done = False
+
+
         if not do_not_load:
             self.load_default_config()
-
-        if self.is_valid():
-            self.log.info("CubeConfig fully loaded and valid")
-        else:
-            self.log.error("CubeConfig not fully loaded or invalid")
+            if self.is_valid():
+                self.log.info("CubeConfig fully loaded and valid")
+            else:
+                self.log.error("CubeConfig not fully loaded or invalid")
 
     def update_from_config(self, config: 'CubeConfig'):
         self.config_dict = config.config_dict
@@ -68,19 +73,26 @@ class CubeConfig:
         config.config_dict = json.loads(json_str)
         return config
 
-    def load_from_json(self, json_str: str):
-        try:
-            self.config_dict = json.loads(json_str)
-        except Exception as e:
-            self.log.error(f"Error loading json: {e}")
+    def unsafe_load_from_json(self, json_str: str):
+        self.config_dict = json.loads(json_str)
+        return True
 
+    @cubetry
     def load_from_json_file(self, filepath: str = CONFIG_FILEPATH):
+        return self.unsafe_load_from_json_file(filepath)
+
+    def unsafe_load_from_json_file(self, filepath: str = CONFIG_FILEPATH):
         if self.use_encryption:
             return self.load_from_encrypted_json_file(filepath=filepath)
+        self.log.info(f"Loading config from file: {filepath}")
         with open(filepath, "r") as f:
-            return self.load_from_json(f.read())
+            return self.unsafe_load_from_json(f.read())
 
-    def save_to_json(self, filepath: str = CONFIG_FILEPATH) -> bool:
+    @cubetry
+    def save_to_json_file(self, filepath: str = CONFIG_FILEPATH) -> bool:
+        return self.unsafe_save_to_json_file(filepath)
+
+    def unsafe_save_to_json_file(self, filepath: str = CONFIG_FILEPATH) -> bool:
         if self.use_encryption:
             return self.save_to_encrypted_json_file(filepath=filepath)
         with open(filepath, "w") as f:
@@ -89,13 +101,21 @@ class CubeConfig:
 
     @cubetry
     def load_from_encrypted_json_file(self, password: str=None, filepath: str = ENCRYPTED_CONFIG_FILEPATH) -> bool:
-        password = password or self.password
-        assert password, "password is required to load encrypted json"
-        self.load_from_json(cube_utils.read_encrypted_file(filepath, password))
-        return True
+        return self.unsafe_load_from_encrypted_json_file(password, filepath)
 
     @cubetry
     def save_to_encrypted_json_file(self, password:str=None, filepath: str = ENCRYPTED_CONFIG_FILEPATH) -> bool:
+        return self.unsafe_save_to_encrypted_json_file(password, filepath)
+
+    def unsafe_load_from_encrypted_json_file(self, password: str=None, filepath: str = ENCRYPTED_CONFIG_FILEPATH) -> bool:
+        self.log.info(f"Loading encrypted config from file: {filepath}")
+        password = password or self.password
+        assert password, "password is required to load encrypted json"
+        self.unsafe_load_from_json(cube_utils.read_encrypted_file(filepath, password))
+        return True
+
+    def unsafe_save_to_encrypted_json_file(self, password:str=None, filepath: str = ENCRYPTED_CONFIG_FILEPATH) -> bool:
+        assert filepath.endswith(self.ENCRYPTED_JSON_FILE_EXTENSION), f"filepath must end with {self.ENCRYPTED_JSON_FILE_EXTENSION} (filepath={filepath})"
         password = password or self.password
         assert password, "password is required to save encrypted json"
         cube_utils.encrypt_and_write_to_file(self.to_json(), filepath, password)
@@ -121,20 +141,29 @@ class CubeConfig:
 
     @classmethod
     @cubetry
-    def make_from_encrypted_json_file(cls, password: str, filepath: str=ENCRYPTED_CONFIG_FILEPATH) -> 'CubeConfig':
+    def make_from_encrypted_json_file(cls, password: str=None, filepath: str=ENCRYPTED_CONFIG_FILEPATH) -> 'CubeConfig':
+        password = password or cls.DEFAULT_PASSWORD
         return cls.make_from_json(cube_utils.read_encrypted_file(filepath, password))
 
     @cubetry
     def load_default_config(self):
-        # if there is an unecrypted config file, load it
-        if self.load_from_json_file(CONFIG_FILEPATH):
-            self.log.info(f"Loaded unencrypted config file: {CONFIG_FILEPATH}")
+        try:
+            # if there is an unecrypted config file, load it
+            if not self.use_encryption:
+                assert self.unsafe_load_from_json_file(CONFIG_FILEPATH), f"Error loading config file '{CONFIG_FILEPATH}'"
+                self.log.success(f"Loaded config file '{CONFIG_FILEPATH}'")
+                if self.AUTO_GENERATE_ENCRYPTED_CONFIG_AT_FIRST_LOAD and not self._auto_generate_done:
+                    assert self.save_to_encrypted_json_file(), f"Error auto-generating encrypted config file: {ENCRYPTED_CONFIG_FILEPATH}"
+                    self.log.success(f"Auto-generating encrypted config file: {ENCRYPTED_CONFIG_FILEPATH}")
+                    self._auto_generate_done = True
+                return True
+            # if not using encryption...
+            assert self.load_from_encrypted_json_file(ENCRYPTED_CONFIG_FILEPATH), f"Error loading encrypted config file: {ENCRYPTED_CONFIG_FILEPATH}"
+            self.log.success(f"Loaded encrypted config file: {ENCRYPTED_CONFIG_FILEPATH}")
             return True
-        # if there is an encrypted config file, load it
-        if self.load_from_encrypted_json_file():
-            self.log.info(f"Loaded encrypted config file: {ENCRYPTED_CONFIG_FILEPATH}")
-            return True
-        self.log.error("Could not load any config file")
+        except Exception as e:
+            self.log.error(f"Error loading default config: {e}")
+            return False
 
 
     @property
@@ -196,13 +225,41 @@ class CubeConfig:
         return True
 
     @cubetry
-    def get_field(self, param) -> Optional[str]:
-        return self.config_dict.get(param, None)
+    def get_field(self, field_name:str) -> Optional[str]:
+        return self.config_dict.get(field_name, None)
 
     @cubetry
     def set_password(self, password: str) -> bool:
         self.password = password
         return True
+
+    @cubetry
+    def set_field(self, field_name: str, value) -> bool:
+        self.config_dict[field_name] = value
+        return True
+
+    @cubetry
+    def add_resetter_rfid(self, uid:str) -> bool:
+        key = "resetter_rfids"
+        resetters = self.config_dict.get(key, [])
+        if uid not in resetters:
+            resetters.append(uid)
+            self.config_dict[key] = resetters
+        return True
+
+    @cubetry
+    def remove_resetter_rfid(self, uid:str) -> bool:
+        key = "resetter_rfids"
+        resetters = self.config_dict.get(key, [])
+        if uid in resetters:
+            resetters.remove(uid)
+            self.config_dict[key] = resetters
+        return True
+
+    @cubetry
+    def get_resetter_rfids(self) -> list[str]:
+        return self.config_dict.get("resetter_rfids", [])
+
 
 
 
@@ -220,17 +277,16 @@ def encryption_test():
     exit(0)
 
 
-def generate_encrypted_config_from_non_encrypted_config():
-    config = CubeConfig()
-    config.load_from_json_file()
-    config.save_to_encrypted_json_file()
-    print("generate_encrypted_config_from_non_encrypted done")
-    exit(0)
+
 
 if __name__ == "__main__":
-    generate_encrypted_config_from_non_encrypted_config()
+    # generate_encrypted_config_from_non_encrypted_config()
     # encryption_test()
     config = CubeConfig()
+    enc_config = CubeConfig.make_from_encrypted_json_file()
+    assert config.config_dict == enc_config.config_dict
+    assert config.to_json() == enc_config.to_json()
+    exit(0)
     config.log.info("-----------------")
     config.log.info(f"config valid?: {config.is_valid()}")
     config.log.info(f"game_durations: {config.game_durations_str}")

@@ -235,7 +235,7 @@ class CubeServerFrontdesk:
         return report
 
     @cubetry
-    def send_full_command(self, full_command:str) -> bool:
+    def send_full_command(self, full_command:str) -> cubenet.SendReport:
         """Send a full command to the CubeMaster. Returns True if the command was sent, False if not."""
         self.log.info(f"Sending full command: {full_command}")
         msg = cm.CubeMsgCommand(self.net.node_name, full_command=full_command)
@@ -243,16 +243,18 @@ class CubeServerFrontdesk:
         destination_node = msg.target
         if destination_node not in cubeid.ALL_NODENAMES:
             self.log.error(f"Invalid destination node: {destination_node}")
-            return False
+            return cubenet.SendReport(sent_ok=False, raw_info=f"Invalid destination node: {destination_node}")
         report = self.net.send_msg_to(msg, destination_node, require_ack=True)
         if not report:
             self.log.error(f"Failed to send the full command : {full_command}")
-            return False
+            report._raw_info = f"Failed to send the command : '{full_command}'"
+            return report
         if not report.ack_ok:
-            self.log.error(f"Node {destination_node} did not acknowledge the full command : {full_command}")
-            return False
+            self.log.error(f"Node {destination_node} did not acknowledge the full command : '{full_command}'")
+            report._raw_info = f"Node {destination_node} did not acknowledge the full command : '{full_command}'"
+            return report
         self.log.success(f"Node {destination_node} acknowledged the full command : {full_command}")
-        return True
+        return report
 
     @cubetry
     def move_team_to_database(self, team_name) -> bool:
@@ -308,20 +310,6 @@ class CubeServerFrontdesk:
         return True
 
     @cubetry
-    def order_cubebox_to_reset(self, cubebox_id: int) -> bool:
-        """Send a message to a CubeBox to reset itself. Returns True if the msg has been sent,
-        we're not waiting for a reply."""
-        self.log.info(f"Sending cubebox reset order message for cubebox {cubebox_id}")
-        cubebox_nodename = cubeid.cubebox_index_to_node_name(cubebox_id)
-        msg = cm.CubeMsgOrderCubeboxToReset(self.net.node_name, cubebox_id)
-        report = self.net.send_msg_to(msg, cubebox_nodename, require_ack=False)
-        if not report:
-            self.log.error(f"Failed to send the cubebox reset message for cubebox {cubebox_id}")
-            return False
-        self.log.info(f"Sent cubebox reset message for cubebox {cubebox_id}")
-        return True
-
-    @cubetry
     def order_cubebox_to_wait_for_reset(self, cubebox_id: int) -> bool:
         """Send a message to a CubeBox to wait for a reset. Returns True if the msg has been sent,
         we're not waiting for a reply."""
@@ -333,6 +321,24 @@ class CubeServerFrontdesk:
             return False
         self.log.info(f"Sent cubebox wait for reset message for cubebox {cubebox_id}")
         return True
+
+    @cubetry
+    def add_resetter_rfid(self, uid:str) -> cubenet.SendReport:
+        """Add a new RFID to the resetter list."""
+        self.log.info(f"Adding RFID {uid} to the resetter list")
+        # add the uid to the local config, then send config to everyone
+        self.config.add_resetter_rfid(uid)
+        self.config.save_to_json_file()
+        return self.send_config_message_to_all()
+
+    @cubetry
+    def remove_resetter_rfid(self, uid:str) -> cubenet.SendReport:
+        """Remove an RFID from the resetter list."""
+        self.log.info(f"Removing RFID {uid} from the resetter list")
+        # remove the uid from the local config, then send config to everyone
+        self.config.remove_resetter_rfid(uid)
+        self.config.save_to_json_file()
+        return self.send_config_message_to_all()
 
     @cubetry
     def request_cubemaster_status(self, reply_timeout: Seconds) -> bool:

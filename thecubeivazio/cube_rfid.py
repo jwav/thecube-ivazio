@@ -11,6 +11,7 @@ import subprocess
 
 import serial
 
+from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_logger import CubeLogger
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import XvfbManager
@@ -79,7 +80,11 @@ class CubeRfidLine:
         return longer.startswith(shorter)
 
     def is_valid(self):
-        return self.is_valid_uid(self.uid) and self.timestamp is not None
+        try:
+            return self.is_valid_uid(self.uid) and self.timestamp is not None
+        except Exception as e:
+            logging.error(f"Error checking if CubeRfidLine is valid: {e}")
+            return False
 
     # TODO: testme
     def to_string(self):
@@ -119,7 +124,6 @@ class CubeRfidLine:
     def copy(self):
         return CubeRfidLine(self.timestamp, self.uid)
 
-    @cubetry
     def __copy__(self):
         return self.copy()
 
@@ -133,9 +137,8 @@ class CubeRfidLine:
     def is_uid_in_resetter_list(uid: str) -> bool:
         """Check if the given RFID UID is in the resetter list"""
         try:
-            with open(RESETTER_RFID_LIST_FILEPATH, "r") as file:
-                resetter_list = json.load(file)
-                return uid in resetter_list
+            config = CubeConfig()
+            return uid in config.get_resetter_rfids()
         except Exception as e:
             logging.error(f"Error checking RFID UID in resetter list: {e}")
             return False

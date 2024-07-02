@@ -1,5 +1,5 @@
 """File for the mixin class (partial for CubeGuiForm) for the admin tab."""
-
+import time
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import QFile, QTextStream
@@ -10,9 +10,11 @@ from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils
 from thecubeivazio import cube_logger as cube_logger
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_identification as ci
+from thecubeivazio.cube_rfid import CubeRfidLine
 import sys
 import atexit
 import traceback as tb
+
 
 from typing import TYPE_CHECKING, Optional
 
@@ -22,33 +24,89 @@ if TYPE_CHECKING:
 
 
 class CubeGuiTabAdminMixin:
+    ui: Ui_Form
 
     def setup_tab_admin(self: 'CubeGuiForm'):
-        self.ui: Ui_Form
-        self.ui.btnAdminUpdateServersInfo.clicked.connect(self.request_servers_infos)
-        self.ui.btnAdminOrderCubeboxReset.clicked.connect(self.order_cubebox_reset)
-        self.ui.comboAdminCubeboxToOrder.addItems(ci.CUBEBOX_NODENAMES)
-
-        self.ui.btnAdminSendCommand.clicked.connect(self.send_command_clicked)
+        # server info region
         self.ui.lblAdminCommandStatusText.setText("")
         self.ui.lblAdminServersInfoStatusText.setText("")
         self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon())
+        self.ui.btnAdminUpdateServersInfo.clicked.connect(self.request_servers_infos)
+
+        # resetter rfid region
+        self.ui.lineAdminRfidResetter.setText("")
+        self.ui.btnAdminAddRfidResetter.clicked.connect(self.add_rfid_resetter)
+        self.ui.btnAdminRemoveRfidResetter.clicked.connect(self.remove_rfid_resetter)
+
+        # server orders region
+        self.ui.comboAdminServerToOrder.clear()
+        self.ui.comboAdminServerToOrder.addItems(ci.CUBEBOX_NODENAMES)
+        self.ui.comboAdminServerToOrder.addItems([ci.CUBEMASTER_NODENAME])
+        self.ui.btnAdminOrderServerReset.clicked.connect(self.order_server_reset)
+        self.ui.btnAdminOrderServerReboot.clicked.connect(self.order_server_reboot)
+
+        # commands region
+        self.ui.btnAdminSendCommand.clicked.connect(self.send_command_clicked)
         # set up the command line so that enter key triggers the send command button
         self.ui.lineAdminCommand.returnPressed.connect(self.ui.btnAdminSendCommand.click)
 
 
-    def order_cubebox_reset(self: 'CubeGuiForm'):
-        self.ui: Ui_Form
-        cubebox_nodename = self.ui.comboAdminCubeboxToOrder.currentText()
-        cubebox_id = ci.node_name_to_cubebox_index(cubebox_nodename)
-        self.fd.order_cubebox_to_reset(cubebox_id=cubebox_id)
+    @cubetry
+    def order_server_reset(self: 'CubeGuiForm'):
+        nodename = self.ui.comboAdminServerToOrder.currentText()
+        full_command = f"{nodename} reset"
+        self.ui.lineAdminCommand.setText(full_command)
+        self.send_command_clicked()
 
+    @cubetry
+    def order_server_reboot(self: 'CubeGuiForm'):
+        nodename = self.ui.comboAdminServerToOrder.currentText()
+        full_command = f"{nodename} reboot"
+        self.ui.lineAdminCommand.setText(full_command)
+        self.send_command_clicked()
+
+    @cubetry
+    def set_admin_command_status_text(self: 'CubeGuiForm', text:str):
+        self.ui.lblAdminCommandStatusText.setText(text)
+        self.update_gui()
+
+    @cubetry
+    def add_rfid_resetter(self: 'CubeGuiForm'):
+        uid = self.ui.lineAdminRfidResetter.text()
+        rfid_line = CubeRfidLine(uid=uid, timestamp=time.time())
+        if not rfid_line.is_valid():
+            self.set_admin_command_status_text(f"❌ RFID non valide.")
+            return False
+        self.set_admin_command_status_text("⌛ Ajout de la carte RFID en cours...")
+        report = self.fd.add_resetter_rfid(uid)
+        if report:
+            self.set_admin_command_status_text("✔️ Carte RFID ajoutée avec succès.")
+        else:
+            self.set_admin_command_status_text(f"❌ Erreur lors de l'ajout de la carte RFID: {report.ack_info}")
+        return report
+
+    @cubetry
+    def remove_rfid_resetter(self: 'CubeGuiForm'):
+        uid = self.ui.lineAdminRfidResetter.text()
+        rfid_line = CubeRfidLine(uid)
+        if not rfid_line.is_valid():
+            self.set_admin_command_status_text(f"❌ RFID non valide.")
+            return False
+        self.set_admin_command_status_text("⌛ Suppression de la carte RFID en cours...")
+        report = self.fd.remove_resetter_rfid(uid)
+        if report:
+            self.set_admin_command_status_text("✔️ Carte RFID supprimée avec succès.")
+        else:
+            self.set_admin_command_status_text(f"❌ Erreur lors de la suppression de la carte RFID: {report.ack_info}")
+        return report
+
+    @cubetry
     def request_servers_infos(self: 'CubeGuiForm'):
         self.ui: Ui_Form
         self.set_servers_info_status_label("hourglass", "En attente de réponse des Cubeboxes...")
         self.fd.request_all_cubeboxes_statuses_one_by_one(reply_timeout=STATUS_REPLY_TIMEOUT)
         self.set_servers_info_status_label("hourglass", "En attente de réponse du CubeMaster...")
-        if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT*4):
+        if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT):
             self.set_servers_info_status_label("ok", "Mise à jour totale effectuée.")
         else:
             self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")
@@ -98,16 +156,17 @@ class CubeGuiTabAdminMixin:
         except Exception as e:
             traceback = tb.format_exc()
             self.log.error(f"Error in update_tab_admin: {e.with_traceback(e.__traceback__)}")
-            self.ui.lblAdminServersInfoStatusText.setText("{e}")
+            self.ui.lblAdminServersInfoStatusText.setText(f"{e}")
             self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme("error"))
 
     @cubetry
     def send_command_clicked(self: 'CubeGuiForm'):
-        self.ui: Ui_Form
+        self.ui.lblAdminCommandStatusText.setText("⌛ Envoi de la commande en cours...")
+        self.update_gui()
         command = self.ui.lineAdminCommand.text()
-        result = self.fd.send_full_command(command)
-        if not result:
-            self.ui.lblAdminCommandStatusText.setText("❌ Erreur lors de l'envoi de la commande.")
+        report = self.fd.send_full_command(command)
+        if not report.ack_ok:
+            self.ui.lblAdminCommandStatusText.setText(f"❌ Erreur lors de l'envoi de la commande '{command}': {report.ack_info}")
             return False
         self.ui.lblAdminCommandStatusText.setText("✔️ Commande envoyée et exécutée avec succès.")
         return True

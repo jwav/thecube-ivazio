@@ -7,10 +7,11 @@
 - [ ] auto display on hdmi on cubemaster
 - [ ] test cubemaster speaker
 - [ ] test cubemaster alarm light
-
+- [ ] make full scale simulations that can be run on localhost or on the local network
 
 # CubeGui
 
+- [ ] implement reset buttons and all buttons on admin tab
 
 # CubeBoxes
  
@@ -19,10 +20,8 @@
 
 - [ ] test with real hardware
 - [ ] improve display, have room for 12 teams max
-- [ ] for the CubeMasterWithPrompt, add commands
-- [ ] implement alarm sound
-- [ ] implement alarm light
-
+- [ ] implement and test alarm sound
+- [ ] implement and test alarm light
 
 # CubeRGBMatrix
 
@@ -32,12 +31,13 @@
 
 # Hardware
 
-- [ ] CAD rail adapter for button receiver
+- [ ] imprimer adaptateurs et installer un max de rgbmatrices
+- [ ] câbler armoire complète
+- [ ] créer 12 rails de cubeboxes
+- [x] CAD rail adapter for button receiver
 - [ ] CAD wireless button case and mechanisme
+- [ ] CAD speaker rail adapter
+- [ ] trouver et acheter ampli son
 - [ ] neopixel control
 - [ ] test cubemaster hat with rgb matrix
-- [ ] test cubebox hat
-
-# Highscores screen
-
-- [ ] revamp the main layout to display 10+ teams
+- [x] test cubebox hat

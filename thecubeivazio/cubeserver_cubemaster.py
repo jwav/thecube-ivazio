@@ -427,6 +427,9 @@ class CubeServerMaster:
         elif command == "update_rgb":
             self.update_rgb()
             return True
+        elif command == "test_rgb":
+            self.test_rgb()
+            return True
         elif command == "reboot":
             cube_utils.reboot()
             return True
@@ -443,7 +446,7 @@ class CubeServerMaster:
         config_msg = cm.CubeMsgConfig(copy_msg=message)
         self.log.info(f"Config message: {config_msg.to_string()}")
         self.config.update_from_config(config_msg.config)
-        self.config.save_to_json()
+        self.config.save_to_json_file()
         self.log.success("Config updated and saved.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 

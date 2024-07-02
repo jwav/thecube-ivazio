@@ -59,15 +59,18 @@ class CubeServerCubebox:
         self.log.info(f"Status set to {value}. Sending message to everyone.")
         self.send_status_to_all()
 
+    @cubetry
     def set_status_state(self, state: cube_game.CubeboxState):
         if self.status.set_state(state):
             self.send_status_to_all()
 
+    @cubetry
     def send_status_to_all(self):
         self.net.send_msg_to_all(
             cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status),
             require_ack=False)
 
+    @cubetry
     def determine_cubebox_node_name(self) -> str:
         """determine the node name from the hostname"""
         return cubeid.hostname_to_valid_cubebox_name()
@@ -78,7 +81,7 @@ class CubeServerCubebox:
         config_msg = cm.CubeMsgConfig(copy_msg=message)
         self.log.info(f"Config message: {config_msg.to_string()}")
         self.config.update_from_config(config_msg.config)
-        self.config.save_to_json()
+        self.config.save_to_json_file()
         self.log.success("Config updated and saved.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
@@ -119,10 +122,13 @@ class CubeServerCubebox:
     def cubebox_index(self):
         return cubeid.node_name_to_cubebox_index(self.net.node_name)
 
+
+    @cubetry
     def is_box_being_played(self):
         return self.status.is_playing()
 
 
+    @cubetry
     def to_string(self):
         ret = f"CubeServerCubebox({self.net.node_name})\n"
         ret += f"- last_rfid_line: {self.status.last_valid_rfid_line}\n"
@@ -209,6 +215,7 @@ class CubeServerCubebox:
         self.net.send_msg_to_all(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status))
         return True
 
+    @cubetry
     def perform_reset(self):
         self.status.reset()
         self.buzzer.play_cubebox_reset_sound()
