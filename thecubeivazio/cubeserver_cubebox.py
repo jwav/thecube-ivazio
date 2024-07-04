@@ -61,6 +61,7 @@ class CubeServerCubebox:
 
     @cubetry
     def set_status_state(self, state: cube_game.CubeboxState):
+        self.log.info(f"Setting the status to {state}")
         if self.status.set_state(state):
             self.send_status_to_all()
         if self.status.get_state() == cube_game.CubeboxState.STATE_WAITING_FOR_RESET:
@@ -230,9 +231,8 @@ class CubeServerCubebox:
 
     @cubetry
     def perform_reset(self):
-        self.status.reset()
+        self.set_status_state(cube_game.CubeboxState.STATE_READY_TO_PLAY)
         self.buzzer.play_cubebox_reset_sound()
-        self.send_status_to_all()
 
     @cubetry
     def _rfid_loop(self):
