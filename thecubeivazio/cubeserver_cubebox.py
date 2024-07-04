@@ -13,7 +13,7 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
 import thecubeivazio.cube_sounds as cube_sounds
-from thecubeivazio import cube_game, cube_config
+from thecubeivazio import cube_game, cube_config, cube_neopixel
 from thecubeivazio.cube_common_defines import *
 
 
@@ -33,6 +33,7 @@ class CubeServerCubebox:
 
         self.button = cube_button.CubeButton()
         self.buzzer = cube_sounds.CubeSoundPlayer()
+        self.neopixel = cube_neopixel.CubeNeopixel()
 
         # the last valid RFID and acknowledged line read
         self._status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)
@@ -46,8 +47,7 @@ class CubeServerCubebox:
         self._keep_running = False
 
         # at startup, a cubebox is waiting for reset. always.
-        self.status.set_state_waiting_for_reset()
-        self.send_status_to_all()
+        self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
 
     @property
     def status(self):
@@ -63,6 +63,13 @@ class CubeServerCubebox:
     def set_status_state(self, state: cube_game.CubeboxState):
         if self.status.set_state(state):
             self.send_status_to_all()
+        if self.status.get_state() == cube_game.CubeboxState.STATE_WAITING_FOR_RESET:
+            self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_WAITING_FOR_RESET)
+        elif self.status.get_state() == cube_game.CubeboxState.STATE_READY_TO_PLAY:
+            self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_READY_TO_PLAY)
+        elif self.status.get_state() == cube_game.CubeboxState.STATE_PLAYING:
+            self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_CURRENTLY_PLAYING)
+
 
     @cubetry
     def send_status_to_all(self):
@@ -142,10 +149,10 @@ class CubeServerCubebox:
         return self.to_string()
 
     @property
-    def play_start_timesamp(self) -> Optional[Seconds]:
-        if self.status.last_valid_rfid_line is not None:
+    def play_start_timestamp(self) -> Optional[Seconds]:
+        try:
             return self.status.last_valid_rfid_line.timestamp
-        else:
+        except:
             return None
 
     def run(self):
@@ -211,8 +218,7 @@ class CubeServerCubebox:
             return True
         self.log.info("Received order to wait for reset")
         self.badge_out_current_team()
-        self.status.set_state_waiting_for_reset()
-        self.net.send_msg_to_all(cm.CubeMsgReplyCubeboxStatus(self.net.node_name, self.status))
+        self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
         return True
 
     @cubetry
@@ -308,8 +314,7 @@ class CubeServerCubebox:
         else:
             self.log.success("RFID read message sent to and okayed by the CubeMaster")
             self.status.last_valid_rfid_line = rfid_line
-            self.status.set_state_playing()
-            self.send_status_to_all()
+            self.set_status_state(cube_game.CubeboxState.STATE_PLAYING)
             self.log.info(f"is_box_being_played()={self.is_box_being_played()}, last_rfid_line={self.status.last_valid_rfid_line}")
             # self.log.critical(f"{self.status}")
             self.buzzer.play_rfid_ok_sound()
@@ -325,8 +330,9 @@ class CubeServerCubebox:
             self.log.info(f"Badging out team with RFID {self.status.last_valid_rfid_line.uid}")
             if play_game_over_sound:
                 self.buzzer.play_game_over_sound()
-        self.status.set_state_waiting_for_reset()
+        self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
 
+    @cubetry
     def _button_loop(self):
         """check the button state and handle it"""
         self.button.run()
@@ -346,10 +352,7 @@ class CubeServerCubebox:
                 self.button.reset()
                 continue
             press_timestamp = time.time()
-            # for some reason the CubeMaster doesn't get the messages when it's sent to its ip.
-            # might be beause everyone is on 192.168.1.0, I don't know. For now, let's just use
-            # the broadcast address.
-            # if self.net.send_msg_to_cubeserver(cm.CubeMsgButtonPress(self.net.node_name)):
+
             cbp_msg = cm.CubeMsgButtonPress(sender=self.net.node_name,
                                             start_timestamp=self.play_start_timestamp,
                                             press_timestamp=press_timestamp)
@@ -358,8 +361,7 @@ class CubeServerCubebox:
             if self.net.send_msg_to_cubemaster(cbp_msg, require_ack=True):
                 self.log.info("Button press message sent to and acked by CubeMaster")
                 self.badge_out_current_team()
-                self.status.set_state_waiting_for_reset()
-                self.send_status_to_all()
+                self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
                 self.buzzer.play_victory_sound()
             else:
                 self.log.error("Failed to send or get ack for button press message to CubeMaster")
