@@ -12,6 +12,7 @@ if not is_raspberry_pi():
         def set_color(self, color: tuple[int,int,int]):
             print("CubeNeopixel.set_color called with color: ", color)
 
+
 # if we're on raspberry pi, we'll be using the neopixel library
 else:
     import board, neopixel
