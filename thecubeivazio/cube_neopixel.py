@@ -1,4 +1,5 @@
 from thecubeivazio.cube_utils import is_raspberry_pi, cubetry
+import time
 
 # if we're not on an rpi, we'll be using this mock class
 if not is_raspberry_pi():
@@ -9,17 +10,17 @@ if not is_raspberry_pi():
         def __init__(self):
             pass
         def set_color(self, color: tuple[int,int,int]):
-            pass
+            print("CubeNeopixel.set_color called with color: ", color)
 
 # if we're on raspberry pi, we'll be using the neopixel library
 else:
-    import board, neopixel, time
+    import board, neopixel
     class CubeNeopixel:
         COLOR_WAITING_FOR_RESET = (255,0,0)
         COLOR_READY_TO_PLAY = (0,255,0)
         COLOR_CURRENTLY_PLAYING = (0,0,255)
         def __init__(self):
-            self.instance = neopixel.NeoPixel(board.D18, 12)
+            self.instance = neopixel.NeoPixel(board.D10, 12)
 
         @cubetry
         def set_color(self, color: tuple[int,int,int]):

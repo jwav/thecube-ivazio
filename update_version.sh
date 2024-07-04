@@ -133,6 +133,10 @@ source "${SCRIPT_DIR}/venv/bin/activate"
     cp "$file" ~/
     chmod +x ~/"$file"
   done
+  # copy some other scripts
+  cp ./activate_venv.sh ~/
+  chmod +x ~/activate_venv.sh
+
 
   # setup the service, according to the hostname
   if [[ "$HOSTNAME" == "cubemaster" ]]; then
