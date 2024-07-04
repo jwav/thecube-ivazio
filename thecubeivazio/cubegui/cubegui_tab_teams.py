@@ -86,6 +86,11 @@ class CubeGuiTabTeamsMixin:
         self.update_tab_teams()
 
     @cubetry
+    def set_teams_info_label_text(self, text: str):
+        self.ui.lblTeamsStatusInfo.setText(text)
+        QApplication.processEvents()
+
+    @cubetry
     def get_trophy_pixmap(self, trophy: cube_game.CubeTrophy, width: int=None, height: int=None) -> QtGui.QPixmap:
         """Get the pixmap for a trophy"""
         assert trophy
@@ -222,6 +227,8 @@ class CubeGuiTabTeamsMixin:
         painter.end()
 
 
+
+    @cubetry
     def click_add_trophy(self: 'CubeGuiForm'):
         pass
 

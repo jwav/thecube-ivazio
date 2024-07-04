@@ -44,7 +44,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -827,12 +827,29 @@ QPushButton:focus {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="4">
-           <widget class="QLabel" name="lblTeamsTeamDeleteStatus">
+          <item row="1" column="4">
+           <widget class="QPushButton" name="btnTeamsAddTrophy">
             <property name="text">
-             <string/>
+             <string>Ajouter tophée</string>
+            </property>
+            <property name="icon">
+             <iconset theme="add">
+              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
+          </item>
+          <item row="0" column="5">
+           <spacer name="horizontalSpacer_23">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="0" column="3">
            <widget class="QPushButton" name="btnIconTeamsTeamDeleteStatus">
@@ -862,36 +879,8 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QPushButton" name="btnTeamsDeleteTeam">
-            <property name="text">
-             <string>Supprimer cette équipe</string>
-            </property>
-            <property name="icon">
-             <iconset theme="delete">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Ajouter un trophée pour cette équipe : </string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="5">
-           <spacer name="horizontalSpacer_23">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+          <item row="1" column="1" colspan="3">
+           <widget class="QComboBox" name="comboTeamsAddTrophy"/>
           </item>
           <item row="1" column="5">
            <widget class="QPushButton" name="btnTeamsRemoveSelectedTrophy">
@@ -904,19 +893,37 @@ QPushButton:focus {
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QPushButton" name="btnTeamsAddTrophy">
+          <item row="0" column="1" colspan="2">
+           <widget class="QPushButton" name="btnTeamsDeleteTeam">
             <property name="text">
-             <string>Ajouter tophée</string>
+             <string>Supprimer cette équipe</string>
             </property>
             <property name="icon">
-             <iconset theme="add">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <iconset theme="delete">
+              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="3">
-           <widget class="QComboBox" name="comboTeamsAddTrophy"/>
+          <item row="0" column="4">
+           <widget class="QLabel" name="lblTeamsTeamDeleteStatus">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Ajouter un trophée pour cette équipe : </string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="6">
+           <widget class="QLabel" name="lblTeamsStatusInfo">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -1686,7 +1693,6 @@ QPushButton:focus {
  </widget>
  <resources>
   <include location="resources.qrc"/>
-  <include location="../../../../../home/vee/.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -19,3 +19,4 @@ Pillow
 pyserial
 flask
 watchdog
+adafruit-circuitpython-neopixel
