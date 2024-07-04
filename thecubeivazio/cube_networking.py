@@ -123,7 +123,7 @@ class CubeNetworking:
     def run(self):
         """launches the listening and sending threads.
         DO OVERRIDE THIS after calling super()"""
-        self._listenThread = threading.Thread(target=self._listen_loop)
+        self._listenThread = threading.Thread(target=self._listen_loop, daemon=True)
         # make the thread a daemon so it stops when the main thread stops
         self._listenThread.daemon = True
         self._keep_running = True

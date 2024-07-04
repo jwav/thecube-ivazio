@@ -81,13 +81,13 @@ class CubeButton:
         self._thread.start()
 
     def stop(self):
-        self.log.info("Stopping button thread...")
+        self.log.info("Stopping button internal thread...")
         # noinspection PyBroadException
         if not self._is_raspberry_pi:
             self.keyboard_listener.stop()
         self._keep_running = False
-        self._thread.join(timeout=1)
-        self.log.info("Button thread stopped")
+        self._thread.join(timeout=0.1)
+        self.log.info("Button internal thread stopped")
 
     def reset(self):
         self.set_current_state_as_unpressed()
