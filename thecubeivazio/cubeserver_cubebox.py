@@ -72,6 +72,10 @@ class CubeServerCubebox:
         elif self.status.get_state() == cube_game.CubeboxState.STATE_PLAYING:
             self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_CURRENTLY_PLAYING)
             self.log.info(f"Setting the neopixel to {cube_neopixel.CubeNeopixel.COLOR_CURRENTLY_PLAYING}")
+        else:
+            self.neopixel.set_color((50,50,50))
+            self.log.error(f"Unknown state: {state}")
+
 
 
     @cubetry
