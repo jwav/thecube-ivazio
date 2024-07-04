@@ -65,10 +65,13 @@ class CubeServerCubebox:
             self.send_status_to_all()
         if self.status.get_state() == cube_game.CubeboxState.STATE_WAITING_FOR_RESET:
             self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_WAITING_FOR_RESET)
+            self.log.info(f"Setting the neopixel to {cube_neopixel.CubeNeopixel.COLOR_WAITING_FOR_RESET}")
         elif self.status.get_state() == cube_game.CubeboxState.STATE_READY_TO_PLAY:
             self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_READY_TO_PLAY)
+            self.log.info(f"Setting the neopixel to {cube_neopixel.CubeNeopixel.COLOR_READY_TO_PLAY}")
         elif self.status.get_state() == cube_game.CubeboxState.STATE_PLAYING:
             self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_CURRENTLY_PLAYING)
+            self.log.info(f"Setting the neopixel to {cube_neopixel.CubeNeopixel.COLOR_CURRENTLY_PLAYING}")
 
 
     @cubetry
