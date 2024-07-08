@@ -26,7 +26,7 @@ class CubeServerCubebox:
             node_name = self.determine_cubebox_node_name()
 
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
-        self.net.ACK_NB_TRIES = 999
+        self.net.ACK_NB_TRIES = 10
 
         self.rfid = None
         self._rfid_setup_loop()
