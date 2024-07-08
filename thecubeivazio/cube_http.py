@@ -17,8 +17,7 @@ class CubeHttpServer:
         self.clients = []
         self.log = CubeLogger("CubeHttpServer")
         self.setup_routes()
-        self.server_thread = threading.Thread(target=self._start_server_thread)
-        self.server_thread.daemon = True
+        self.server_thread = threading.Thread(target=self._start_server_thread, daemon=True)
 
     def setup_routes(self):
         @self.flask_app.route('/stream')

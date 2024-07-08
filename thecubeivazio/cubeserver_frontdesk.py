@@ -62,7 +62,7 @@ class CubeServerFrontdesk:
 
     def run(self):
         self.rfid.run()
-        self._msg_handling_thread = threading.Thread(target=self._msg_handling_loop)
+        self._msg_handling_thread = threading.Thread(target=self._msg_handling_loop, daemon=True)
         self._keep_running = True
         self._msg_handling_thread.start()
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))

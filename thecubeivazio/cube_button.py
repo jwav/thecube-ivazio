@@ -76,7 +76,7 @@ class CubeButton:
 
     def run(self):
         self.set_current_state_as_unpressed()
-        self._thread = threading.Thread(target=self._loop)
+        self._thread = threading.Thread(target=self._loop, daemon=True)
         self._keep_running = True
         self._thread.start()
 

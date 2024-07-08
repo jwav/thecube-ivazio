@@ -21,9 +21,9 @@ LOGGER = cube_logger.CubeLogger("Simulations")
 CUBEBOX = cubeserver_cubebox.CubeServerCubebox(node_name=cubeid.cubebox_index_to_node_name(CUBE_ID))
 FRONTDESK = cubeserver_frontdesk.CubeServerFrontdesk()
 MASTER = cubeserver_cubemaster.CubeServerMaster()
-CUBEBOX_THREAD = threading.Thread(target=CUBEBOX.run)
-FRONTDESK_THREAD = threading.Thread(target=FRONTDESK.run)
-MASTER_THREAD = threading.Thread(target=MASTER.run)
+CUBEBOX_THREAD = threading.Thread(target=CUBEBOX.run, daemon=True)
+FRONTDESK_THREAD = threading.Thread(target=FRONTDESK.run, daemon=True)
+MASTER_THREAD = threading.Thread(target=MASTER.run, daemon=True)
 
 
 class TestResults:

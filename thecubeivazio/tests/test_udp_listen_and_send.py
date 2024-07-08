@@ -17,10 +17,10 @@ class UDPServer:
         self.running = True
 
     def start(self):
-        recv_thread = threading.Thread(target=self.receive_messages)
+        recv_thread = threading.Thread(target=self.receive_messages, daemon=True)
         recv_thread.start()
 
-        send_thread = threading.Thread(target=self.send_messages)
+        send_thread = threading.Thread(target=self.send_messages, daemon=True)
         send_thread.start()
 
     def receive_messages(self):

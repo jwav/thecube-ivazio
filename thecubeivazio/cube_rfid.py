@@ -222,7 +222,7 @@ class CubeRfidEventListener(CubeRfidListenerBase):
         if show_debug:
             self.log.setLevel(logging.DEBUG)
 
-        self._thread = threading.Thread(target=self._event_read_loop)
+        self._thread = threading.Thread(target=self._event_read_loop, daemon=True)
         self._keep_running = True
 
         self._device_path: Optional[str] = None
@@ -445,7 +445,7 @@ class CubeRfidSerialListener(CubeRfidListenerBase):
         self.port = None
         self.serial_conn = None
         self.log = CubeLogger(name="RFID Serial Listener")
-        self._thread = threading.Thread(target=self._read_loop)
+        self._thread = threading.Thread(target=self._read_loop, daemon=True)
         self._keep_running = True
         self.setup()
 

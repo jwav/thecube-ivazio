@@ -41,7 +41,7 @@ class CubeBuzzer:
 
     def play_file_or_tune(self, soundfile:str, tune:Tuple[Tuple[int, float], ...]):
         """Play a sound file or a tune on the buzzer."""
-        self._thread = threading.Thread(target=self._play_file_or_tune, args=(soundfile, tune))
+        self._thread = threading.Thread(target=self._play_file_or_tune, args=(soundfile, tune), daemon=True)
         self._thread.start()
         with self._lock:
             self._thread.join(timeout=STATUS_REPLY_TIMEOUT)
