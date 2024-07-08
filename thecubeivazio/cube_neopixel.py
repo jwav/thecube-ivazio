@@ -17,9 +17,9 @@ if not is_raspberry_pi():
 else:
     import board, neopixel
     class CubeNeopixel:
-        COLOR_WAITING_FOR_RESET = (255,0,0)
-        COLOR_READY_TO_PLAY = (0,255,0)
-        COLOR_CURRENTLY_PLAYING = (0,0,255)
+        COLOR_WAITING_FOR_RESET = (55,0,0)
+        COLOR_READY_TO_PLAY = (0,55,0)
+        COLOR_CURRENTLY_PLAYING = (0,0,55)
         def __init__(self):
             self.instance = neopixel.NeoPixel(board.D10, 12)
 
