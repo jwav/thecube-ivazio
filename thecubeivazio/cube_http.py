@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask, Response, send_from_directory
 import threading
 import queue
@@ -19,6 +21,10 @@ class CubeHttpServer:
         self.setup_routes()
         self.server_thread = threading.Thread(target=self._start_server_thread, daemon=True)
         self.log.setLevel(CubeLogger.LEVEL_INFO if quiet else CubeLogger.LEVEL_DEBUG)
+        if quiet:
+            # Suppress the default Flask (werkzeug) request logs
+            werkzeug_logger = logging.getLogger('werkzeug')
+            werkzeug_logger.setLevel(logging.ERROR)
 
     def setup_routes(self):
         @self.flask_app.route('/stream')

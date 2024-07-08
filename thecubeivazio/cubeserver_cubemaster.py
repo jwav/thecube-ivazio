@@ -17,6 +17,8 @@ from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_sounds import CubeSoundPlayer
 from thecubeivazio.cube_gpio import CubeGpio
 
+# only import cube_rgbmatrix_daemon if we're running this script as the main script,
+# not if we're importing it as a module
 if __name__ == "__main__":
     print("Importing thecubeivazio.cube_rgbmatrix_daemon")
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
@@ -152,13 +154,16 @@ class CubeServerMaster:
             team = self.game_status.teams.get_team_by_name(team_name)
             try:
                 assert team
-                self.log.info(f"We have team {team_name} with end_timestamp {team.end_timestamp} and max_time_sec {team.max_time_sec}")
+                self.log.info(
+                    f"We have team {team_name} with end_timestamp {team.end_timestamp} and max_time_sec {team.max_time_sec}")
                 if self.config.display_team_names_on_rgb:
                     rmcd[matrix_id] = crs.CubeRgbMatrixContent(
-                        matrix_id=matrix_id, team_name=team_name, end_timestamp=team.end_timestamp, max_time_sec=team.max_time_sec)
+                        matrix_id=matrix_id, team_name=team_name, end_timestamp=team.end_timestamp,
+                        max_time_sec=team.max_time_sec)
                 else:
                     rmcd[matrix_id] = crs.CubeRgbMatrixContent(
-                        matrix_id=matrix_id, team_name=None, end_timestamp=team.end_timestamp, max_time_sec=team.max_time_sec)
+                        matrix_id=matrix_id, team_name=None, end_timestamp=team.end_timestamp,
+                        max_time_sec=team.max_time_sec)
             except:
                 rmcd[matrix_id] = crs.CubeRgbMatrixContent(
                     matrix_id=matrix_id, team_name=None, end_timestamp=None, max_time_sec=None)
@@ -547,7 +552,7 @@ class CubeServerMaster:
             assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
             assert self.cubeboxes.update_from_cubeboxes(
                 new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
-            report  = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            report = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             assert report.sent_ok, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
             return True
         except Exception as e:
@@ -572,7 +577,8 @@ class CubeServerMaster:
         for cubebox_id in cubeid.CUBEBOX_IDS:
             self.log.info(f"Requesting cubebox status for cubebox {cubebox_id}")
             if not self.request_cubebox_status(cubebox_id, reply_timeout):
-                self.log.warning(f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
+                self.log.warning(
+                    f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
                 return False
             else:
                 self.log.success(f"Received status reply from cubebox {cubebox_id}")
@@ -614,17 +620,20 @@ class CubeServerMaster:
             master.log.critical("TestRGB: Starting CubeMaster...")
             master.run()
 
-
             # create a few sample teams to test the rgb daemon
             sample_teams = [
                 cube_game.CubeTeamStatus(
-                    name="Oslo", rfid_uid="11111111111", max_time_sec=30, start_timestamp=time.time(), current_cubebox_id=1),
+                    name="Oslo", rfid_uid="11111111111", max_time_sec=30, start_timestamp=time.time(),
+                    current_cubebox_id=1),
                 cube_game.CubeTeamStatus(
-                    name="Stockholm", rfid_uid="2222222222", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=3),
+                    name="Stockholm", rfid_uid="2222222222", max_time_sec=10, start_timestamp=time.time(),
+                    current_cubebox_id=3),
                 cube_game.CubeTeamStatus(
-                    name="Budapest", rfid_uid="88888888888", max_time_sec=10, start_timestamp=time.time(), current_cubebox_id=9),
+                    name="Budapest", rfid_uid="88888888888", max_time_sec=10, start_timestamp=time.time(),
+                    current_cubebox_id=9),
                 cube_game.CubeTeamStatus(
-                    name="Paris", rfid_uid="9999999999", max_time_sec=20, start_timestamp=time.time(), current_cubebox_id=11),
+                    name="Paris", rfid_uid="9999999999", max_time_sec=20, start_timestamp=time.time(),
+                    current_cubebox_id=11),
             ]
             # sample_teams = []
             for team in sample_teams:
@@ -642,10 +651,6 @@ class CubeServerMaster:
 
         except Exception as e:
             master.log.error(f"TestRGB: Exception: {e}")
-
-
-
-
 
 
 class CubeServerMasterWithPrompt(CubeServerMaster):
@@ -696,9 +701,6 @@ class CubeServerMasterWithPrompt(CubeServerMaster):
                 print("Unknown command")
 
 
-
-
-
 def main(use_prompt=False):
     import atexit
 
@@ -721,14 +723,13 @@ def main(use_prompt=False):
         master.stop()
 
 
-
-
 if __name__ == "__main__":
     main()
     exit(0)
 
     # if `--test_rgb` is passed as an argument, run the test_rgb() function
     import sys
+
     do_test_rgb = True
     # do_test_rgb = False
     if "--test_rgb" in sys.argv or do_test_rgb:

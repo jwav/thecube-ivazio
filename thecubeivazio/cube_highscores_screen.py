@@ -1,3 +1,4 @@
+import signal
 import subprocess
 import textwrap
 import threading
@@ -31,10 +32,8 @@ HIGHSCORES_SUBTABLE_TODAY_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUB
 HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME)
 HIGHSCORES_MAIN_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_MAIN_FILENAME)
 
-BROWSER_NAMES = ["chromium-browser"]
 PLAYING_TEAMS_UPDATE_PERIOD_SEC = 5
 FULL_UPDATE_PERIOD_SEC = 30
-DEFAULT_BROWSER_NAME = "brave"
 HTTP_SERVER_PORT = 8000
 HTTP_HIGHSCORES_MAIN_URL = "http://localhost:8000/highscores_main.html"
 
@@ -42,38 +41,38 @@ import psutil
 
 from thecubeivazio.cube_http import CubeHttpServer
 
+class CubeBrowserManager:
+    def __init__(self):
+        self._process = None
 
-def launch_chromium(url):
-    # Suppress GTK warnings
-    # doesnt work...
-    # os.environ['GTK_DEBUG'] = '0'
-    # os.environ['GTK_MODULES'] = ''
-    # os.environ['FONTCONFIG_PATH'] = '/etc/fonts'
+    def launch_browser(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
+        self.launch_chromium(url)
 
-    # Construct the command to launch Chromium in fullscreen mode
-    command = [
-        'chromium-browser',  # or 'chromium' depending on your system
-        '--kiosk',  # Fullscreen mode
-        '--noerrdialogs',  # Suppress error dialogs
-        '--disable-infobars',  # Disable info bars
-        '--incognito',  # Incognito mode
-        '--force-device-scale-factor=0.8',  # set zoom
-        url  # The URL to open
-    ]
+    def launch_chromium(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
+        # Suppress GTK warnings
+        # doesnt work...
+        # os.environ['GTK_DEBUG'] = '0'
+        # os.environ['GTK_MODULES'] = ''
+        # os.environ['FONTCONFIG_PATH'] = '/etc/fonts'
 
-    # Execute the command
-    subprocess.run(command)
+        # Construct the command to launch Chromium in fullscreen mode
+        command = [
+            'chromium-browser',  # or 'chromium' depending on your system
+            '--kiosk',  # Fullscreen mode
+            '--noerrdialogs',  # Suppress error dialogs
+            '--disable-infobars',  # Disable info bars
+            '--incognito',  # Incognito mode
+            '--force-device-scale-factor=0.8',  # set zoom
+            url  # The URL to open
+        ]
 
+        # Execute the command in a non-blocking manner
+        self._process = subprocess.Popen(command)
 
-def refresh_chromium():
-    return
-    # Find the Chromium process
-    for process in psutil.process_iter():
-        if process.name() == 'chromium-browser':
-            # Reload the page by sending a signal
-            process.send_signal(psutil.signal.SIGHUP)
-            break
-
+    def close_browser(self):
+        if self._process is not None:
+            self._process.terminate()
+            self._process = None
 
 class CubeHighscoresPlayingTeamsSubtable:
     def __init__(self, teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
@@ -410,7 +409,8 @@ def test_CubeHighscoreScreen():
     cube_highscore_screen = CubeHighscoresScreenManager(teams, cubeboxes)
 
 
-def test_run():
+def test_run(launch_browser=False):
+
     playing_teams_1 = cfd.generate_sample_teams()
     assert playing_teams_1.is_valid(), f"playing_teams_1 is not valid: {playing_teams_1}"
     playing_teams_1[0].current_cubebox_id = 1
@@ -441,14 +441,22 @@ def test_run():
 
     cube_highscore_screen = CubeHighscoresScreenManager(playing_teams_1, cubeboxes_1)
     cube_highscore_screen.run()
+    pause_time = 1 # sec
+
+    if launch_browser:
+        browser = CubeBrowserManager()
+        browser.launch_chromium()
+        import atexit
+        atexit.register(browser.close_browser)
+
     try:
         print("beginning loop")
         while True:
             cube_highscore_screen.playing_teams = playing_teams_2
             cube_highscore_screen.cubeboxes = cubeboxes_2
-            time.sleep(0.5)
+            time.sleep(pause_time)
             cube_highscore_screen.update_playing_teams_html_file()
-            time.sleep(0.5)
+            time.sleep(pause_time)
             cube_highscore_screen.update_highscores_html_files(
                 all_time_teams=playing_teams_2,
                 week_teams=playing_teams_1,
@@ -458,9 +466,9 @@ def test_run():
             cube_highscore_screen.cubeboxes = cubeboxes_1
             # cube_highscore_screen.save_to_html_file()
             cube_highscore_screen.update_playing_teams_html_file()
-            time.sleep(0.5)
+            time.sleep(pause_time)
             cube_highscore_screen.update_highscores_html_files()
-            time.sleep(0.5)
+            time.sleep(pause_time)
     except KeyboardInterrupt:
         pass
     except Exception as e:
@@ -475,4 +483,5 @@ if __name__ == "__main__":
     # test_CubeHighscoreScreen()
     # filepath = os.path.join(HIGHSCORES_DIR, "test_highscores_screen.html")
     # launch_chromium(filepath)
-    test_run()
+
+    test_run(launch_browser=True)
