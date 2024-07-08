@@ -17,15 +17,17 @@ NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
 NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE = 10
 
 HIGHSCORES_MAIN_FILENAME = "highscores_main.html"
-HIGHSCORES_SUBTABLE_LEFT_FILENAME = "highscores_subtable_left.html"
-HIGHSCORES_SUBTABLE_CENTER_FILENAME = "highscores_subtable_center.html"
-HIGHSCORES_SUBTABLE_RIGHT_FILENAME = "highscores_subtable_right.html"
+HIGHSCORES_SUBTABLE_ALLTIME_FILENAME = "highscores_subtable_alltime.html"
+HIGHSCORES_SUBTABLE_THISMONTH_FILENAME = "highscores_subtable_thismonth.html"
+HIGHSCORES_SUBTABLE_THISWEEK_FILENAME = "highscores_subtable_thisweek.html"
+HIGHSCORES_SUBTABLE_TODAY_FILENAME = "highscores_subtable_today.html"
 HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME = "playing_teams_subtable.html"
 TITLE_ICON_FILENAME = "icon_thecube_highscores_title.png"
 
-HIGHSCORES_SUBTABLE_LEFT_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_LEFT_FILENAME)
-HIGHSCORES_SUBTABLE_CENTER_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_CENTER_FILENAME)
-HIGHSCORES_SUBTABLE_RIGHT_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_RIGHT_FILENAME)
+HIGHSCORES_SUBTABLE_ALLTIME_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_ALLTIME_FILENAME)
+HIGHSCORES_SUBTABLE_THISMONTH_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_THISMONTH_FILENAME)
+HIGHSCORES_SUBTABLE_THISWEEK_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_THISWEEK_FILENAME)
+HIGHSCORES_SUBTABLE_TODAY_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_SUBTABLE_TODAY_FILENAME)
 HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME)
 HIGHSCORES_MAIN_FILEPATH = os.path.join(HIGHSCORES_DIR, HIGHSCORES_MAIN_FILENAME)
 
@@ -132,6 +134,7 @@ class CubeHighscoresPlayingTeamsSubtable:
             for cubebox in self.cubeboxes:
                 completed_cubebox = team.completed_cubeboxes.get_cubebox_by_cube_id(cubebox.cube_id)
                 cubebox_score = None if not completed_cubebox else completed_cubebox.calculate_box_score()
+                # if the team is playing the cubebox, display a special icon in that cell
                 if team.current_cubebox_id == cubebox.cube_id:
                     cubeboxes_data += textwrap.dedent("""
                         <td class='current-cubebox'>
@@ -149,12 +152,13 @@ class CubeHighscoresPlayingTeamsSubtable:
                     </td>
                     """)
 
+
             team_rows += textwrap.dedent(f"""
                 <tr>
                     <td class="bold-white">{i + 1}.</td>
                     <td class="bold-white">
                         <span>{team.custom_name}</span><br>
-                        <span class="datetime">{self.format_datetime(team.creation_timestamp)}</span>
+                        <!--<span class="datetime">{self.format_datetime(team.creation_timestamp)}</span>-->
                     </td>
                     <td class="bold-white
                     ">{team.calculate_team_score()}</td>
@@ -171,7 +175,13 @@ class CubeHighscoresPlayingTeamsSubtable:
 
     @cubetry
     def format_cubebox_completion_time(self, secs: Seconds):
-        return datetime.datetime.fromtimestamp(secs).strftime('%H:%M:%S')
+        """Format the completion time in seconds to a string in the format MMmSSs. If the time is greater than 1 hour,
+        it will be displayed as HHhMMmSSs."""
+        # return datetime.datetime.fromtimestamp(secs).strftime('%H:%M:%S')
+        if secs < 3600:
+            return time.strftime('%Mm %Ss', time.gmtime(secs))
+        else:
+            return time.strftime('%Hh %Mm %Ss', time.gmtime(secs))
 
     @cubetry
     def get_cubebox_css_class(self, cubebox):
@@ -318,52 +328,6 @@ class CubeHighscoresScreenManager:
             return True
         return time.time() - self._last_playing_teams_update_timestamp > PLAYING_TEAMS_UPDATE_PERIOD_SEC
 
-    # TODO: make into a class static string
-    def generate_html(self, update_all=True) -> str:
-        ret = textwrap.dedent(f""" 
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Highscores TheCube</title>
-                <link rel="stylesheet" href="highscores_main.css">
-                <script src="highscores_smart_refresh.js" defer></script>
-                <!--<script src="highscores_periodic_refresh.js" defer></script>-->
-            </head>
-            <body>
-            <div class="title">
-                <img src="{TITLE_ICON_FILENAME}"/>
-                HIGHSCORES
-                <img src="{TITLE_ICON_FILENAME}"/>
-            </div>
-            <!--<div class="subtitle">THE CUBE</div>-->
-            <div id="highscores" class="highscores">
-                <div class="iframe-container">
-                    <iframe id="highscores_left" src="{HIGHSCORES_SUBTABLE_LEFT_FILENAME}"></iframe>
-                </div>
-                <div class="iframe-container">
-                    <iframe id="highscores_center" src="{HIGHSCORES_SUBTABLE_CENTER_FILENAME}"></iframe>
-                </div>
-                <div class="iframe-container">
-                    <iframe id="highscores_right" src="{HIGHSCORES_SUBTABLE_RIGHT_FILENAME}"></iframe>
-                </div>
-
-            </div>
-            <div class="playing-teams">
-                <iframe id="playing_teams_subtable" src="{HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME}"></iframe>
-            </div>
-            
-            <!-- Hidden iframes for double buffering -->
-            <iframe id="hidden_highscores_left" style="display:none;"></iframe>
-            <iframe id="hidden_highscores_center" style="display:none;"></iframe>
-            <iframe id="hidden_highscores_right" style="display:none;"></iframe>
-            <iframe id="hidden_playing_teams" style="display:none;"></iframe>
-            </body>
-            
-            </html>
-            """)
-        return ret
 
     def update_playing_teams_html_file(self):
         subtable = CubeHighscoresPlayingTeamsSubtable(self.playing_teams, self.cubeboxes)
@@ -373,7 +337,8 @@ class CubeHighscoresScreenManager:
     def update_highscores_html_files(self,
                                      all_time_teams: cg.CubeTeamsStatusList = None,
                                      month_teams: cg.CubeTeamsStatusList = None,
-                                     week_teams: cg.CubeTeamsStatusList = None):
+                                     week_teams: cg.CubeTeamsStatusList = None,
+                                     today_teams: cg.CubeTeamsStatusList = None):
         """Update the highscores subtables with the given teams. If no teams are given, fetch them from the database.
         This is actually the way it's supposed to be, i'm just providing these arguments for debug"""
         if not all_time_teams:
@@ -382,22 +347,18 @@ class CubeHighscoresScreenManager:
             month_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
         if not week_teams:
             week_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_week_start_timestamp())
+        if not today_teams:
+            today_teams = cdb.find_teams_matching(min_creation_timestamp=cu.today_start_timestamp())
 
         CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS").save_subtable_to_html_file(
-            HIGHSCORES_SUBTABLE_LEFT_FILEPATH)
+            HIGHSCORES_SUBTABLE_ALLTIME_FILEPATH)
         CubeHighscoresSubtable(month_teams, "CE MOIS-CI").save_subtable_to_html_file(
-            HIGHSCORES_SUBTABLE_CENTER_FILEPATH)
+            HIGHSCORES_SUBTABLE_THISMONTH_FILEPATH)
         CubeHighscoresSubtable(week_teams, "CETTE SEMAINE").save_subtable_to_html_file(
-            HIGHSCORES_SUBTABLE_RIGHT_FILEPATH)
+            HIGHSCORES_SUBTABLE_THISWEEK_FILEPATH)
+        CubeHighscoresSubtable(today_teams, "AUJOURD'HUI").save_subtable_to_html_file(
+            HIGHSCORES_SUBTABLE_TODAY_FILEPATH)
         self.http_server.send_refresh_highscores()
-
-    @cubetry
-    def save_main_html_file(self, filepath: str = None) -> bool:
-        filepath = filepath or HIGHSCORES_MAIN_FILEPATH
-        with open(filepath, "w") as f:
-            f.write(self.generate_html())
-            self._is_initialized = True
-        return True
 
 
 
@@ -447,7 +408,6 @@ def test_CubeHighscoreScreen():
     teams = cdb.find_teams_matching()
     cubeboxes = cg.CubeboxesStatusList()
     cube_highscore_screen = CubeHighscoresScreenManager(teams, cubeboxes)
-    cube_highscore_screen.save_main_html_file(os.path.join("scores_screen", "test_highscores_screen.html"))
 
 
 def test_run():
@@ -465,6 +425,9 @@ def test_run():
     assert completed_cubeboxes_2.is_valid(), f"completed_cubeboxes_2 is not valid: {completed_cubeboxes_2}"
     for box in completed_cubeboxes_2:
         playing_teams_2[2].completed_cubeboxes.update_from_cubebox(box)
+    print(f"playing_teams_1: {playing_teams_1}")
+    print(f"playing_teams_2: {playing_teams_2}")
+    assert playing_teams_1 != playing_teams_2, f"playing_teams_1 == playing_teams_2"
 
     cubeboxes_2 = cg.CubeboxesStatusList()
     for box in cubeboxes_1:
@@ -477,7 +440,6 @@ def test_run():
             box.set_state_waiting_for_reset()
 
     cube_highscore_screen = CubeHighscoresScreenManager(playing_teams_1, cubeboxes_1)
-    cube_highscore_screen.save_main_html_file()
     cube_highscore_screen.run()
     try:
         print("beginning loop")
@@ -489,8 +451,8 @@ def test_run():
             time.sleep(0.5)
             cube_highscore_screen.update_highscores_html_files(
                 all_time_teams=playing_teams_2,
-                month_teams=playing_teams_1,
                 week_teams=playing_teams_1,
+                today_teams=playing_teams_1,
             )
             cube_highscore_screen.playing_teams = playing_teams_1
             cube_highscore_screen.cubeboxes = cubeboxes_1

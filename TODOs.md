@@ -35,7 +35,8 @@
 - [ ] !! improve display, have room for 12 teams max
     - [ ] problème grésillement relais
 - [ ] rgb_test command doesnt work
-
+- [ ] !! implement a way to stop and resume time for a team or everyone
+- [ ] fix the highscores page background : we can't see the background image
 # CubeRGBMatrix
 
 

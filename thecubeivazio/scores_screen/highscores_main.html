@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Highscores Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Slab:wght@700&family=Saira+Condensed:wght@400&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="highscores_main.css">
+<!--    <script src="highscores_smart_refresh.js" defer></script>-->
+    <script src="highscores_periodic_refresh.js" defer></script>
+
+</head>
+<body>
+
+<div class="main-content">
+    <div class="highscores">
+        <div class="iframe-container">
+            <iframe src="highscores_subtable_alltime.html"></iframe>
+        </div>
+        <div class="iframe-container">
+            <iframe src="highscores_subtable_thisweek.html"></iframe>
+        </div>
+        <div class="iframe-container">
+            <iframe src="highscores_subtable_today.html"></iframe>
+        </div>
+    </div>
+</div>
+<div class="right-content">
+    <div class="title">
+        <img src="icon_thecube_highscores_title.png"/>
+        HIGHSCORES
+        <img src="icon_thecube_highscores_title.png"/>
+    </div>
+    <div class="playing-teams">
+        <iframe src="playing_teams_subtable.html"></iframe>
+    </div>
+</div>
+</body>
+</html>

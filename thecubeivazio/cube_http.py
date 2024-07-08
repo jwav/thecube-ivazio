@@ -18,6 +18,7 @@ class CubeHttpServer:
         self.log = CubeLogger("CubeHttpServer")
         self.setup_routes()
         self.server_thread = threading.Thread(target=self._start_server_thread, daemon=True)
+        self.log.setLevel(CubeLogger.LEVEL_INFO if quiet else CubeLogger.LEVEL_DEBUG)
 
     def setup_routes(self):
         @self.flask_app.route('/stream')
@@ -58,7 +59,7 @@ class CubeHttpServer:
         self.log.info("Event sender shut down.")
 
     def notify_clients(self, message):
-        self.log.info(f"Sending event: {message}")  # Trace line for debugging
+        self.log.debug(f"Sending event: {message}")  # Trace line for debugging
         for client in self.clients:
             client.put(message)
 
