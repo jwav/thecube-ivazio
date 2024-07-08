@@ -7,30 +7,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Slab:wght@700&family=Saira+Condensed:wght@400&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="highscores_main.css">
+    <script src="highscores_smart_refresh.js" defer></script>
+    <!--    <script src="highscores_periodic_refresh.js" defer></script>-->
+
 </head>
 <body>
 
 <div class="main-content">
     <div class="highscores">
         <div class="iframe-container">
-            <iframe src="highscores_subtable_left.html"></iframe>
+            <iframe src="highscores_subtable_alltime.html"></iframe>
         </div>
         <div class="iframe-container">
-            <iframe src="highscores_subtable_center.html"></iframe>
+            <iframe src="highscores_subtable_thisweek.html"></iframe>
         </div>
         <div class="iframe-container">
-            <iframe src="highscores_subtable_right.html"></iframe>
+            <iframe src="highscores_subtable_today.html"></iframe>
         </div>
     </div>
 </div>
 <div class="right-content">
     <div class="title">
-        <img src="../cubegui/images/icon_thecube_dark_396x395.png"/>
+        <img src="icon_thecube_highscores_title.png"/>
         HIGHSCORES
-        <img src="../cubegui/images/icon_thecube_dark_396x395.png"/>
+        <img src="icon_thecube_highscores_title.png"/>
     </div>
     <div class="playing-teams">
-        <iframe src="playing_teams_subtable_model.html"></iframe>
+        <iframe src="playing_teams_subtable.html"></iframe>
     </div>
 </div>
 </body>

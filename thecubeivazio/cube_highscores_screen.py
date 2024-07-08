@@ -17,10 +17,10 @@ NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
 NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE = 10
 
 HIGHSCORES_MAIN_FILENAME = "highscores_main.html"
-HIGHSCORES_SUBTABLE_ALLTIME_FILENAME = "highscores_subtable_alltime.html"
-HIGHSCORES_SUBTABLE_THISMONTH_FILENAME = "highscores_subtable_thismonth.html"
-HIGHSCORES_SUBTABLE_THISWEEK_FILENAME = "highscores_subtable_thisweek.html"
-HIGHSCORES_SUBTABLE_TODAY_FILENAME = "highscores_subtable_today.html"
+HIGHSCORES_SUBTABLE_ALLTIME_FILENAME = "highscores_subtable_1.html"
+HIGHSCORES_SUBTABLE_THISMONTH_FILENAME = "highscores_subtable_2.html"
+HIGHSCORES_SUBTABLE_THISWEEK_FILENAME = "highscores_subtable_2.html"
+HIGHSCORES_SUBTABLE_TODAY_FILENAME = "highscores_subtable_3.html"
 HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME = "playing_teams_subtable.html"
 TITLE_ICON_FILENAME = "icon_thecube_highscores_title.png"
 

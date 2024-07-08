@@ -36,9 +36,9 @@ function refreshSection(visibleId, hiddenId, url) {
 }
 
 function refreshHighscores() {
-    refreshSection('highscores_left', 'hidden_highscores_left', 'highscores_subtable_left.html');
-    refreshSection('highscores_center', 'hidden_highscores_center', 'highscores_subtable_center.html');
-    refreshSection('highscores_right', 'hidden_highscores_right', 'highscores_subtable_right.html');
+    refreshSection('highscores_id_1', 'hidden_highscores_id_1', 'highscores_subtable_1.html');
+    refreshSection('highscores_id_2', 'hidden_highscores_id_2', 'highscores_subtable_2.html');
+    refreshSection('highscores_id_3', 'hidden_highscores_id_3', 'highscores_subtable_3.html');
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     eventSource.onmessage = function(event) {
         if (event.data === 'refresh_playing_teams') {
-            refreshSection('playing_teams_subtable', 'hidden_playing_teams', 'playing_teams_subtable.html');
+            refreshSection('playing_teams_id', 'hidden_playing_teams_id', 'playing_teams_subtable.html');
         } else if (event.data === 'refresh_highscores') {
             refreshHighscores();
         }

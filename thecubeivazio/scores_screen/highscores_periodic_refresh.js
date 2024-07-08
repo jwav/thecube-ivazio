@@ -4,7 +4,7 @@
 
 function refreshPlayingTeamsIframe() {
     const visibleIframe = document.getElementById('playing_teams_subtable');
-    const hiddenIframe = document.getElementById('hidden_playing_teams');
+    const hiddenIframe = document.getElementById('hidden_playing_teams_id');
 
     console.log('Refreshing playing teams iframe...');
     hiddenIframe.src = visibleIframe.src;

@@ -7,22 +7,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Slab:wght@700&family=Saira+Condensed:wght@400&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="highscores_main.css">
-<!--    <script src="highscores_smart_refresh.js" defer></script>-->
-    <script src="highscores_periodic_refresh.js" defer></script>
+    <script src="highscores_smart_refresh.js" defer></script>
+<!--    <script src="highscores_periodic_refresh.js" defer></script>-->
 
 </head>
 <body>
 
 <div class="main-content">
-    <div class="highscores">
+    <div id="highscores_id" class="highscores">
         <div class="iframe-container">
-            <iframe src="highscores_subtable_alltime.html"></iframe>
+            <iframe id="highscores_id_1" src="highscores_subtable_1.html"></iframe>
         </div>
         <div class="iframe-container">
-            <iframe src="highscores_subtable_thisweek.html"></iframe>
+            <iframe id="highscores_id_2" src="highscores_subtable_2.html"></iframe>
         </div>
         <div class="iframe-container">
-            <iframe src="highscores_subtable_today.html"></iframe>
+            <iframe id="highscores_id_3" src="highscores_subtable_3.html"></iframe>
         </div>
     </div>
 </div>
@@ -33,8 +33,47 @@
         <img src="icon_thecube_highscores_title.png"/>
     </div>
     <div class="playing-teams">
-        <iframe src="playing_teams_subtable.html"></iframe>
+        <iframe id="playing_teams_id" src="playing_teams_subtable.html"></iframe>
     </div>
 </div>
+
+<!-- Hidden iframes for double buffering -->
+<iframe id="hidden_highscores_id_1" style="display:none;"></iframe>
+<iframe id="hidden_highscores_id_2" style="display:none;"></iframe>
+<iframe id="hidden_highscores_id_3" style="display:none;"></iframe>
+<iframe id="hidden_playing_teams_id" style="display:none;"></iframe>
+
 </body>
 </html>
+
+
+
+<!--<body>-->
+<!--<div class="title">-->
+<!--    <img src="{TITLE_ICON_FILENAME}"/>-->
+<!--    HIGHSCORES-->
+<!--    <img src="{TITLE_ICON_FILENAME}"/>-->
+<!--</div>-->
+<!--&lt;!&ndash;<div class="subtitle">THE CUBE</div>&ndash;&gt;-->
+<!--<div id="highscores" class="highscores">-->
+<!--    <div class="iframe-container">-->
+<!--        <iframe id="highscores_left" src="{HIGHSCORES_SUBTABLE_LEFT_FILENAME}"></iframe>-->
+<!--    </div>-->
+<!--    <div class="iframe-container">-->
+<!--        <iframe id="highscores_center" src="{HIGHSCORES_SUBTABLE_CENTER_FILENAME}"></iframe>-->
+<!--    </div>-->
+<!--    <div class="iframe-container">-->
+<!--        <iframe id="highscores_right" src="{HIGHSCORES_SUBTABLE_RIGHT_FILENAME}"></iframe>-->
+<!--    </div>-->
+
+<!--</div>-->
+<!--<div class="playing-teams">-->
+<!--    <iframe id="playing_teams_subtable" src="{HIGHSCORES_PLAYING_TEAMS_SUBTABLE_FILENAME}"></iframe>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Hidden iframes for double buffering &ndash;&gt;-->
+<!--<iframe id="hidden_highscores_left" style="display:none;"></iframe>-->
+<!--<iframe id="hidden_highscores_center" style="display:none;"></iframe>-->
+<!--<iframe id="hidden_highscores_right" style="display:none;"></iframe>-->
+<!--<iframe id="hidden_playing_teams" style="display:none;"></iframe>-->
+<!--</body>-->
