@@ -22,6 +22,8 @@ else:
         COLOR_CURRENTLY_PLAYING = (0,0,25)
         def __init__(self):
             self.instance = neopixel.NeoPixel(board.D10, 12)
+            import atexit
+            atexit.register(self.__del__)
 
         @cubetry
         def set_color(self, color: tuple[int,int,int]):
