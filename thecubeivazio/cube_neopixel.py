@@ -4,9 +4,9 @@ import time
 # if we're not on an rpi, we'll be using this mock class
 if not is_raspberry_pi():
     class CubeNeopixel:
-        COLOR_WAITING_FOR_RESET = (255,0,0)
-        COLOR_READY_TO_PLAY = (0,255,0)
-        COLOR_CURRENTLY_PLAYING = (0,0,255)
+        COLOR_WAITING_FOR_RESET = (55,0,0)
+        COLOR_READY_TO_PLAY = (0,55,0)
+        COLOR_CURRENTLY_PLAYING = (0,0,55)
         def __init__(self):
             pass
         def set_color(self, color: tuple[int,int,int]):
