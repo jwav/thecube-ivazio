@@ -46,8 +46,8 @@ class CubeServerCubebox:
         self._thread_networking = None
         self._keep_running = False
 
-        # at startup, a cubebox is waiting for reset. always.
-        self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
+        # at startup, a cubebox is ready to play by default
+        self.set_status_state(cube_game.CubeboxState.STATE_READY_TO_PLAY)
 
     @property
     def status(self):
