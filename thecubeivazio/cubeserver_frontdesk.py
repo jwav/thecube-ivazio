@@ -685,7 +685,8 @@ def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
             trophies_names_list
     ):
         completed_cubeboxes = cube_game.CompletedCubeboxStatusList(completed_cubeboxes)
-        teams.add_team(cube_game.CubeTeamStatus(
+        # print(f"----- completed_cubeboxes={completed_cubeboxes}")
+        team = cube_game.CubeTeamStatus(
             name=name,
             custom_name=custom_name,
             rfid_uid=rfid_uid,
@@ -694,7 +695,15 @@ def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
             start_timestamp=start_timestamp,
             completed_cubeboxes=completed_cubeboxes,
             trophies_names=trophies_names
-        ))
+        )
+        # print(f"----- team={team}")
+        # OK so far
+        teams.add_team(team)
+        # print(teams[-1]._completed_cubeboxes)
+
+    if not teams.is_valid():
+        print("Error: teams are not valid")
+        exit(1)
 
     return teams
 

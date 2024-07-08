@@ -6,19 +6,22 @@ body {
     font-family: 'Roboto', sans-serif;
     color: white;
     background:transparent;
-    overflow: hidden;
 }
 .container {
     text-align: center;
-    //padding: 40px;
+    padding: 40px;
     //background-color: rgba(28, 46, 60, 0.9);
     background:transparent;
-    width: 100vw;
-    max-width: 85vw;
+    width: 100vw; /* Change this value */
+    max-width: 85vw; /* Add this line */
     border-radius: 10px;
     overflow: hidden;
 }
-
+.orange-line {
+    height: 2px;
+    background-color: #f39c12;
+    margin-bottom: 5px;
+}
 .highscore-header {
             font-family: 'Roboto Slab', 'Georgia', serif;
 
@@ -26,17 +29,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0px;
+    margin-bottom: 10px;
     //font-size: 2em;
     //font-weight: bold;
 }
 .highscore-header img {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
 }
 .highscore-header h2 {
-    font-size: 1.4em;
+    font-size: 1.5em;
     font-weight: bold;
     //margin: 0;
     //padding: 0;
@@ -47,13 +50,12 @@ body {
 .highscore-row {
     display: flex;
     justify-content: space-between;
-    padding: 0;
-    padding-bottom:10px;
+    padding: 10px 0;
 }
 .bold-white {
     font-weight: bold;
     color: white;
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 .col1, .col3 {
     text-align: right;
@@ -71,19 +73,11 @@ body {
     color: #f39c12;
     font-size: 0.8em;
 }
-
-.orange-line {
-    height: 1px;
-    background-color: #f39c12;
-    margin: 0px;
-}
-
 .orange-line-bottom {
-    height: 0px;
+    height: 2px;
     background-color: #f39c12;
     //background-width: 100px;
-    //margin-top: 10px;
-    margin:0;
+    margin-top: 10px;
 }
 
 .current-cubebox{

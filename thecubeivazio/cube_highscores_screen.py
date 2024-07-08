@@ -77,7 +77,7 @@ class CubeHighscoresPlayingTeamsSubtable:
     def __init__(self, teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
         self.teams = teams.copy()
         assert isinstance(self.teams, cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
-        self.teams.sort_by_score()
+        self.teams.sort_teams_by_score()
         self.cubeboxes = cubeboxes.copy()
 
     def generate_html(self) -> str:
@@ -194,7 +194,7 @@ class CubeHighscoresSubtable:
     def __init__(self, teams: cg.CubeTeamsStatusList, title: str, max_teams: int = NB_TEAMS_PER_HIGHSCORE_SUBTABLE):
         self.teams = teams.copy()
         assert isinstance(self.teams, cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
-        self.teams.sort_by_score()
+        self.teams.sort_teams_by_score()
         self.title = title
         self.nb_teams = max_teams
 
@@ -277,7 +277,7 @@ class CubeHighscoresScreenManager:
         self.playing_teams = playing_teams.copy()
         assert isinstance(self.playing_teams,
                           cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.playing_teams}"
-        self.playing_teams.sort_by_score()
+        self.playing_teams.sort_teams_by_score()
         self.cubeboxes = cubeboxes.copy()
 
         self._is_initialized = False
@@ -452,6 +452,7 @@ def test_CubeHighscoreScreen():
 
 def test_run():
     playing_teams_1 = cfd.generate_sample_teams()
+    assert playing_teams_1.is_valid(), f"playing_teams_1 is not valid: {playing_teams_1}"
     playing_teams_1[0].current_cubebox_id = 1
     cubeboxes_1 = cg.CubeboxesStatusList()
 
@@ -459,7 +460,9 @@ def test_run():
     playing_teams_2[0].completed_cubeboxes[0].win_timestamp += 100
     playing_teams_2[1].completed_cubeboxes[0].win_timestamp += 100
     playing_teams_2[2].current_cubebox_id = 2
+    assert playing_teams_2.is_valid(), f"playing_teams_2 is not valid: {playing_teams_2}"
     completed_cubeboxes_2 = playing_teams_1[0].completed_cubeboxes.copy()
+    assert completed_cubeboxes_2.is_valid(), f"completed_cubeboxes_2 is not valid: {completed_cubeboxes_2}"
     for box in completed_cubeboxes_2:
         playing_teams_2[2].completed_cubeboxes.update_from_cubebox(box)
 

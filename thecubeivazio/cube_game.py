@@ -226,14 +226,17 @@ class CubeboxStatus:
         self._state = other.get_state()
 
     @property
-    @cubetry
     def completion_time_sec(self) -> Seconds:
-        if CUBE_TIME_METHOD == CUBE_TIME_RFID_TO_PRESS or self._prev_cubebox_win_timestamp is None:
-            return self.win_timestamp - self.start_timestamp
-        elif CUBE_TIME_METHOD == CUBE_TIME_BETWEEN_PRESSES:
-            return self.win_timestamp - self._prev_cubebox_win_timestamp
-        else:
-            raise Exception(f"CubeboxStatus.completion_time_sec: unknown CUBE_TIME_METHOD {CUBE_TIME_METHOD}")
+        try:
+            if CUBE_TIME_METHOD == CUBE_TIME_RFID_TO_PRESS or self._prev_cubebox_win_timestamp is None:
+                return self.win_timestamp - self.start_timestamp
+            elif CUBE_TIME_METHOD == CUBE_TIME_BETWEEN_PRESSES:
+                return self.win_timestamp - self._prev_cubebox_win_timestamp
+            else:
+                raise Exception(f"CubeboxStatus.completion_time_sec: unknown CUBE_TIME_METHOD {CUBE_TIME_METHOD}")
+        except Exception as e:
+            CubeLogger.static_error(f"CubeboxStatus.completion_time_sec {e}")
+            return None
 
     @property
     def completion_time_str(self) -> str:
@@ -268,11 +271,15 @@ class CubeboxesStatusList(List[CubeboxStatus]):
 
     @cubetry
     def copy(self) -> 'CubeboxesStatusList':
-        return CubeboxesStatusList([box.copy() for box in self])
+        return CubeboxesStatusList([box.copy() for box in self], force_complete_list=self._force_complete_list)
 
-    def __init__(self, cubeboxes: Optional[List[CubeboxStatus]] = None, no_init=False):
+    def __init__(self, cubeboxes: Optional[List[CubeboxStatus]] = None, force_complete_list=True):
+        """If `cubeboxes` is not None, the CubeboxesStatusList will be initialized with these CubeboxStatus instances.
+        If `force_complete_list` is True, the CubeboxesStatusList will be initialized with all the CubeboxStatus instances
+        for each CubeBox in TheCube game."""
         super().__init__()
-        if not no_init:
+        self._force_complete_list = force_complete_list
+        if force_complete_list:
             self.initialize_all_cubeboxes()
         if cubeboxes:
             self.update_from_cubeboxes(cubeboxes)
@@ -477,7 +484,16 @@ CompletedCubeboxStatus.__doc__ = "Represents a CubeBox that has been successfull
 
 class CompletedCubeboxStatusList(CubeboxesStatusList):
     def __init__(self, cubeboxes: Optional[List[CompletedCubeboxStatus]] = None):
-        super().__init__(cubeboxes, no_init=True)
+        super().__init__(cubeboxes, force_complete_list=False)
+
+    def is_valid(self):
+        try:
+            assert super().is_valid(), f"CompletedCubeboxStatusList.is_valid: super().is_valid() failed"
+            assert all([box.is_completed() for box in self]), f"CompletedCubeboxStatusList.is_valid: not all boxes are completed"
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CompletedCubeboxStatusList.is_valid {e}")
+            return False
 
 
 class CubeTeamStatus:
@@ -503,7 +519,7 @@ class CubeTeamStatus:
         # the cubebox ID currently being played by the team
         self.current_cubebox_id = current_cubebox_id
         # the list of the cubeboxes IDs that the team has successfully played, with their completion times
-        self._completed_cubeboxes = CompletedCubeboxStatusList(completed_cubeboxes) or CompletedCubeboxStatusList()
+        self._completed_cubeboxes = CompletedCubeboxStatusList(completed_cubeboxes)
         # the trophies collected by the team, awarded by the frontdesk
         self.trophies_names: List[str] = trophies_names or []
         # for certain teams, we want to use a loud alarm when their time is up
@@ -560,11 +576,13 @@ class CubeTeamStatus:
                                                      float)) or self.start_timestamp is None, f"self.start_timestamp is not a number: {self.start_timestamp}"
             assert isinstance(self.current_cubebox_id,
                               int) or self.current_cubebox_id is None, f"self.current_cubebox_id is not a number: {self.current_cubebox_id}"
-            assert isinstance(self._completed_cubeboxes, list) and all([box.is_valid() for box in
-                                                                        self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of CubeboxStatus: {self._completed_cubeboxes}"
+            assert isinstance(self._completed_cubeboxes, list), f"self.completed_cubeboxes is not a list: {self._completed_cubeboxes}"
+            assert all([box.is_valid() for box in self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of valid CompletedCubeboxStatus: {self._completed_cubeboxes}"
+            assert all([box.is_completed() for box in self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of completed CompletedCubeboxStatus: {self._completed_cubeboxes}"
             assert isinstance(self.trophies_names, list) and all([isinstance(t, str) for t in
                                                                   self.trophies_names]), f"self.trophies_names is not a list of str: {self.trophies_names}"
             assert isinstance(self.use_alarm, bool), f"self.use_alarm is not a bool: {self.use_alarm}"
+
             return True
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.is_valid {e}")
@@ -837,8 +855,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         return ret
 
     @cubetry
-    def sort_by_score(self):
-        self.sort(key=lambda team: team.compute_score(), reverse=True)
+    def sort_teams_by_score(self):
+        def get_team_score(team: CubeTeamStatus):
+            return team.calculate_team_score()
+        self.sort(key=get_team_score, reverse=True)
 
     @property
     def hash(self) -> Hash:
@@ -931,13 +951,15 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def make_from_json(cls, json_str: str) -> Optional['CubeTeamsStatusList']:
         return cls.make_from_dict(json.loads(json_str))
 
-    @cubetry
     def add_team(self, team: CubeTeamStatus) -> bool:
-        assert team.is_valid(), f"CubeTeamsStatusList.add_team: invalid team {team}"
-        if self.get_team_by_name(team.name) is not None:
+        try:
+            assert team.is_valid(), f"CubeTeamsStatusList.add_team: invalid team {team}"
+            assert self.get_team_by_name(team.name) is None, f"CubeTeamsStatusList.add_team: team {team.name} already in list"
+            self.append(team)
+            return True
+        except Exception as e:
+            CubeLogger.static_error(f"CubeTeamsStatusList.add_team {e}")
             return False
-        self.append(team)
-        return True
 
     @cubetry
     def remove_team_by_name(self, name: str) -> bool:
@@ -1167,15 +1189,18 @@ class CubeScoreCalculator:
     def make_from_json(cls, json_str: str) -> Optional['CubeScoreCalculator']:
         return cls.make_from_dict(json.loads(json_str))
 
-    @cubetry
     def compute_score(self, time_elapsed: Seconds) -> Optional[int]:
         """the longer the time, the lower the score. min_score is the lowest possible value"""
-        assert self.is_valid(), f"CubeScoreCalculator.calculate_score: invalid CubeScoreCalculator {self}"
-        if time_elapsed > self.max_time_sec:
-            time_elapsed = self.max_time_sec
-        if self.scoring_function_type == CubeScoreCalculator.SCORE_FUNCTION_LINEAR:
-            return int(self.min_score + (self.max_score - self.min_score) * (1 - time_elapsed / self.max_time_sec))
-        else:
+        try:
+            assert self.is_valid(), f"CubeScoreCalculator.calculate_score: invalid CubeScoreCalculator {self}"
+            if time_elapsed > self.max_time_sec:
+                time_elapsed = self.max_time_sec
+            if self.scoring_function_type == CubeScoreCalculator.SCORE_FUNCTION_LINEAR:
+                return int(self.min_score + (self.max_score - self.min_score) * (1 - time_elapsed / self.max_time_sec))
+            else:
+                raise ValueError(f"CubeScoreCalculator.compute_score: invalid scoring function {self.scoring_function_type}")
+        except Exception as e:
+            CubeLogger.static_error(f"CubeScoreCalculator.calculate_score {e}")
             return None
 
 

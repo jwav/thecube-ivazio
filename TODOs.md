@@ -4,8 +4,8 @@
 
 - [ ] !! list the rest of the TODOs
 - [ ] !! make full scale simulations that can be run on localhost or on the local network (aka for realsies)
-- [x] make the rpis start automatically their respective servers (cubemaster and cubeboxes)
 - [ ] auto display on hdmi on cubemaster
+- [ ] limit custom names length
 
 
 # CubeWebApp
@@ -19,21 +19,20 @@
 
 # CubeGui
 
-- [x] implement reset,reboot buttons and all buttons on admin tab
+- [ ] !! CHECK THAT THE GUI RUNS FINE ON WINDOWS
 - [ ] "heure dernier message" doesnt update
 - [ ] bugs in current team search : too many teams displayed, maybe due to rgb_test
 - [ ] implement add and remove trophy in gui
 - [ ] do not display in gui the teams code names that are already occupied
 
 # CubeBoxes
- 
+
+- [ ] write an SD card cloner script
 
 # CubeMaster
 
 - [ ] test with real hardware
 - [ ] !! improve display, have room for 12 teams max
-- [x] implement and test alarm sound
-- [x] implement and test alarm light
     - [ ] problème grésillement relais
 - [ ] rgb_test command doesnt work
 
@@ -45,23 +44,12 @@
 
 # Hardware
 
-- [x] test cubemaster speaker
-- [x] test cubemaster alarm light
-- [ ] !! problème du relais qui grésille, acheter relais simple avec adaptateur rail imprimé
-- [ ] !! mesurer distance nécessaire pour cable hdmi, acheter cable
-- [ ] acheter items sur liste d'achats 4 : https://www.amazon.fr/hz/wishlist/ls/25DSMJ203LU13/ref=nav_wishlist_lists_2
+- [x] !! problème du relais qui grésille, acheter relais simple avec adaptateur rail imprimé
 - [ ] imprimer adaptateurs et installer un max de rgbmatrices
 - [ ] câbler armoire complète
-- [ ] acheter entretoises
+    - [ ] vérifier comment alimenter l'armoire en 230V
 - [ ] créer 12 rails de cubeboxes
-- [x] CAD rail adapter for button receiver
-- [ ] CAD wireless button case and mechanisme
+- [ ] CAD wireless button case and mechanism
     - [ ] valider une conception avec impression coté Cédric
-- [ ] CAD speaker rail adapter
-    - [x] minimalist version requiring the speaker to be tied with a string to the rail adapter
-    - [ ] version with a cage to hold the speaker
-- [ ] trouver et acheter ampli son
-- [ ] neopixel control
-- [ ] test cubemaster hat with rgb matrix
-- [x] test cubebox hat
+- [ ] test cubemaster gpio hat with rgb matrix
 - [ ] new cad case for rfid reader
