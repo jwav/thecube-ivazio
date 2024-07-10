@@ -4,17 +4,17 @@
 block_cipher = None
 
 a = Analysis(
-    ['cubegui/cubegui.py'],
-    pathex=['D:\\thecube-ivazio\\thecubeivazio'],
+    ['cubegui.py'],
+    pathex=['.', '..'],  # Ensure the parent directory is included in the path
     binaries=[],
     datas=[
-        ('config', 'config'),
-        ('images', 'images'),
-        ('logs', 'logs'),
-        ('scoresheets', 'scoresheets'),
-        ('saves', 'saves'),
-        ('sounds', 'sounds'),
-        ('tests', 'tests')
+        ('..\\config', 'config'),
+        ('images', 'cubegui\\images'),  # Adjusted path to match your structure
+        ('logs', 'cubegui\\logs'),      # Adjusted path to match your structure
+        ('..\\scoresheets', 'scoresheets'),
+        ('..\\saves', 'saves'),
+        ('..\\sounds', 'sounds'),
+        ('..\\tests', 'tests')
     ],
     hiddenimports=[],
     hookspath=[],

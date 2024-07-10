@@ -2,7 +2,8 @@ import glob
 import inspect
 import os
 import traceback
-from pathlib import Path
+# pyinstaller doesnt like pathlib
+# from pathlib import Path
 from typing import Union, Optional
 from functools import wraps
 from thecubeivazio.cube_logger import CubeLogger
@@ -42,7 +43,7 @@ def find_first_matching_path() -> Optional[str]:
 PROJECT_ROOT_PATH = find_first_matching_path()
 
 try:
-    assert PROJECT_ROOT_PATH and Path(PROJECT_ROOT_PATH).exists(), "PROJECT_ROOT_PATH not found"
+    assert PROJECT_ROOT_PATH and os.path.exists(PROJECT_ROOT_PATH), "PROJECT_ROOT_PATH not found"
     print(f"PROJECT_ROOT_PATH: '{PROJECT_ROOT_PATH}'")
 except AssertionError as e:
     print(e)
@@ -190,7 +191,7 @@ def handle_sys_args() -> bool:
 if __name__ == "__main__":
     if not handle_sys_args():
         print("sys args not handled")
-        # test_paths()
-        test_cubetry()
+        test_paths()
+        # test_cubetry()
 
 
