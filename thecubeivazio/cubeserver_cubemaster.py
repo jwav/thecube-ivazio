@@ -16,6 +16,8 @@ from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_sounds import CubeSoundPlayer
 from thecubeivazio.cube_gpio import CubeGpio
+from thecubeivazio import cube_highscores_screen as chs
+from thecubeivazio import cube_database as cubedb
 
 # only import cube_rgbmatrix_daemon if we're running this script as the main script,
 # not if we're importing it as a module
@@ -39,6 +41,7 @@ class CubeServerMaster:
         # load the config
         self.config = CubeConfig.get_config()
         if not self.config.is_valid():
+            self.net.send_msg_to_all(cm.CubeMsgAlert(self.net.node_name, "Invalid config. Exiting."))
             self.log.error("Invalid config. Exiting.")
             exit(1)
 
@@ -48,13 +51,17 @@ class CubeServerMaster:
         # objects to handle the alarm
         self.sound_player = CubeSoundPlayer()
 
+        # used to manage the highscores screen (display, update, etc.)
+        self.highscores_screen = chs.CubeHighscoresScreenManager()
+        self.flag_database_up_to_date = False
+
         # params for threading
         self._thread_rfid = threading.Thread(target=self._rfid_loop, daemon=True)
         self._thread_message_handling = threading.Thread(target=self._message_handling_loop, daemon=True)
-        self._thread_webpage = threading.Thread(target=self._webpage_loop, daemon=True)
         self._thread_status_update = threading.Thread(target=self._status_update_loop, daemon=True)
         self._thread_rgb = threading.Thread(target=self._rgb_loop, daemon=True)
         self._thread_alarm = threading.Thread(target=self._run_alarm, daemon=True)
+        self._thread_highscores = threading.Thread(target=self._highscores_loop, daemon=True)
 
         self._keep_running = False
         self._last_game_status_sent_to_frontdesk_hash: Optional[Hash] = None
@@ -68,6 +75,53 @@ class CubeServerMaster:
 
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
+
+
+    def run(self):
+        self._keep_running = True
+        self._thread_rfid.start()
+        self._thread_message_handling.start()
+        self._thread_status_update.start()
+        self._thread_rgb.start()
+        self._thread_highscores.start()
+
+    def stop(self):
+        self._keep_running = False
+        self.net.stop()
+        self.rfid.stop()
+        self._thread_message_handling.join(timeout=0.1)
+        self._thread_rfid.join(timeout=0.1)
+        self._thread_rgb.join(timeout=0.1)
+        self._thread_status_update.join(timeout=0.1)
+        self._thread_highscores.join(timeout=0.1)
+        crd.CubeRgbMatrixDaemon.stop_process()
+        self.rgb_sender.stop_listening()
+
+    def _highscores_loop(self):
+        while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
+            # check if the highscores playing teams need to be refreshed
+            if self.highscores_screen.playing_teams.hash != self.teams.hash:
+                self.log.info("Updating playing teams on highscores screen")
+                self.highscores_screen.playing_teams = self.teams.copy()
+                self.highscores_screen.update_playing_teams_html_file()
+            # check if the local teams database matches the frontdesk's
+            # to avoid having to dump the whole database every time,
+            # we only ask "which teams are newer than our newest recorded creation timestamp?"
+            # TODO: get the latest creation timestamp from our local database
+            lct = cubedb.get_latest_creation_timestamp()
+            # ask the frontdesk. The answer will be handled in _message_handling_loop,
+            #  where a special flag will be set according to the answer
+            request_msg = cm.CubeMsgRequestDatabaseTeams(self.net.node_name, lct)
+            self.net.send_msg_to_frontdesk(request_msg)
+            # if we we're not up to date yet, just keep iterating.
+            if not self.flag_database_up_to_date:
+                continue
+            # if we're up to date, then refresh the highscores screen if needed
+            if not self.highscores_screen.must_update_highscores:
+                continue
+            self.log.info("Updating highscores on highscores screen")
+            self.highscores_screen.update_highscores_html_files()
 
     def _status_update_loop(self):
         """Periodically performs these actions every time the game status changes:
@@ -193,26 +247,6 @@ class CubeServerMaster:
     def cubeboxes(self, value: cube_game.CubeboxesStatusList):
         self.game_status.cubeboxes = value
 
-    def run(self):
-
-        self._keep_running = True
-        self._thread_rfid.start()
-        self._thread_message_handling.start()
-        self._thread_webpage.start()
-        self._thread_status_update.start()
-        self._thread_rgb.start()
-
-    def stop(self):
-        self._keep_running = False
-        self.net.stop()
-        self.rfid.stop()
-        self._thread_message_handling.join(timeout=0.1)
-        self._thread_rfid.join(timeout=0.1)
-        self._thread_webpage.join(timeout=0.1)
-        self._thread_rgb.join(timeout=0.1)
-        crd.CubeRgbMatrixDaemon.stop_process()
-        self.rgb_sender.stop_listening()
-
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
@@ -231,6 +265,8 @@ class CubeServerMaster:
                     self._handle_command_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.CONFIG:
                     self._handle_config_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.REPLY_DATABASE_TEAMS:
+                    self._handle_reply_database_teams_message(message)
                 # handle RFID read messages from the cubeboxes
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_RFID_READ:
                     self._handle_cubebox_rfid_read_message(message)
@@ -303,6 +339,22 @@ class CubeServerMaster:
         team = self.teams.get_team_by_name(team.name)
         self.log.info(f"Team {team.name} is registered as playing cubebox {team.current_cubebox_id}")
         self.log.info(team.to_string())
+
+    @cubetry
+    def _handle_reply_database_teams_message(self, message: cm.CubeMessage):
+        """Handle the reply from the frontdesk to the request for the teams database"""
+        self.log.info(f"Received reply database teams message from {message.sender}")
+        rdt_msg = cm.CubeMsgReplyDatabaseTeams(copy_msg=message)
+        if rdt_msg.no_team:
+            self.log.info("The frontdesk replied 'I have no newer teams'. We're up to date")
+            self.flag_database_up_to_date = True
+            return
+        new_team = rdt_msg.team
+        assert new_team, "_handle_reply_database_teams_message: new_team is None"
+        self.log.info(f"Received new team from frontdesk for our database: {new_team.to_string()}")
+        assert cubedb.add_team_to_database(new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
+        self.log.success("Added new team to the local database")
+
 
     def _handle_cubebox_rfid_read_message(self, message: cm.CubeMessage):
         self.log.info(f"Received RFID read message from {message.sender}")
@@ -523,12 +575,6 @@ class CubeServerMaster:
                     # TODO: handle the RFID read message
                     self.log.info("MUST HANDLE CUBEMASTER RFID READ MESSAGE")
                     self.rfid.remove_line(line)
-
-    def _webpage_loop(self):
-        # TODO: implement webpage
-        while self._keep_running:
-            time.sleep(LOOP_PERIOD_SEC)
-            pass
 
     def request_all_cubeboxes_statuses_at_once(self, reply_timeout: Seconds = None) -> bool:
         msg = cm.CubeMsgRequestAllCubeboxesStatuses(self.net.node_name)

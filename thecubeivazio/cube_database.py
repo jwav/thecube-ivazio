@@ -8,9 +8,13 @@ from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_game as cg
 from thecubeivazio.cube_logger import CubeLogger
 
+# this is the default database file path. It can be changed for tests.
+# this default will be used any time the db_filename argument is not provided
+DEFAULT_DATABASE_FILEPATH = TEAMS_SQLITE_DATABASE_FILEPATH
+
 @cubetry
 def create_database(db_filename=None) -> bool:
-    db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
 
     # first, check if the file exists
     if os.path.exists(db_filename):
@@ -52,7 +56,7 @@ def create_database(db_filename=None) -> bool:
     return True
 
 def delete_database(db_filename=None):
-    db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
     if os.path.exists(db_filename):
         os.remove(db_filename)
         print(f"Database {db_filename} deleted.")
@@ -60,7 +64,7 @@ def delete_database(db_filename=None):
         print(f"Database {db_filename} does not exist.")
 
 def backup_database(db_filename=None, backup_filename=None):
-    db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
     backup_filename = backup_filename or f"{db_filename}.backup"
     if os.path.exists(db_filename):
         shutil.copy2(db_filename, backup_filename)
@@ -71,7 +75,7 @@ def backup_database(db_filename=None, backup_filename=None):
 
 @cubetry
 def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=None) -> bool:
-    db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
     # if the database doesn't exist, create it
     if not os.path.exists(db_filename):
         create_database(db_filename)
@@ -130,7 +134,7 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
     """Find teams matching the given parameters in the database.
     for name and custom_name, the search is case-insensitive and partial (i.e. 'abc' will match 'xAbCy').
     """
-    db_filename = db_filename or TEAMS_SQLITE_DATABASE_FILEPATH
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
     conn = sqlite3.connect(db_filename)
     c = conn.cursor()
 
@@ -200,8 +204,26 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
 
 
 @cubetry
+def get_latest_creation_timestamp(db_filename=None) -> Optional[float]:
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
+    conn = sqlite3.connect(db_filename)
+    c = conn.cursor()
+
+    c.execute("SELECT MAX(creation_timestamp) FROM teams")
+    row = c.fetchone()
+    latest_timestamp = row[0] if row else None
+
+    conn.close()
+    return latest_timestamp
+
+@cubetry
 def load_all_teams(db_filename=None) -> cg.CubeTeamsStatusList:
     return find_teams_matching(db_filename=db_filename)
+
+
+@cubetry
+def add_team_to_database(team: cg.CubeTeamStatus, db_filename=None) -> bool:
+    return update_database_from_teams_list(cg.CubeTeamsStatusList([team]), db_filename)
 
 def expanded_test_find_teams_matching():
     test_db_filepath = os.path.join(SAVES_DIR, 'test_teams_database.db')

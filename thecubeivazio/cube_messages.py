@@ -20,9 +20,12 @@ class CubeMsgTypes(enum.Enum):
     HEARTBEAT = "HEARTBEAT"
     # sent from a node to another node to acknowledge that the message has been received and handled.
     # can include an info, see the MsgAck class for standard values for `info`
+    # used to acknowledge a received message
     ACK = "ACK"
     WHO_IS = "WHO_IS"
+    # used to send the sender's config to other nodes
     CONFIG = "CONFIG"
+    ALERT = "ALERT"
 
     REQUEST_VISION = "REQUEST_VISION"
     REQUEST_CUBEMASTER_STATUS = "REQUEST_CUBEMASTER_STATUS"
@@ -34,6 +37,8 @@ class CubeMsgTypes(enum.Enum):
     REQUEST_ALL_TEAMS_STATUSES = "REQUEST_ALL_TEAMS_STATUS"
     REQUEST_ALL_TEAMS_STATUS_HASHES = "REQUEST_ALL_TEAMS_STATUS_HASHES"
     REQUEST_ALL_CUBEBOXES_STATUS_HASHES = "REQUEST_ALL_CUBEBOXES_STATUS_HASHES"
+    # sent by the cubemaster to the frontdesk to ask "which teams in the db are newer than this timestamp?"
+    REQUEST_DATABASE_TEAMS = "REQUEST_DATABASE_TEAMS"
 
     REPLY_VERSION = "REPLY_VERSION"
     REPLY_CUBEMASTER_STATUS = "REPLY_CUBEMASTER_STATUS"
@@ -44,6 +49,8 @@ class CubeMsgTypes(enum.Enum):
     REPLY_ALL_TEAMS_STATUSES = "REPLY_ALL_TEAMS_STATUSES"
     REPLY_ALL_TEAMS_STATUS_HASHES = "REPLY_ALL_TEAMS_STATUS_HASHES"
     REPLY_ALL_CUBEBOXES_STATUS_HASHES = "REPLY_ALL_CUBEBOXES_STATUS_HASHES"
+    # sent by the frontdesk to the cubemaster as an answer to a REQUEST_DATABASE_TEAMS
+    REPLY_DATABASE_TEAMS = "REPLY_DATABASE_TEAMS"
 
     ORDER_CUBEBOX_TO_WAIT_FOR_RESET = "ORDER_CUBEBOX_TO_WAIT_FOR_RESET"
     ORDER_CUBEBOX_TO_RESET = "ORDER_CUBEBOX_TO_RESET"
@@ -58,7 +65,7 @@ class CubeMsgTypes(enum.Enum):
     FRONTDESK_NEW_TEAM = "FRONTDESK_NEW_TEAM"
     FRONTDESK_REMOVE_TEAM = "FRONTDESK_REMOVE_TEAM"
 
-    # Command message
+    # Command message : sent from the frontdesk to any node to send a command as text, which is then handled
     COMMAND = "COMMAND"
 
     # unneeded by way of empirical evidence, but hey, i needed to do it for CubeMsgReplies and I guess i can't hurt
@@ -486,6 +493,65 @@ class CubeMsgReplyAllCubeboxesStatusHashes(CubeMessage):
         return json.loads(self.kwargs.get("hashes"))
 
 
+class CubeMsgRequestDatabaseTeams(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk to ask for the teams in the database that are newer than a timestamp."""
+
+    def __init__(self, sender=None, oldest_creation_timestamp=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REQUEST_DATABASE_TEAMS, sender, oldest_creation_timestamp=oldest_creation_timestamp)
+        self.require_ack = True
+
+    @property
+    def oldest_creation_timestamp(self) -> Optional[float]:
+        try:
+            return float(self.kwargs.get("oldest_creation_timestamp"))
+        except ValueError:
+            return None
+
+class CubeMsgReplyDatabaseTeams(CubeMessage):
+    """Sent from the Frontdesk to the CubeMaster in response to a REQUEST_DATABASE_TEAMS message.
+    Since there can be many teams to update, we'll do it team by team.
+    If the frontdesk has no teams newer than the timestamp, the flag no_team will be set to True.
+    """
+
+    def __init__(self, sender=None, team: cube_game.CubeTeamStatus = None, no_team:bool=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.REPLY_DATABASE_TEAMS, sender, no_team=no_team)
+            if team:
+                self.kwargs["team"] = team.to_json()
+        self.require_ack = False
+
+    @property
+    def team(self) -> Optional[cube_game.CubeTeamStatus]:
+        try:
+            json = self.kwargs.get("team")
+            return cube_game.CubeTeamStatus.make_from_json(json)
+        except Exception as e:
+            # CubeLogger.static_error(f"Error parsing TeamStatus from CubeMsgReplyDatabaseTeams: {e}")
+            return None
+
+    @property
+    def no_team(self) -> Optional[bool]:
+        try:
+            value = self.kwargs.get("no_team")
+            # print(f"self.kwargs.get('no_team')='{value}' ({type(value)})")
+            if value == "True" or value == True:
+                return True
+            elif value == "False" or value == False:
+                return False
+            else:
+                raise ValueError(f"Invalid value for no_team : {value}")
+        except Exception as e:
+            # CubeLogger.static_error(f"Error parsing TeamStatus from CubeMsgReplyDatabaseTeams: {e}")
+            return None
+
+
+
+
 # team status request & reply
 
 class CubeMsgRequestTeamStatus(CubeMessage):
@@ -506,20 +572,24 @@ class CubeMsgRequestTeamStatus(CubeMessage):
 class CubeMsgReplyTeamStatus(CubeMessage):
     """Sent from the CubeMaster to the Frontdesk in response to a REQUEST_TEAM_STATUS message."""
 
-    def __init__(self, sender=None, status: cube_game.CubeTeamStatus = None, copy_msg: CubeMessage = None):
+    def __init__(self, sender=None, team_status: cube_game.CubeTeamStatus = None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
             super().__init__(CubeMsgTypes.REPLY_TEAM_STATUS, sender)
-            if status:
-                self.kwargs["cubebox_status"] = status.to_json()
+            if team_status:
+                self.kwargs["team_status"] = team_status.to_json()
         self.require_ack = False
 
     @property
-    def team_status(self) -> cube_game.CubeTeamStatus:
-        json_status = self.kwargs.get("cubebox_status", None)
-        # CubeLogger.static_debug(f"CubeMsgReplyTeamStatus : json_status={json_status}")
-        return cube_game.CubeTeamStatus.make_from_json(json_status)
+    def team_status(self) -> Optional[cube_game.CubeTeamStatus]:
+        try:
+            json_status = self.kwargs.get("team_status", None)
+            # CubeLogger.static_debug(f"CubeMsgReplyTeamStatus : json_status={json_status}")
+            return cube_game.CubeTeamStatus.make_from_json(json_status)
+        except Exception as e:
+            CubeLogger.static_error(f"Error parsing TeamStatus from CubeMsgReplyTeamStatus: {e}")
+            return None
 
 
 class CubeMsgRequestAllTeamsStatusHashes(CubeMessage):
@@ -703,6 +773,20 @@ class CubeMsgCommand(CubeMessage):
     def command_without_target(self) -> str:
         return " ".join(self.words[1:])
 
+
+class CubeMsgAlert(CubeMessage):
+    """Sent from any node to everyone to signal an alert."""
+
+    def __init__(self, sender=None, alert: str = None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.ALERT, sender, alert=alert)
+        self.require_ack = False
+
+    @property
+    def alert(self) -> str:
+        return self.kwargs.get("alert")
 
 # test functions
 
@@ -949,6 +1033,15 @@ def test_all_reply_messages():
     assert msg_reply_from_string.hash == msg_reply.hash, f"{msg_reply_from_string.hash} != {msg_reply.hash}"
     log.success("CubeMsgReplyCubeMasterStatusHash PASSED")
 
+    msg_reply = CubeMsgReplyDatabaseTeams("CubeMaster", team)
+    msg_reply_copy = CubeMsgReplyDatabaseTeams(copy_msg=msg_reply)
+    msg_reply_from_string = CubeMsgReplyDatabaseTeams.make_from_string(msg_reply.to_string())
+    assert team == msg_reply.team, f"{team} != {msg_reply.team}"
+    assert team == msg_reply_copy.team, f"{team} != {msg_reply_copy.team}"
+    assert team == msg_reply_from_string.team, f"{team} != {msg_reply_from_string.team}"
+    log.success("CubeMsgReplyDatabaseTeams PASSED")
+
+
     log.success("test_all_reply_messages PASSED")
 
 
@@ -965,8 +1058,33 @@ def test_config_message():
     print("test_config_message PASSED")
     exit(0)
 
+def test_request_database_teams():
+    team = cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200, creation_timestamp=5)
+    msg = CubeMsgRequestDatabaseTeams("CubeMaster", oldest_creation_timestamp=10)
+    msg_str = msg.to_string()
+    msg2 = CubeMsgRequestDatabaseTeams(copy_msg=msg)
+    assert msg.oldest_creation_timestamp == 10
+    assert msg2.oldest_creation_timestamp == 10
+    assert msg_str == msg2.to_string()
+    reply = CubeMsgReplyDatabaseTeams("CubeFrontDesk", team=team)
+    reply_str = reply.to_string()
+    reply2 = CubeMsgReplyDatabaseTeams(copy_msg=reply)
+    assert reply.team == team
+    assert reply2.team == team
+    assert reply_str == reply2.to_string()
+
+    reply_no_team = CubeMsgReplyDatabaseTeams("CubeFrontDesk", no_team=True)
+    reply_no_team_str = reply_no_team.to_string()
+    reply_no_team2 = CubeMsgReplyDatabaseTeams(copy_msg=reply_no_team)
+    assert reply_no_team.no_team == True, f"{reply_no_team.no_team} != True : {reply_no_team.to_string()}"
+    assert reply_no_team2.no_team == True
+    assert reply_no_team_str == reply_no_team2.to_string()
+
+    print("test_request_database_teams PASSED")
+    exit(0)
 
 if __name__ == "__main__":
+    test_request_database_teams()
     # test_config_message()
     test_all_message_classes_to_and_from_string()
     # test_all_reply_messages()

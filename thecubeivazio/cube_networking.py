@@ -11,6 +11,7 @@ from collections import deque
 from typing import Deque, Tuple, Dict, Optional
 
 from thecubeivazio.cube_messages import CubeMessage
+from thecubeivazio.cube_utils import is_windows
 
 
 class SendReport:
@@ -115,7 +116,8 @@ class CubeNetworking:
     def init_socket(self) -> bool:
         self._udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        if not is_windows():
+            self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         self._udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
         self._udp_socket.bind((self.UDP_LISTEN_IP, self.UDP_PORT))
         return True
@@ -525,7 +527,18 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         net = CubeNetworking(sys.argv[1])
     else:
-        net = CubeNetworking(cubeid.CUBEMASTER_NODENAME)
+        net = CubeNetworking(cubeid.CUBEFRONTDESK_NODENAME)
 
     net.log.info(f"Starting networking test for {net.node_name}")
     net.run()
+
+    # send a message to the CubeMaster
+    msg = cm.CubeMsgWhoIs(sender=net.node_name, node_name_to_find=cubeid.CUBEMASTER_NODENAME)
+    report = net.send_msg_to_cubemaster(msg, require_ack=True, nb_tries=5)
+    if report:
+        net.log.success(f"Message sent to and acked by CubeMaster")
+    else:
+        net.log.error(f"Failed to send message to CubeMaster")
+
+
+

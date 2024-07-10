@@ -15,7 +15,6 @@ import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_database as cubedb
-from thecubeivazio.cubeserver_cubemaster import CubeServerMaster
 
 
 class CubeServerFrontdesk:

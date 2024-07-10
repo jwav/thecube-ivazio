@@ -292,6 +292,7 @@ class CubeHighscoresScreenManager:
         self._is_initialized = False
         self._last_full_update_timestamp = None
         self._last_playing_teams_update_timestamp = None
+        self.must_update_highscores = False
 
         self._thread = threading.Thread(target=self._update_loop, daemon=True)
         self._keep_running = False

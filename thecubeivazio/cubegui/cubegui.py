@@ -10,14 +10,14 @@ from PyQt5.QtCore import QFile, QTextStream, QThread, QMetaObject, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from cubegui_ui import Ui_Form
 
-from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils, cube_rfid, cube_config
+from thecubeivazio import cubeserver_frontdesk as cfd
+from thecubeivazio import cube_rfid
 from thecubeivazio.cube_logger import CubeLogger, CUBEGUI_LOG_FILENAME
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
 from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin
 from thecubeivazio.cubegui.cubegui_tab_admin import CubeGuiTabAdminMixin
 from thecubeivazio.cubegui.cubegui_tab_config import CubeGuiTabConfigMixin
-from thecubeivazio import cube_identification as ci
 
 import sys
 import atexit

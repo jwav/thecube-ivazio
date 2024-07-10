@@ -27,6 +27,10 @@ def is_raspberry_pi() -> bool:
     return False
 
 
+def is_windows() -> bool:
+    return os.name == 'nt'
+
+
 def get_git_branch_version() -> str:
     """
     Get the current git branch and commit hash
@@ -203,7 +207,7 @@ def hhmmss_string_to_seconds(hhmmss: str) -> Optional[int]:
 
 
 # TODO: test
-def seconds_to_hhmmss_string(seconds: Seconds, separators:Union[str,List[str]]="hms",
+def seconds_to_hhmmss_string(seconds: Seconds, separators: Union[str, List[str]] = "hms",
                              hours=True, mins=True, secs=True) -> str:
     """Convert a number of seconds to a string in the format HH:MM:SS using datetime"""
     try:
@@ -247,6 +251,7 @@ def timestamp_to_french_date(timestamp: Union[float, int], weekday=True, day_num
     except Exception as e:
         return ""
 
+
 def timestamp_to_date(timestamp: Union[float, int], separator="/") -> str:
     """Convert a timestamp to a string in a dd/mm/yyyy format"""
     # noinspection PyBroadException
@@ -255,6 +260,7 @@ def timestamp_to_date(timestamp: Union[float, int], separator="/") -> str:
         return date.strftime(f"%d{separator}%m{separator}%Y")
     except Exception as e:
         return "??/??/????"
+
 
 def get_system_hostname() -> str:
     """Get the hostname of the running machine"""
@@ -315,6 +321,7 @@ def this_week_start_timestamp(timestamp: float = None):
     start_date = datetime.datetime.strptime(f"{year}-{week_number}-1", "%Y-%W-%w")
     return start_date.timestamp()
 
+
 def one_week_ago_start_timestamp(timestamp: float = None):
     """Get the timestamp of 7 days ago exactly" """
     if timestamp is None:
@@ -332,6 +339,7 @@ def this_month_start_timestamp(timestamp: float = None):
     start_date = datetime.datetime(date.year, date.month, 1)
     return start_date.timestamp()
 
+
 def this_year_start_timestamp(timestamp: float = None):
     """Get the timestamp of the start of the year of the timestamp"""
     if timestamp is None:
@@ -341,6 +349,7 @@ def this_year_start_timestamp(timestamp: float = None):
     # create a new datetime object with the same year, but at 00:00:00 on the first day of the year
     start_date = datetime.datetime(date.year, 1, 1)
     return start_date.timestamp()
+
 
 def generate_encryption_key(password: str) -> bytes:
     # Derive a key from the password without using a salt
@@ -354,8 +363,10 @@ def generate_encryption_key(password: str) -> bytes:
     key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
     return key
 
+
 def encrypt_string_to_str(string: str, password: str) -> str:
     return encrypt_string_to_bytes(string, password).decode()
+
 
 def encrypt_string_to_bytes(string: str, password: str) -> bytes:
     key = generate_encryption_key(password)
@@ -363,22 +374,25 @@ def encrypt_string_to_bytes(string: str, password: str) -> bytes:
     encrypted_bytes = fernet.encrypt(string.encode())
     return encrypted_bytes
 
+
 def decrypt_string(encrypted_string: str, password: str) -> str:
     key = generate_encryption_key(password)
     fernet = Fernet(key)
     decrypted_string = fernet.decrypt(encrypted_string.encode())
     return decrypted_string.decode()
 
+
 @cubetry
-def encrypt_and_write_to_file(str_to_encrypt:str, filepath:str, password:str) -> bool:
+def encrypt_and_write_to_file(str_to_encrypt: str, filepath: str, password: str) -> bool:
     """Encrypt the string str_to_encrypt using the password and write it to the file at file_path."""
     with open(filepath, 'wb') as f:
         encrypted_data = encrypt_string_to_bytes(str_to_encrypt, password)
         f.write(encrypted_data)
     return True
 
+
 @cubetry
-def read_encrypted_file(filepath:str, password:str) -> str:
+def read_encrypted_file(filepath: str, password: str) -> str:
     """Decrypt the file at file_path using the provided key."""
     with open(filepath, 'rb') as f:
         encrypted_data = f.read()
@@ -386,6 +400,7 @@ def read_encrypted_file(filepath:str, password:str) -> str:
         fernet = Fernet(key)
         decrypted_data = fernet.decrypt(encrypted_data)
         return decrypted_data.decode()
+
 
 def validate_json(json_str):
     try:
@@ -420,7 +435,6 @@ def test_time_conversions():
         ('21', 21)
     ]
 
-
     for hhmmss, expected in test_cases:
         result = hhmmss_string_to_seconds(hhmmss)
         print(f"Input string: {hhmmss}")
@@ -445,21 +459,25 @@ def test_utils():
     print("get_system_hostname():", get_system_hostname())
     print(f"is raspberry pi? {is_raspberry_pi()}")
     print("timestamps_are_in_same_day(time.time(), time.time()):", timestamps_are_in_same_day(time.time(), time.time()))
-    print("timestamps_are_in_same_day(time.time(), time.time() - 86400):", timestamps_are_in_same_day(time.time(), time.time() - 864000))
-    print("timestamps_are_in_same_week(time.time(), time.time()):", timestamps_are_in_same_week(time.time(), time.time()))
-    print("timestamps_are_in_same_week(time.time(), time.time() - 86400):", timestamps_are_in_same_week(time.time(), time.time() - 864000))
-    print("timestamps_are_in_same_month(time.time(), time.time()):", timestamps_are_in_same_month(time.time(), time.time()))
-    print("timestamps_are_in_same_month(time.time(), time.time() - 86400):", timestamps_are_in_same_month(time.time(), time.time() - 864000))
+    print("timestamps_are_in_same_day(time.time(), time.time() - 86400):",
+          timestamps_are_in_same_day(time.time(), time.time() - 864000))
+    print("timestamps_are_in_same_week(time.time(), time.time()):",
+          timestamps_are_in_same_week(time.time(), time.time()))
+    print("timestamps_are_in_same_week(time.time(), time.time() - 86400):",
+          timestamps_are_in_same_week(time.time(), time.time() - 864000))
+    print("timestamps_are_in_same_month(time.time(), time.time()):",
+          timestamps_are_in_same_month(time.time(), time.time()))
+    print("timestamps_are_in_same_month(time.time(), time.time() - 86400):",
+          timestamps_are_in_same_month(time.time(), time.time() - 864000))
     print("today_start_timestamp():", today_start_timestamp())
     print("this_week_start_timestamp():", this_week_start_timestamp())
     print("this_month_start_timestamp():", this_month_start_timestamp())
     print("encrypt_string('test', 'password'):", encrypt_string_to_str('test', 'password'))
-    print("decrypt_string(encrypt_string('test', 'password'), 'password'):", decrypt_string(encrypt_string_to_str('test', 'password'), 'password'))
+    print("decrypt_string(encrypt_string('test', 'password'), 'password'):",
+          decrypt_string(encrypt_string_to_str('test', 'password'), 'password'))
 
 
 if __name__ == "__main__":
     test_time_conversions()
     exit(0)
     test_utils()
-
-
