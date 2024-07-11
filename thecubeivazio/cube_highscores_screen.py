@@ -69,15 +69,15 @@ class CubeBrowserManager:
         )
 
         # Construct the command to launch Chromium in fullscreen mode
+        command = f'sudo -u limiteduser chromium-browser {command_options} {url}'
         if is_raspberry_pi():
-            command = f'{self.DISPLAY_PREFIX} chromium-browser {command_options} {url}'
-        else:
-            command = f'chromium-browser {command_options} {url}'
+            command = f"{self.DISPLAY_PREFIX} {command}"
 
         if self.SILENT_OUTPUT:
             command += ' > /dev/null 2>&1'
 
         # Execute the command in a non-blocking manner using shell=True
+        print(f"Launching Chromium with command: '{command}'")
         self._process = subprocess.Popen(command, shell=True)
 
     def close_chromium(self):

@@ -59,27 +59,34 @@ def get_git_branch_date() -> str:
 class XvfbManager:
     """static class handling the Xvfb virtual display in case we're running without X and some module needs it"""
     xvfb_process = None
+    ENVIRON_DISPLAY = ":1"
 
-    @staticmethod
-    def has_x_server():
+    @classmethod
+    def has_x_server(cls):
         """Check if an X server is running on the machine. Return True if it is, False otherwise."""
         try:
             # Try to run `xdpyinfo` to check for an X server
-            subprocess.run(['xdpyinfo'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            subprocess.run(['xdpyinfo'],
+                           stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL,
+                           check=True)
             print("X server is running.")
             return True
         except subprocess.CalledProcessError:
             print("X server is not running.")
             return False
 
-    @staticmethod
-    def start_xvfb():
+    @classmethod
+    def start_xvfb(cls, force_start=False):
+        if cls.has_x_server() and not force_start:
+            print("X server is already running. Not starting.")
+            return
         # Start Xvfb on display :1 with screen 0
-        xvfb_cmd = ['Xvfb', ':1', '-screen', '0', '1024x768x16']
+        xvfb_cmd = ['Xvfb', cls.ENVIRON_DISPLAY, '-screen', '0', '1024x768x16']
         XvfbManager.xvfb_process = subprocess.Popen(xvfb_cmd)
-        print("Started Xvfb on display :1")
+        print(f"Started Xvfb on display {cls.ENVIRON_DISPLAY}")
         # Set the DISPLAY environment variable to use the virtual display
-        os.environ['DISPLAY'] = ':1'
+        os.environ['DISPLAY'] = cls.ENVIRON_DISPLAY
         # register terminate_xvfb to be called at exit
         atexit.register(XvfbManager.terminate_xvfb)
 
