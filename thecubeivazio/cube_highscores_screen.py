@@ -49,10 +49,12 @@ class CubeBrowserManager:
         self.display = ":0"  # Set the display to :0
 
     def launch_browser(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
+        self.terminate_browser_process()
         self.launch_chromium(url)
 
     def close_browser(self):
-        self.close_chromium()
+        # self.close_chromium()
+        self.terminate_browser_process()
 
     def launch_chromium(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
         # Suppress GTK warnings
@@ -84,7 +86,7 @@ class CubeBrowserManager:
         command = "pkill chromium-browser"
         subprocess.run(command, shell=True)
 
-    def old_close_browser(self):
+    def terminate_browser_process(self):
         if self._process is not None:
             self._process.terminate()
             self._process = None
