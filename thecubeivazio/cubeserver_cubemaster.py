@@ -35,8 +35,8 @@ class CubeServerMaster:
         # set up the networking
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NODENAME,
                                           log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
-        # instanciate the RFID listener
-        self.rfid = cube_rfid.CubeRfidEventListener()
+        # game status instance to keep track of teams and cubeboxes
+        self.game_status = cube_game.CubeGameStatus()
 
         # load the config
         self.config = CubeConfig.get_config()
@@ -44,6 +44,9 @@ class CubeServerMaster:
             self.net.send_msg_to_all(cm.CubeMsgAlert(self.net.node_name, "Invalid config. Exiting."))
             self.log.error("Invalid config. Exiting.")
             exit(1)
+
+        # instanciate the RFID listener
+        self.rfid = cube_rfid.CubeRfidEventListener()
 
         # setup an RGB server
         self.rgb_sender = None
@@ -56,6 +59,7 @@ class CubeServerMaster:
             playing_teams=self.teams,
             cubeboxes=self.cubeboxes,
         )
+        # flag set to true in _message_handling_loop when the local database is up to date
         self.flag_database_up_to_date = False
 
         # params for threading
@@ -74,13 +78,14 @@ class CubeServerMaster:
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
 
-        self.game_status = cube_game.CubeGameStatus()
+
 
         # if the play database does not exist, create it
         if not cubedb.does_database_exist():
             cubedb.create_database()
             self.log.info("Created the local database")
 
+        # on startup, send the game status to the frontdesk
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
 
