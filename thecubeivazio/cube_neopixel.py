@@ -25,6 +25,7 @@ else:
         def __init__(self):
             self.instance = neopixel.NeoPixel(board.D10, 12)
             self.set_color(self.COLOR_UNINITIALIZED)
+
             import atexit
             atexit.register(self.__del__)
 
