@@ -754,7 +754,7 @@ if __name__ == "__main__":
     import sys
 
     # sys.argv.append("--test_rgb")
-    sys.argv.append("--test-highscores")
+    # sys.argv.append("--test-highscores")
     if "--test_rgb" in sys.argv:
         master = CubeServerMaster()
         master.test_rgb()

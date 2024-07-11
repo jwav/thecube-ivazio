@@ -38,6 +38,9 @@
 - [ ] rgb_test command doesnt work
 - [ ] !! implement a way to stop and resume time for a team or everyone
 - [ ] fix the highscores page background : we can't see the background image
+- [ ] disable any kind of keyboard and mouse input that isnt the rfid reader, to avoid malicious inputs
+
+
 # CubeRGBMatrix
 
 
