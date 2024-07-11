@@ -36,7 +36,7 @@ class CubeServerMaster:
         self.net = cubenet.CubeNetworking(node_name=cubeid.CUBEMASTER_NODENAME,
                                           log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
         # instanciate the RFID listener
-        self.rfid = cube_rfid.CubeRfidKeyboardListener()
+        self.rfid = cube_rfid.CubeRfidEventListener()
 
         # load the config
         self.config = CubeConfig.get_config()
