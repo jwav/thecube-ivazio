@@ -111,6 +111,8 @@ class CubeServerMaster:
         self.rgb_sender.stop_listening()
 
     def _highscores_loop(self):
+        next_db_request_time = time.time()
+        db_request_period_sec = 10
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
             # check if the highscores playing teams need to be refreshed
@@ -121,15 +123,17 @@ class CubeServerMaster:
             # check if the local teams database matches the frontdesk's
             # to avoid having to dump the whole database every time,
             # we only ask "which teams are newer than our newest recorded creation timestamp?"
-            # TODO: get the latest creation timestamp from our local database
-            lct = cubedb.get_latest_creation_timestamp()
-            # ask the frontdesk. The answer will be handled in _message_handling_loop,
-            #  where a special flag will be set according to the answer
-            request_msg = cm.CubeMsgRequestDatabaseTeams(self.net.node_name, lct)
-            self.net.send_msg_to_frontdesk(request_msg)
-            # if we we're not up to date yet, just keep iterating.
-            if not self.flag_database_up_to_date:
-                continue
+            if time.time() > next_db_request_time:
+                # get the latest creation timestamp from our local database
+                lct = cubedb.get_latest_creation_timestamp()
+                # ask the frontdesk. The answer will be handled in _message_handling_loop,
+                #  where a special flag will be set according to the answer
+                request_msg = cm.CubeMsgRequestDatabaseTeams(self.net.node_name, lct)
+                self.net.send_msg_to_frontdesk(request_msg)
+                next_db_request_time = time.time() + db_request_period_sec
+                # if we we're not up to date yet, do nothing
+                if not self.flag_database_up_to_date:
+                    pass
             # if we're up to date, then refresh the highscores screen if needed
             if not self.highscores_screen.must_update_highscores:
                 continue
@@ -260,6 +264,7 @@ class CubeServerMaster:
     def cubeboxes(self, value: cube_game.CubeboxesStatusList):
         self.game_status.cubeboxes = value
 
+    @cubetry
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
@@ -297,8 +302,6 @@ class CubeServerMaster:
                     self._handle_request_all_teams_statuses_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_TEAM_STATUS:
                     self._handle_request_team_status_message(message)
-                # elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEMASTER_CUBEBOX_STATUS:
-                #     self._handle_request_cubebox_status_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_TEAMS_STATUS_HASHES:
                     self._handle_request_all_teams_status_hashes_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_ALL_CUBEBOXES_STATUS_HASHES:
