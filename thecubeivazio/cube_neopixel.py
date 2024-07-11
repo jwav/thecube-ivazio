@@ -7,6 +7,7 @@ if not is_raspberry_pi():
         COLOR_WAITING_FOR_RESET = (255,0,0)
         COLOR_READY_TO_PLAY = (0,255,0)
         COLOR_CURRENTLY_PLAYING = (0,0,255)
+        COLOR_UNINITIALIZED = (255,0,255)
         def __init__(self):
             pass
         def set_color(self, color: tuple[int,int,int]):
@@ -20,8 +21,10 @@ else:
         COLOR_WAITING_FOR_RESET = (25,0,0)
         COLOR_READY_TO_PLAY = (0,25,0)
         COLOR_CURRENTLY_PLAYING = (0,0,25)
+        COLOR_UNINITIALIZED = (25,0,25)
         def __init__(self):
             self.instance = neopixel.NeoPixel(board.D10, 12)
+            self.set_color(self.COLOR_UNINITIALIZED)
             import atexit
             atexit.register(self.__del__)
 

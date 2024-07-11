@@ -83,18 +83,18 @@ class XvfbManager:
             return
         # Start Xvfb on display :1 with screen 0
         xvfb_cmd = ['Xvfb', cls.ENVIRON_DISPLAY, '-screen', '0', '1024x768x16']
-        XvfbManager.xvfb_process = subprocess.Popen(xvfb_cmd)
+        cls.xvfb_process = subprocess.Popen(xvfb_cmd)
         print(f"Started Xvfb on display {cls.ENVIRON_DISPLAY}")
         # Set the DISPLAY environment variable to use the virtual display
         os.environ['DISPLAY'] = cls.ENVIRON_DISPLAY
         # register terminate_xvfb to be called at exit
-        atexit.register(XvfbManager.terminate_xvfb)
+        atexit.register(cls.terminate_xvfb)
 
-    @staticmethod
-    def terminate_xvfb():
+    @classmethod
+    def terminate_xvfb(cls):
         try:
             # Terminate the Xvfb process
-            XvfbManager.xvfb_process.terminate()
+            cls.xvfb_process.terminate()
             print("Terminated Xvfb")
         except AttributeError:
             print("Xvfb process not found")
