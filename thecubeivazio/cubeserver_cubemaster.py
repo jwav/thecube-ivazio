@@ -47,6 +47,7 @@ class CubeServerMaster:
 
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidEventListener()
+        # we're not using the rfid listener for the CubeMaster
         self.rfid.disable()
 
         # setup an RGB server
@@ -250,7 +251,7 @@ class CubeServerMaster:
         # send the CubeRgbMatrixContentDict to the server run by the RGBMatrix Daemon
         self.log.info(f"Sending RGBMatrixContentDict to RGBMatrix Daemon : {rmcd.to_string()}")
         rmcd_reconstructed = crs.CubeRgbMatrixContentDict.make_from_string(rmcd.to_string())
-        self.log.info(f"Reconstructed RGBMatrixContentDict : {rmcd_reconstructed.to_string()}")
+        # self.log.info(f"Reconstructed RGBMatrixContentDict : {rmcd_reconstructed.to_string()}")
         if self.rgb_sender.send_rgb_matrix_contents_dict(rmcd):
             self.log.success("Sent RGBMatrixContentDict to RGBMatrix Daemon")
             self._last_teams_status_sent_to_rgb_daemon_hash = self.teams.hash
@@ -726,10 +727,12 @@ class CubeServerMaster:
 
 
 def main(use_prompt=False):
+    print("Running CubeMaster main()")
     import atexit
 
     master = CubeServerMaster()
     atexit.register(master.stop)
+
 
     try:
         master.run()

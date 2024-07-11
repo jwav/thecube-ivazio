@@ -499,6 +499,8 @@ class CompletedCubeboxStatusList(CubeboxesStatusList):
 class CubeTeamStatus:
     """Represents a team playing a CubeGame"""
 
+    CUSTOM_NAME_MAX_LENGTH = 30
+
     def __init__(self, name: str, rfid_uid: str, max_time_sec: Seconds, creation_timestamp: Timestamp = None,
                  custom_name: str = "",
                  start_timestamp: Timestamp = None, current_cubebox_id: int = None,
@@ -509,7 +511,9 @@ class CubeTeamStatus:
         # the team's code name (a city name)
         self.name = name
         # the custom names chosen by the customers
-        self.custom_name = custom_name
+        if not isinstance(custom_name, str):
+            custom_name = ""
+        self.custom_name = custom_name[:self.CUSTOM_NAME_MAX_LENGTH]
         # the RFID UID of the team
         self.rfid_uid = rfid_uid
         # the maximum time allowed to play the CubeGame

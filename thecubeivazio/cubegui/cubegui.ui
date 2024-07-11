@@ -15,7 +15,13 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../../../../../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
+    <normaloff>../../../home/vee/.designer/resources/icon_thecube_32x32.png</normaloff>../../../home/vee/.designer/resources/icon_thecube_32x32.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">* {
+    font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Emoji&quot;;
+    font-size: 10pt;
+}</string>
   </property>
   <property name="iconSize">
    <size>
@@ -44,7 +50,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -87,8 +93,8 @@
            <widget class="QLabel" name="lblNewteamStatusText_2">
             <property name="font">
              <font>
-              <family>Noto Serif</family>
-              <pointsize>16</pointsize>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -138,6 +144,9 @@
             <property name="toolTip">
              <string>Ce nom personnalisé sera affiché sur la feuille de score ainsi que le leaderboard des meilleurs scores</string>
             </property>
+            <property name="maxLength">
+             <number>50</number>
+            </property>
            </widget>
           </item>
           <item row="2" column="3">
@@ -150,7 +159,8 @@
             </property>
             <property name="font">
              <font>
-              <family>DejaVu Sans Mono</family>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -319,7 +329,7 @@ QPushButton:focus {
             </property>
             <property name="icon">
              <iconset theme="edit-clear">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+              <normaloff>../../../home/vee/.designer/backup</normaloff>../../../home/vee/.designer/backup</iconset>
             </property>
            </widget>
           </item>
@@ -386,11 +396,7 @@ QPushButton:focus {
           <item>
            <widget class="QPushButton" name="btnNewteamNewTeam">
             <property name="text">
-             <string>Créer une nouvelle équipe</string>
-            </property>
-            <property name="icon">
-             <iconset theme="user">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>✨ Créer une nouvelle équipe</string>
             </property>
            </widget>
           </item>
@@ -534,8 +540,8 @@ QPushButton:focus {
            <widget class="QLabel" name="lblNewteamStatusText_6">
             <property name="font">
              <font>
-              <family>Noto Serif</family>
-              <pointsize>16</pointsize>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -621,7 +627,8 @@ QPushButton:focus {
             </property>
             <property name="font">
              <font>
-              <family>DejaVu Sans Mono</family>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -653,7 +660,8 @@ QPushButton:focus {
             </property>
             <property name="font">
              <font>
-              <family>DejaVu Sans Mono</family>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -685,11 +693,7 @@ QPushButton:focus {
           <item row="4" column="1" colspan="2">
            <widget class="QPushButton" name="btnTeamsSearch">
             <property name="text">
-             <string>Rechercher équipes</string>
-            </property>
-            <property name="icon">
-             <iconset theme="search">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>🔍 Rechercher équipes</string>
             </property>
            </widget>
           </item>
@@ -830,11 +834,7 @@ QPushButton:focus {
           <item row="1" column="4">
            <widget class="QPushButton" name="btnTeamsAddTrophy">
             <property name="text">
-             <string>Ajouter tophée</string>
-            </property>
-            <property name="icon">
-             <iconset theme="add">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>➕ Ajouter tophée</string>
             </property>
            </widget>
           </item>
@@ -885,22 +885,14 @@ QPushButton:focus {
           <item row="1" column="5">
            <widget class="QPushButton" name="btnTeamsRemoveSelectedTrophy">
             <property name="text">
-             <string>Supprimer le trophée sélectrionné</string>
-            </property>
-            <property name="icon">
-             <iconset theme="delete">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>🗑 Supprimer le trophée sélectrionné</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
            <widget class="QPushButton" name="btnTeamsDeleteTeam">
             <property name="text">
-             <string>Supprimer cette équipe</string>
-            </property>
-            <property name="icon">
-             <iconset theme="delete">
-              <normaloff>../../../../../../home/vee/.designer/backup</normaloff>../../../../../../home/vee/.designer/backup</iconset>
+             <string>💀 Supprimer cette équipe</string>
             </property>
            </widget>
           </item>
@@ -989,11 +981,7 @@ QPushButton:focus {
           <item>
            <widget class="QPushButton" name="btnTeamsPrintScoresheet">
             <property name="text">
-             <string>Imprimer la feuille de score</string>
-            </property>
-            <property name="icon">
-             <iconset theme="print">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>🖨 Imprimer la feuille de score</string>
             </property>
            </widget>
           </item>
@@ -1071,8 +1059,8 @@ QPushButton:focus {
            <widget class="QLabel" name="lblNewteamStatusText_5">
             <property name="font">
              <font>
-              <family>Noto Serif</family>
-              <pointsize>16</pointsize>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1298,11 +1286,7 @@ QPushButton:focus {
           <item row="0" column="1">
            <widget class="QPushButton" name="btnAdminUpdateServersInfo">
             <property name="text">
-             <string>Mise à jour infos serveurs</string>
-            </property>
-            <property name="icon">
-             <iconset theme="update">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>🗘 Mise à jour infos serveurs</string>
             </property>
            </widget>
           </item>
@@ -1333,7 +1317,8 @@ QPushButton:focus {
             </property>
             <property name="font">
              <font>
-              <family>DejaVu Sans Mono</family>
+              <family>Segoe UI</family>
+              <pointsize>10</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1368,22 +1353,14 @@ QPushButton:focus {
           <item row="0" column="2">
            <widget class="QPushButton" name="btnAdminRemoveRfidResetter">
             <property name="text">
-             <string>Retirer ce RFID de la liste des resetters</string>
-            </property>
-            <property name="icon">
-             <iconset theme="remove">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>🗑  Retirer ce RFID de la liste des resetters</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="btnAdminAddRfidResetter">
             <property name="text">
-             <string>Ajouter ce RFID comme resetter</string>
-            </property>
-            <property name="icon">
-             <iconset theme="add">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>➕  Ajouter ce RFID comme resetter</string>
             </property>
            </widget>
           </item>
@@ -1393,22 +1370,14 @@ QPushButton:focus {
           <item row="1" column="1">
            <widget class="QPushButton" name="btnAdminOrderServerReset">
             <property name="text">
-             <string>Ordonner reset serveur</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/images/images/icon_zero.png</normaloff>:/images/images/icon_zero.png</iconset>
+             <string>🅾 Ordonner reset serveur</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
            <widget class="QPushButton" name="btnAdminOrderServerReboot">
             <property name="text">
-             <string>Redémarrer serveur</string>
-            </property>
-            <property name="icon">
-             <iconset theme="reload">
-              <normaloff>../../../../../../../../home/vee/.designer/backup</normaloff>../../../../../../../../home/vee/.designer/backup</iconset>
+             <string>↻ Redémarrer serveur</string>
             </property>
            </widget>
           </item>
@@ -1445,7 +1414,7 @@ QPushButton:focus {
           <item>
            <widget class="QPushButton" name="btnAdminSendCommand">
             <property name="text">
-             <string>Envoyer</string>
+             <string>➤ Envoyer</string>
             </property>
            </widget>
           </item>
@@ -1501,8 +1470,8 @@ QPushButton:focus {
          <widget class="QLabel" name="lblNewteamStatusText_7">
           <property name="font">
            <font>
-            <family>Noto Serif</family>
-            <pointsize>16</pointsize>
+            <family>Segoe UI</family>
+            <pointsize>10</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -1549,7 +1518,7 @@ QPushButton:focus {
           <item row="0" column="3">
            <widget class="QPushButton" name="btnConfigLoad">
             <property name="text">
-             <string>&amp;Charger configuration</string>
+             <string>🔓 &amp;Charger configuration</string>
             </property>
            </widget>
           </item>
@@ -1615,7 +1584,8 @@ QPushButton:focus {
          <widget class="QPlainTextEdit" name="plainTextConfigContent">
           <property name="font">
            <font>
-            <family>DejaVu Sans Mono</family>
+            <family>Segoe UI</family>
+            <pointsize>10</pointsize>
            </font>
           </property>
          </widget>

@@ -31,6 +31,8 @@ class CubeGuiTabNewTeamMixin:
         self.ui.comboNewteamTeamName.clear()
         self.ui.comboNewteamTeamName.addItems(team_names)
 
+        self.ui.lineTeamsCustomName.setMaxLength(cube_game.CubeTeamStatus.CUSTOM_NAME_MAX_LENGTH)
+
         # clear the RFID line edit
         self.ui.lineNewteamRfid.clear()
         # set the RFID status to empty
@@ -123,4 +125,14 @@ class CubeGuiTabNewTeamMixin:
 
 if __name__ == "__main__":
     from cubegui import CubeGuiForm
-    CubeGuiForm.main()
+    import atexit
+    app = QApplication(sys.argv)
+    window = CubeGuiForm()
+    atexit.register(window.close)
+    window.show()
+
+    window.ui.tabWidget.setCurrentIndex(0)
+    window.ui.lineNewteamTeamCustomName.setText("Custom Name")
+    window.ui.lineNewteamRfid.setText("1234567890")
+
+    sys.exit(app.exec_())

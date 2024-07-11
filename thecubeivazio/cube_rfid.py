@@ -326,6 +326,22 @@ if is_raspberry_pi():
                 return None
             return CubeRfidEventListener.ECODES_TO_STR_DIGIT_DICT[event.code]
 
+elif not is_raspberry_pi():
+    # mock class of CubeRfidEventListener for non-raspberry pi systems
+    class CubeRfidEventListener(CubeRfidListenerBase):
+        def __init__(self):
+            super().__init__()
+            self.log = CubeLogger("Mock RFID Event Listener")
+            self._is_setup = True
+
+        def setup(self):
+            return True
+
+        def run(self):
+            pass
+
+        def stop(self):
+            pass
 
 class CubeRfidKeyboardListener(CubeRfidListenerBase):
     """Reacts to RFID characters entered as if by a keyboard and stores the entered lines"""

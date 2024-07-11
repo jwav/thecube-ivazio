@@ -33,12 +33,14 @@ function refreshSection(visibleId, hiddenId, url) {
     hiddenIframe.onerror = () => {
         console.error(`Error loading hidden iframe for ${visibleId}.`);
     };
+    //console.log(`Section ${visibleId} refreshed`);
 }
 
 function refreshHighscores() {
     refreshSection('highscores_id_1', 'hidden_highscores_id_1', 'highscores_subtable_1.html');
     refreshSection('highscores_id_2', 'hidden_highscores_id_2', 'highscores_subtable_2.html');
     refreshSection('highscores_id_3', 'hidden_highscores_id_3', 'highscores_subtable_3.html');
+    //console.log('Highscores refreshed');
 }
 
 document.addEventListener("DOMContentLoaded", function() {

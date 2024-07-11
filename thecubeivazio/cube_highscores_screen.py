@@ -16,8 +16,7 @@ import random
 from thecubeivazio.cube_utils import is_raspberry_pi
 
 NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
-# TODO: implement
-NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE = 10
+NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE = cid.NB_CUBEBOXES
 
 HIGHSCORES_MAIN_FILENAME = "highscores_main.html"
 HIGHSCORES_SUBTABLE_ALLTIME_FILENAME = "highscores_subtable_1.html"
@@ -70,9 +69,11 @@ class CubeBrowserManager:
         )
 
         # Construct the command to launch Chromium in fullscreen mode
-        command = f'sudo -u limiteduser chromium-browser {command_options} {url}'
+
         if is_raspberry_pi():
-            command = f"{self.DISPLAY_PREFIX} {command}"
+            command = f"{self.DISPLAY_PREFIX} sudo -u limiteduser chromium-browser {command_options} {url}"
+        else:
+            command = f"chromium-browser {command_options} {url}"
 
         if self.SILENT_OUTPUT:
             command += ' > /dev/null 2>&1'
@@ -141,27 +142,28 @@ class CubeHighscoresPlayingTeamsSubtable:
             cubebox_headers += f'<th class="{classname}">{text}</th>'
         return cubebox_headers
 
-    def generate_teams_rows(self) -> str:
+    @cubetry
+    def generate_teams_rows(self, display_empty_slots=True) -> str:
         team_rows = ""
         for i, team in enumerate(self.teams):
             assert isinstance(team.completed_cubeboxes,
                               cg.CubeboxesStatusList), f"team.completed_cubeboxes is not a CubeboxesStatusList: {team.completed_cubeboxes}"
-            cubeboxes_data = ""
+            cubeboxes_cells = ""
             for cubebox in self.cubeboxes:
                 completed_cubebox = team.completed_cubeboxes.get_cubebox_by_cube_id(cubebox.cube_id)
                 cubebox_score = None if not completed_cubebox else completed_cubebox.calculate_box_score()
                 # if the team is playing the cubebox, display a special icon in that cell
                 if team.current_cubebox_id == cubebox.cube_id:
-                    cubeboxes_data += textwrap.dedent("""
+                    cubeboxes_cells += textwrap.dedent("""
                         <td class='current-cubebox'>
                         <img src="icon_playing.png" alt="X"/>
                         </td>""")
                     continue
                 elif not team.has_completed_cube(cubebox.cube_id) or cubebox_score is None:
-                    cubeboxes_data += "<td></td>"
+                    cubeboxes_cells += "<td></td>"
                     continue
                 cubebox_timestr = self.format_cubebox_completion_time(completed_cubebox.completion_time_sec)
-                cubeboxes_data += textwrap.dedent(f"""
+                cubeboxes_cells += textwrap.dedent(f"""
                     <td>
                         <span class="cubepoints">{cubebox_score} pts</span><br/>
                         <span class="datetime">{cubebox_timestr}</span>
@@ -174,15 +176,32 @@ class CubeHighscoresPlayingTeamsSubtable:
                     <td class="bold-white">{i + 1}.</td>
                     <td class="bold-white">
                         <span>{team.custom_name}</span><br>
-                        <!--<span class="datetime">{self.format_datetime(team.creation_timestamp)}</span>-->
+                        <!--<span class="datetime">({team.name})</span>!-->
                     </td>
                     <td class="bold-white
                     ">{team.calculate_team_score()}</td>
                     <td class="bold-white
                     ">{len(team.completed_cubeboxes)}</td>
-                    {cubeboxes_data}
+                    {cubeboxes_cells}
                 </tr>
                 """)
+
+        if display_empty_slots:
+            nb_slots = NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE
+            for j in range(len(self.teams), nb_slots):
+                # empty cells
+                cubeboxes_cells = "".join("<td></td>" for _ in self.cubeboxes)
+                team_rows += textwrap.dedent(f"""
+                    <tr>
+                        <td class="bold-white">{j + 1}.</td>
+                        <td class="bold-white">
+                    <span></span><br>
+                </td>
+                <td class="bold-white "></td>
+                <td class="bold-white "></td>
+                {cubeboxes_cells}
+            </tr>
+            """)
         return team_rows
 
     @cubetry
@@ -311,27 +330,14 @@ class CubeHighscoresScreenManager:
         self._last_playing_teams_update_timestamp = None
         self.must_update_highscores = False
 
-        self._thread = threading.Thread(target=self._update_loop, daemon=True)
-        self._keep_running = False
-
         self.http_server = CubeHttpServer(HIGHSCORES_DIR)
 
     def run(self):
-        self._keep_running = True
-        self._thread.start()
+        """Runs the HTTP server"""
         self.http_server.run()
 
     def stop(self):
         self.http_server.stop()
-        self._keep_running = False
-        self._thread.join()
-
-    def _update_loop(self):
-        while self._keep_running:
-            #TODO: do something here. not just periodic updates,
-            # but actual checks on the game status.
-            # actually no, updates shall be triggered by the cubemaster
-            time.sleep(LOOP_PERIOD_SEC)
 
     @cubetry
     def is_time_for_full_update(self) -> bool:
