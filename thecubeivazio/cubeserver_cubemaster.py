@@ -117,6 +117,7 @@ class CubeServerMaster:
     def _highscores_loop(self):
         self.highscores_screen.update_highscores_html_files()
         self.highscores_screen.update_playing_teams_html_file()
+        self.highscores_screen.run()
         self.browser.launch_browser()
         next_db_request_time = time.time()
         db_request_period_sec = 10
