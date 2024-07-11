@@ -121,6 +121,7 @@ class CubeServerMaster:
         self.browser.launch_browser()
         next_db_request_time = time.time()
         db_request_period_sec = 10
+
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
             # check if the highscores playing teams need to be refreshed
