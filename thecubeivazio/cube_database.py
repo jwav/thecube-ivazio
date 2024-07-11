@@ -13,6 +13,11 @@ from thecubeivazio.cube_logger import CubeLogger
 DEFAULT_DATABASE_FILEPATH = TEAMS_SQLITE_DATABASE_FILEPATH
 
 @cubetry
+def does_database_exist(db_filename=None) -> bool:
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
+    return os.path.exists(db_filename)
+
+@cubetry
 def create_database(db_filename=None) -> bool:
     db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
 

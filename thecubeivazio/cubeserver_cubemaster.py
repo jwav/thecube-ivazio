@@ -76,6 +76,11 @@ class CubeServerMaster:
 
         self.game_status = cube_game.CubeGameStatus()
 
+        # if the play database does not exist, create it
+        if not cubedb.does_database_exist():
+            cubedb.create_database()
+            self.log.info("Created the local database")
+
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
 
