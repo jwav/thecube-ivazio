@@ -28,12 +28,16 @@ class CubeServerCubebox:
         self.net = cubenet.CubeNetworking(node_name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.net.ACK_NB_TRIES = 10
 
+        # handles the wireless button presses
+        self.button = cube_button.CubeButton()
+        # handles sound playing
+        self.buzzer = cube_sounds.CubeSoundPlayer()
+        # the neopixel ring light for the rfid reader
+        self.neopixel = cube_neopixel.CubeNeopixel()
+
+        # set up the RFID listener. It's a bit long, so there's a dedicated method
         self.rfid = None
         self._rfid_setup_loop()
-
-        self.button = cube_button.CubeButton()
-        self.buzzer = cube_sounds.CubeSoundPlayer()
-        self.neopixel = cube_neopixel.CubeNeopixel()
 
         # the last valid RFID and acknowledged line read
         self._status = cube_game.CubeboxStatus(cube_id=self.cubebox_index)
