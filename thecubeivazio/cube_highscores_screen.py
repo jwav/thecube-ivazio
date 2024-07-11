@@ -57,22 +57,23 @@ class CubeBrowserManager:
         self.terminate_browser_process()
 
     def launch_chromium(self, url: str = HTTP_HIGHSCORES_MAIN_URL):
+        # Common command options
+        command_options = (
+            '--kiosk '  # Fullscreen mode
+            '--noerrdialogs '  # Suppress error dialogs
+            '--disable-infobars '  # Disable info bars
+            '--incognito '  # Incognito mode
+            '--force-device-scale-factor=0.8 '  # Set zoom
+        )
+
         # Construct the command to launch Chromium in fullscreen mode
-        command = [
-            'chromium-browser',  # or 'chromium' depending on your system
-            '--kiosk',  # Fullscreen mode
-            '--noerrdialogs',  # Suppress error dialogs
-            '--disable-infobars',  # Disable info bars
-            '--incognito',  # Incognito mode
-            '--force-device-scale-factor=0.8',  # set zoom
-            url  # The URL to open
-        ]
-
         if is_raspberry_pi():
-            command = [self.display_prefix] + command
+            command = f'{self.display_prefix} chromium-browser {command_options} {url}'
+        else:
+            command = f'chromium-browser {command_options} {url}'
 
-        # Execute the command in a non-blocking manner with the DISPLAY environment variable
-        self._process = subprocess.Popen(command)
+        # Execute the command in a non-blocking manner using shell=True
+        self._process = subprocess.Popen(command, shell=True)
 
     def close_chromium(self):
         command = "pkill chromium-browser"
