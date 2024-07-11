@@ -42,6 +42,8 @@ else:
 if __name__ == "__main__":
     #test colors and turning off
     cube = CubeNeopixel()
+    cube.set_color(CubeNeopixel.COLOR_ERROR)
+    time.sleep(1)
     cube.set_color(CubeNeopixel.COLOR_WAITING_FOR_RESET)
     time.sleep(1)
     cube.set_color(CubeNeopixel.COLOR_READY_TO_PLAY)

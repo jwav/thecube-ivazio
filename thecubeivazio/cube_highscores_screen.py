@@ -48,8 +48,9 @@ class CubeBrowserManager:
     SILENT_OUTPUT = True
 
     def __init__(self):
+        import atexit
         self._process = None
-        # when running on raspberry pi, prefix the launch command with that
+        atexit.register(self.close_browser)
 
     def launch_browser(self, url: str = HTTP_HIGHSCORES_MAIN_URL):
         self.terminate_browser_process()
@@ -463,8 +464,6 @@ def test_run(launch_browser=False):
     if launch_browser:
         browser = CubeBrowserManager()
         browser.launch_chromium()
-        import atexit
-        atexit.register(browser.close_browser)
 
     try:
         print("beginning loop")

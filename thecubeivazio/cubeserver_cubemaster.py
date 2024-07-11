@@ -59,6 +59,9 @@ class CubeServerMaster:
             playing_teams=self.teams,
             cubeboxes=self.cubeboxes,
         )
+        # the web browser used to display the highscores screen
+        self.browser = chs.CubeBrowserManager()
+
         # flag set to true in _message_handling_loop when the local database is up to date
         self.flag_database_up_to_date = False
 
@@ -111,6 +114,7 @@ class CubeServerMaster:
         self.rgb_sender.stop_listening()
 
     def _highscores_loop(self):
+        self.browser.launch_browser()
         next_db_request_time = time.time()
         db_request_period_sec = 10
         while self._keep_running:
