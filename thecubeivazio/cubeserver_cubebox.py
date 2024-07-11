@@ -285,15 +285,17 @@ class CubeServerCubebox:
             self.log.info("Trying to set up RFID as a serial listener...")
             if self.rfid.is_setup():
                 self.log.success("RFID set up as a serial listener")
-                return True
+                break
             self.log.warning("Failed to set up RFID as a serial listener. Trying event listener...")
             self.log.info("Trying to set up RFID as an event listener...")
             self.rfid = cube_rfid.CubeRfidEventListener(show_debug=True)
             if self.rfid.is_setup():
                 self.log.success("RFID set up as an event listener")
-                return True
+                break
             self.log.error("Failed to set up RFID listener. Trying again in 3 seconds...")
             time.sleep(3)
+        self.set_status_state(self._status.get_state())
+        return True
 
     def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine) -> bool:
         self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
