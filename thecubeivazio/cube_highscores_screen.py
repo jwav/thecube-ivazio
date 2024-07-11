@@ -44,10 +44,12 @@ import psutil
 from thecubeivazio.cube_http import CubeHttpServer
 
 class CubeBrowserManager:
+    DISPLAY_PREFIX = "DISPLAY=:0"
+    SILENT_OUTPUT = True
+
     def __init__(self):
         self._process = None
         # when running on raspberry pi, prefix the launch command with that
-        self.display_prefix = "DISPLAY=:0"
 
     def launch_browser(self, url: str = HTTP_HIGHSCORES_MAIN_URL):
         self.terminate_browser_process()
@@ -68,9 +70,12 @@ class CubeBrowserManager:
 
         # Construct the command to launch Chromium in fullscreen mode
         if is_raspberry_pi():
-            command = f'{self.display_prefix} chromium-browser {command_options} {url}'
+            command = f'{self.DISPLAY_PREFIX} chromium-browser {command_options} {url}'
         else:
             command = f'chromium-browser {command_options} {url}'
+
+        if self.SILENT_OUTPUT:
+            command += ' > /dev/null 2>&1'
 
         # Execute the command in a non-blocking manner using shell=True
         self._process = subprocess.Popen(command, shell=True)
