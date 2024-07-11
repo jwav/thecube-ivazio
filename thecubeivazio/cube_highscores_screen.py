@@ -13,6 +13,8 @@ from thecubeivazio import cube_database as cdb
 from thecubeivazio import cubeserver_frontdesk as cfd
 import random
 
+from thecubeivazio.cube_utils import is_raspberry_pi
+
 NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
 # TODO: implement
 NB_TEAMS_IN_PLAYING_TEAMS_SUBTABLE = 10
@@ -44,9 +46,13 @@ from thecubeivazio.cube_http import CubeHttpServer
 class CubeBrowserManager:
     def __init__(self):
         self._process = None
+        self.display = ":0"  # Set the display to :0
 
     def launch_browser(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
         self.launch_chromium(url)
+
+    def close_browser(self):
+        self.close_chromium()
 
     def launch_chromium(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
         # Suppress GTK warnings
@@ -67,9 +73,18 @@ class CubeBrowserManager:
         ]
 
         # Execute the command in a non-blocking manner
-        self._process = subprocess.Popen(command)
 
-    def close_browser(self):
+        if is_raspberry_pi():
+            self._process = subprocess.Popen(command, env={"DISPLAY": self.display})
+        else:
+            self._process = subprocess.Popen(command)
+
+
+    def close_chromium(self):
+        command = "pkill chromium-browser"
+        subprocess.run(command, shell=True)
+
+    def old_close_browser(self):
         if self._process is not None:
             self._process.terminate()
             self._process = None

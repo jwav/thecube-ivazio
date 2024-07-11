@@ -52,7 +52,10 @@ class CubeServerMaster:
         self.sound_player = CubeSoundPlayer()
 
         # used to manage the highscores screen (display, update, etc.)
-        self.highscores_screen = chs.CubeHighscoresScreenManager()
+        self.highscores_screen = chs.CubeHighscoresScreenManager(
+            playing_teams=self.teams,
+            cubeboxes=self.cubeboxes,
+        )
         self.flag_database_up_to_date = False
 
         # params for threading
@@ -699,61 +702,11 @@ class CubeServerMaster:
             master.log.error(f"TestRGB: Exception: {e}")
 
 
-class CubeServerMasterWithPrompt(CubeServerMaster):
-    def __init__(self):
-        super().__init__()
-
-    @staticmethod
-    def print_help():
-        print("Commands:")
-        print("q, quit : stop the CubeMaster and exit the program")
-        print("h, help : display this help")
-        print("t, teams : display the list of teams")
-        print("cb, cubeboxes : display the list of cubeboxes")
-        print("ni, netinfo : display the network nodes info")
-        print("wi, whois : send a WhoIs message to all nodes")
-
-    def stop(self):
-        super().stop()
-
-    def run(self):
-        super().run()
-        try:
-            self.prompt_loop()
-        except KeyboardInterrupt:
-            print("KeyboardInterrupt. Stopping the CubeMaster")
-            self.stop()
-
-    def prompt_loop(self):
-        while True:
-            cmd = input("CubeMaster Command > ")
-            if not cmd:
-                continue
-            elif cmd in ["q", "quit"]:
-                self.stop()
-                break
-            elif cmd in ["h", "help"]:
-                self.print_help()
-            elif cmd in ["t", "teams"]:
-                print(self.teams.to_string())
-            elif cmd in ["cb", "cubeboxes"]:
-                print(self.cubeboxes.to_string())
-            elif cmd in ["ni", "netinfo"]:
-                # display the nodes in the network and their info
-                print(self.net.nodes_list.to_string())
-            elif cmd in ["wi", "whois"]:
-                self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NODENAME))
-            else:
-                print("Unknown command")
-
 
 def main(use_prompt=False):
     import atexit
 
-    if use_prompt:
-        master = CubeServerMasterWithPrompt()
-    else:
-        master = CubeServerMaster()
+    master = CubeServerMaster()
     atexit.register(master.stop)
 
     try:
@@ -762,26 +715,48 @@ def main(use_prompt=False):
         master.net.log.setLevel(cube_logger.logging.INFO)
 
         while True:
-            time.sleep(1)
+            time.sleep(0.1)
+            if use_prompt:
+                command = input("Enter command: ")
+                if command == "exit":
+                    break
+                master.handle_command(command)
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
         master.stop()
 
 
-if __name__ == "__main__":
-    main()
-    exit(0)
+def test_highscores():
+    import atexit
 
-    # if `--test_rgb` is passed as an argument, run the test_rgb() function
+    master = CubeServerMaster()
+    atexit.register(master.stop)
+
+    try:
+        master.run()
+        master.log.setLevel(cube_logger.logging.INFO)
+        master.net.log.setLevel(cube_logger.logging.INFO)
+
+        while True:
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt received. Stopping CubeMaster...")
+    finally:
+        master.stop()
+
+if __name__ == "__main__":
     import sys
 
-    do_test_rgb = True
-    # do_test_rgb = False
-    if "--test_rgb" in sys.argv or do_test_rgb:
+    # sys.argv.append("--test_rgb")
+    sys.argv.append("--test-highscores")
+    if "--test_rgb" in sys.argv:
         master = CubeServerMaster()
         master.test_rgb()
         master.stop()
+    elif "--test-highscores" in sys.argv:
+        chs.test_run(launch_browser=True)
+        exit(0)
     elif "--prompt" in sys.argv:
         main(use_prompt=True)
     else:
