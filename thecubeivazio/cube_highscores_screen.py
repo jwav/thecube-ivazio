@@ -46,23 +46,17 @@ from thecubeivazio.cube_http import CubeHttpServer
 class CubeBrowserManager:
     def __init__(self):
         self._process = None
-        self.display = ":0"  # Set the display to :0
+        # when running on raspberry pi, prefix the launch command with that
+        self.display_prefix = "DISPLAY=:0"
 
-    def launch_browser(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
+    def launch_browser(self, url: str = HTTP_HIGHSCORES_MAIN_URL):
         self.terminate_browser_process()
         self.launch_chromium(url)
 
     def close_browser(self):
-        # self.close_chromium()
         self.terminate_browser_process()
 
-    def launch_chromium(self, url:str=HTTP_HIGHSCORES_MAIN_URL):
-        # Suppress GTK warnings
-        # doesnt work...
-        # os.environ['GTK_DEBUG'] = '0'
-        # os.environ['GTK_MODULES'] = ''
-        # os.environ['FONTCONFIG_PATH'] = '/etc/fonts'
-
+    def launch_chromium(self, url: str = HTTP_HIGHSCORES_MAIN_URL):
         # Construct the command to launch Chromium in fullscreen mode
         command = [
             'chromium-browser',  # or 'chromium' depending on your system
@@ -74,13 +68,11 @@ class CubeBrowserManager:
             url  # The URL to open
         ]
 
-        # Execute the command in a non-blocking manner
-
         if is_raspberry_pi():
-            self._process = subprocess.Popen(command, env={"DISPLAY": self.display})
-        else:
-            self._process = subprocess.Popen(command)
+            command = [self.display_prefix] + command
 
+        # Execute the command in a non-blocking manner with the DISPLAY environment variable
+        self._process = subprocess.Popen(command)
 
     def close_chromium(self):
         command = "pkill chromium-browser"
@@ -90,6 +82,7 @@ class CubeBrowserManager:
         if self._process is not None:
             self._process.terminate()
             self._process = None
+
 
 class CubeHighscoresPlayingTeamsSubtable:
     def __init__(self, teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
