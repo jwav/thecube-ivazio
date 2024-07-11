@@ -274,7 +274,7 @@ class CubeServerCubebox:
 
     def _rfid_setup_loop(self) -> bool:
         """while the rfid is not setup, try to set it up, first as a serial listener, then as a keyboard listener"""
-        self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_UNINITIALIZED)
+        self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_ERROR)
         while True:
             self.log.info("RFID not setup. Trying to set it up...")
             self.rfid = cube_rfid.CubeRfidSerialListener()
