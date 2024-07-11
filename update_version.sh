@@ -127,15 +127,20 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   else
     echo "Hostname does not match cubemaster or cubebox patterns."
   fi
-  # copy all scripts containing `update`
-  for file in *update*.sh; do
-    echo "Copying $file to home directory and making it executable."
-    cp "$file" ~/
-    chmod +x ~/"$file"
+  # copy and chmod+x additional scripts matching the contents of this list
+  scripts_to_copy=(
+  "activate_venv.sh"
+  "install_required_apt_packages.sh"
+  "*update*.sh"
+  )
+  for script in "${scripts_to_copy[@]}"; do
+    for file in $script; do
+      echo "Copying $file to home directory and making it executable."
+      cp "$file" ~/
+      chmod +x ~/"$file"
+    done
   done
-  # copy some other scripts
-  cp ./activate_venv.sh ~/
-  chmod +x ~/activate_venv.sh
+
 
 
   # setup the service, according to the hostname
