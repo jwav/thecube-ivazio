@@ -47,6 +47,7 @@ class CubeServerMaster:
 
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidEventListener()
+        self.rfid.disable()
 
         # setup an RGB server
         self.rgb_sender = None
