@@ -235,7 +235,7 @@ class CubeNetworking:
                 self.log.error(f"Failed to remove message from waiting for message queue ({message.shortinfo})")
                 return False
 
-    def acknowledge_this_message(self, message: cm.CubeMessage, info: cm.CubeAckInfos = None) -> SendReport:
+    def acknowledge_this_message(self, message: cm.CubeMessage, info: Union[cm.CubeAckInfos,str] = None) -> SendReport:
         """Sends an acknowledgement message for the given message"""
         self.log.debug(f"Acknowledging message: ({message.shortinfo})")
         ack_msg = cm.CubeMsgAck(self.node_name, message, info=info)

@@ -19,13 +19,21 @@ from thecubeivazio.cube_gpio import CubeGpio
 from thecubeivazio import cube_highscores_screen as chs
 from thecubeivazio import cube_database as cubedb
 
+DB_REQUEST_PERIOD_SEC = 3
+HIGHSCORES_UPDATE_PERIOD_SEC = 2
+
 # only import cube_rgbmatrix_daemon if we're running this script as the main script,
 # not if we're importing it as a module
+DISABLE_RGBMATRIX = True
+DISABLE_HIGHSCORES = True
 if __name__ == "__main__":
     print("Importing thecubeivazio.cube_rgbmatrix_daemon")
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_server as crs
-
+    DISABLE_RGBMATRIX = False
+    DISABLE_HIGHSCORES = False
+if not cube_utils.is_raspberry_pi():
+    DISABLE_RGBMATRIX = True
 
 class CubeServerMaster:
     def __init__(self):
@@ -116,12 +124,15 @@ class CubeServerMaster:
         self.rgb_sender.stop_listening()
 
     def _highscores_loop(self):
+        if DISABLE_HIGHSCORES:
+            return
         self.highscores_screen.update_highscores_html_files()
         self.highscores_screen.update_playing_teams_html_file()
         self.highscores_screen.run()
         self.browser.launch_browser()
         next_db_request_time = time.time()
-        db_request_period_sec = 10
+        next_highscores_update_time = time.time()
+
 
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
@@ -134,21 +145,25 @@ class CubeServerMaster:
             # to avoid having to dump the whole database every time,
             # we only ask "which teams are newer than our newest recorded creation timestamp?"
             if time.time() > next_db_request_time:
-                # get the latest creation timestamp from our local database
-                lct = cubedb.get_latest_creation_timestamp()
+                # get the timestamp of the db file
+                db_timestamp = cubedb.get_database_file_last_modif_timestamp()
+                self.log.critical(f"db_timestamp : {db_timestamp}")
                 # ask the frontdesk. The answer will be handled in _message_handling_loop,
                 #  where a special flag will be set according to the answer
-                request_msg = cm.CubeMsgRequestDatabaseTeams(self.net.node_name, lct)
+                request_msg = cm.CubeMsgRequestDatabaseTeams(self.net.node_name, db_timestamp)
                 self.net.send_msg_to_frontdesk(request_msg)
-                next_db_request_time = time.time() + db_request_period_sec
-                # if we we're not up to date yet, do nothing
-                if not self.flag_database_up_to_date:
-                    pass
+                next_db_request_time = time.time() + DB_REQUEST_PERIOD_SEC
+                # # if we we're not up to date yet, do nothing
+                # if not self.flag_database_up_to_date:
+                #     pass
             # if we're up to date, then refresh the highscores screen if needed
-            if not self.highscores_screen.must_update_highscores:
-                continue
-            self.log.info("Updating highscores on highscores screen")
-            self.highscores_screen.update_highscores_html_files()
+            # if not self.highscores_screen.must_update_highscores:
+            #     continue
+            if self.highscores_screen.must_update_highscores or time.time() > next_highscores_update_time:
+                self.log.info("Updating highscores and playing teams")
+                self.highscores_screen.update_highscores_html_files()
+                self.highscores_screen.must_update_highscores = False
+                next_highscores_update_time = time.time() + HIGHSCORES_UPDATE_PERIOD_SEC
 
     def _status_update_loop(self):
         """Periodically performs these actions every time the game status changes:
@@ -204,6 +219,8 @@ class CubeServerMaster:
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
+        if DISABLE_RGBMATRIX:
+            return
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
             if self._last_teams_status_sent_to_rgb_daemon_hash != self.teams.hash:
@@ -211,6 +228,8 @@ class CubeServerMaster:
 
     @cubetry
     def update_rgb(self):
+        if DISABLE_RGBMATRIX:
+            return
         if self.rgb_sender is None:
             if not cube_utils.is_raspberry_pi():
                 self.log.warning("Not running on a Raspberry Pi. Not launching the RGB Daemon")
@@ -249,7 +268,8 @@ class CubeServerMaster:
                 rmcd[matrix_id] = crs.CubeRgbMatrixContent(
                     matrix_id=matrix_id, team_name=None, end_timestamp=None, max_time_sec=None)
         # send the CubeRgbMatrixContentDict to the server run by the RGBMatrix Daemon
-        self.log.info(f"Sending RGBMatrixContentDict to RGBMatrix Daemon : {rmcd.to_string()}")
+        # self.log.info(f"Sending RGBMatrixContentDict to RGBMatrix Daemon : {rmcd.to_string()}")
+        self.log.info(f"Sending RGBMatrixContentDict to RGBMatrix Daemon.")
         rmcd_reconstructed = crs.CubeRgbMatrixContentDict.make_from_string(rmcd.to_string())
         # self.log.info(f"Reconstructed RGBMatrixContentDict : {rmcd_reconstructed.to_string()}")
         if self.rgb_sender.send_rgb_matrix_contents_dict(rmcd):
@@ -366,21 +386,26 @@ class CubeServerMaster:
         self.log.info(f"Team {team.name} is registered as playing cubebox {team.current_cubebox_id}")
         self.log.info(team.to_string())
 
-    @cubetry
     def _handle_reply_database_teams_message(self, message: cm.CubeMessage):
         """Handle the reply from the frontdesk to the request for the teams database"""
         self.log.info(f"Received reply database teams message from {message.sender}")
         rdt_msg = cm.CubeMsgReplyDatabaseTeams(copy_msg=message)
-        if rdt_msg.no_team:
-            self.log.info("The frontdesk replied 'I have no newer teams'. We're up to date")
-            self.flag_database_up_to_date = True
-            return
-        new_team = rdt_msg.team
-        assert new_team, "_handle_reply_database_teams_message: new_team is None"
-        self.log.info(f"Received new team from frontdesk for our database: {new_team.to_string()}")
-        assert cubedb.add_team_to_database(new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
-        self.log.success("Added new team to the local database")
-
+        try:
+            if rdt_msg.no_team:
+                self.log.info("The frontdesk replied 'I have no newer teams'. We're up to date")
+                self.flag_database_up_to_date = True
+                return
+            new_team = rdt_msg.team
+            assert new_team, "_handle_reply_database_teams_message: new_team is None"
+            self.log.info(f"Received new team from frontdesk for our database: {new_team.to_string()}")
+            assert cubedb.add_team_to_database(new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
+            # check that the team was indeed added to the database
+            assert cubedb.find_team_by_creation_timestamp(new_team.creation_timestamp), "_handle_reply_database_teams_message: get_team_by_creation_timestamp failed"
+            self.log.success("Added new team to the local database. acknowledging.")
+            self.net.acknowledge_this_message(rdt_msg, cm.CubeAckInfos.OK)
+        except Exception as e:
+            self.log.error(f"Error in _handle_reply_database_teams_message: {e}")
+            self.net.acknowledge_this_message(rdt_msg, info=str(e))
 
     def _handle_cubebox_rfid_read_message(self, message: cm.CubeMessage):
         self.log.info(f"Received RFID read message from {message.sender}")

@@ -15,12 +15,10 @@ import sys
 import atexit
 import traceback as tb
 
-
 from typing import TYPE_CHECKING, Optional
 
-
 if TYPE_CHECKING:
-    from cubegui import CubeGuiForm
+    from thecubeivazio.cubegui.cubegui import CubeGuiForm
 
 
 class CubeGuiTabAdminMixin:
@@ -50,13 +48,18 @@ class CubeGuiTabAdminMixin:
         # set up the command line so that enter key triggers the send command button
         self.ui.lineAdminCommand.returnPressed.connect(self.ui.btnAdminSendCommand.click)
 
+        # on startup, request the servers infos
+        self.request_servers_infos(background=True)
 
     @cubetry
     def order_server_reset(self: 'CubeGuiForm'):
-        nodename = self.ui.comboAdminServerToOrder.currentText()
-        full_command = f"{nodename} reset"
-        self.ui.lineAdminCommand.setText(full_command)
-        self.send_command_clicked()
+        def task():
+            nodename = self.ui.comboAdminServerToOrder.currentText()
+            full_command = f"{nodename} reset"
+            self.ui.lineAdminCommand.setText(full_command)
+            self.send_command_clicked()
+        # self.start_in_thread(task)
+        task()
 
     @cubetry
     def order_server_reboot(self: 'CubeGuiForm'):
@@ -66,7 +69,7 @@ class CubeGuiTabAdminMixin:
         self.send_command_clicked()
 
     @cubetry
-    def set_admin_command_status_text(self: 'CubeGuiForm', text:str):
+    def set_admin_command_status_text(self: 'CubeGuiForm', text: str):
         self.ui.lblAdminCommandStatusText.setText(text)
         self.update_gui()
 
@@ -97,32 +100,40 @@ class CubeGuiTabAdminMixin:
         if report:
             self.set_admin_command_status_text("✔️ Carte RFID supprimée avec succès.")
         else:
-            self.set_admin_command_status_text(f"❌ Erreur lors de la suppression de la carte RFID: {report.ack_info}")
+            self.set_admin_command_status_text(
+                f"❌ Erreur lors de la suppression de la carte RFID: {report.ack_info}")
         return report
 
     @cubetry
-    def request_servers_infos(self: 'CubeGuiForm'):
-        self.ui: Ui_Form
-        self.set_servers_info_status_label("hourglass", "En attente de réponse des Cubeboxes...")
-        self.fd.request_all_cubeboxes_statuses_one_by_one(reply_timeout=STATUS_REPLY_TIMEOUT)
-        self.set_servers_info_status_label("hourglass", "En attente de réponse du CubeMaster...")
-        if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT):
-            self.set_servers_info_status_label("ok", "Mise à jour totale effectuée.")
+    def request_servers_infos(self: 'CubeGuiForm', background=False):
+        """Calls a thread running _request_servers_infos"""
+        def task():
+            self.set_servers_info_status_label("hourglass", "En attente de réponse des Cubeboxes...")
+            self.fd.request_all_cubeboxes_statuses_one_by_one(reply_timeout=STATUS_REPLY_TIMEOUT)
+            self.set_servers_info_status_label("hourglass", "En attente de réponse du CubeMaster...")
+            if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT):
+                self.set_servers_info_status_label("ok", "Mise à jour totale effectuée.")
+            else:
+                self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")
+        if background:
+            self.start_in_thread(task)
         else:
-            self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")
+            task()
 
     @cubetry
-    def set_servers_info_status_label(self: 'CubeGuiForm', icon:str, info:str):
+    def set_servers_info_status_label(self: 'CubeGuiForm', icon: str, info: str):
         self.ui: Ui_Form
+        print(f"set_servers_info_status_label: {icon}, {info} called from {tb.extract_stack(limit=2)[0].name}")
         self.ui.lblAdminServersInfoStatusText.setText(info)
         self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme(icon))
-        QApplication.processEvents()
+        self.update_gui()
 
     def update_tab_admin(self: 'CubeGuiForm'):
         self.ui: Ui_Form
+
         # print("update_tab_admin")
         try:
-        # if True:
+            # if True:
             print("update_tab_admin")
             table = self.ui.tableAdminServersInfo
             table.clearContents()
@@ -130,14 +141,15 @@ class CubeGuiTabAdminMixin:
             # rows: FrontDesk, CubeMaster, CubeBoxes 1 to NB_CUBEBOXES
             # vertical headers: Node name
             # columns: last message time (hh:mm:ss) IP address, Status
-            table.setRowCount(ci.NB_CUBEBOXES+2)
+            table.setRowCount(ci.NB_CUBEBOXES + 2)
             table.setColumnCount(3)
             table.setHorizontalHeaderLabels(
                 ["Heure dernier msg", "IP", "Statut"])
             table.setVerticalHeaderLabels(node_names)
             for i, node_name in enumerate(node_names):
                 last_msg_timestamp = self.fd.net.nodes_list.get_last_msg_timestamp_from_node_name(node_name)
-                last_msg_hhmmss = cube_utils.timestamp_to_hhmmss_time_of_day_string(last_msg_timestamp, separators="::")
+                last_msg_hhmmss = cube_utils.timestamp_to_hhmmss_time_of_day_string(last_msg_timestamp,
+                                                                                    separators="::")
                 ip = self.fd.net.nodes_list.get_node_ip_from_node_name(node_name)
                 # self.log.debug(f"node_name: {node_name}, ip: {ip}, last_msg_hhmmss: {last_msg_hhmmss}")
                 # print(f"nodes_list: {self.fd.net.nodes_list.to_string()}")
@@ -166,17 +178,17 @@ class CubeGuiTabAdminMixin:
         command = self.ui.lineAdminCommand.text()
         report = self.fd.send_full_command(command)
         if not report.ack_ok:
-            self.ui.lblAdminCommandStatusText.setText(f"❌ Erreur lors de l'envoi de la commande '{command}': {report.ack_info}")
+            self.ui.lblAdminCommandStatusText.setText(
+                f"❌ Erreur lors de l'envoi de la commande '{command}': {report.ack_info}")
             return False
         self.ui.lblAdminCommandStatusText.setText("✔️ Commande envoyée et exécutée avec succès.")
         return True
 
-
-if __name__ == "__main__":
-    from cubegui import CubeGuiForm
-    app = QApplication(sys.argv)
-    window = CubeGuiForm()
-    window.show()
-    window.ui.lineAdminCommand.setText("CubeMaster update_rgb")
-    window.send_command_clicked()
-    sys.exit(app.exec_())
+    if __name__ == "__main__":
+        from cubegui import CubeGuiForm
+        app = QApplication(sys.argv)
+        window = CubeGuiForm()
+        window.show()
+        window.ui.lineAdminCommand.setText("CubeMaster update_rgb")
+        window.send_command_clicked()
+        sys.exit(app.exec_())

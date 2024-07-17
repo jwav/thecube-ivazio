@@ -19,7 +19,7 @@
 
 # CubeGui
 
-- [ ] !! remove icons. use emojis in the text directly. more portable and easy
+- [x] !! remove icons. use emojis in the text directly. more portable and easy
 - [x] !! CHECK THAT THE GUI RUNS FINE ON WINDOWS
 - [ ] "heure dernier message" doesnt update
 - [ ] bugs in current team search : too many teams displayed, maybe due to rgb_test

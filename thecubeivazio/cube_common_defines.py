@@ -131,6 +131,17 @@ def cubetry(func):
     return wrapper
 
 
+# see cubegui.cubegui.py. I'm putting it here to avoid circular imports
+# wrapper tryandupdate that's cubetry+update_whole_gui
+def tryandupdate(func):
+    def wrapper(obj:'CubeGuiForm', *args, **kwargs):
+        print(f"tryandupdate wrapper called from {func.__name__}")
+        result = cubetry(func)(obj, *args, **kwargs)
+        obj.update_gui()
+        # print("tryandupdate wrapper done")
+        return result
+    return wrapper
+
 
 def test_paths():
     all_paths = [PROJECT_ROOT_PATH, SOUNDS_DIR, LOGS_DIR, CUBEGUI_DIR, CONFIG_DIR, CONFIG_FILEPATH,

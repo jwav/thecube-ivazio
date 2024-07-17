@@ -496,17 +496,17 @@ class CubeMsgReplyAllCubeboxesStatusHashes(CubeMessage):
 class CubeMsgRequestDatabaseTeams(CubeMessage):
     """Sent from the CubeMaster to the Frontdesk to ask for the teams in the database that are newer than a timestamp."""
 
-    def __init__(self, sender=None, oldest_creation_timestamp=None, copy_msg: CubeMessage = None):
+    def __init__(self, sender=None, oldest_timestamp=None, copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(CubeMsgTypes.REQUEST_DATABASE_TEAMS, sender, oldest_creation_timestamp=oldest_creation_timestamp)
+            super().__init__(CubeMsgTypes.REQUEST_DATABASE_TEAMS, sender, oldest_timestamp=oldest_timestamp)
         self.require_ack = True
 
     @property
-    def oldest_creation_timestamp(self) -> Optional[float]:
+    def oldest_timestamp(self) -> Optional[float]:
         try:
-            return float(self.kwargs.get("oldest_creation_timestamp"))
+            return float(self.kwargs.get("oldest_timestamp"))
         except ValueError:
             return None
 
@@ -689,7 +689,7 @@ class CubeMsgAck(CubeMessage):
     The `info` parameter can be used to give more information about the acknowledgement.
     See the CubeMsgReplies enumeration for the standard values."""
 
-    def __init__(self, sender: str = None, acked_msg: CubeMessage = None, info: CubeAckInfos = None,
+    def __init__(self, sender: str = None, acked_msg: CubeMessage = None, info: Union[CubeAckInfos,str] = None,
                  copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
@@ -1060,11 +1060,11 @@ def test_config_message():
 
 def test_request_database_teams():
     team = cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890", max_time_sec=1200, creation_timestamp=5)
-    msg = CubeMsgRequestDatabaseTeams("CubeMaster", oldest_creation_timestamp=10)
+    msg = CubeMsgRequestDatabaseTeams("CubeMaster", oldest_timestamp=10)
     msg_str = msg.to_string()
     msg2 = CubeMsgRequestDatabaseTeams(copy_msg=msg)
-    assert msg.oldest_creation_timestamp == 10
-    assert msg2.oldest_creation_timestamp == 10
+    assert msg.oldest_timestamp == 10
+    assert msg2.oldest_timestamp == 10
     assert msg_str == msg2.to_string()
     reply = CubeMsgReplyDatabaseTeams("CubeFrontDesk", team=team)
     reply_str = reply.to_string()

@@ -51,6 +51,9 @@ class CubeGuiTabConfigMixin:
             "ℹ️ Entrez un mot de passe et cliquez sur 'Charger configuration' "
             "pour éditer la configuration.")
 
+    def update_tab_config(self):
+        pass
+
     @cubetry
     def send_config_to_servers(self: 'CubeGuiForm') -> bool:
         try:

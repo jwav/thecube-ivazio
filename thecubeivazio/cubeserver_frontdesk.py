@@ -43,6 +43,9 @@ class CubeServerFrontdesk:
         # TODO: do something with them. update them, request updates, etc
         self.game_status = cube_game.CubeGameStatus()
 
+        # on startup, send the config to everyone
+        self.send_config_message_to_all()
+
     @property
     def teams(self) -> cube_game.CubeTeamsStatusList:
         return self.game_status.teams
@@ -87,6 +90,8 @@ class CubeServerFrontdesk:
                 # ignore ack messages, they're handled in the networking module
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                elif message.msgtype == cm.CubeMsgTypes.REQUEST_DATABASE_TEAMS:
+                    self._handle_request_database_teams(message)
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
                     self._handle_cubebox_button_press_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS:
@@ -108,14 +113,71 @@ class CubeServerFrontdesk:
                     self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
                 self.net.remove_msg_from_incoming_queue(message)
 
+    def _handle_request_database_teams(self, message: cm.CubeMessage):
+        """Handle a request for the teams database from the cubemaster"""
+        try:
+            self.log.info(f"Received request for the teams database from {message.sender}")
+            rdt_msg = cm.CubeMsgRequestDatabaseTeams(copy_msg=message)
+            oldest_timestamp = rdt_msg.oldest_timestamp
+            self.log.critical(f"requested oldest_timestamp={oldest_timestamp}")
+            local_db_timestamp = cubedb.get_database_file_last_modif_timestamp()
+            self.log.critical(f"local_db_timestamp={local_db_timestamp}")
+            assert oldest_timestamp, "_handle_request_database_teams: oldest_timestamp is None"
+            teams = cubedb.find_teams_matching(min_modification_timestamp=oldest_timestamp)
+            # if teams is None or empty, this function will still send
+            # a message that says "no teams"
+            self.send_database_teams_to_cubemaster(teams)
+        except Exception as e:
+            self.log.error(f"Error handling request database teams message: {e}")
+            return False
+
+    @cubetry
+    def send_database_teams_to_cubemaster(self, teams:Iterable[cube_game.CubeTeamStatus]) -> bool:
+        """Send these teams to the cubemaster, one by one.
+        if the list is empty or None, send a message that says 'no teams'"""
+        if not teams:
+            teams = []
+        self.log.info(f"Sending database teams (len={len(teams)}) to the cubemaster")
+        # if no teams in the database are younger than this timestamp,
+        # reply with a message that says "i have no teams to tell you about"
+        if not teams:
+            reply_msg = cm.CubeMsgReplyDatabaseTeams(
+                sender=self.net.node_name,
+                no_team=True)
+            self.net.send_msg_to_cubemaster(reply_msg)
+            return True
+        # if there are teams that are younger, send messages each
+        # detailing each team. if the cubemaster doesn't ack,
+        # don't bother continuing.
+        for team in teams:
+            reply_msg = cm.CubeMsgReplyDatabaseTeams(
+                sender=self.net.node_name,
+                team=team)
+            report = self.net.send_msg_to_cubemaster(reply_msg, require_ack=True)
+            if not report:
+                self.log.error(f"Failed to send the database team message for {team.name}")
+                return False
+            if not report.ack_msg:
+                self.log.error(f"No ack received for CubeMsgReplyDatabaseTeams {team.name}")
+                return False
+            if not report.ack_ok:
+                self.log.error(f"CubeMsgReplyDatabaseTeams {team.name} acked but not ok: {report.ack_info}")
+                return False
+            self.log.success(f"Sent database team message for {team.name}, ack ok")
+        return True
+
+
     def _handle_reply_all_cubeboxes_status_hashes(self, message: cm.CubeMessage):
-        raise NotImplementedError
+        self.log.info(f"Received reply all cubeboxes status hashes message from {message.sender}")
+        self.log.error("_handle_reply_all_cubeboxes_status_hashes: not implemented")
 
     def _handle_reply_all_teams_status_hashes(self, message: cm.CubeMessage):
-        raise NotImplementedError
+        self.log.info(f"Received reply all teams status hashes message from {message.sender}")
+        self.log.error("_handle_reply_all_teams_status_hashes: not implemented")
 
     def _handle_cubemaster_cubebox_status_message(self, message: cm.CubeMessage):
-        raise NotImplementedError
+        self.log.info(f"Received cubemaster cubebox status message from {message.sender}")
+        self.log.error("_handle_cubemaster_cubebox_status_message: not implemented")
 
     def _handle_reply_all_teams_status(self, message: cm.CubeMessage) -> bool:
         try:
@@ -216,7 +278,10 @@ class CubeServerFrontdesk:
 
     @cubetry
     def add_new_team(self, team: cube_game.CubeTeamStatus) -> cubenet.SendReport:
-        """Send a message to the CubeMaster to add a new team. Return True if the CubeMaster added the team, False if not, None if no response."""
+        """Send a message to the CubeMaster to add a new team.
+        If successful, add the team to the frontdesk status.
+        Returns a SendReport object. That tells how that went:
+        success, failure, if failure what kind."""
         msg = cm.CubeMsgFrontdeskNewTeam(self.net.node_name, team)
         report = self.net.send_msg_to_cubemaster(msg, require_ack=True)
         if not report:
@@ -340,10 +405,11 @@ class CubeServerFrontdesk:
         return self.send_config_message_to_all()
 
     @cubetry
-    def request_cubemaster_status(self, reply_timeout: Seconds) -> bool:
+    def request_cubemaster_status(self, reply_timeout: Seconds=None) -> bool:
         """Send a message to the CubeMaster to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
+        reply_timeout = reply_timeout or STATUS_REPLY_TIMEOUT
         msg = cm.CubeMsgRequestCubemasterStatus(self.net.node_name)
         report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
         if not report:
@@ -612,122 +678,11 @@ def test_prompt_commands():
     fd.handle_input("at London")
 
 
-def generate_sample_teams() -> cube_game.CubeTeamsStatusList:
-    from datetime import datetime, timedelta
-
-    teams = cube_game.CubeTeamsStatusList()
-
-    # Lists of parameters for each team
-    names = ["Dakar", "Paris", "Tokyo", "New York", "London"]
-    custom_names = ["Riri & Jojo", "Émile et Gégé", "Sakura & Kenji", "Mikey & John", "Elizabeth & Charles"]
-    rfid_uids = ["1234567890", "0987654321", "1122334455", "5566778899", "6677889900"]
-    max_times = [3600, 3600, 7200, 5400, 3600]
-    creation_timestamps = [
-        datetime(2024, 5, 20, 12, 34, 56).timestamp(),  # a few weeks ago
-        datetime(2024, 5, 21, 12, 34, 56).timestamp(),  # a few weeks ago
-        (datetime.now() - timedelta(days=5)).timestamp(),  # 5 days ago
-        (datetime.now() - timedelta(days=30)).timestamp(),  # 1 month ago
-        (datetime.now() - timedelta(days=90)).timestamp()  # 3 months ago
-    ]
-    start_timestamps = [
-        datetime(2024, 5, 21, 12, 40, 20).timestamp(),
-        datetime(2024, 5, 22, 12, 55, 0).timestamp(),
-        (datetime.now() - timedelta(days=4)).timestamp(),
-        (datetime.now() - timedelta(days=29)).timestamp(),
-        (datetime.now() - timedelta(days=89)).timestamp()
-    ]
-    completed_cubeboxes_list = [
-        [
-            cube_game.CubeboxStatus(cube_id=1, start_timestamp=0, win_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=2, start_timestamp=1000, win_timestamp=2000),
-        ],
-        [
-            cube_game.CubeboxStatus(cube_id=3, start_timestamp=0, win_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=4, start_timestamp=1000, win_timestamp=2000),
-            cube_game.CubeboxStatus(cube_id=5, start_timestamp=2000, win_timestamp=3000),
-        ],
-        [
-            cube_game.CubeboxStatus(cube_id=6, start_timestamp=0, win_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=7, start_timestamp=1000, win_timestamp=2000),
-        ],
-        [
-            cube_game.CubeboxStatus(cube_id=8, start_timestamp=0, win_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=9, start_timestamp=1000, win_timestamp=2000),
-            cube_game.CubeboxStatus(cube_id=10, start_timestamp=2000, win_timestamp=3000),
-        ],
-        [
-            cube_game.CubeboxStatus(cube_id=11, start_timestamp=0, win_timestamp=1000),
-            cube_game.CubeboxStatus(cube_id=12, start_timestamp=1000, win_timestamp=2000),
-        ]
-    ]
-    trophies_names_list = [
-        [
-            "Trophy1", "Trophy2"
-        ],
-        [
-            "Trophy3", "Trophy4", "Trophy5"
-        ],
-        [
-            "Trophy6", "Trophy7"
-        ],
-        [
-            "Trophy8", "Trophy9", "Trophy10"
-        ],
-        [
-            "Trophy11", "Trophy12"
-        ]
-    ]
-
-    # Loop to add teams
-    for name, custom_name, rfid_uid, max_time, creation_timestamp, start_timestamp, completed_cubeboxes, trophies_names in zip(
-            names, custom_names, rfid_uids, max_times, creation_timestamps, start_timestamps, completed_cubeboxes_list,
-            trophies_names_list
-    ):
-        completed_cubeboxes = cube_game.CompletedCubeboxStatusList(completed_cubeboxes)
-        # print(f"----- completed_cubeboxes={completed_cubeboxes}")
-        team = cube_game.CubeTeamStatus(
-            name=name,
-            custom_name=custom_name,
-            rfid_uid=rfid_uid,
-            max_time_sec=max_time,
-            creation_timestamp=creation_timestamp,
-            start_timestamp=start_timestamp,
-            completed_cubeboxes=completed_cubeboxes,
-            trophies_names=trophies_names
-        )
-        # print(f"----- team={team}")
-        # OK so far
-        teams.add_team(team)
-        # print(teams[-1]._completed_cubeboxes)
-
-    if not teams.is_valid():
-        print("Error: teams are not valid")
-        exit(1)
-
-    return teams
 
 
-def generate_sample_teams_json_database():
-    teams = generate_sample_teams()
-    if teams.save_to_json_file(TEAMS_JSON_DATABASE_FILEPATH):
-        print("Sample teams saves generated:")
-        print(teams.to_string())
 
 
-def generate_sample_teams_sqlite_database():
-    """same as the json database, but in sqlite"""
-    teams = generate_sample_teams()
-    from thecubeivazio.cube_database import delete_database
-    delete_database(TEAMS_SQLITE_DATABASE_FILEPATH)
-    if teams.save_to_sqlite_database(TEAMS_SQLITE_DATABASE_FILEPATH):
-        print("Sample teams sqlite database generated:")
-        print(teams.to_string())
 
-
-def display_teams_sqlite_database():
-    teams = cubedb.load_all_teams()
-    print(teams.to_string())
-    print(f"nb teams: {len(teams)}")
 
 
 def run_prompt():
@@ -775,7 +730,7 @@ def test_send_config():
 if __name__ == "__main__":
     test_send_config()
     # generate_sample_teams_json_database()
-    generate_sample_teams_sqlite_database()
-    display_teams_sqlite_database()
+    cubedb.generate_sample_teams_sqlite_database()
+    cubedb.display_teams_sqlite_database()
     exit(0)
     run_prompt()

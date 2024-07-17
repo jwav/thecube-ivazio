@@ -50,7 +50,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -892,7 +892,7 @@ QPushButton:focus {
           <item row="0" column="1" colspan="2">
            <widget class="QPushButton" name="btnTeamsDeleteTeam">
             <property name="text">
-             <string>💀 Supprimer cette équipe</string>
+             <string>🗑 Supprimer cette équipe</string>
             </property>
            </widget>
           </item>

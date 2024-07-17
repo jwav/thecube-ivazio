@@ -105,6 +105,9 @@ class CubeGuiTabTeamsMixin:
 
     @cubetry
     def get_selected_team(self, row:int=None) -> Optional[cube_game.CubeTeamStatus]:
+        """Get the team selected in the results table.
+        It can be a currently playing team or a team from the database.
+        """
         row = self.ui.tableTeamsResults.currentRow() if row is None else row
         if row < 0:
             self.log.error("get_selected_team: No row selected.")
@@ -122,11 +125,21 @@ class CubeGuiTabTeamsMixin:
         if not team:
             self.log.error(f"Could not find team with creation timestamp {team_creation_timestamp}")
             return None
-        self.log.debug(f"Selected team: {team}")
+        # self.log.debug(f"Selected team: {team}")
         return team
 
     @cubetry
-    def on_teams_results_cell_clicked(self, row, col):
+    def get_selected_trophy_name(self) -> Optional[str]:
+        """Get the trophy name selected in the trophies table."""
+        row = self.ui.tableTeamsTrophyList.currentRow()
+        if row < 0:
+            self.log.error("get_selected_trophy_name: No row selected.")
+            return None
+        trophy_name = self.ui.tableTeamsTrophyList.item(row, 0).text()
+        return trophy_name
+
+    @cubetry
+    def on_teams_results_cell_clicked(self):
         self.ui: Ui_Form
         self.log: cube_logger.CubeLogger
         table = self.ui.tableTeamsTrophyList
@@ -145,7 +158,7 @@ class CubeGuiTabTeamsMixin:
                 self.log.error(f"Could not find trophy with name {trophy_name}")
                 continue
             trophy_pixmap = self.get_trophy_pixmap(trophy, width=20, height=20)
-            self.log.debug(f"trophy_pixmap: {trophy_pixmap}")
+            # self.log.debug(f"trophy_pixmap: {trophy_pixmap}")
             # Create an icon from the QPixmap
             icon = QIcon(trophy_pixmap)
             # Create a QTableWidgetItem and set the icon
@@ -170,71 +183,148 @@ class CubeGuiTabTeamsMixin:
     def update_tab_teams(self: 'CubeGuiForm'):
         pass
 
-    @cubetry
     def click_print_scoresheet(self):
-        from thecubeivazio.cube_scoresheet import CubeScoresheet
-        team = self.get_selected_team()
-        if not team:
-            self.log.error("click_print_scoresheet: No team selected.")
-            return
-        scoresheet = CubeScoresheet(team)
+        try:
+            from thecubeivazio.cube_scoresheet import CubeScoresheet
+            team = self.get_selected_team()
+            if not team:
+                raise Exception("Aucune équipe sélectionnée.")
+            if not team.is_valid():
+                raise Exception("Équipe invalide.")
+            if self.fd.teams.has_team(team):
+                raise Exception("Pas possible d'imprimer une feuille de score pour une équipe en cours de jeu.")
+            scoresheet = CubeScoresheet(team)
+            self.set_teams_info_label_text("⏳ Génération de la feuille de score en cours...")
+            pdf_path = scoresheet.save_as_pdf_file_with_pyppeteer()
+            # pdf_path = "/mnt/shared/thecube-ivazio/thecubeivazio/scoresheets/Dakar_1718297441_scoresheet.pdf"
+            assert pdf_path, "Erreur lors de la génération du fichier PDF."
+            assert os.path.exists(pdf_path), f"PDF file not found: {pdf_path}"
 
-        pdf_path = scoresheet.save_as_pdf_file_with_pyppeteer()
-        # pdf_path = "/mnt/shared/thecube-ivazio/thecubeivazio/scoresheets/Dakar_1718297441_scoresheet.pdf"
-        assert pdf_path, "Could not save the scoresheet as a PDF file."
-        assert os.path.exists(pdf_path), f"PDF file not found: {pdf_path}"
+            printer = QPrinter(QPrinter.HighResolution)
 
-        printer = QPrinter(QPrinter.HighResolution)
-
-        # Show the print preview dialog
-        preview_dialog = QPrintPreviewDialog(printer, self)
-        preview_dialog.paintRequested.connect(lambda: self.print_pdf(preview_dialog.printer(), pdf_path))
-        preview_dialog.showMaximized()
-        preview_dialog.exec()
+            # Show the print preview dialog
+            preview_dialog = QPrintPreviewDialog(printer, self)
+            preview_dialog.paintRequested.connect(lambda: self.print_pdf(preview_dialog.printer(), pdf_path))
+            preview_dialog.showMaximized()
+            preview_dialog.exec()
+        except Exception as e:
+            self.log.error(f"Error in click_print_scoresheet: {e}")
+            self.set_teams_info_label_text(f"❌ {str(e)}")
+        finally:
+            self.update_tab_teams()
 
     def print_pdf(self, printer, pdf_path):
-        # Open the PDF document using PyMuPDF
-        pdf_doc = fitz.open(pdf_path)
+        try:
+            # Open the PDF document using PyMuPDF
+            pdf_doc = fitz.open(pdf_path)
 
-        # Create a QPainter object
-        painter = QPainter(printer)
+            # Create a QPainter object
+            painter = QPainter(printer)
 
-        # Iterate through the pages and render each one
-        for page_num in range(len(pdf_doc)):
-            page = pdf_doc.load_page(page_num)
-            pix = page.get_pixmap(alpha=False)  # Disable alpha to avoid blank images
+            # Iterate through the pages and render each one
+            for page_num in range(len(pdf_doc)):
+                page = pdf_doc.load_page(page_num)
+                pix = page.get_pixmap(alpha=False)  # Disable alpha to avoid blank images
 
-            # Convert the pixmap to a QImage
-            img = QImage(pix.samples, pix.width, pix.height, pix.stride, QImage.Format_RGB888)
+                # Convert the pixmap to a QImage
+                img = QImage(pix.samples, pix.width, pix.height, pix.stride, QImage.Format_RGB888)
 
-            # Check if the image dimensions are valid
-            if img.width() == 0 or img.height() == 0:
-                continue
+                # Check if the image dimensions are valid
+                if img.width() == 0 or img.height() == 0:
+                    continue
 
-            # Calculate the scale factor
-            scale = min(printer.pageRect().width() / img.width(), printer.pageRect().height() / img.height())
-            painter.save()
-            painter.translate(printer.pageRect().x(), printer.pageRect().y())
-            painter.scale(scale, scale)
+                # Calculate the scale factor
+                scale = min(printer.pageRect().width() / img.width(), printer.pageRect().height() / img.height())
+                painter.save()
+                painter.translate(printer.pageRect().x(), printer.pageRect().y())
+                painter.scale(scale, scale)
 
-            # Draw the image
-            painter.drawImage(0, 0, img)
-            painter.restore()
+                # Draw the image
+                painter.drawImage(0, 0, img)
+                painter.restore()
 
-            if page_num < len(pdf_doc) - 1:
-                printer.newPage()
+                if page_num < len(pdf_doc) - 1:
+                    printer.newPage()
 
-        painter.end()
+            painter.end()
+        except Exception as e:
+            self.log.error(f"Error in print_pdf: {e}")
+            self.set_teams_info_label_text(f"❌ {str(e)}")
 
 
 
-    @cubetry
     def click_add_trophy(self: 'CubeGuiForm'):
-        pass
+        try:
+            # get the selected team
+            team = self.get_selected_team()
+            # check existence, validity
+            assert team, "Aucune équipe sélectionnée."
+            assert team.is_valid(), "Équipe invalide."
+            # check that it's a database team and not currently playing
+            assert not self.fd.teams.has_team(team), "Pas possible d'ajouter un trophée à une équipe en cours de jeu."
+            # get the selected trophy
+            trophy_name = self.ui.comboTeamsAddTrophy.currentText()
+            trophy = cube_game.CubeTrophy.make_from_name(trophy_name)
+            assert trophy, f"Impossible de trouver le trophée {trophy_name}."
+            # check that the trophy is not already in the team
+            assert trophy.name not in team.trophies_names, f"Le trophée {trophy_name} est déjà dans l'équipe."
+            # add the trophy to the team
+            team.add_trophy_name(trophy.name)
+            # update the team in the database
+            cubedb.update_team_in_database(team)
+            # notify the CubeMaster
+            self.fd.send_database_teams_to_cubemaster([team])
+        except Exception as e:
+            self.log.error(f"Error in click_add_trophy: {e}")
+            self.set_teams_info_label_text(f"❌ {str(e)}")
+        finally:
+            # refresh the tables
+            self.on_teams_results_cell_clicked()
+            # save the currently selected team (row)
+            row = self.ui.tableTeamsResults.currentRow()
+            self.click_search_teams()
+            # restore the selected team (row)
+            self.ui.tableTeamsResults.selectRow(row)
+            self.update_all_tabs()
 
-    @cubetry
     def click_remove_trophy(self: 'CubeGuiForm'):
-        pass
+        try:
+            # get the selected trophy name
+            trophy_name = self.get_selected_trophy_name()
+            # check existence, validity
+            assert trophy_name, "Aucun trophée sélectionné."
+            trophy = cube_game.CubeTrophy.make_from_name(trophy_name)
+            assert trophy, f"Impossible de trouver le trophée {trophy_name}."
+            # get the selected team
+            team = self.get_selected_team()
+            # check existence, validity
+            assert team, "Aucune équipe sélectionnée."
+            assert team.is_valid(), "Équipe invalide."
+            # check that it's a database team and not currently playing
+            assert not self.fd.teams.has_team(team), "Pas possible de retirer un trophée d'une équipe en cours de jeu."
+            # check that the trophy is in the team
+            assert trophy.name in team.trophies_names, f"Le trophée {trophy_name} n'est pas dans l'équipe."
+            # remove the trophy from the team
+            team.remove_trophy_name(trophy.name)
+            # update the team in the database
+            cubedb.update_team_in_database(team)
+            # notify the CubeMaster
+            self.fd.send_database_teams_to_cubemaster([team])
+        except Exception as e:
+            self.log.error(f"Error in click_remove_trophy: {e}")
+            self.set_teams_info_label_text(f"❌ {str(e)}")
+        finally:
+            # refresh the tables
+            self.on_teams_results_cell_clicked()
+            # save the currently selected team (row)
+            row = self.ui.tableTeamsResults.currentRow()
+            self.click_search_teams()
+            # restore the selected team (row)
+            self.ui.tableTeamsResults.selectRow(row)
+            self.update_all_tabs()
+
+
+
 
     @cubetry
     def click_delete_team(self: 'CubeGuiForm'):
@@ -316,7 +406,9 @@ class CubeGuiTabTeamsMixin:
             end_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
                 team.end_timestamp, separators=":", secs=False)
             self.log.critical(f"team: {team}, trophies_names: {team.trophies_names}")
-            trophies_str = ", ".join((trophy_name for trophy_name in team.trophies_names))
+            # trophies_str = ", ".join((trophy_name for trophy_name in team.trophies_names))
+            # display one 🏆 for each trophy
+            trophies_str = "🏆 " * len(team.trophies_names)
 
             # print(f"team: {team}")
             self.ui.tableTeamsResults.setItem(i, 0, QTableWidgetItem(str(team.creation_timestamp)))

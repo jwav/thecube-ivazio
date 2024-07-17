@@ -12,10 +12,21 @@ from thecubeivazio.cube_logger import CubeLogger
 # this default will be used any time the db_filename argument is not provided
 DEFAULT_DATABASE_FILEPATH = TEAMS_SQLITE_DATABASE_FILEPATH
 
+
 @cubetry
 def does_database_exist(db_filename=None) -> bool:
     db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
     return os.path.exists(db_filename)
+
+
+@cubetry
+def get_database_file_last_modif_timestamp(db_filename=None) -> Optional[float]:
+    db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
+    if os.path.exists(db_filename):
+        return os.path.getmtime(db_filename)
+    else:
+        return None
+
 
 @cubetry
 def create_database(db_filename=None) -> bool:
@@ -38,7 +49,8 @@ def create_database(db_filename=None) -> bool:
                   creation_timestamp REAL,
                   start_timestamp REAL,
                   use_alarm BOOLEAN,
-                  current_cubebox_id INTEGER)''')
+                  current_cubebox_id INTEGER,
+                last_modification_timestamp REAL)''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS completed_cubeboxes
                  (team_id INTEGER,
@@ -60,6 +72,7 @@ def create_database(db_filename=None) -> bool:
     conn.close()
     return True
 
+
 def delete_database(db_filename=None):
     db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
     if os.path.exists(db_filename):
@@ -67,6 +80,7 @@ def delete_database(db_filename=None):
         print(f"Database {db_filename} deleted.")
     else:
         print(f"Database {db_filename} does not exist.")
+
 
 def backup_database(db_filename=None, backup_filename=None):
     db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
@@ -97,16 +111,17 @@ def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=N
             team_id = existing_team[0]
             # Update the existing team
             c.execute('''UPDATE teams SET name=?, custom_name=?, rfid_uid=?, max_time_sec=?, 
-                         start_timestamp=?, use_alarm=?, current_cubebox_id=? WHERE id=?''',
+             start_timestamp=?, use_alarm=?, current_cubebox_id=?, last_modification_timestamp=? WHERE id=?''',
                       (team.name, team.custom_name, team.rfid_uid, team.max_time_sec,
-                       team.start_timestamp, team.use_alarm, team.current_cubebox_id, team_id))
+                       team.start_timestamp, team.use_alarm, team.current_cubebox_id, team.last_modification_timestamp, team_id))
+
         else:
             # Insert a new team
             c.execute('''INSERT INTO teams (name, custom_name, rfid_uid, max_time_sec, creation_timestamp, 
-                                            start_timestamp, use_alarm, current_cubebox_id)
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                                            start_timestamp, use_alarm, current_cubebox_id, last_modification_timestamp)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                       (team.name, team.custom_name, team.rfid_uid, team.max_time_sec,
-                       team.creation_timestamp, team.start_timestamp, team.use_alarm, team.current_cubebox_id))
+                       team.creation_timestamp, team.start_timestamp, team.use_alarm, team.current_cubebox_id, team.last_modification_timestamp))
             team_id = c.lastrowid
 
         # Clear existing completed_cubeboxes and team trophies for the team
@@ -114,7 +129,7 @@ def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=N
         c.execute('DELETE FROM team_trophies WHERE team_id = ?', (team_id,))
 
         # Insert completed_cubeboxes
-        for cubebox in team._completed_cubeboxes:
+        for cubebox in team.completed_cubeboxes:
             c.execute('''INSERT INTO completed_cubeboxes (team_id, cube_id, current_team_name, start_timestamp,
                                                           win_timestamp, last_valid_rfid_line, state)
                          VALUES (?, ?, ?, ?, ?, ?, ?)''',
@@ -135,6 +150,7 @@ def update_database_from_teams_list(teams: cg.CubeTeamsStatusList, db_filename=N
 @cubetry
 def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
                         min_creation_timestamp=None, max_creation_timestamp=None,
+                        min_modification_timestamp=None,
                         db_filename=None) -> Optional[cg.CubeTeamsStatusList]:
     """Find teams matching the given parameters in the database.
     for name and custom_name, the search is case-insensitive and partial (i.e. 'abc' will match 'xAbCy').
@@ -161,16 +177,19 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
     if max_creation_timestamp:
         query += " AND creation_timestamp <= ?"
         params.append(max_creation_timestamp)
+    if min_modification_timestamp:
+        query += " AND last_modification_timestamp >= ?"
+        params.append(min_modification_timestamp)
 
     c.execute(query, params)
     rows = c.fetchall()
 
     teams_list = cg.CubeTeamsStatusList()
     for row in rows:
-        team_id, name, custom_name, rfid_uid, max_time_sec, creation_timestamp, start_timestamp, use_alarm, current_cubebox_id = row
+        team_id, name, custom_name, rfid_uid, max_time_sec, creation_timestamp, start_timestamp, use_alarm, current_cubebox_id, last_modification_timestamp = row
         c.execute("SELECT * FROM completed_cubeboxes WHERE team_id = ?", (team_id,))
         completed_cubeboxes_rows = c.fetchall()
-        completed_cubeboxes = [
+        completed_cubeboxes = cg.CompletedCubeboxStatusList([
             cg.CompletedCubeboxStatus(
                 cube_id=cube_id,
                 current_team_name=current_team_name,
@@ -181,7 +200,7 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
             )
             for _, cube_id, current_team_name, start_timestamp, win_timestamp, last_valid_rfid_line, state in
             completed_cubeboxes_rows
-        ]
+        ])
 
         c.execute("SELECT trophy_name FROM team_trophies WHERE team_id = ?", (team_id,))
         trophies_names_rows = c.fetchall()
@@ -206,8 +225,6 @@ def find_teams_matching(name=None, custom_name=None, rfid_uid=None,
     return teams_list
 
 
-
-
 @cubetry
 def get_latest_creation_timestamp(db_filename=None) -> Optional[float]:
     db_filename = db_filename or DEFAULT_DATABASE_FILEPATH
@@ -221,6 +238,7 @@ def get_latest_creation_timestamp(db_filename=None) -> Optional[float]:
     conn.close()
     return latest_timestamp
 
+
 @cubetry
 def load_all_teams(db_filename=None) -> cg.CubeTeamsStatusList:
     return find_teams_matching(db_filename=db_filename)
@@ -228,7 +246,14 @@ def load_all_teams(db_filename=None) -> cg.CubeTeamsStatusList:
 
 @cubetry
 def add_team_to_database(team: cg.CubeTeamStatus, db_filename=None) -> bool:
+    return update_team_in_database(team, db_filename)
+
+
+@cubetry
+def update_team_in_database(team: cg.CubeTeamStatus, db_filename=None) -> bool:
+    team.update_modification_timestamp()
     return update_database_from_teams_list(cg.CubeTeamsStatusList([team]), db_filename)
+
 
 def expanded_test_find_teams_matching():
     test_db_filepath = os.path.join(SAVES_DIR, 'test_teams_database.db')
@@ -312,8 +337,10 @@ def expanded_test_find_teams_matching():
     # Find teams by creation timestamp range
     min_timestamp = time.time() - 7000
     max_timestamp = time.time() - 1000
-    found_teams = find_teams_matching(min_creation_timestamp=min_timestamp, max_creation_timestamp=max_timestamp, db_filename=test_db_filepath)
-    CubeLogger.static_debug(f"Found teams by creation timestamp range {min_timestamp} to {max_timestamp}: {found_teams}")
+    found_teams = find_teams_matching(min_creation_timestamp=min_timestamp, max_creation_timestamp=max_timestamp,
+                                      db_filename=test_db_filepath)
+    CubeLogger.static_debug(
+        f"Found teams by creation timestamp range {min_timestamp} to {max_timestamp}: {found_teams}")
     assert len(found_teams) == 2, f"Test Failed: Expected 2 teams in timestamp range {min_timestamp} to {max_timestamp}"
     print(f"Test Passed: Found teams by creation timestamp range {min_timestamp} to {max_timestamp}")
 
@@ -324,28 +351,50 @@ def expanded_test_find_teams_matching():
     print("Test Passed: Found no teams with name 'NonExistent'")
 
     # Find teams by multiple parameters
-    found_teams = find_teams_matching(name="AlphaTeam", custom_name="AlphaCustom", rfid_uid="3333", db_filename=test_db_filepath)
-    CubeLogger.static_debug(f"Found teams by multiple parameters (name='AlphaTeam', custom_name='AlphaCustom', rfid_uid='3333'): {found_teams}")
-    assert len(found_teams) == 1, "Test Failed: Expected 1 team with name 'AlphaTeam', custom name 'AlphaCustom', and rfid_uid '3333'"
-    print("Test Passed: Found teams by multiple parameters (name='AlphaTeam', custom_name='AlphaCustom', rfid_uid='3333')")
+    found_teams = find_teams_matching(name="AlphaTeam", custom_name="AlphaCustom", rfid_uid="3333",
+                                      db_filename=test_db_filepath)
+    CubeLogger.static_debug(
+        f"Found teams by multiple parameters (name='AlphaTeam', custom_name='AlphaCustom', rfid_uid='3333'): {found_teams}")
+    assert len(
+        found_teams) == 1, "Test Failed: Expected 1 team with name 'AlphaTeam', custom name 'AlphaCustom', and rfid_uid '3333'"
+    print(
+        "Test Passed: Found teams by multiple parameters (name='AlphaTeam', custom_name='AlphaCustom', rfid_uid='3333')")
     return True
 
 
 def find_team_by_creation_timestamp(team_creation_timestamp) -> Optional[cg.CubeTeamStatus]:
     """Find a team by its creation timestamp. Handles the fact that the creation timestamp is a float so we need some wiggle room for the equality test"""
     epsilon = TIMESTAMP_EPSILON
-    teams = find_teams_matching(min_creation_timestamp=team_creation_timestamp - epsilon, max_creation_timestamp=team_creation_timestamp + epsilon)
+    teams = find_teams_matching(min_creation_timestamp=team_creation_timestamp - epsilon,
+                                max_creation_timestamp=team_creation_timestamp + epsilon)
     if len(teams) == 1:
         return teams[0]
     elif len(teams) > 1:
-        CubeLogger.static_error(f"Found multiple teams with creation timestamp {team_creation_timestamp}. This shouldn't happen.")
+        CubeLogger.static_error(
+            f"Found multiple teams with creation timestamp {team_creation_timestamp}. This shouldn't happen.")
         return teams[0]
     else:
         return None
 
+
+def generate_sample_teams_sqlite_database():
+    """same as the json database, but in sqlite"""
+    teams = cg.generate_sample_teams()
+    delete_database(TEAMS_SQLITE_DATABASE_FILEPATH)
+    if teams.save_to_sqlite_database(TEAMS_SQLITE_DATABASE_FILEPATH):
+        print("Sample teams sqlite database generated:")
+        print(teams.to_string())
+
+
+def display_teams_sqlite_database():
+    teams = load_all_teams()
+    print(teams.to_string())
+    print(f"nb teams: {len(teams)}")
+
+
 if __name__ == "__main__":
+    generate_sample_teams_sqlite_database()
+    display_teams_sqlite_database()
     # test_find_teams_matching()
 
     expanded_test_find_teams_matching()
-
-

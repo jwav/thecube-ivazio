@@ -15,9 +15,10 @@ class CubeRgbMatrixContent:
                  max_time_sec: float = None
                  ):
         self.matrix_id = matrix_id
-        self.team_name = team_name
+        self.team_name = team_name or ""
         self.end_timestamp = end_timestamp
         self.max_time_sec = max_time_sec
+        assert self.is_valid()
 
     @property
     def remaining_secs(self) -> float:

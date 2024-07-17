@@ -329,7 +329,7 @@ if is_raspberry_pi():
 elif not is_raspberry_pi():
     # mock class of CubeRfidEventListener for non-raspberry pi systems
     class CubeRfidEventListener(CubeRfidListenerBase):
-        def __init__(self):
+        def __init__(self, *args, **kwargs):
             super().__init__()
             self.log = CubeLogger("Mock RFID Event Listener")
             self._is_setup = True

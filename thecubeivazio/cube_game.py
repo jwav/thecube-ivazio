@@ -1,6 +1,7 @@
 """Modelises a TheCube game session, i.e. a team trying to open a CubeBox"""
 import enum
 import json
+import random
 import time
 import hashlib
 
@@ -506,7 +507,9 @@ class CubeTeamStatus:
                  start_timestamp: Timestamp = None, current_cubebox_id: int = None,
                  completed_cubeboxes: CompletedCubeboxStatusList = None,
                  trophies_names: List[str] = None,
-                 use_alarm=False):
+                 use_alarm=False,
+                 last_modification_timestamp: Timestamp = None
+                 ):
         self.creation_timestamp = creation_timestamp or time.time()
         # the team's code name (a city name)
         self.name = name
@@ -529,7 +532,12 @@ class CubeTeamStatus:
         # for certain teams, we want to use a loud alarm when their time is up
         # TODO: test
         self.use_alarm = use_alarm
+        # used only for database synchronisation
+        self.last_modification_timestamp = last_modification_timestamp
 
+    @cubetry
+    def update_modification_timestamp(self):
+        self.last_modification_timestamp = time.time()
 
     @property
     @cubetry
@@ -635,10 +643,10 @@ class CubeTeamStatus:
             "creation_timestamp": self.creation_timestamp,
             "start_timestamp": self.start_timestamp,
             "current_cubebox_id": self.current_cubebox_id,
-            # TODO: should be calling directly to_dict() on the cubeboxes
             "completed_cubeboxes": [box.to_dict() for box in self._completed_cubeboxes],
             "trophies_names": self.trophies_names,
             "use_alarm": self.use_alarm,
+            "last_modification_timestamp": self.last_modification_timestamp,
         }
 
     @classmethod
@@ -647,7 +655,6 @@ class CubeTeamStatus:
         When the CubeTeamStatus structure is changed, update this method as well as to_dict()"""
         # CubeLogger.static_debug(f"CubeTeamStatus.make_from_dict {d}")
         try:
-            # if any
             ret = cls(name=d.get("name"),
                       rfid_uid=d.get("rfid_uid"),
                       max_time_sec=d.get("max_time_sec"),
@@ -664,6 +671,8 @@ class CubeTeamStatus:
                 CompletedCubeboxStatus.make_from_dict(box) for box in d.get("completed_cubeboxes", [])]
             ret.trophies_names = d.get("trophies_names", [])
             ret.use_alarm = d.get("use_alarm", False)
+            if ret.last_modification_timestamp is not None:
+                ret.last_modification_timestamp = float(ret.last_modification_timestamp)
             return ret
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamStatus.make_from_dict {e}")
@@ -821,6 +830,11 @@ class CubeTeamStatus:
         if not trophy_name in self.trophies_names:
             self.trophies_names.append(trophy_name)
 
+    @cubetry
+    def remove_trophy_name(self, trophy_name: str):
+        if trophy_name in self.trophies_names:
+            self.trophies_names.remove(trophy_name)
+
 
 # TODO : add ranks for the day, week, mont, all-time
 class CubeTeamsStatusList(List[CubeTeamStatus]):
@@ -885,7 +899,9 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         try:
             assert self.has_team(
                 team), f"CubeTeamsStatusList.get_team_ranking_among_list: team with cts {team.creation_timestamp} not in list"
-            return sorted(self, key=lambda t: t.compute_score(), reverse=True).index(team) + 1
+            def score(t: CubeTeamStatus) -> int:
+                return t.calculate_team_score()
+            return sorted(self, key=score, reverse=True).index(team) + 1
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.get_team_ranking_among_list {e}")
             CubeLogger.static_error(f"creation_timestamps: {[t.creation_timestamp for t in self]}")
@@ -1474,23 +1490,102 @@ def test_completion_time_sec():
 
 
 
+def generate_sample_teams() -> CubeTeamsStatusList:
+    from datetime import datetime, timedelta
+
+    teams = CubeTeamsStatusList()
+
+    # Lists of parameters for each team
+    names = ["Dakar", "Paris", "Tokyo", "New York", "London"]
+    custom_names = ["Riri & Jojo", "Émile et Gégé", "Sakura & Kenji", "Mikey & John", "Elizabeth & Charles"]
+    rfid_uids = ["1234567890", "0987654321", "1122334455", "5566778899", "6677889900"]
+    max_times = [3600, 3600, 7200, 5400, 3600]
+    creation_timestamps = [
+        datetime(2024, 5, 20, 12, 34, 56).timestamp(),  # a few weeks ago
+        datetime(2024, 5, 21, 12, 34, 56).timestamp(),  # a few weeks ago
+        (datetime.now() - timedelta(days=5)).timestamp(),  # 5 days ago
+        (datetime.now() - timedelta(days=30)).timestamp(),  # 1 month ago
+        (datetime.now() - timedelta(days=90)).timestamp()  # 3 months ago
+    ]
+    start_timestamps = [
+        datetime(2024, 5, 21, 12, 40, 20).timestamp(),
+        datetime(2024, 5, 22, 12, 55, 0).timestamp(),
+        (datetime.now() - timedelta(days=4)).timestamp(),
+        (datetime.now() - timedelta(days=29)).timestamp(),
+        (datetime.now() - timedelta(days=89)).timestamp()
+    ]
+    completed_cubeboxes_list = [
+        [
+            CubeboxStatus(cube_id=1, start_timestamp=0, win_timestamp=1000),
+            CubeboxStatus(cube_id=2, start_timestamp=1000, win_timestamp=2000),
+        ],
+        [
+            CubeboxStatus(cube_id=3, start_timestamp=0, win_timestamp=1000),
+            CubeboxStatus(cube_id=4, start_timestamp=1000, win_timestamp=2000),
+            CubeboxStatus(cube_id=5, start_timestamp=2000, win_timestamp=3000),
+        ],
+        [
+            CubeboxStatus(cube_id=6, start_timestamp=0, win_timestamp=1000),
+            CubeboxStatus(cube_id=7, start_timestamp=1000, win_timestamp=2000),
+        ],
+        [
+            CubeboxStatus(cube_id=8, start_timestamp=0, win_timestamp=1000),
+            CubeboxStatus(cube_id=9, start_timestamp=1000, win_timestamp=2000),
+            CubeboxStatus(cube_id=10, start_timestamp=2000, win_timestamp=3000),
+        ],
+        [
+            CubeboxStatus(cube_id=11, start_timestamp=0, win_timestamp=1000),
+            CubeboxStatus(cube_id=12, start_timestamp=1000, win_timestamp=2000),
+        ]
+    ]
+    # get the list of valid trophies from the config, and make a list, for each teams,
+    # of 0 to 4 random trophies
+    valid_trophies:List[CubeTrophy] = list(CubeConfig.get_config().defined_trophies)
+    valid_trophy_names = [x.name for x in valid_trophies]
+    print(f"valid_trophy_names={valid_trophy_names}")
+    trophies_names_list = []
+    for i in range(len(names)):
+        trophies_names = []
+        for j in range(random.randint(0, 4)):
+            trophies_names.append(random.choice(valid_trophy_names))
+        trophies_names_list.append(trophies_names)
+    print(f"trophies_names_list={trophies_names_list}")
+    # Loop to add teams
+    for name, custom_name, rfid_uid, max_time, creation_timestamp, start_timestamp, completed_cubeboxes, trophies_names in zip(
+            names, custom_names, rfid_uids, max_times, creation_timestamps, start_timestamps, completed_cubeboxes_list,
+            trophies_names_list
+    ):
+        completed_cubeboxes = CompletedCubeboxStatusList(completed_cubeboxes)
+        # print(f"----- completed_cubeboxes={completed_cubeboxes}")
+        team = CubeTeamStatus(
+            name=name,
+            custom_name=custom_name,
+            rfid_uid=rfid_uid,
+            max_time_sec=max_time,
+            creation_timestamp=creation_timestamp,
+            start_timestamp=start_timestamp,
+            completed_cubeboxes=completed_cubeboxes,
+            trophies_names=trophies_names
+        )
+        # print(f"----- team={team}")
+        # OK so far
+        teams.add_team(team)
+        # print(teams[-1]._completed_cubeboxes)
+
+    if not teams.is_valid():
+        print("Error: teams are not valid")
+        exit(1)
+
+    print(f"Generated teams: {teams}")
+    return teams
+
+
 if __name__ == "__main__":
+    import thecubeivazio.cube_database as cubedb
+    cubedb.generate_sample_teams_sqlite_database()
     test_completion_time_sec()
     test_cubeboxes_scoring()
     test_ScoringPresets()
     test_CubeScoreCalculator()
-    # test_hashes()
+    test_hashes()
     test_json()
-    exit(0)
-
-    teams_list = CubeTeamsStatusList()
-    teams_list.append(CubeTeamStatus(name="Budapest", custom_name="FooCustomName",
-                                     rfid_uid="123456789", max_time_sec=60.0))
-    teams_list.append(CubeTeamStatus(name="Paris", custom_name="BarCustomName",
-                                     rfid_uid="987654321", max_time_sec=60.0))
-    team1 = teams_list.get_team_by_name("Budapest")
-    team1.trophies_names.append(
-        CubeTeamTrophy(name="FooTrophy", description="FooDescription", points=100, image_path="foo.png"))
-    team1.trophies_names.append(
-        CubeTeamTrophy(name="BarTrophy", description="BarDescription", points=200, image_path="bar.png"))
-    print(teams_list)

@@ -15,7 +15,6 @@ from thecubeivazio import cube_utils as cu
 from thecubeivazio import cube_identification as cid
 from thecubeivazio import cube_database as cdb
 from thecubeivazio.cube_logger import CubeLogger
-import pyppeteer
 from pyppeteer import launch
 
 
@@ -29,6 +28,7 @@ class CubeScoresheet:
         self.team = team
         self.log = CubeLogger("CubeScoresheet")
 
+    @cubetry
     def generate_html(self) -> str:
         team = self.team
         title = "FEUILLE DE SCORES - THE CUBE"
@@ -39,7 +39,7 @@ class CubeScoresheet:
             f'<tr><td class="col-left">Date : </td><td class="col-right">{creation_datetime_french}</td></tr>',
             f'<tr><td class="col-left">Temps alloué : </td><td class="col-right">{cu.seconds_to_hhmmss_string(team.max_time_sec,separators=["h ", "m"], secs=False)}</td></tr>',
             f'<tr><td class="col-left">Score total : </td><td class="col-right">{team.calculate_team_score()} points</td></tr>',
-            f'<tr><td class="col-left">Cubeboxes terminées : </td><td class="col-right">{len(team._completed_cubeboxes)} ({sum(box.calculate_box_score() for box in team._completed_cubeboxes)} points)</td></tr>',
+            f'<tr><td class="col-left">Cubeboxes terminées : </td><td class="col-right">{len(team.completed_cubeboxes)} ({sum(box.calculate_box_score() for box in team.completed_cubeboxes)} points)</td></tr>',
             f'<tr><td class="col-left">Trophées obtenus : </td><td class="col-right">{len(team.trophies_names)} ({sum(trophy.points for trophy in team.trophies)} points)</td></tr>'
         ])
 

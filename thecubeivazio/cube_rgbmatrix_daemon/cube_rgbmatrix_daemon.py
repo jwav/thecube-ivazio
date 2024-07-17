@@ -1,5 +1,6 @@
 # TODO: add imports and test method
 import logging
+import random
 import sys
 import threading
 import os
@@ -327,6 +328,27 @@ def test():
     daemon.log.critical("---- Starting RGB Daemon TEST ----")
     print("Starting RGB Daemon TEST")
 
+    team_names = [
+        "Oslo",
+        "Stockholm",
+        "Dakar",
+        "Berne",
+        "Budapest",
+        "Kiev",
+        "Naples",
+        "Belgrade",
+        "Moscou",
+        "Madrid",
+        "Paris",
+        "Ankara",
+    ]
+
+    nb_teams = len(team_names)
+
+    # random timestamps posterior to time.time()
+    end_timestamps = [
+        time.time() + random.randint(0, 8000) for _ in range(nb_teams)
+    ]
 
     try:
         thread = threading.Thread(target=daemon.start, daemon=True)
@@ -334,17 +356,15 @@ def test():
 
         print("Running RGB Daemon test")
         d_names = CubeRgbMatrixContentDict({
-            0: CubeRgbMatrixContent(matrix_id=0, team_name="Oslo", end_timestamp=time.time() + 30),
-            1: CubeRgbMatrixContent(matrix_id=1, team_name="Stockholm", end_timestamp=time.time() + 10),
-            4: CubeRgbMatrixContent(matrix_id=4, team_name="Budapest", end_timestamp=time.time() + 10),
-            10: CubeRgbMatrixContent(matrix_id=10, team_name="Paris", end_timestamp=time.time() + 20),
+            i:CubeRgbMatrixContent(matrix_id=i,
+                                   team_name=team_names[i],
+                                   end_timestamp=end_timestamps[i]) for i in range(nb_teams)
         })
         text_with_names = d_names.to_string()
         d_no_names = CubeRgbMatrixContentDict({
-            0: CubeRgbMatrixContent(matrix_id=0, team_name="", end_timestamp=time.time() + 30),
-            1: CubeRgbMatrixContent(matrix_id=1, team_name="", end_timestamp=time.time() + 10),
-            4: CubeRgbMatrixContent(matrix_id=4, team_name="", end_timestamp=time.time() + 10),
-            10: CubeRgbMatrixContent(matrix_id=10, team_name="", end_timestamp=time.time() + 20),
+            i:CubeRgbMatrixContent(matrix_id=i,
+                                      team_name="",
+                                      end_timestamp=end_timestamps[i]) for i in range(nb_teams)
         })
         text_no_names = d_no_names.to_string()
         while True:
