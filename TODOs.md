@@ -5,7 +5,7 @@
 - [ ] !! list the rest of the TODOs
 - [ ] !! make full scale simulations that can be run on localhost or on the local network (aka for realsies)
 - [x] auto display on hdmi on cubemaster
-- [ ] limit custom names length
+- [x] limit custom names length
 
 
 # CubeWebApp
@@ -32,13 +32,14 @@
 
 # CubeMaster
 
-- [ ] test with real hardware
+- [x] test with real hardware
 - [x] !! improve display, have room for 12 teams max
-    - [ ] problème grésillement relais
+    - [x] problème grésillement relais
 - [ ] rgb_test command doesnt work
 - [ ] !! implement a way to stop and resume time for a team
 - [x] fix the highscores page background : we can't see the background image
 - [x] make it so the cubemaster cannot be hacked from the x11 session
+- [ ] the sound on cubemaster doesnt work
 
 
 # CubeRGBMatrix

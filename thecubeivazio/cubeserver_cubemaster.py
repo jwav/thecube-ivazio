@@ -234,9 +234,10 @@ class CubeServerMaster:
             if not cube_utils.is_raspberry_pi():
                 self.log.warning("Not running on a Raspberry Pi. Not launching the RGB Daemon")
             else:
-                self.log.info("Launching RGBMatrix Daemon process")
-                assert crd.CubeRgbMatrixDaemon.launch_process()
-                self.log.success("Launched RGBMatrix Daemon process")
+                if not crd.CubeRgbMatrixDaemon.is_process_running():
+                    self.log.info("Launching RGBMatrix Daemon process")
+                    crd.CubeRgbMatrixDaemon.launch_process()
+                    self.log.success("Launched RGBMatrix Daemon process")
 
             self.log.info("Starting RGBMatrix Daemon")
             self.rgb_sender = crs.CubeRgbServer(is_master=True, debug=False)

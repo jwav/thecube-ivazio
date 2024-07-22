@@ -177,6 +177,10 @@ class CubeRgbMatrixDaemon(SampleBase):
         except Exception as e:
             print(f"{cls.__name__} : Error stopping process: {e}")
 
+    @classmethod
+    def is_process_running(cls):
+        return cls._static_process is not None
+
     def start(self):
         return self.process()
 
