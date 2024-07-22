@@ -711,10 +711,10 @@ class CubeServerMaster:
             return True
 
     def test_sound(self):
-        self.sound_player.set_volume_percent(50)
-        self.sound_player.play_sound_file_matching("alarm")
         self.sound_player.set_volume_percent(100)
-        self.sound_player.play_sound_file_matching("alarm")
+        for _ in range(10):
+            self.sound_player.play_sound_file_matching("alarm")
+            time.sleep(1)
 
     def test_rgb(self):
         # master = CubeServerMasterWithPrompt()
