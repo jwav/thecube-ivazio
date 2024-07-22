@@ -209,9 +209,10 @@ if is_raspberry_pi():
         DEV_INPUT_PATH = "/dev/input/"
         ECODES_TO_STR_DIGIT_DICT = {
             evdev.ecodes.KEY_1: '1', evdev.ecodes.KEY_2: '2', evdev.ecodes.KEY_3: '3', evdev.ecodes.KEY_4: '4',
-            evdev.ecodes.KEY_5: '5',
-            evdev.ecodes.KEY_6: '6', evdev.ecodes.KEY_7: '7', evdev.ecodes.KEY_8: '8', evdev.ecodes.KEY_9: '9',
-            evdev.ecodes.KEY_0: '0'
+            evdev.ecodes.KEY_5: '5', evdev.ecodes.KEY_6: '6', evdev.ecodes.KEY_7: '7', evdev.ecodes.KEY_8: '8',
+            evdev.ecodes.KEY_9: '9', evdev.ecodes.KEY_0: '0',
+            evdev.ecodes.KEY_A: 'A', evdev.ecodes.KEY_B: 'B', evdev.ecodes.KEY_C: 'C', evdev.ecodes.KEY_D: 'D',
+            evdev.ecodes.KEY_E: 'E', evdev.ecodes.KEY_F: 'F',
         }
 
         def __init__(self, show_debug=False):
