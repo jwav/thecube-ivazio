@@ -733,6 +733,8 @@ class CubeServerMaster:
                     name="Paris", rfid_uid="9999999999", max_time_sec=20, start_timestamp=time.time(),
                     current_cubebox_id=11),
             ]
+
+            previous_teams = master.teams.copy()
             # sample_teams = []
             for team in sample_teams:
                 master.teams.add_team(team)
@@ -745,6 +747,7 @@ class CubeServerMaster:
             time.sleep(5)
             # toggle the display_team_names_on_rgb config
             # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
+            master.teams = previous_teams.copy()
 
         except Exception as e:
             master.log.error(f"TestRGB: Exception: {e}")
