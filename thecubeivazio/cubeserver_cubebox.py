@@ -253,8 +253,9 @@ class CubeServerCubebox:
                 self._rfid_setup_loop()
                 continue
             for rfid_line in self.rfid.get_completed_lines():
+                rfid_line: cube_rfid.CubeRfidLine
                 self.log.info(
-                    f"Line entered at {rfid_line.oldest_timestamp}: {rfid_line.uid} : {'valid' if rfid_line.is_valid() else 'invalid'}")
+                    f"Line entered at {rfid_line.timestamp}: {rfid_line.uid} : {'valid' if rfid_line.is_valid() else 'invalid'}")
                 if not rfid_line.is_valid():
                     self.rfid.remove_line(rfid_line)
                     self.buzzer.play_rfid_error_sound()
