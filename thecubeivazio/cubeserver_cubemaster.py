@@ -546,6 +546,9 @@ class CubeServerMaster:
         elif command == "test_rgb":
             self.test_rgb()
             return True
+        elif command == "test_sound":
+            self.test_sound()
+            return True
         elif command == "reboot":
             cube_utils.reboot()
             return True
@@ -706,6 +709,9 @@ class CubeServerMaster:
                 return False
             self.log.success(f"Received cubebox status reply for cubebox {cubebox_id}")
             return True
+
+    def test_sound(self):
+        self.sound_player.play_sound_file_matching("alarm")
 
     def test_rgb(self):
         # master = CubeServerMasterWithPrompt()
