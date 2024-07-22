@@ -740,12 +740,11 @@ class CubeServerMaster:
 
             # master.stop()
 
-            while True:
-                master.update_rgb()
-                master.log.critical(f"TestRGB: Teams: {master.teams.to_json()}")
-                time.sleep(3)
-                # toggle the display_team_names_on_rgb config
-                # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
+            master.update_rgb()
+            master.log.critical(f"TestRGB: Teams: {master.teams.to_json()}")
+            time.sleep(5)
+            # toggle the display_team_names_on_rgb config
+            # master.config.set_field("display_team_names_on_rgb", not master.config.display_team_names_on_rgb)
 
         except Exception as e:
             master.log.error(f"TestRGB: Exception: {e}")
