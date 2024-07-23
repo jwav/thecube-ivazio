@@ -39,7 +39,7 @@ class CubeServerCubebox:
         self.neopixel = cube_neopixel.CubeNeopixel()
 
         # set up the RFID listener. It's a bit long, so there's a dedicated method
-        self.rfid = None
+        self.rfid:cube_rfid.CubeRfidListenerBase = None
         self._rfid_setup_loop()
 
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
@@ -124,17 +124,22 @@ class CubeServerCubebox:
     @cubetry
     def handle_command(self, command: str) -> bool:
         self.log.info(f"Handling command: '{command}'")
-        if command == "reset":
+        words = [x.strip() for x in command.split()]
+        cmd = words[0]
+        arg1 = words[1] if len(words) > 1 else None
+        if cmd == "reset":
             self.perform_reset()
             return True
-        elif command == "reboot":
+        elif cmd == "reboot":
             cube_utils.reboot()
             return True
-        elif command == "button":
+        elif cmd == "button":
             self.button.simulate_long_press()
             return True
+        elif cmd == "rfid" and arg1 is not None:
+            self.rfid.simulate_read(arg1)
         else:
-            self.log.error(f"Unknown command: {command}")
+            self.log.error(f"Unknown command: {cmd}")
             return False
 
     @property

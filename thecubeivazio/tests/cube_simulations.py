@@ -1,5 +1,6 @@
 import inspect
 import logging
+import random
 import re
 import threading
 import traceback
@@ -38,10 +39,12 @@ class TestResults:
     def __init__(self):
         self.statements = []
         self.results = []
+        self.info = None
 
-    def add(self, statement, result):
+    def add(self, statement, result, info=None):
         self.statements.append(statement)
         self.results.append(result)
+        self.info = info
 
     def display(self):
         nb_tests = len(self.statements)
@@ -55,6 +58,12 @@ class TestResults:
             else:
                 # LOGGER.warning(f"FAIL : {statement}: {self.results[i]}")
                 LOGGER.warning(f"FAIL : {statement}")
+        # display the failed tests
+        if nb_fail > 0:
+            LOGGER.critical("Failed tests:")
+        for i, statement in enumerate(self.statements):
+            if self.results[i] == TestResults.RESULT_FAIL:
+                LOGGER.critical(f"FAIL : {statement}")
         LOGGER.info(f"Results: {nb_pass}/{nb_tests} passed, {nb_fail}/{nb_tests} failed")
 
 
@@ -255,10 +264,11 @@ def valid_simulation():
     test_eq(lambda: CUBEBOX.status.last_valid_rfid_line.uid, rfid_uid, "Cubebox should have the correct RFID UID")
     test_eq(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id, cube_id,
          "Team should be associated with the cubebox")
-    test_eq(lambda: MASTER.teams.get_team_by_name(team_name)._completed_cubeboxes, [],
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name).completed_cubeboxes, [],
          "Team should not have completed any cubeboxes")
-    test_eq(lambda: str(MASTER.teams.get_team_by_name(team_name).max_time_sec), str(max_time),
+    test_eq(lambda: int(MASTER.teams.get_team_by_name(team_name).max_time_sec), int(max_time),
          "Team should have the correct max time")
+
     LOGGER.info(f"Master teams status: {MASTER.teams.to_string()}")
     test(lambda: MASTER.teams.get_team_by_name(team_name).start_timestamp is not None,
          "Team should have a starting timestamp")
@@ -309,6 +319,80 @@ def unregistered_rfid():
     test(lambda: CUBEBOX.is_box_being_played() is False, "Cubebox should not be playing")
 
 
+def test_alarm_triggering():
+    """simulates the following scenario:
+    - a team is registered on the frontdesk, with the flag 'use_alarm', and its info is sent to the cubemaster
+    - we check that the cubemaster has got the right team info
+    - we simulate a RFID read on the cubebox with the team's RFID UID
+    - we check that the cubebox is playing
+    - we simulate a long press on the cubebox after a few seconds
+    - we check that the cubebox is not playing anymore
+    - we check that the cubemaster has updated the team's status
+    - we check that at some point, the cubemaster has triggered the alarm
+    """
+    global CUBEBOX, FRONTDESK, MASTER
+    LOGGER.setLevel(logging.INFO)
+    common_start()
+    team_name = "Paris"
+    rfid_uid = CubeRfidLine.generate_random_rfid_line().uid
+    cube_id = 1
+
+    max_time_sec = 3650
+    # simulate the frontdesk creating a new team
+    team = cube_game.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=max_time_sec, use_alarm=True)
+    FRONTDESK.add_new_team(team)
+    # wait(COMM_DELAY_SEC, "waiting for the team to be added to the master")
+    wait_until(lambda: MASTER.teams.get_team_by_name(team_name) is not None,
+               message="waiting for the team to be added to the master",
+               timeout=STATUS_REPLY_TIMEOUT)
+    LOGGER.info(f"MASTER.teams.get_team_by_name(team_name)={MASTER.teams.get_team_by_name(team_name)}")
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name).use_alarm, True, "Team should have the alarm flag set")
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id, None,
+            "Team should not be associated with a cubebox")
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name).completed_cubebox_ids, [],
+            "Team should not have completed any cubeboxes")
+    test_eq(lambda: MASTER._is_playing_alarm, False,
+            "The alarm should not be playing")
+
+    time.sleep(1)
+    CUBEBOX.rfid.simulate_read(rfid_uid)
+    wait_until(lambda: CUBEBOX.is_box_being_played() is True,
+               message="waiting for the box to be played",
+               timeout=COMM_DELAY_SEC)
+    LOGGER.info(f"Cubebox status: {CUBEBOX.to_string()}")
+    test(lambda: CUBEBOX.is_box_being_played() is True, "Cubebox should be playing")
+    test(lambda: CUBEBOX.status.last_valid_rfid_line is not None, "Cubebox should have a valid RFID line")
+    test_eq(lambda: CUBEBOX.status.last_valid_rfid_line.uid, rfid_uid, "Cubebox should have the correct RFID UID")
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id, cube_id,
+            "Team should be associated with the cubebox")
+    test_eq(lambda: MASTER.teams.get_team_by_name(team_name)._completed_cubeboxes, [],
+            "Team should not have completed any cubeboxes")
+    test_eq(lambda: int(MASTER.teams.get_team_by_name(team_name).max_time_sec), int(max_time_sec),
+            "Team should have the correct max time")
+    LOGGER.info(f"Master teams status: {MASTER.teams.to_string()}")
+    test(lambda: MASTER.teams.get_team_by_name(team_name).start_timestamp is not None,
+            "Team should have a starting timestamp")
+    wait(2, "waiting a bit...")
+    LOGGER.info("Simulating long press")
+    CUBEBOX.button.simulate_long_press()
+    wait_until(lambda:MASTER._is_playing_alarm is True,
+               message="waiting for the alarm to be triggered",
+               timeout=COMM_DELAY_SEC)
+    LOGGER.info(f"MASTER._is_playing_alarm={MASTER._is_playing_alarm}")
+    test(lambda: MASTER._is_playing_alarm is True, "The alarm should be playing")
+    wait_until(lambda: CUBEBOX.is_box_being_played() is False,
+                message="waiting for the box to stop playing",
+                timeout=COMM_DELAY_SEC)
+    test(lambda: CUBEBOX.is_box_being_played() is False,
+         "Cubebox should not be playing")
+    test(lambda: MASTER.teams.get_team_by_name(team_name).current_cubebox_id is None,
+            "Team should not be associated with a cubebox")
+    test(lambda: MASTER.teams.get_team_by_name(team_name).completed_cubebox_ids == [cube_id],
+            f"Team should have completed cubebox {cube_id}")
+
+
+
+
 def test_testing_system():
     LOGGER.critical("Testing test()")
     test(lambda: 1 == 1, "should pass")
@@ -350,7 +434,9 @@ if __name__ == "__main__":
     try:
         # test_testing_system()
         # exit(0)
-        valid_simulation()
+        # valid_simulation()
+        # unregistered_rfid()
+        test_alarm_triggering()
         # time.sleep(5)
         # unregistered_rfid()
         # test_testing_system()

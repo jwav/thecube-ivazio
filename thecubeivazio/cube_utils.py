@@ -358,6 +358,18 @@ def this_year_start_timestamp(timestamp: float = None):
     return start_date.timestamp()
 
 
+def int_ms_to_float_sec(ms: int) -> float:
+    return ms / 1000.0
+
+def float_sec_to_int_ms(sec: float) -> int:
+    return int(sec * 1000)
+
+def now_ms() -> int:
+    return int(time.time() * 1000)
+
+def float_eq(a: float, b: float, epsilon: float = 0.001) -> bool:
+    return abs(a - b) < epsilon
+
 def generate_encryption_key(password: str) -> bytes:
     # Derive a key from the password without using a salt
     kdf = PBKDF2HMAC(

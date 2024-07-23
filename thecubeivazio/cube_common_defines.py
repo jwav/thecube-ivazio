@@ -12,6 +12,7 @@ from thecubeivazio.cube_logger import CubeLogger
 # type aliases
 Seconds = Union[float, int]
 Timestamp = Seconds
+TimestampMs = int
 CubeId = int
 TeamName = str
 NodeName = str

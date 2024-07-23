@@ -43,9 +43,10 @@ class CubeRfidLine:
     MAX_UID_LENGTH = 20
     MIN_UID_LENGTH = 4
     # if set to True, the length of the RFID UID will be checked to determine if it's valid
-    # if set to False, the UID will be considered valid if it's all digits
+    # if set to False, the UID will be considered valid if it's all hex characters
     # TODO: ideally, CHECK_FOR_LENGTH should be set to True, but we need to assert that all RFIDs read are the same length
     CHECK_FOR_LENGTH = False
+    # if set to True, we'll check if the UID is within the range of MIN_UID_LENGTH and MAX_UID_LENGTH
     CHECK_FOR_LENGTH_RANGE = True
 
     def __init__(self, timestamp: Seconds = None, uid: str = None):

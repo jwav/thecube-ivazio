@@ -86,6 +86,7 @@ class CubeServerMaster:
         self._keep_running = False
         self._last_game_status_sent_to_frontdesk_hash: Optional[Hash] = None
         self._last_teams_status_sent_to_rgb_daemon_hash: Optional[Hash] = None
+        self._is_playing_alarm = False
 
         # heartbeat setup
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
@@ -120,8 +121,6 @@ class CubeServerMaster:
         self._thread_rgb.join(timeout=0.1)
         self._thread_status_update.join(timeout=0.1)
         self._thread_highscores.join(timeout=0.1)
-        crd.CubeRgbMatrixDaemon.stop_process()
-        self.rgb_sender.stop_listening()
 
     def _highscores_loop(self):
         if DISABLE_HIGHSCORES:
@@ -205,6 +204,7 @@ class CubeServerMaster:
     def _run_alarm(self):
         """sounds the alarm and activate the lights for a given amount of time"""
         self.log.info("Running alarm")
+        self._is_playing_alarm = True
         default_duration_sec = 5
         duration_sec = self.config.get_field("alarm_duration_sec")
         if not duration_sec:
@@ -216,6 +216,7 @@ class CubeServerMaster:
         while time.time() < end_time:
             time.sleep(1)
         CubeGpio.set_pin(25, False)
+        self._is_playing_alarm = False
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
@@ -225,6 +226,10 @@ class CubeServerMaster:
             time.sleep(LOOP_PERIOD_SEC)
             if self._last_teams_status_sent_to_rgb_daemon_hash != self.teams.hash:
                 self.update_rgb()
+        if self.rgb_sender:
+            self.rgb_sender.stop_listening()
+        if crd.CubeRgbMatrixDaemon.is_process_running():
+            crd.CubeRgbMatrixDaemon.stop_process()
 
     @cubetry
     def update_rgb(self):
@@ -297,7 +302,8 @@ class CubeServerMaster:
 
     @cubetry
     def _message_handling_loop(self):
-        """check the incoming messages and handle them"""
+        """Maybe the most important loop.
+        Checks the incoming messages and handle them as they come"""
         self.net.run()
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
@@ -478,9 +484,14 @@ class CubeServerMaster:
         self.log.info(f"Teams after button press update : {self.teams.to_string()}")
 
         # indicate that the cubebox needs to be reset by a staff member
+        # TODO: the cubebox does the status update and signaling on its own
         cubebox.set_state_waiting_for_reset()
         # and update the local cubeboxes teams status lists
         self.cubeboxes.update_from_cubebox(cubebox)
+
+        # if the team has the use_alarm flag, sound the alarm
+        if team.use_alarm:
+            self.run_alarm()
 
     def _handle_frontdesk_new_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received new team message from {message.sender}")
