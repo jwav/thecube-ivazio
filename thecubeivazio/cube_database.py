@@ -115,7 +115,7 @@ class CubeDatabase:
                                                               win_timestamp, last_valid_rfid_line, state)
                              VALUES (?, ?, ?, ?, ?, ?, ?)''',
                           (team_id, cubebox.cube_id, cubebox.current_team_name, cubebox.start_timestamp,
-                           cubebox.win_timestamp, cubebox.last_valid_rfid_line, cubebox._state.value))
+                           cubebox.win_timestamp, cubebox.last_valid_rfid_line, cubebox.get_state().value))
 
             for trophy_name in team.trophies_names:
                 c.execute('''INSERT INTO team_trophies (team_id, trophy_name)

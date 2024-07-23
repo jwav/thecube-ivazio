@@ -821,7 +821,7 @@ class CubeTeamStatus:
         # TODO: just do a raw copy
         CubeLogger.static_debug(f"CubeTeamStatus.update_from_team: this is the same team. updating.")
         CubeLogger.static_debug(f"current team status: {self.to_json()}")
-        for completed_cube in team._completed_cubeboxes:
+        for completed_cube in team.completed_cubeboxes:
             self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
                                     completed_cube.win_timestamp)
         for trophy in team.trophies_names:

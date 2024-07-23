@@ -88,11 +88,11 @@ class CubeScoresheet:
 
 
         cube_rows = ''
-        for i, box in enumerate(team._completed_cubeboxes):
+        for i, box in enumerate(team.completed_cubeboxes):
             box: cg.CompletedCubeboxStatus
             cube_rows += f'<tr><td>{i + 1}</td><td>{box.completion_time_str}</td><td>{box.calculate_box_score()}</td><td>12</td><td>6</td><td>4</td><td>2</td></tr>'
 
-        for i in range(len(team._completed_cubeboxes) + 1, cid.NB_CUBEBOXES):
+        for i in range(len(team.completed_cubeboxes) + 1, cid.NB_CUBEBOXES):
             cube_rows += f'<tr><td>{i}</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'
 
 
