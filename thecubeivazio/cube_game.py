@@ -530,10 +530,16 @@ class CubeTeamStatus:
         # the trophies collected by the team, awarded by the frontdesk
         self.trophies_names: List[str] = trophies_names or []
         # for certain teams, we want to use a loud alarm when their time is up
-        # TODO: test
         self.use_alarm = use_alarm
         # used only for database synchronisation
         self.last_modification_timestamp = last_modification_timestamp
+        # TODO: implement and test
+        self.pause_timestamps = []
+        self.resume_timestamps = []
+
+    @cubetry
+    def is_paused(self) -> bool:
+        return len(self.pause_timestamps) > len(self.resume_timestamps)
 
     @cubetry
     def update_modification_timestamp(self):
@@ -603,7 +609,9 @@ class CubeTeamStatus:
     @property
     def remaining_time(self) -> Optional[Seconds]:
         try:
-            return self.max_time_sec - (time.time() - self.start_timestamp)
+            ret = self.max_time_sec - (time.time() - self.start_timestamp)
+            # TODO: take pauses into account
+            return ret if ret > 0 else 0
         except:
             return None
 

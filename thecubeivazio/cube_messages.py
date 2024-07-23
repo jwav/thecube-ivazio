@@ -54,6 +54,8 @@ class CubeMsgTypes(enum.Enum):
 
     ORDER_CUBEBOX_TO_WAIT_FOR_RESET = "ORDER_CUBEBOX_TO_WAIT_FOR_RESET"
     ORDER_CUBEBOX_TO_RESET = "ORDER_CUBEBOX_TO_RESET"
+    ORDER_TEAM_PAUSE = "ORDER_TEAM_PAUSE"
+    ORDER_TEAM_RESUME = "ORDER_TEAM_RESUME"
 
     # Messages sent by the CubeBox besides status messages
     CUBEBOX_RFID_READ = "CUBEBOX_RFID_READ"
@@ -681,6 +683,33 @@ class CubeMsgOrderCubeboxToReset(CubeMessage):
     def cube_id(self) -> int:
         return int(self.kwargs.get("cube_id"))
 
+class CubeMsgOrderTeamPause(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk to order it to pause a team."""
+
+    def __init__(self, sender=None, team_name=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.ORDER_TEAM_PAUSE, sender, team_name=team_name)
+        self.require_ack = True
+
+    @property
+    def team_name(self) -> str:
+        return str(self.kwargs.get("team_name"))
+
+class CubeMsgOrderTeamResume(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk to order it to resume a team."""
+
+    def __init__(self, sender=None, team_name=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.ORDER_TEAM_RESUME, sender, team_name=team_name)
+        self.require_ack = True
+
+    @property
+    def team_name(self) -> str:
+        return str(self.kwargs.get("team_name"))
 
 # common messages
 

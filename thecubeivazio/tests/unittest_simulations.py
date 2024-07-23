@@ -18,7 +18,7 @@ from thecubeivazio.cube_common_defines import *
 COMM_DELAY_SEC = 3
 CUBE_ID = 1
 LOGGER = cube_logger.CubeLogger("Simulations")
-CUBEBOX = cubeserver_cubebox.CubeServerCubebox(node_name=cubeid.cubebox_index_to_node_name(CUBE_ID))
+CUBEBOX = cubeserver_cubebox.CubeServerCubebox(CUBE_ID)
 FRONTDESK = cubeserver_frontdesk.CubeServerFrontdesk()
 MASTER = cubeserver_cubemaster.CubeServerMaster()
 CUBEBOX_THREAD = threading.Thread(target=CUBEBOX.run, daemon=True)

@@ -13,12 +13,15 @@ import thecubeivazio.cube_utils as cube_utils
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
 import thecubeivazio.cube_sounds as cube_sounds
-from thecubeivazio import cube_game, cube_config, cube_neopixel
+from thecubeivazio import cube_game
+from thecubeivazio import cube_config
+from thecubeivazio import cube_neopixel
 from thecubeivazio.cube_common_defines import *
 
 
 class CubeServerCubebox:
-    def __init__(self, node_name: str=None):
+    def __init__(self, cube_id: int=1):
+        node_name = cubeid.cubebox_index_to_node_name(cube_id)
         self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.config = cube_config.CubeConfig.get_config()
 
@@ -457,9 +460,9 @@ class CubeServerCubeboxWithPrompt(CubeServerCubebox):
 def main(use_prompt=False):
     import atexit
     if use_prompt:
-        box = CubeServerCubeboxWithPrompt("CubeBox1")
+        box = CubeServerCubeboxWithPrompt(1)
     else:
-        box = CubeServerCubebox("CubeBox1")
+        box = CubeServerCubebox(1)
     atexit.register(box.stop)
 
     box.log.setLevel(cube_logger.logging.INFO)
@@ -475,7 +478,7 @@ def main(use_prompt=False):
 
 def test():
     import atexit
-    box = CubeServerCubebox("CubeBox1")
+    box = CubeServerCubebox(1)
     atexit.register(box.stop)
     box.log.setLevel(cube_logger.logging.DEBUG)
     box.net.log.setLevel(cube_logger.logging.INFO)

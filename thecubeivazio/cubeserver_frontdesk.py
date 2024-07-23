@@ -698,7 +698,7 @@ def test_send_config():
 
     fd = CubeServerFrontdesk()
     cm = CubeServerMaster()
-    cb = CubeServerCubebox("CubeBox1")
+    cb = CubeServerCubebox(1)
 
     fd.run()
     cm.run()
