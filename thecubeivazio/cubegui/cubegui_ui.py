@@ -781,3 +781,4 @@ class Ui_Form(object):
         self.btnConfigCheck.setText(_translate("Form", "&Vérifier"))
         self.btnConfigSendToServers.setText(_translate("Form", "&Envoyer la configuration aux serveurs"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "Configuration du jeu"))
+import resources_rc

@@ -12,7 +12,6 @@ from PyQt5.QtPrintSupport import QPrinter, QPrintPreviewDialog
 from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox
 
 from cubegui_ui import Ui_Form
-from thecubeivazio import cube_database as cubedb
 from thecubeivazio import cube_game
 from thecubeivazio import cube_logger as cube_logger
 from thecubeivazio import cube_utils
@@ -115,7 +114,7 @@ class CubeGuiTabTeamsMixin:
         team = self.fd.teams.get_team_by_name(team_name)
         # if not found in current teams, check the database
         if not team:
-            team = cubedb.find_team_by_creation_timestamp(team_creation_timestamp)
+            team = self.fd.database.find_team_by_creation_timestamp(team_creation_timestamp)
         if not team:
             self.log.error(f"Could not find team with creation timestamp {team_creation_timestamp}")
             return None
@@ -265,7 +264,7 @@ class CubeGuiTabTeamsMixin:
             # add the trophy to the team
             team.add_trophy_name(trophy.name)
             # update the team in the database
-            cubedb.update_team_in_database(team)
+            self.fd.database.update_team_in_database(team)
             # notify the CubeMaster
             self.fd.send_database_teams_to_cubemaster([team])
         except Exception as e:
@@ -301,7 +300,7 @@ class CubeGuiTabTeamsMixin:
             # remove the trophy from the team
             team.remove_trophy_name(trophy.name)
             # update the team in the database
-            cubedb.update_team_in_database(team)
+            self.fd.database.update_team_in_database(team)
             # notify the CubeMaster
             self.fd.send_database_teams_to_cubemaster([team])
         except Exception as e:
@@ -366,7 +365,7 @@ class CubeGuiTabTeamsMixin:
             nb_days = self.ui.spinTeamsAmountOfDays.value()
             min_timestamp = time.time() - nb_days * 24 * 3600
             self.log.debug(f"min_timestamp: {min_timestamp}, i.e. {cube_utils.timestamp_to_date(min_timestamp)}")
-            matching_teams = cubedb.find_teams_matching(name=team_name, custom_name=custom_name, rfid_uid=rfid_uid,
+            matching_teams = self.fd.database.find_teams_matching(name=team_name, custom_name=custom_name, rfid_uid=rfid_uid,
                                                min_creation_timestamp=min_timestamp, max_creation_timestamp=time.time())
         self.display_teams(matching_teams)
 

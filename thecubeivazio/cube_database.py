@@ -351,6 +351,8 @@ def expanded_test_find_teams_matching():
 
 
 if __name__ == "__main__":
+    db = CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
+    db.generate_sample_teams_sqlite_database()
     db = CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
     db.generate_sample_teams_sqlite_database()
     db.display_teams_sqlite_database()
