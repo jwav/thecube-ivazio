@@ -16,9 +16,10 @@
 # PIL ImageDraw module (draw shapes to images) explained here:
 # http://effbot.org/imagingbook/imagedraw.htm
 
+import time
+
 from PIL import Image
 from PIL import ImageDraw
-import time
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 # Configuration for the matrix

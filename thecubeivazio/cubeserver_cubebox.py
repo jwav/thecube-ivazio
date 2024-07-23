@@ -3,18 +3,17 @@ The CubeBox module handles everything in CubeBoxes, i.e. the raspberrypis embedd
 """
 import threading
 import time
-from typing import Optional
 
-import thecubeivazio.cube_logger as cube_logger
-import thecubeivazio.cube_rfid as cube_rfid
-import thecubeivazio.cube_networking as cubenet
-import thecubeivazio.cube_messages as cm
-import thecubeivazio.cube_utils as cube_utils
-import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_button as cube_button
+import thecubeivazio.cube_identification as cubeid
+import thecubeivazio.cube_logger as cube_logger
+import thecubeivazio.cube_messages as cm
+import thecubeivazio.cube_networking as cubenet
+import thecubeivazio.cube_rfid as cube_rfid
 import thecubeivazio.cube_sounds as cube_sounds
-from thecubeivazio import cube_game
+import thecubeivazio.cube_utils as cube_utils
 from thecubeivazio import cube_config
+from thecubeivazio import cube_game
 from thecubeivazio import cube_neopixel
 from thecubeivazio.cube_common_defines import *
 

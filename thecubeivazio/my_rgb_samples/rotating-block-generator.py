@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from samplebase import SampleBase
 import math
+
+from samplebase import SampleBase
 
 
 def scale_col(val, lo, hi):

@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # Display a runtext with double-buffering.
-from samplebase import SampleBase
-from rgbmatrix import graphics
-import time
 import datetime
+import time
+
+from rgbmatrix import graphics
+
+from samplebase import SampleBase
+
 
 def seconds_to_hhmmss(seconds):
         return str(datetime.timedelta(seconds=seconds))

@@ -1,5 +1,6 @@
-import RPi.GPIO as GPIO
 import time
+
+import RPi.GPIO as GPIO
 
 BUTTON_PIN = 17
 

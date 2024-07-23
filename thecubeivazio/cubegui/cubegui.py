@@ -1,16 +1,11 @@
 # icon names : https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+import atexit
 import os
 import sys
-import threading
-import time
-import atexit
 import traceback as tb
-from functools import partial
-from typing import Optional
-from PyQt5 import QtGui
-from PyQt5.QtCore import QFile, QTextStream, QThread, QMetaObject, Qt, QTimer, QObject
-from PyQt5.QtWidgets import QApplication, QMainWindow
 
+from PyQt5.QtCore import QThread, QTimer
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 sys.path.append(os.path.abspath('..'))
 
@@ -36,7 +31,7 @@ if AUTO_UPDATE_PY_FROM_UI_AND_QRC:
 
 from cubegui_ui import Ui_Form
 from thecubeivazio import cubeserver_frontdesk as cfd, cube_rfid
-from thecubeivazio.cube_logger import CubeLogger, CUBEGUI_LOG_FILENAME
+from thecubeivazio.cube_logger import CUBEGUI_LOG_FILENAME
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cubegui.cubegui_tab_newteam import CubeGuiTabNewTeamMixin
 from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin

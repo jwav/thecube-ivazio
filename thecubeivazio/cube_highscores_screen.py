@@ -1,18 +1,14 @@
-import signal
+import datetime
+import random
 import subprocess
 import textwrap
-import threading
 import time
-from typing import List
-import datetime
-from thecubeivazio.cube_common_defines import *
-from thecubeivazio import cube_game as cg
-from thecubeivazio import cube_identification as cid
-from thecubeivazio import cube_utils as cu
-from thecubeivazio import cube_database as cdb
-from thecubeivazio import cubeserver_frontdesk as cfd
-import random
 
+from thecubeivazio import cube_database as cubedb
+from thecubeivazio import cube_game as cgame
+from thecubeivazio import cube_identification as cid
+from thecubeivazio import cube_utils as cutils
+from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import is_raspberry_pi
 
 NB_TEAMS_PER_HIGHSCORE_SUBTABLE = 5
@@ -38,7 +34,6 @@ FULL_UPDATE_PERIOD_SEC = 30
 HTTP_SERVER_PORT = 8000
 HTTP_HIGHSCORES_MAIN_URL = "http://localhost:8000/highscores_main.html"
 
-import psutil
 
 from thecubeivazio.cube_http import CubeHttpServer
 
@@ -82,7 +77,8 @@ class CubeBrowserManager:
         print(f"Launching Chromium with command: '{command}'")
         self._process = subprocess.Popen(command, shell=True)
 
-    def close_chromium(self):
+    @staticmethod
+    def close_chromium():
         command = "pkill chromium-browser"
         subprocess.run(command, shell=True)
 
@@ -93,9 +89,9 @@ class CubeBrowserManager:
 
 
 class CubeHighscoresPlayingTeamsSubtable:
-    def __init__(self, teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
+    def __init__(self, teams: cgame.CubeTeamsStatusList, cubeboxes: cgame.CubeboxesStatusList):
         self.teams = teams.copy()
-        assert isinstance(self.teams, cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
+        assert isinstance(self.teams, cgame.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
         self.teams.sort_teams_by_score()
         self.cubeboxes = cubeboxes.copy()
 
@@ -147,7 +143,7 @@ class CubeHighscoresPlayingTeamsSubtable:
         team_rows = ""
         for i, team in enumerate(self.teams):
             assert isinstance(team.completed_cubeboxes,
-                              cg.CubeboxesStatusList), f"team.completed_cubeboxes is not a CubeboxesStatusList: {team.completed_cubeboxes}"
+                              cgame.CubeboxesStatusList), f"team.completed_cubeboxes is not a CubeboxesStatusList: {team.completed_cubeboxes}"
             cubeboxes_cells = ""
             for cubebox in self.cubeboxes:
                 completed_cubebox = team.completed_cubeboxes.get_cubebox_by_cube_id(cubebox.cube_id)
@@ -236,9 +232,9 @@ class CubeHighscoresPlayingTeamsSubtable:
 
 
 class CubeHighscoresSubtable:
-    def __init__(self, teams: cg.CubeTeamsStatusList, title: str, max_teams: int = NB_TEAMS_PER_HIGHSCORE_SUBTABLE):
+    def __init__(self, teams: cgame.CubeTeamsStatusList, title: str, max_teams: int = NB_TEAMS_PER_HIGHSCORE_SUBTABLE):
         self.teams = teams.copy()
-        assert isinstance(self.teams, cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
+        assert isinstance(self.teams, cgame.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.teams}"
         self.teams.sort_teams_by_score()
         self.title = title
         self.nb_teams = max_teams
@@ -318,10 +314,10 @@ class CubeHighscoresSubtable:
 
 class CubeHighscoresScreenManager:
 
-    def __init__(self, playing_teams: cg.CubeTeamsStatusList, cubeboxes: cg.CubeboxesStatusList):
+    def __init__(self, playing_teams: cgame.CubeTeamsStatusList, cubeboxes: cgame.CubeboxesStatusList):
         self.playing_teams = playing_teams.copy()
         assert isinstance(self.playing_teams,
-                          cg.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.playing_teams}"
+                          cgame.CubeTeamsStatusList), f"self.teams is not a CubeTeamsStatusList: {self.playing_teams}"
         self.playing_teams.sort_teams_by_score()
         self.cubeboxes = cubeboxes.copy()
 
@@ -331,6 +327,7 @@ class CubeHighscoresScreenManager:
         self.must_update_highscores = False
 
         self.http_server = CubeHttpServer(HIGHSCORES_DIR)
+        self.database = cubedb.CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
 
     def run(self):
         """Runs the HTTP server"""
@@ -358,20 +355,20 @@ class CubeHighscoresScreenManager:
         self.http_server.send_refresh_playing_teams()
 
     def update_highscores_html_files(self,
-                                     all_time_teams: cg.CubeTeamsStatusList = None,
-                                     month_teams: cg.CubeTeamsStatusList = None,
-                                     week_teams: cg.CubeTeamsStatusList = None,
-                                     today_teams: cg.CubeTeamsStatusList = None):
+                                     all_time_teams: cgame.CubeTeamsStatusList = None,
+                                     month_teams: cgame.CubeTeamsStatusList = None,
+                                     week_teams: cgame.CubeTeamsStatusList = None,
+                                     today_teams: cgame.CubeTeamsStatusList = None):
         """Update the highscores subtables with the given teams. If no teams are given, fetch them from the database.
         This is actually the way it's supposed to be, i'm just providing these arguments for debug"""
         if not all_time_teams:
-            all_time_teams = cdb.find_teams_matching()
+            all_time_teams = self.database.find_teams_matching()
         if not month_teams:
-            month_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
+            month_teams = self.database.find_teams_matching(min_creation_timestamp=cutils.this_month_start_timestamp())
         if not week_teams:
-            week_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_week_start_timestamp())
+            week_teams = self.database.find_teams_matching(min_creation_timestamp=cutils.this_week_start_timestamp())
         if not today_teams:
-            today_teams = cdb.find_teams_matching(min_creation_timestamp=cu.today_start_timestamp())
+            today_teams = self.database.find_teams_matching(min_creation_timestamp=cutils.today_start_timestamp())
 
         CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_ALLTIME_FILEPATH)
@@ -386,15 +383,14 @@ class CubeHighscoresScreenManager:
 
 
 def test_CubeHighscorePlayingTeamsSubtable():
-    from thecubeivazio.cubeserver_frontdesk import generate_sample_teams
-    teams_status_list = generate_sample_teams()
-    cubelisttest = cg.CompletedCubeboxStatusList()
+    teams_status_list = cgame.generate_sample_teams()
+    cubelisttest = cgame.CompletedCubeboxStatusList()
     print(f"testlist {[box.cube_id for box in cubelisttest]}")
     for team in teams_status_list:
         print(f"team {team.name} : {[box.cube_id for box in team.completed_cubeboxes]}")
         print(f"team {team.name} : _ {[box.cube_id for box in team._completed_cubeboxes]}")
     # exit(0)
-    cubeboxes = cg.CubeboxesStatusList()
+    cubeboxes = cgame.CubeboxesStatusList()
     for box in cubeboxes:
         for team in teams_status_list:
             if team.current_cubebox_id == box.cube_id:
@@ -412,10 +408,10 @@ def test_CubeHighscorePlayingTeamsSubtable():
 
 
 def test_CubeHighscoreSubtable():
-    from thecubeivazio import cube_database as cdb
-    all_time_teams = cdb.find_teams_matching()
-    month_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
-    week_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_week_start_timestamp())
+    db = cubedb.CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
+    all_time_teams = db.find_teams_matching()
+    month_teams = db.find_teams_matching(min_creation_timestamp=cutils.this_month_start_timestamp())
+    week_teams = db.find_teams_matching(min_creation_timestamp=cutils.this_week_start_timestamp())
 
     highscores_all_time = CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS")
     highscores_month = CubeHighscoresSubtable(month_teams, "CE MOIS-CI")
@@ -427,18 +423,18 @@ def test_CubeHighscoreSubtable():
 
 
 def test_CubeHighscoreScreen():
-    from thecubeivazio import cube_database as cdb
-    teams = cdb.find_teams_matching()
-    cubeboxes = cg.CubeboxesStatusList()
+    db = cubedb.CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
+    teams = db.find_teams_matching()
+    cubeboxes = cgame.CubeboxesStatusList()
     cube_highscore_screen = CubeHighscoresScreenManager(teams, cubeboxes)
 
 
 def test_run(launch_browser=False):
 
-    playing_teams_1 = cfd.generate_sample_teams()
+    playing_teams_1 = cgame.generate_sample_teams()
     assert playing_teams_1.is_valid(), f"playing_teams_1 is not valid: {playing_teams_1}"
     playing_teams_1[0].current_cubebox_id = 1
-    cubeboxes_1 = cg.CubeboxesStatusList()
+    cubeboxes_1 = cgame.CubeboxesStatusList()
 
     playing_teams_2 = playing_teams_1.copy()
     playing_teams_2[0].completed_cubeboxes[0].win_timestamp += 100
@@ -453,7 +449,7 @@ def test_run(launch_browser=False):
     print(f"playing_teams_2: {playing_teams_2}")
     assert playing_teams_1 != playing_teams_2, f"playing_teams_1 == playing_teams_2"
 
-    cubeboxes_2 = cg.CubeboxesStatusList()
+    cubeboxes_2 = cgame.CubeboxesStatusList()
     for box in cubeboxes_1:
         roll = random.choice([1, 2, 3, 4, 5])
         if roll < 3:

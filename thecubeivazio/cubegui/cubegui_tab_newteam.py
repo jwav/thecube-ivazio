@@ -1,21 +1,14 @@
 """File for the mixin class (partial for CubeGuiForm) for the new team tab."""
 
-import time
-
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from cubegui_ui import Ui_Form
-
-from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils, cube_rfid
-
 import sys
-import atexit
-import traceback as tb
-
+import time
 from typing import TYPE_CHECKING
 
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication
+
+from thecubeivazio import cube_game, cube_utils, cube_rfid
 from thecubeivazio.cube_common_defines import cubetry
-from thecubeivazio.cube_messages import CubeAckInfos
 
 if TYPE_CHECKING:
     from cubegui import CubeGuiForm

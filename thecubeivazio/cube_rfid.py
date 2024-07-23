@@ -5,21 +5,17 @@ This module handles everything RFID-related for the CubeBox
 """
 import json
 import logging
-import os
-import re
 import subprocess
+import threading
+import time
+from collections import deque
+from typing import List
 
 import serial
 
-from thecubeivazio.cube_config import CubeConfig
-from thecubeivazio.cube_logger import CubeLogger
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_utils import XvfbManager, is_windows, is_raspberry_pi
-
-import threading
-import time
-from typing import Union, List, Optional
-from collections import deque
 
 if is_raspberry_pi():
     import evdev

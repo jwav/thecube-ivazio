@@ -5,19 +5,19 @@ handling the CubeBoxes, the LED matrix displays, and the web page displayed on a
 import threading
 import time
 
-import thecubeivazio.cube_logger as cube_logger
-import thecubeivazio.cube_rfid as cube_rfid
-import thecubeivazio.cube_networking as cubenet
-import thecubeivazio.cube_utils as cube_utils
-import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
+import thecubeivazio.cube_identification as cubeid
+import thecubeivazio.cube_logger as cube_logger
+import thecubeivazio.cube_networking as cubenet
+import thecubeivazio.cube_rfid as cube_rfid
+import thecubeivazio.cube_utils as cube_utils
+from thecubeivazio import cube_database as cubedb
+from thecubeivazio import cube_highscores_screen as chs
 from thecubeivazio import cube_messages as cm
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
-from thecubeivazio.cube_sounds import CubeSoundPlayer
 from thecubeivazio.cube_gpio import CubeGpio
-from thecubeivazio import cube_highscores_screen as chs
-from thecubeivazio import cube_database as cubedb
+from thecubeivazio.cube_sounds import CubeSoundPlayer
 
 DB_REQUEST_PERIOD_SEC = 3
 HIGHSCORES_UPDATE_PERIOD_SEC = 2
@@ -64,6 +64,8 @@ class CubeServerMaster:
         # objects to handle the alarm
         self.sound_player = CubeSoundPlayer()
 
+        self.database = cubedb.CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
+
         # used to manage the highscores screen (display, update, etc.)
         self.highscores_screen = chs.CubeHighscoresScreenManager(
             playing_teams=self.teams,
@@ -95,8 +97,8 @@ class CubeServerMaster:
 
 
         # if the play database does not exist, create it
-        if not cubedb.does_database_exist():
-            cubedb.create_database()
+        if not self.database.does_database_exist():
+            self.database.create_database()
             self.log.info("Created the local database")
 
         # on startup, send the game status to the frontdesk
@@ -145,7 +147,7 @@ class CubeServerMaster:
             # we only ask "which teams are newer than our newest recorded creation timestamp?"
             if time.time() > next_db_request_time:
                 # get the timestamp of the db file
-                db_timestamp = cubedb.get_database_file_last_modif_timestamp()
+                db_timestamp = self.database.get_database_file_last_modif_timestamp()
                 self.log.critical(f"db_timestamp : {db_timestamp}")
                 # ask the frontdesk. The answer will be handled in _message_handling_loop,
                 #  where a special flag will be set according to the answer
@@ -405,9 +407,9 @@ class CubeServerMaster:
             new_team = rdt_msg.team
             assert new_team, "_handle_reply_database_teams_message: new_team is None"
             self.log.info(f"Received new team from frontdesk for our database: {new_team.to_string()}")
-            assert cubedb.add_team_to_database(new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
+            assert self.database.add_team_to_database(new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
             # check that the team was indeed added to the database
-            assert cubedb.find_team_by_creation_timestamp(new_team.creation_timestamp), "_handle_reply_database_teams_message: get_team_by_creation_timestamp failed"
+            assert self.database.find_team_by_creation_timestamp(new_team.creation_timestamp), "_handle_reply_database_teams_message: get_team_by_creation_timestamp failed"
             self.log.success("Added new team to the local database. acknowledging.")
             self.net.acknowledge_this_message(rdt_msg, cm.CubeAckInfos.OK)
         except Exception as e:

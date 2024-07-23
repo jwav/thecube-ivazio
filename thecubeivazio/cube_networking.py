@@ -1,15 +1,14 @@
 """Handles everything related to networking communications"""
+import socket
+import threading
+import time
+from collections import deque
+from typing import Deque, Tuple, Dict
+
 import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_logger as cube_logger
 import thecubeivazio.cube_messages as cm
 from thecubeivazio.cube_common_defines import *
-
-import threading
-import time
-import socket
-from collections import deque
-from typing import Deque, Tuple, Dict, Optional
-
 from thecubeivazio.cube_messages import CubeMessage
 from thecubeivazio.cube_utils import is_windows
 

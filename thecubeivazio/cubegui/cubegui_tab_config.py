@@ -1,24 +1,15 @@
 """File for the mixin class (partial for CubeGuiForm) for the new team tab."""
 import json
-
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from cubegui_ui import Ui_Form
-
-from thecubeivazio import cubeserver_frontdesk as cfd
-from thecubeivazio import cube_game, cube_utils, cube_rfid, cube_logger, cube_config
-from thecubeivazio.cube_common_defines import *
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QFileDialog, QPushButton, QMainWindow
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QDesktopServices
-
 import sys
-import atexit
-import traceback as tb
-
 from typing import TYPE_CHECKING
 
-from thecubeivazio.cube_messages import CubeAckInfos
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtWidgets import QApplication
+
+from cubegui_ui import Ui_Form
+from thecubeivazio import cube_utils, cube_logger, cube_config
+from thecubeivazio.cube_common_defines import *
 
 if TYPE_CHECKING:
     from cubegui import CubeGuiForm

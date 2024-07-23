@@ -1,16 +1,15 @@
 """Modelises a TheCube game session, i.e. a team trying to open a CubeBox"""
 import enum
+import hashlib
 import json
 import random
 import time
-import hashlib
+from typing import List, Dict, Tuple, Iterable
 
-from typing import List, Optional, Dict, Tuple, Iterable
-
-from thecubeivazio.cube_common_defines import *
+import thecubeivazio.cube_rfid as cube_rfid
 from thecubeivazio import cube_identification as cubeid
 from thecubeivazio import cube_utils as cube_utils
-import thecubeivazio.cube_rfid as cube_rfid
+from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_logger import CubeLogger
 
@@ -92,6 +91,7 @@ class CubeboxStatus:
 
     def __repr__(self):
         ret = f"CubeboxStatus({self.to_string()}, last_valid_rfid_line={self.last_valid_rfid_line})"
+        return ret
 
     def to_string(self) -> str:
         return self.to_json()
@@ -1037,16 +1037,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
             CubeLogger.static_error(e)
             return False
 
-    def save_to_sqlite_database(self, db_path: str = None) -> bool:
-        from thecubeivazio import cube_database as cubedb
-        try:
-            db_path = db_path or TEAMS_SQLITE_DATABASE_FILEPATH
-            result = cubedb.update_database_from_teams_list(self, db_path)
-            return result
-        except Exception as e:
-            CubeLogger.static_error(f"CubeTeamsStatusList.save_to_sqlite_database {e}")
-            return False
-
     @cubetry
     def update_team(self, team: CubeTeamStatus) -> bool:
         assert team.is_valid()
@@ -1071,19 +1061,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
                 self.remove(team)
                 return True
         return False
-
-    @classmethod
-    def add_team_to_database(cls, team: CubeTeamStatus) -> bool:
-        try:
-            db = CubeTeamsStatusList()
-            db.load_from_json_file(TEAMS_JSON_DATABASE_FILEPATH)
-            assert db, "Could not load the teams database"
-            db.add_team(team)
-            assert db.save_to_json_file(TEAMS_JSON_DATABASE_FILEPATH), f"Could not save to the teams database: {team}"
-            return True
-        except Exception as e:
-            CubeLogger.static_error(f"CubeTeamsStatusList.add_team_to_database {e}")
-            return False
 
     @cubetry
     def find_team_by_creation_timestamp(self, team_creation_timestamp: Timestamp) -> Optional[CubeTeamStatus]:
@@ -1421,6 +1398,7 @@ def test_CubeScoreCalculator():
     assert not calc1.is_valid(), f"calc1 should not be valid: {calc1}"
     assert not calc2.is_valid(), f"calc2 should not be valid: {calc2}"
     assert not calc3.is_valid(), f"calc3 should not be valid: {calc3}"
+    assert not calc4.is_valid(), f"calc4 should not be valid: {calc4}"
     exit(0)
 
 
@@ -1590,7 +1568,8 @@ def generate_sample_teams() -> CubeTeamsStatusList:
 
 if __name__ == "__main__":
     import thecubeivazio.cube_database as cubedb
-    cubedb.generate_sample_teams_sqlite_database()
+    database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
+    database.generate_sample_teams_sqlite_database()
     test_completion_time_sec()
     test_cubeboxes_scoring()
     test_ScoringPresets()

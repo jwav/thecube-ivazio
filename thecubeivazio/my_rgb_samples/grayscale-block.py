@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from samplebase import SampleBase
 import time
+
+from samplebase import SampleBase
 
 
 class GrayscaleBlock(SampleBase):

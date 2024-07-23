@@ -1,17 +1,17 @@
 """Utility functions for the cube project"""
+import atexit
+import base64
 import datetime
 import json
-import time
-import subprocess
-import os
-import atexit
-from typing import Optional, Union, List
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
-from cryptography.fernet import Fernet
-import base64
 import re
+import subprocess
+import time
+from typing import List
+
+from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 from thecubeivazio.cube_common_defines import *
 

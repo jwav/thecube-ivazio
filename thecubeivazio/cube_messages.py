@@ -1,17 +1,15 @@
 """Defines the messages that are sent by the cubeboxes, the cubeserver, and the frontdesk."""
-import json
-import time
-from typing import Optional, Dict, Type
 import enum
+import json
+from typing import Dict, Type
 
 import thecubeivazio.cube_game as cube_game
+import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_rfid as cube_rfid
 import thecubeivazio.cube_utils as cube_utils
-import thecubeivazio.cube_identification as cubeid
-
 from thecubeivazio.cube_common_defines import *
-from thecubeivazio.cube_logger import CubeLogger
 from thecubeivazio.cube_config import CubeConfig
+from thecubeivazio.cube_logger import CubeLogger
 
 
 class CubeMsgTypes(enum.Enum):

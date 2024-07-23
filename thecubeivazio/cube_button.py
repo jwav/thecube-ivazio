@@ -3,14 +3,13 @@ This module handles everything button-related for the CubeBox
 It is meant to interact with the Raspberry Pi's GPIO pins,
 but when testing on a regular computer, it will simply tell if the 'v' key is pressed
 """
-from thecubeivazio import cube_logger, cube_utils
-from thecubeivazio.cube_common_defines import *
-from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
-
 import logging
 import threading
 import time
-from typing import Union
+
+from thecubeivazio import cube_logger, cube_utils
+from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
 
 # pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
 if not XvfbManager.has_x_server():

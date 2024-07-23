@@ -1,14 +1,11 @@
 # TODO: add imports and test method
-import ctypes
+import datetime
 import fcntl
 import logging
-import sys
-import threading
 import os
-import time
-import datetime
 import subprocess
-
+import sys
+import time
 from logging.handlers import RotatingFileHandler
 
 # RGB matrix lib imports

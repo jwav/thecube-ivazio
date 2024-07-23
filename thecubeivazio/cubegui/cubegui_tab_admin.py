@@ -1,21 +1,17 @@
 """File for the mixin class (partial for CubeGuiForm) for the admin tab."""
+import sys
 import time
+import traceback as tb
+from typing import TYPE_CHECKING
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QFile, QTextStream
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QTableWidgetItem
+
 from cubegui_ui import Ui_Form
-
-from thecubeivazio import cubeserver_frontdesk as cfd, cube_game, cube_utils
-from thecubeivazio import cube_logger as cube_logger
-from thecubeivazio.cube_common_defines import *
 from thecubeivazio import cube_identification as ci
+from thecubeivazio import cube_utils
+from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_rfid import CubeRfidLine
-import sys
-import atexit
-import traceback as tb
-
-from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from thecubeivazio.cubegui.cubegui import CubeGuiForm

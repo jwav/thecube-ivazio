@@ -1,11 +1,10 @@
 # TODO: handle the fact that the logs folder doesnt have the same relative path for everyone, like the GUI
 
 import logging
-import threading
 from logging.handlers import RotatingFileHandler
+from os import path, makedirs
 
 from colorlog import ColoredFormatter
-from os import path, makedirs
 
 LOGS_DIR = "logs"
 COMMON_LOG_FILENAME = path.join(LOGS_DIR, "cube_common.log")

@@ -1,29 +1,23 @@
 """File for the mixin class (partial for CubeGuiForm) for the teams management tab."""
 
-import time
-
-import fitz  # PyMuPDF
-
-
-
-from PyQt5 import QtGui
-from PyQt5.QtCore import QFile, QIODevice
-from PyQt5.QtGui import QIcon, QPainter, QPdfWriter, QImage
-from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
-from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox, QFileDialog
-from cubegui_ui import Ui_Form
-
-from thecubeivazio import cube_game
-from thecubeivazio import cube_utils
-from thecubeivazio import cube_logger as cube_logger
-from thecubeivazio import cube_database as cubedb
-from thecubeivazio import cubeserver_frontdesk as cfd
-
-from thecubeivazio.cube_common_defines import *
 import sys
-
+import time
 from typing import TYPE_CHECKING
 
+import fitz  # PyMuPDF
+from PyQt5 import QtGui
+from PyQt5.QtCore import QFile
+from PyQt5.QtGui import QIcon, QPainter, QImage
+from PyQt5.QtPrintSupport import QPrinter, QPrintPreviewDialog
+from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox
+
+from cubegui_ui import Ui_Form
+from thecubeivazio import cube_database as cubedb
+from thecubeivazio import cube_game
+from thecubeivazio import cube_logger as cube_logger
+from thecubeivazio import cube_utils
+from thecubeivazio import cubeserver_frontdesk as cfd
+from thecubeivazio.cube_common_defines import *
 
 if TYPE_CHECKING:
     from cubegui import CubeGuiForm

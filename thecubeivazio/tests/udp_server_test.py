@@ -1,5 +1,6 @@
-import socket
 import logging
+import socket
+
 
 class UDPServer:
     def __init__(self, ip: str, port: int):

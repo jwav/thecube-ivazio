@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from samplebase import SampleBase
-from rgbmatrix import graphics
 import time
+
+from rgbmatrix import graphics
+
+from samplebase import SampleBase
 
 
 class GraphicsTest(SampleBase):

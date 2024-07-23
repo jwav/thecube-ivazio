@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-import time
 import sys
 
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image
-
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 if len(sys.argv) < 2:
     sys.exit("Require a gif argument")

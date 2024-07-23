@@ -3,15 +3,12 @@ Interfaces a piezo buzzer to the RaspberryPi or plays sound files if not on the 
 import logging
 import random
 import threading
-import time
-from typing import Tuple
-
-from thecubeivazio import cube_logger
-from thecubeivazio.cube_common_defines import *
-import os
 
 import pygame.mixer as mixer
 import pygame.time as pgtime
+
+from thecubeivazio import cube_logger
+from thecubeivazio.cube_common_defines import *
 
 
 class CubeSoundPlayer:

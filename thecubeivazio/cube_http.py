@@ -1,11 +1,12 @@
 import logging
+import queue
+import threading
+import time
 
 from flask import Flask, Response, send_from_directory
-import threading
-import queue
-import os
-import time
+
 from thecubeivazio.cube_logger import CubeLogger
+
 
 class CubeHttpServer:
     DEFAULT_PORT = 8000  # Default port for the server

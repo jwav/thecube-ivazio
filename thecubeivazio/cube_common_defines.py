@@ -2,12 +2,12 @@ import glob
 import inspect
 import os
 import traceback
+from functools import wraps
 # pyinstaller doesnt like pathlib
 # from pathlib import Path
 from typing import Union, Optional
-from functools import wraps
-from thecubeivazio.cube_logger import CubeLogger
 
+from thecubeivazio.cube_logger import CubeLogger
 
 # type aliases
 Seconds = Union[float, int]
@@ -69,9 +69,10 @@ ENCRYPTED_CONFIG_FILEPATH = os.path.join(CONFIG_DIR, "global_config.json.enc")
 DEFAULT_TROPHY_IMAGE_FILENAME = "default_trophy_image.png"
 DEFAULT_TROPHY_IMAGE_FILEPATH = os.path.join(IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILENAME)
 CUBEBOXES_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "cubeboxes_backup.json")
-TEAMS_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "teams_backup.json")
-TEAMS_JSON_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
-TEAMS_SQLITE_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.db")
+# TEAMS_BACKUP_FILEPATH = os.path.join(SAVES_DIR, "teams_backup.json")
+# TEAMS_JSON_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "teams_database.json")
+FRONTDESK_SQLITE_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "frontdesk_teams_database.db")
+CUBEMASTER_SQLITE_DATABASE_FILEPATH = os.path.join(SAVES_DIR, "cubemaster_teams_database.db")
 
 # used in looping functions to induce a little delay
 # TODO: implement in existing loops
@@ -134,20 +135,20 @@ def cubetry(func):
 
 # see cubegui.cubegui.py. I'm putting it here to avoid circular imports
 # wrapper tryandupdate that's cubetry+update_whole_gui
-def tryandupdate(func):
-    def wrapper(obj:'CubeGuiForm', *args, **kwargs):
-        print(f"tryandupdate wrapper called from {func.__name__}")
-        result = cubetry(func)(obj, *args, **kwargs)
-        obj.update_gui()
-        # print("tryandupdate wrapper done")
-        return result
-    return wrapper
+# def tryandupdate(func):
+#     def wrapper(obj:'CubeGuiForm', *args, **kwargs):
+#         print(f"tryandupdate wrapper called from {func.__name__}")
+#         result = cubetry(func)(obj, *args, **kwargs)
+#         obj.update_gui()
+#         # print("tryandupdate wrapper done")
+#         return result
+#     return wrapper
 
 
 def test_paths():
     all_paths = [PROJECT_ROOT_PATH, SOUNDS_DIR, LOGS_DIR, CUBEGUI_DIR, CONFIG_DIR, CONFIG_FILEPATH,
                  SCORESHEETS_DIR, IMAGES_DIR, DEFAULT_TROPHY_IMAGE_FILEPATH,
-                 CUBEBOXES_BACKUP_FILEPATH, TEAMS_JSON_DATABASE_FILEPATH]
+                 CUBEBOXES_BACKUP_FILEPATH]
     for path in all_paths:
         try:
             assert os.path.exists(path)

@@ -1,5 +1,6 @@
-from thecubeivazio.cube_utils import is_raspberry_pi, cubetry
 import time
+
+from thecubeivazio.cube_utils import is_raspberry_pi, cubetry
 
 # if we're not on an rpi, we'll be using this mock class
 if not is_raspberry_pi():

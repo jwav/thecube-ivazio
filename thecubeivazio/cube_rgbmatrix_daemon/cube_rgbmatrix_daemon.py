@@ -1,14 +1,12 @@
 # TODO: add imports and test method
+import datetime
 import logging
+import os
 import random
+import subprocess
 import sys
 import threading
-import os
 import time
-import datetime
-import subprocess
-
-from logging.handlers import RotatingFileHandler
 
 # RGB matrix lib imports
 # local import rgbmatrix_samplebase
@@ -257,6 +255,8 @@ class CubeRgbMatrixDaemon(SampleBase):
 class CubeRgbMatrixMockDaemon(CubeRgbMatrixDaemon):
     """Has the same interface as the CubeRgbMatrixDaemon, but displays text
     instead of using the RGB matrix."""
+
+    # noinspection PyMissingConstructor
     def __init__(self):
         self._keep_running = False
         self.server = CubeRgbServer(is_rgb=True, debug=True)

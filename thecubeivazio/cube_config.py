@@ -1,10 +1,10 @@
 import json
 import logging
-from typing import Tuple, Optional
+from typing import Tuple
 
+import thecubeivazio.cube_utils as cube_utils
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
-import thecubeivazio.cube_utils as cube_utils
 
 
 class CubeConfig:

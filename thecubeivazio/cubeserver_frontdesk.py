@@ -2,19 +2,18 @@
 import logging
 import threading
 import time
-from typing import Optional, Iterable, Sized
+from typing import Iterable, Sized
 
-from thecubeivazio import cube_config
-
-import thecubeivazio.cube_logger as cube_logger
-import thecubeivazio.cube_rfid as cube_rfid
-import thecubeivazio.cube_networking as cubenet
-import thecubeivazio.cube_messages as cm
-import thecubeivazio.cube_utils as cube_utils
-import thecubeivazio.cube_identification as cubeid
 import thecubeivazio.cube_game as cube_game
-from thecubeivazio.cube_common_defines import *
+import thecubeivazio.cube_identification as cubeid
+import thecubeivazio.cube_logger as cube_logger
+import thecubeivazio.cube_messages as cm
+import thecubeivazio.cube_networking as cubenet
+import thecubeivazio.cube_rfid as cube_rfid
+import thecubeivazio.cube_utils as cube_utils
+from thecubeivazio import cube_config
 from thecubeivazio import cube_database as cubedb
+from thecubeivazio.cube_common_defines import *
 
 
 class CubeServerFrontdesk:
@@ -30,6 +29,9 @@ class CubeServerFrontdesk:
                                           log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
+
+        # the local teams database
+        self.database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
 
         # params for threading
         self._msg_handling_thread = None
@@ -120,10 +122,10 @@ class CubeServerFrontdesk:
             rdt_msg = cm.CubeMsgRequestDatabaseTeams(copy_msg=message)
             oldest_timestamp = rdt_msg.oldest_timestamp
             self.log.critical(f"requested oldest_timestamp={oldest_timestamp}")
-            local_db_timestamp = cubedb.get_database_file_last_modif_timestamp()
+            local_db_timestamp = self.database.get_database_file_last_modif_timestamp()
             self.log.critical(f"local_db_timestamp={local_db_timestamp}")
             assert oldest_timestamp, "_handle_request_database_teams: oldest_timestamp is None"
-            teams = cubedb.find_teams_matching(min_modification_timestamp=oldest_timestamp)
+            teams = self.database.find_teams_matching(min_modification_timestamp=oldest_timestamp)
             # if teams is None or empty, this function will still send
             # a message that says "no teams"
             self.send_database_teams_to_cubemaster(teams)
@@ -326,8 +328,7 @@ class CubeServerFrontdesk:
         try:
             team = self.teams.get_team_by_name(team_name)
             assert team, f"Team {team_name} not found"
-            assert cube_game.CubeTeamsStatusList.add_team_to_database(
-                team), f"Failed to add team {team_name} to the database"
+            assert self.database.add_team_to_database(team), f"Failed to add team {team_name} to the database"
             self.teams.remove_team(team_name)
             self.log.info(f"Moved team {team_name} to the database")
             return True
@@ -543,6 +544,19 @@ class CubeServerFrontdesk:
             return self._handle_reply_all_cubeboxes_status_hashes(reply_msg)
 
 
+    @cubetry
+    def _handle_reply_all_teams_status_hashes(self, message: cm.CubeMessage) -> bool:
+        self.log.info(f"Received reply all teams status hashes message from {message.sender}")
+        self.log.critical("_handle_reply_all_teams_status_hashes: not implemented")
+        return False
+
+    @cubetry
+    def _handle_reply_all_cubeboxes_status_hashes(self, message: cm.CubeMessage) -> bool:
+        self.log.info(f"Received reply all cubeboxes status hashes message from {message.sender}")
+        self.log.critical("_handle_reply_all_cubeboxes_status_hashes: not implemented")
+        return False
+
+
 class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
     def __init__(self):
         super().__init__()
@@ -694,7 +708,6 @@ def run_prompt():
 def test_send_config():
     from thecubeivazio.cubeserver_cubebox import CubeServerCubebox
     from thecubeivazio.cubeserver_cubemaster import CubeServerMaster
-    import traceback
 
     fd = CubeServerFrontdesk()
     cm = CubeServerMaster()
@@ -727,10 +740,15 @@ def test_send_config():
     exit(0)
 
 
+def generate_sample_database():
+    fd = CubeServerFrontdesk()
+    fd.database.generate_sample_teams_sqlite_database()
+    fd.database.display_teams_sqlite_database()
+
 if __name__ == "__main__":
     test_send_config()
     # generate_sample_teams_json_database()
-    cubedb.generate_sample_teams_sqlite_database()
-    cubedb.display_teams_sqlite_database()
+    generate_sample_database()
+
     exit(0)
     run_prompt()

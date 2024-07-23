@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import time
-from samplebase import SampleBase
+
 from PIL import Image
+
+from samplebase import SampleBase
 
 
 class ImageScroller(SampleBase):

@@ -4,7 +4,8 @@
 - all cubebox servers
 """
 
-from typing import Optional, Dict
+from typing import Dict
+
 from thecubeivazio import cube_utils
 from thecubeivazio.cube_common_defines import *
 
@@ -173,7 +174,7 @@ if __name__ == "__main__":
     print([x for x in CUBEBOX_IDS])
     nodes_list = NodesList()
     # display the list of all nodes, names and ips
-    print(nodes_list.to_string())
+    print(nodes_list)
     print("cubebox username test:")
     print(f"username=cubebox1 -> {hostname_to_valid_cubebox_name('cubebox1')}")
     print(f"username=cubebox2 -> {hostname_to_valid_cubebox_name('cubebox2')}")

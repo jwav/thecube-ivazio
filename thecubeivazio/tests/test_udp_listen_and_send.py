@@ -1,8 +1,9 @@
+import logging
 import socket
+import sys
 import threading
 import time
-import logging
-import sys
+
 
 class UDPServer:
     def __init__(self, ip: str, port: int, message: str):

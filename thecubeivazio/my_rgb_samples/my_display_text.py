@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # Display a runtext with double-buffering.
 import os
-import sys
+import time
+
+from rgbmatrix import graphics
 
 from samplebase import SampleBase
-from rgbmatrix import graphics
-import time
-import datetime
 
 
 def seconds_to_hhmmss(seconds):

@@ -6,19 +6,17 @@ import platform
 import shutil
 import textwrap
 import time
-import weasyprint
 
-from thecubeivazio import cube_game as cg
-from thecubeivazio import cubeserver_frontdesk as cfd
-from thecubeivazio.cube_common_defines import *
-from thecubeivazio import cube_utils as cu
-from thecubeivazio import cube_identification as cid
-from thecubeivazio import cube_database as cdb
-from thecubeivazio.cube_logger import CubeLogger
+import weasyprint
 from pyppeteer import launch
 
-
-from typing import List, Dict, Optional
+from thecubeivazio import cube_database as cubedb
+from thecubeivazio import cube_game as cg
+from thecubeivazio import cube_identification as cid
+from thecubeivazio import cube_utils as cu
+from thecubeivazio import cubeserver_frontdesk as cfd
+from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_logger import CubeLogger
 
 SCORESHEETS_CSS_FILEPATH = os.path.join(SCORESHEETS_DIR, "scoresheet.css")
 
@@ -27,6 +25,7 @@ class CubeScoresheet:
     def __init__(self, team: cg.CubeTeamStatus):
         self.team = team
         self.log = CubeLogger("CubeScoresheet")
+        self.database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
 
     @cubetry
     def generate_html(self) -> str:
@@ -43,11 +42,11 @@ class CubeScoresheet:
             f'<tr><td class="col-left">Trophées obtenus : </td><td class="col-right">{len(team.trophies_names)} ({sum(trophy.points for trophy in team.trophies)} points)</td></tr>'
         ])
 
-        all_time_teams = cdb.find_teams_matching()
-        this_years_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_year_start_timestamp())
-        this_months_teams = cdb.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
-        this_weeks_teams = cdb.find_teams_matching(min_creation_timestamp=cu.one_week_ago_start_timestamp())
-        todays_teams = cdb.find_teams_matching(min_creation_timestamp=cu.today_start_timestamp())
+        all_time_teams = self.database.find_teams_matching()
+        this_years_teams = self.database.find_teams_matching(min_creation_timestamp=cu.this_year_start_timestamp())
+        this_months_teams = self.database.find_teams_matching(min_creation_timestamp=cu.this_month_start_timestamp())
+        this_weeks_teams = self.database.find_teams_matching(min_creation_timestamp=cu.one_week_ago_start_timestamp())
+        todays_teams = self.database.find_teams_matching(min_creation_timestamp=cu.today_start_timestamp())
         # normally, a team for which a scoresheet is made is already in the database
         # but for debug purposes, we can add it to the list of teams
         for teams_list in [this_years_teams, this_months_teams, this_weeks_teams, todays_teams]:
