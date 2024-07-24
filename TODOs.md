@@ -7,6 +7,7 @@
 - [x] auto display on hdmi on cubemaster
 - [x] limit custom names length
 - [ ] use int milliseconds for timestamps
+    - [ ] oh, the refactory. Dude, that's not gonna happen.
 
 
 # CubeWebApp
@@ -23,7 +24,7 @@
 - [x] !! remove icons. use emojis in the text directly. more portable and easy
 - [x] !! CHECK THAT THE GUI RUNS FINE ON WINDOWS
 - [ ] "heure dernier message" doesnt update
-- [ ] bugs in current team search : too many teams displayed, maybe due to rgb_test
+- [x] bugs in current team search : too many teams displayed, maybe due to rgb_test
 - [ ] implement add and remove trophy in gui
 - [ ] do not display in gui the teams code names that are already occupied
 - [ ] the table in the team search tab does not have the right columns and data
@@ -45,6 +46,7 @@
 - [x] fix the highscores page background : we can't see the background image
 - [x] make it so the cubemaster cannot be hacked from the x11 session
 - [ ] the sound on cubemaster doesnt work
+- [ ] handle teams being out of time
 
 
 # CubeRGBMatrix
@@ -60,6 +62,6 @@
 - [ ] câbler armoire complète
     - [x] vérifier comment alimenter l'armoire en 230V
 - [ ] créer 12 rails de cubeboxes
-- [ ] CAD wireless button case and mechanism
-    - [ ] valider une conception avec impression coté Cédric
+- [x] CAD wireless button case and mechanism
+    - [x] valider une conception avec impression coté Cédric
 - [x] new cad case for rfid reader

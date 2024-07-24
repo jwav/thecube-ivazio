@@ -344,7 +344,7 @@ def test_alarm_triggering():
             "Team should not be associated with a cubebox")
     test_eq(lambda: MASTER.teams.get_team_by_name(team_name).completed_cubebox_ids, [],
             "Team should not have completed any cubeboxes")
-    test_eq(lambda: MASTER._is_playing_alarm, False,
+    test_eq(lambda: MASTER._is_running_alarm, False,
             "The alarm should not be playing")
 
     time.sleep(1)
@@ -368,11 +368,11 @@ def test_alarm_triggering():
     wait(2, "waiting a bit...")
     LOGGER.info("Simulating long press")
     CUBEBOX.button.simulate_long_press()
-    wait_until(lambda:MASTER._is_playing_alarm is True,
+    wait_until(lambda: MASTER._is_running_alarm is True,
                message="waiting for the alarm to be triggered",
                timeout=COMM_DELAY_SEC)
-    LOGGER.info(f"MASTER._is_playing_alarm={MASTER._is_playing_alarm}")
-    test(lambda: MASTER._is_playing_alarm is True, "The alarm should be playing")
+    LOGGER.info(f"MASTER._is_playing_alarm={MASTER._is_running_alarm}")
+    test(lambda: MASTER._is_running_alarm is True, "The alarm should be playing")
     wait_until(lambda: CUBEBOX.is_box_being_played() is False,
                 message="waiting for the box to stop playing",
                 timeout=COMM_DELAY_SEC)

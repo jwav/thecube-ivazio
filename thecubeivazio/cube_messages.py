@@ -60,6 +60,7 @@ class CubeMsgTypes(enum.Enum):
     CUBEBOX_BUTTON_PRESS = "CUBEBOX_BUTTON_PRESS"
 
     # Messages sent by the CubeMaster besides status messages
+    NOTIFY_TEAM_TIME_UP = "NOTIFY_TEAM_TIME_UP"
 
     # Messages sent by the Frontdesk
     FRONTDESK_NEW_TEAM = "FRONTDESK_NEW_TEAM"
@@ -814,6 +815,21 @@ class CubeMsgAlert(CubeMessage):
     @property
     def alert(self) -> str:
         return self.kwargs.get("alert")
+
+
+class CubeMsgNotifyTeamTimeUp(CubeMessage):
+    """Sent from the CubeMaster to the Frontdesk to notify that a team's time is up."""
+
+    def __init__(self, sender=None, team_name=None, copy_msg: CubeMessage = None):
+        if copy_msg is not None:
+            super().__init__(copy_msg=copy_msg)
+        else:
+            super().__init__(CubeMsgTypes.NOTIFY_TEAM_TIME_UP, sender, team_name=team_name)
+        self.require_ack = False
+
+    @property
+    def team_name(self) -> str:
+        return str(self.kwargs.get("team_name"))
 
 # test functions
 

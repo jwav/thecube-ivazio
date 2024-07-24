@@ -147,6 +147,8 @@ class CubeConfig:
 
     @cubetry
     def load_default_config(self):
+        """Load the default config file. If using encryption, load the encrypted file.
+        Otherwise load the unencrypted file."""
         try:
             # if there is an unecrypted config file, load it
             if not self.use_encryption:
@@ -280,9 +282,9 @@ def encryption_test():
 
 
 if __name__ == "__main__":
-    # generate_encrypted_config_from_non_encrypted_config()
     # encryption_test()
     config = CubeConfig()
+    config.save_to_encrypted_json_file()
     enc_config = CubeConfig.make_from_encrypted_json_file()
     assert config.config_dict == enc_config.config_dict
     assert config.to_json() == enc_config.to_json()

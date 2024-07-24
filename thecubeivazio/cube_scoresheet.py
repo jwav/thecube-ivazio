@@ -84,7 +84,7 @@ class CubeScoresheet:
 
         trophy_rows = ''
         for trophy in team.trophies:
-            trophy_rows += f'<tr><td><img src="{trophy.image_filepath}"/></td><td>{trophy.name}</td><td>{trophy.points} points</td><td>{trophy.description}</td></tr>'
+            trophy_rows += f'<tr><td><img src="{trophy.image_filepath}"/></td><td>{trophy.french_name}</td><td>{trophy.points} points</td><td>{trophy.description}</td></tr>'
 
 
         cube_rows = ''

@@ -66,7 +66,7 @@ class CubeServerFrontdesk:
 
     def run(self):
         self.rfid.run()
-        self._msg_handling_thread = threading.Thread(target=self._msg_handling_loop, daemon=True)
+        self._msg_handling_thread = threading.Thread(target=self._message_handling_loop, daemon=True)
         self._keep_running = True
         self._msg_handling_thread.start()
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
@@ -77,7 +77,7 @@ class CubeServerFrontdesk:
         self.rfid.stop()
         self._msg_handling_thread.join(timeout=0.1)
 
-    def _msg_handling_loop(self):
+    def _message_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
@@ -92,6 +92,8 @@ class CubeServerFrontdesk:
                 # ignore ack messages, they're handled in the networking module
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
+                elif message.msgtype == cm.CubeMsgTypes.NOTIFY_TEAM_TIME_UP:
+                    self._handle_notify_team_time_up(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_DATABASE_TEAMS:
                     self._handle_request_database_teams(message)
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
@@ -114,6 +116,20 @@ class CubeServerFrontdesk:
                 else:
                     self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
                 self.net.remove_msg_from_incoming_queue(message)
+
+    def _handle_notify_team_time_up(self, message: cm.CubeMessage):
+        self.log.info(f"Received team time up message from {message.sender}")
+        nttu_msg = cm.CubeMsgNotifyTeamTimeUp(copy_msg=message)
+        try:
+            team_name = nttu_msg.team_name
+            team = self.teams.get_team_by_name(team_name)
+            assert team, f"Team {team_name} not found"
+            self.log.info(f"Team {team_name} time is up")
+            self.move_team_to_database(team_name)
+            return True
+        except Exception as e:
+            self.log.error(f"Error handling team time up message: {e}")
+            return False
 
     def _handle_request_database_teams(self, message: cm.CubeMessage):
         """Handle a request for the teams database from the cubemaster"""

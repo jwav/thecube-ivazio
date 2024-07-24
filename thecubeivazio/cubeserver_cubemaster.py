@@ -30,10 +30,12 @@ if __name__ == "__main__":
     print("Importing thecubeivazio.cube_rgbmatrix_daemon")
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_server as crs
+
     DISABLE_RGBMATRIX = False
     DISABLE_HIGHSCORES = False
 if not cube_utils.is_raspberry_pi():
     DISABLE_RGBMATRIX = True
+
 
 class CubeServerMaster:
     def __init__(self):
@@ -88,13 +90,11 @@ class CubeServerMaster:
         self._keep_running = False
         self._last_game_status_sent_to_frontdesk_hash: Optional[Hash] = None
         self._last_teams_status_sent_to_rgb_daemon_hash: Optional[Hash] = None
-        self._is_playing_alarm = False
+        self._is_running_alarm = False
 
         # heartbeat setup
         self.heartbeat_timer = cube_utils.SimpleTimer(10)
         self.enable_heartbeat = False
-
-
 
         # if the play database does not exist, create it
         if not self.database.does_database_exist():
@@ -104,7 +104,6 @@ class CubeServerMaster:
         # on startup, send the game status to the frontdesk
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
-
 
     def run(self):
         self._keep_running = True
@@ -133,7 +132,6 @@ class CubeServerMaster:
         self.browser.launch_browser()
         next_db_request_time = time.time()
         next_highscores_update_time = time.time()
-
 
         while self._keep_running:
             time.sleep(LOOP_PERIOD_SEC)
@@ -175,6 +173,10 @@ class CubeServerMaster:
             if self._last_game_status_sent_to_frontdesk_hash != self.game_status.hash:
                 self.log.info("Game status changed. Updating RGBMatrix and sending game status to frontdesk")
                 self.send_status_to_frontdesk()
+            # handle teams being out of time
+            for team in self.teams:
+                if team.is_time_up():
+                    self._handle_team_time_up(team)
 
     def send_status_to_frontdesk(self) -> bool:
         """Send the cubemaster status to the frontdesk"""
@@ -206,7 +208,7 @@ class CubeServerMaster:
     def _run_alarm(self):
         """sounds the alarm and activate the lights for a given amount of time"""
         self.log.info("Running alarm")
-        self._is_playing_alarm = True
+        self._is_running_alarm = True
         default_duration_sec = 5
         duration_sec = self.config.get_field("alarm_duration_sec")
         if not duration_sec:
@@ -218,7 +220,7 @@ class CubeServerMaster:
         while time.time() < end_time:
             time.sleep(1)
         CubeGpio.set_pin(25, False)
-        self._is_playing_alarm = False
+        self._is_running_alarm = False
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
@@ -407,9 +409,11 @@ class CubeServerMaster:
             new_team = rdt_msg.team
             assert new_team, "_handle_reply_database_teams_message: new_team is None"
             self.log.info(f"Received new team from frontdesk for our database: {new_team.to_string()}")
-            assert self.database.add_team_to_database(new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
+            assert self.database.add_team_to_database(
+                new_team), "_handle_reply_database_teams_message: add_team_to_database failed"
             # check that the team was indeed added to the database
-            assert self.database.find_team_by_creation_timestamp(new_team.creation_timestamp), "_handle_reply_database_teams_message: get_team_by_creation_timestamp failed"
+            assert self.database.find_team_by_creation_timestamp(
+                new_team.creation_timestamp), "_handle_reply_database_teams_message: get_team_by_creation_timestamp failed"
             self.log.success("Added new team to the local database. acknowledging.")
             self.net.acknowledge_this_message(rdt_msg, cm.CubeAckInfos.OK)
         except Exception as e:
@@ -619,14 +623,24 @@ class CubeServerMaster:
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyAllCubeboxesStatusHashes(self.net.node_name, self.cubeboxes.hash_dict))
 
-    # TODO
+    @cubetry
     def _handle_team_time_up(self, team: cube_game.CubeTeamStatus):
         """Handle the fact that a team is out of time"""
         self.log.info(f"Team {team.name} is out of time.")
         if team.use_alarm:
-            raise NotImplementedError
-        else:
-            raise NotImplementedError
+            self.run_alarm()
+        report = self.net.send_msg_to_frontdesk(
+            cm.CubeMsgNotifyTeamTimeUp(self.net.node_name, team_name=team.name),
+            require_ack=True, nb_tries=3)
+        if not report:
+            self.log.error("Failed to send the team time up message to the frontdesk")
+            return False
+        if not report.ack_ok:
+            self.log.warning("Sent the team time up message to the frontdesk but no ACK received")
+            return False
+        self.log.success("Sent the team time up message to the frontdesk and received ACK")
+        self.teams.remove_team(team.name)
+        return True
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""
@@ -775,14 +789,12 @@ class CubeServerMaster:
             master.log.error(f"TestRGB: Exception: {e}")
 
 
-
 def main(use_prompt=False):
     print("Running CubeMaster main()")
     import atexit
 
     master = CubeServerMaster()
     atexit.register(master.stop)
-
 
     try:
         master.run()
@@ -819,6 +831,7 @@ def test_highscores():
         print("KeyboardInterrupt received. Stopping CubeMaster...")
     finally:
         master.stop()
+
 
 if __name__ == "__main__":
     import sys

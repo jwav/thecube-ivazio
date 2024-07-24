@@ -350,7 +350,7 @@ class CubeTester:
                      "Team should not be associated with a cubebox")
         self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).completed_cubebox_ids, [],
                      "Team should not have completed any cubeboxes")
-        self.test_eq(lambda: self.master._is_playing_alarm, False,
+        self.test_eq(lambda: self.master._is_running_alarm, False,
                      "The alarm should not be playing")
 
         time.sleep(1)
@@ -374,11 +374,11 @@ class CubeTester:
         self.wait(2, "waiting a bit...")
         self.logger.info("Simulating long press")
         cubebox.button.simulate_long_press()
-        self.wait_until(lambda: self.master._is_playing_alarm is True,
+        self.wait_until(lambda: self.master._is_running_alarm is True,
                         message="waiting for the alarm to be triggered",
                         timeout=self.comm_delay_sec)
-        self.logger.info(f"MASTER._is_playing_alarm={self.master._is_playing_alarm}")
-        self.test(lambda: self.master._is_playing_alarm is True, "The alarm should be playing")
+        self.logger.info(f"MASTER._is_playing_alarm={self.master._is_running_alarm}")
+        self.test(lambda: self.master._is_running_alarm is True, "The alarm should be playing")
         self.wait_until(lambda: cubebox.is_box_being_played() is False,
                         message="waiting for the box to stop playing",
                         timeout=self.comm_delay_sec)

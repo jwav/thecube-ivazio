@@ -1,3 +1,5 @@
+Les icônes (libres de droits) utilisées dans l'application sont fournies par les auteurs suivants :
+
 kliwir art
 Alfredo Hernandez
 Freepik
@@ -6,3 +8,4 @@ max.icons
 Cuputo
 Becris
 Eucalyp
+Md Tanvirul Haque

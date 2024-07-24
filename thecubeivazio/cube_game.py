@@ -41,13 +41,6 @@ class CubeboxState(enum.Enum):
 # TODO safeguard methods liable to raise exceptions
 class CubeboxStatus:
     """Represents a game session, i.e. a team trying to open a CubeBox"""
-    EASY_CUBES = (1, 2, 3, 4)
-    MEDIUM_CUBES = (5, 6, 7, 8)
-    HARD_CUBES = (9, 10, 11, 12)
-    MAX_SCORE = 300
-    EASY_MIN_TIME = 5 * 60
-    MEDIUM_MIN_TIME = 8 * 60
-    HARD_MIN_TIME = 12 * 60
 
     def __init__(self, cube_id: CubeId = None, current_team_name: TeamName = None, start_timestamp: Seconds = None,
                  win_timestamp: Seconds = None, last_valid_rfid_line: cube_rfid.CubeRfidLine = None,
@@ -418,8 +411,9 @@ class CubeboxesStatusList(List[CubeboxStatus]):
 class CubeTrophy:
     """Represents a trophy that a team can win by playing a CubeGame"""
 
-    def __init__(self, name: str, description: str, points: int, image_filename: str = None):
+    def __init__(self, name: str, french_name: str, description: str, points: int, image_filename: str = None):
         self.name = name
+        self.french_name = french_name
         self.description = description
         self.points = points
         self.image_filename = image_filename
@@ -452,6 +446,7 @@ class CubeTrophy:
     def to_dict(self) -> Dict:
         return {
             "name": self.name,
+            "french_name": self.french_name,
             "description": self.description,
             "points": self.points,
             "image_filename": self.image_filename
@@ -462,6 +457,7 @@ class CubeTrophy:
     def make_from_dict(cls, d: Dict) -> Optional['CubeTrophy']:
         try:
             return cls(d.get("name"),
+                       d.get("french_name"),
                        d.get("description"),
                        int(d.get("points")),
                        d.get("image_filename", None))
@@ -477,6 +473,14 @@ class CubeTrophy:
             if config_trophy.name == trophy_name:
                 return config_trophy
 
+    @classmethod
+    @cubetry
+    def make_from_french_name(cls, french_name: str) -> Optional['CubeTrophy']:
+        for config_trophy in CubeConfig.get_config().defined_trophies:
+            config_trophy: CubeTrophy
+            if config_trophy.french_name == french_name:
+                return config_trophy
+
 
 # an alias just for clarity, we'll use this one to refer exclusively to completed cubeboxes
 CompletedCubeboxStatus = CubeboxStatus
@@ -490,7 +494,8 @@ class CompletedCubeboxStatusList(CubeboxesStatusList):
     def is_valid(self):
         try:
             assert super().is_valid(), f"CompletedCubeboxStatusList.is_valid: super().is_valid() failed"
-            assert all([box.is_completed() for box in self]), f"CompletedCubeboxStatusList.is_valid: not all boxes are completed"
+            assert all([box.is_completed() for box in
+                        self]), f"CompletedCubeboxStatusList.is_valid: not all boxes are completed"
             return True
         except Exception as e:
             CubeLogger.static_error(f"CompletedCubeboxStatusList.is_valid {e}")
@@ -538,6 +543,38 @@ class CubeTeamStatus:
         self.resume_timestamps = []
 
     @cubetry
+    def auto_compute_trophies(self):
+        """Computes the trophies that the team has won,
+        based on the completion times of the cubeboxes and other factors"""
+        # find the preset associated to this cubebox. If not found, use the default one
+        presets = CubeboxesScoringPresets.make_from_config()
+        assert presets, "CubeTeamStatus.compute_trophies: failed to build scoring presets from config!"
+        # 12_CUBES_DONE
+        if len(self.completed_cubeboxes) >= 12:
+            self.add_trophy_by_name("12_CUBES_DONE")
+        # 6_CUBES_DONE
+        if len(self.completed_cubeboxes) >= 6:
+            self.add_trophy_by_name("6_CUBES_DONE")
+        # CUBE_DONE_FAST
+        for box in self.completed_cubeboxes:
+            if box.completion_time_sec < 5 * 60:
+                self.add_trophy_by_name("CUBE_DONE_FAST")
+                break
+        # EXPERT : hard cube under 10 minutes
+        for box in self.completed_cubeboxes:
+            cube_id = box.cube_id
+            # check if it's a hard one
+            preset_name = CubeboxesScoringSettings.get_preset_name_for_cube_id(cube_id)
+            if preset_name == "hard" and box.completion_time_sec < 10 * 60:
+                self.add_trophy_by_name("EXPERT")
+                break
+
+    @cubetry
+    def is_playing(self) -> bool:
+        return self.start_timestamp is not None and not self.end_timestamp
+
+    # TODO: implement
+    @cubetry
     def is_paused(self) -> bool:
         return len(self.pause_timestamps) > len(self.resume_timestamps)
 
@@ -565,13 +602,12 @@ class CubeTeamStatus:
         # order the completed cubeboxes by time of completion
         self._completed_cubeboxes.sort(key=lambda box: box.win_timestamp)
         # for each completed box, set the _prev_cubebox_win_timestamp
-        for i,box in enumerate(self._completed_cubeboxes):
+        for i, box in enumerate(self._completed_cubeboxes):
             if i == 0:
                 box._prev_cubebox_win_timestamp = None
             else:
-                box._prev_cubebox_win_timestamp = self._completed_cubeboxes[i-1].win_timestamp
+                box._prev_cubebox_win_timestamp = self._completed_cubeboxes[i - 1].win_timestamp
         return True
-
 
     @property
     def end_timestamp(self) -> Optional[Timestamp]:
@@ -594,9 +630,12 @@ class CubeTeamStatus:
                                                      float)) or self.start_timestamp is None, f"self.start_timestamp is not a number: {self.start_timestamp}"
             assert isinstance(self.current_cubebox_id,
                               int) or self.current_cubebox_id is None, f"self.current_cubebox_id is not a number: {self.current_cubebox_id}"
-            assert isinstance(self._completed_cubeboxes, list), f"self.completed_cubeboxes is not a list: {self._completed_cubeboxes}"
-            assert all([box.is_valid() for box in self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of valid CompletedCubeboxStatus: {self._completed_cubeboxes}"
-            assert all([box.is_completed() for box in self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of completed CompletedCubeboxStatus: {self._completed_cubeboxes}"
+            assert isinstance(self._completed_cubeboxes,
+                              list), f"self.completed_cubeboxes is not a list: {self._completed_cubeboxes}"
+            assert all([box.is_valid() for box in
+                        self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of valid CompletedCubeboxStatus: {self._completed_cubeboxes}"
+            assert all([box.is_completed() for box in
+                        self._completed_cubeboxes]), f"self.completed_cubeboxes is not a list of completed CompletedCubeboxStatus: {self._completed_cubeboxes}"
             assert isinstance(self.trophies_names, list) and all([isinstance(t, str) for t in
                                                                   self.trophies_names]), f"self.trophies_names is not a list of str: {self.trophies_names}"
             assert isinstance(self.use_alarm, bool), f"self.use_alarm is not a bool: {self.use_alarm}"
@@ -825,7 +864,7 @@ class CubeTeamStatus:
             self.set_completed_cube(completed_cube.cube_id, completed_cube.start_timestamp,
                                     completed_cube.win_timestamp)
         for trophy in team.trophies_names:
-            self.add_trophy_name(trophy)
+            self.add_trophy_by_name(trophy)
         self.current_cubebox_id = team.current_cubebox_id
         if not self.start_timestamp:
             self.start_timestamp = team.start_timestamp
@@ -834,14 +873,27 @@ class CubeTeamStatus:
         return True
 
     @cubetry
-    def add_trophy_name(self, trophy_name: str):
+    def add_trophy_by_name(self, trophy_name: str):
         if not trophy_name in self.trophies_names:
             self.trophies_names.append(trophy_name)
 
     @cubetry
-    def remove_trophy_name(self, trophy_name: str):
+    def remove_trophy_by_name(self, trophy_name: str):
         if trophy_name in self.trophies_names:
             self.trophies_names.remove(trophy_name)
+
+    @cubetry
+    def remove_trophy_by_french_name(self, french_name: str):
+        trophy = CubeTrophy.make_from_french_name(french_name)
+        if trophy:
+            self.remove_trophy_by_name(trophy.name)
+
+    @cubetry
+    def add_trophy_by_french_name(self, french_name: str):
+        trophy = CubeTrophy.make_from_french_name(french_name)
+        if trophy:
+            self.add_trophy_by_name(trophy.name)
+
 
 
 # TODO : add ranks for the day, week, mont, all-time
@@ -884,6 +936,7 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def sort_teams_by_score(self):
         def get_team_score(team: CubeTeamStatus):
             return team.calculate_team_score()
+
         self.sort(key=get_team_score, reverse=True)
 
     @property
@@ -907,8 +960,10 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         try:
             assert self.has_team(
                 team), f"CubeTeamsStatusList.get_team_ranking_among_list: team with cts {team.creation_timestamp} not in list"
+
             def score(t: CubeTeamStatus) -> int:
                 return t.calculate_team_score()
+
             return sorted(self, key=score, reverse=True).index(team) + 1
         except Exception as e:
             CubeLogger.static_error(f"CubeTeamsStatusList.get_team_ranking_among_list {e}")
@@ -982,7 +1037,8 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def add_team(self, team: CubeTeamStatus) -> bool:
         try:
             assert team.is_valid(), f"CubeTeamsStatusList.add_team: invalid team {team}"
-            assert self.get_team_by_name(team.name) is None, f"CubeTeamsStatusList.add_team: team {team.name} already in list"
+            assert self.get_team_by_name(
+                team.name) is None, f"CubeTeamsStatusList.add_team: team {team.name} already in list"
             self.append(team)
             return True
         except Exception as e:
@@ -1203,11 +1259,11 @@ class CubeScoreCalculator:
             if self.scoring_function_type == CubeScoreCalculator.SCORE_FUNCTION_LINEAR:
                 return int(self.min_score + (self.max_score - self.min_score) * (1 - time_elapsed / self.max_time_sec))
             else:
-                raise ValueError(f"CubeScoreCalculator.compute_score: invalid scoring function {self.scoring_function_type}")
+                raise ValueError(
+                    f"CubeScoreCalculator.compute_score: invalid scoring function {self.scoring_function_type}")
         except Exception as e:
             CubeLogger.static_error(f"CubeScoreCalculator.calculate_score {e}")
             return None
-
 
 
 class CubeboxesScoringPresets(Dict[ScoringPresetName, CubeScoreCalculator]):
@@ -1221,8 +1277,10 @@ class CubeboxesScoringPresets(Dict[ScoringPresetName, CubeScoreCalculator]):
     def is_valid(self):
         try:
             for preset_name, calc in self.items():
-                assert isinstance(preset_name, str), f"CubeboxesScoringPresets.is_valid: preset_name is not a str: {preset_name}"
-                assert isinstance(calc, CubeScoreCalculator), f"CubeboxesScoringPresets.is_valid: calc is not a CubeScoreCalculator: {calc}"
+                assert isinstance(preset_name,
+                                  str), f"CubeboxesScoringPresets.is_valid: preset_name is not a str: {preset_name}"
+                assert isinstance(calc,
+                                  CubeScoreCalculator), f"CubeboxesScoringPresets.is_valid: calc is not a CubeScoreCalculator: {calc}"
                 assert calc.is_valid(), f"CubeboxesScoringPresets.is_valid: invalid CubeScoreCalculator {calc}"
             return True
         except Exception as e:
@@ -1235,16 +1293,21 @@ class CubeboxesScoringPresets(Dict[ScoringPresetName, CubeScoreCalculator]):
         config = config or CubeConfig.get_config()
         ret = cls()
         dsp_dict = config.get_field(cls.JSON_ROOT_OBJECT_NAME)
-        assert isinstance(dsp_dict, dict), f"CubeboxesScoringPresets.make_from_config: dsp_dict is not a dict: {dsp_dict}"
+        assert isinstance(dsp_dict,
+                          dict), f"CubeboxesScoringPresets.make_from_config: dsp_dict is not a dict: {dsp_dict}"
         # CubeLogger.static_debug(f"CubeboxesScoringPresets.make_from_config: dsp_dict : type({type(dsp_dict)}) = {dsp_dict}")
 
         for preset_name, calc_dict in dsp_dict.items():
-            assert isinstance(preset_name, str), f"CubeboxesScoringPresets.make_from_config: preset_name is not a str: {preset_name}"
-            assert isinstance(calc_dict, dict), f"CubeboxesScoringPresets.make_from_config: calc_dict is not a dict: {calc_dict}"
+            assert isinstance(preset_name,
+                              str), f"CubeboxesScoringPresets.make_from_config: preset_name is not a str: {preset_name}"
+            assert isinstance(calc_dict,
+                              dict), f"CubeboxesScoringPresets.make_from_config: calc_dict is not a dict: {calc_dict}"
             # CubeLogger.static_debug(f"CubeboxesScoringPresets.make_from_config: preset_name={preset_name} calc_dict={calc_dict}")
             ret[preset_name] = CubeScoreCalculator.make_from_dict(calc_dict)
-            assert isinstance(ret[preset_name], CubeScoreCalculator), f"CubeboxesScoringPresets.make_from_config: invalid CubeScoreCalculator {ret[preset_name]}"
-            assert ret[preset_name].is_valid(), f"CubeboxesScoringPresets.make_from_config: invalid CubeScoreCalculator {ret[preset_name]}"
+            assert isinstance(ret[preset_name],
+                              CubeScoreCalculator), f"CubeboxesScoringPresets.make_from_config: invalid CubeScoreCalculator {ret[preset_name]}"
+            assert ret[
+                preset_name].is_valid(), f"CubeboxesScoringPresets.make_from_config: invalid CubeScoreCalculator {ret[preset_name]}"
         return ret
 
     @cubetry
@@ -1262,6 +1325,7 @@ class CubeboxesScoringPresets(Dict[ScoringPresetName, CubeScoreCalculator]):
         config = config or CubeConfig.get_config()
         preset_name = CubeboxesScoringSettings.make_from_config(config).get_preset_name_for_cube_id(cube_id)
         return self.get_calculator_by_preset_name(preset_name)
+
 
 class CubeboxesScoringSettings(Dict[CubeId, ScoringPresetName]):
     def __init__(self):
@@ -1281,7 +1345,6 @@ class CubeboxesScoringSettings(Dict[CubeId, ScoringPresetName]):
     @cubetry
     def get_preset_name_for_cube_id(self, cube_id: CubeId) -> ScoringPresetName:
         return self.get(cube_id)
-
 
     @classmethod
     @cubetry
@@ -1412,6 +1475,7 @@ def test_ScoringPresets():
     print("All tests passed")
     exit(0)
 
+
 def test_cubeboxes_scoring():
     """generates sample cubeboxes 1 to 12, then checks that the calculate_box_score method returns the expected value"""
     cubeboxes = [CubeboxStatus(cube_id=i) for i in cubeid.CUBEBOX_IDS]
@@ -1435,12 +1499,11 @@ def test_cubeboxes_scoring():
     exit(0)
 
 
-
 def test_completion_time_sec():
     """generate a few completed cubeboxes in a team, then test the box.completion_time_sec method"""
     global CUBE_TIME_METHOD
     team = CubeTeamStatus(name="Budapest", max_time_sec=60.0, rfid_uid="123456789")
-    ids = [1,4,3,12]
+    ids = [1, 4, 3, 12]
     start_times = [10, 112, 980, 450]
     win_times = [100, 350, 1020, 900]
     for i in range(len(ids)):
@@ -1452,7 +1515,8 @@ def test_completion_time_sec():
     win_times_out = [box.win_timestamp for box in boxes]
     # check that the boxes are in the right order: the previous's win time is less than the next's start time
     for i in range(1, len(boxes)):
-        assert win_times_out[i-1] < start_times_out[i], f"box {i-1} : {win_times_out[i-1]} >= {start_times_out[i]}"
+        assert win_times_out[i - 1] < start_times_out[
+            i], f"box {i - 1} : {win_times_out[i - 1]} >= {start_times_out[i]}"
 
     CUBE_TIME_METHOD = CUBE_TIME_RFID_TO_PRESS
     for i in range(len(ids)):
@@ -1467,13 +1531,12 @@ def test_completion_time_sec():
         if i == 0:
             expected = win_times_out[i] - start_times_out[i]
         else:
-            expected = win_times_out[i] - win_times_out[i-1]
+            expected = win_times_out[i] - win_times_out[i - 1]
         assert box.completion_time_sec == expected, \
             f"box {i} ({box.start_timestamp} -> {box.win_timestamp}): {box.completion_time_sec} != {expected} (expected)"
 
     print("test_completion_time_sec() : all tests passed")
     exit(0)
-
 
 
 def generate_sample_teams() -> CubeTeamsStatusList:
@@ -1526,14 +1589,12 @@ def generate_sample_teams() -> CubeTeamsStatusList:
     ]
     # get the list of valid trophies from the config, and make a list, for each teams,
     # of 0 to 4 random trophies
-    valid_trophies:List[CubeTrophy] = list(CubeConfig.get_config().defined_trophies)
+    valid_trophies: List[CubeTrophy] = list(CubeConfig.get_config().defined_trophies)
     valid_trophy_names = [x.name for x in valid_trophies]
     print(f"valid_trophy_names={valid_trophy_names}")
     trophies_names_list = []
     for i in range(len(names)):
-        trophies_names = []
-        for j in range(random.randint(0, 4)):
-            trophies_names.append(random.choice(valid_trophy_names))
+        trophies_names = random.sample(valid_trophy_names, k=random.randint(0, min(4, len(valid_trophy_names))))
         trophies_names_list.append(trophies_names)
     print(f"trophies_names_list={trophies_names_list}")
     # Loop to add teams
@@ -1568,6 +1629,7 @@ def generate_sample_teams() -> CubeTeamsStatusList:
 
 if __name__ == "__main__":
     import thecubeivazio.cube_database as cubedb
+
     database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
     database.generate_sample_teams_sqlite_database()
     test_completion_time_sec()

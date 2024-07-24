@@ -61,7 +61,7 @@ class CubeGuiTabTeamsMixin:
         # fill the trophy combo box
         trophies = self.fd.config.defined_trophies
         self.ui.comboTeamsAddTrophy.clear()
-        self.ui.comboTeamsAddTrophy.addItems((t.name for t in trophies))
+        self.ui.comboTeamsAddTrophy.addItems((t.french_name for t in trophies))
 
         # connect the "add trophy" button
         self.ui.btnTeamsAddTrophy.clicked.connect(self.click_add_trophy)
@@ -119,6 +119,8 @@ class CubeGuiTabTeamsMixin:
             self.log.error(f"Could not find team with creation timestamp {team_creation_timestamp}")
             return None
         # self.log.debug(f"Selected team: {team}")
+        # auto-compute the team's trophies
+        team.auto_compute_trophies()
         return team
 
     @cubetry
@@ -157,7 +159,7 @@ class CubeGuiTabTeamsMixin:
             # Create a QTableWidgetItem and set the icon
             trophy_pixmap_item = QTableWidgetItem()
             trophy_pixmap_item.setIcon(icon)
-            table.setItem(i, 0, QTableWidgetItem(str(trophy.name)))
+            table.setItem(i, 0, QTableWidgetItem(str(trophy.french_name)))
             table.setItem(i, 1, trophy_pixmap_item)
             table.setItem(i, 2, QTableWidgetItem(str(trophy.points)))
             table.setItem(i, 3, QTableWidgetItem(str(trophy.description)))
@@ -256,17 +258,19 @@ class CubeGuiTabTeamsMixin:
             # check that it's a database team and not currently playing
             assert not self.fd.teams.has_team(team), "Pas possible d'ajouter un trophée à une équipe en cours de jeu."
             # get the selected trophy
-            trophy_name = self.ui.comboTeamsAddTrophy.currentText()
-            trophy = cube_game.CubeTrophy.make_from_name(trophy_name)
-            assert trophy, f"Impossible de trouver le trophée {trophy_name}."
+            trophy_french_name = self.ui.comboTeamsAddTrophy.currentText()
+            trophy = cube_game.CubeTrophy.make_from_french_name(trophy_french_name)
+            assert trophy, f"Impossible de trouver le trophée {trophy_french_name}."
             # check that the trophy is not already in the team
-            assert trophy.name not in team.trophies_names, f"Le trophée {trophy_name} est déjà dans l'équipe."
+            assert trophy.name not in team.trophies_names, f"Le trophée {trophy_french_name} est déjà dans l'équipe."
             # add the trophy to the team
-            team.add_trophy_name(trophy.name)
+            team.add_trophy_by_name(trophy.name)
             # update the team in the database
             self.fd.database.update_team_in_database(team)
             # notify the CubeMaster
-            self.fd.send_database_teams_to_cubemaster([team])
+            assert self.fd.send_database_teams_to_cubemaster([team]), "Modification locale effectuée, mais erreur lors de l'envoi des équipes au CubeMaster."
+            self.set_teams_info_label_text(f"✅ Trophée {trophy_french_name} ajouté à l'équipe {team.name}.")
+
         except Exception as e:
             self.log.error(f"Error in click_add_trophy: {e}")
             self.set_teams_info_label_text(f"❌ {str(e)}")
@@ -298,7 +302,7 @@ class CubeGuiTabTeamsMixin:
             # check that the trophy is in the team
             assert trophy.name in team.trophies_names, f"Le trophée {trophy_name} n'est pas dans l'équipe."
             # remove the trophy from the team
-            team.remove_trophy_name(trophy.name)
+            team.remove_trophy_by_name(trophy.name)
             # update the team in the database
             self.fd.database.update_team_in_database(team)
             # notify the CubeMaster
