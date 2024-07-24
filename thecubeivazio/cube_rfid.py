@@ -137,8 +137,8 @@ class CubeRfidLine:
         """Check if the given RFID UID is in the resetter list"""
         try:
             resetters = cls.get_resetter_uids_list()
-            for uid in resetters:
-                if cls.are_uids_the_same(uid, uid):
+            for resetter_uid in resetters:
+                if cls.are_uids_the_same(uid, resetter_uid):
                     return True
             return False
         except Exception as e:
@@ -686,7 +686,23 @@ def test_for_raspberry_pi():
     test_rfid_event_listener()
 
 
+def test_uid_equality():
+    uid1 = "40001F411E"
+    uid2 = "40001ecce2"
+    uid3 = "1111111111"
+    uid4 = "1234579"
+    uid5 = "123456"
+    uid6 = "12"
+    uid7 = "123456789"
+    for uid in [uid2, uid3, uid4, uid5, uid6, uid7]:
+        print(f"{uid} is valid: {CubeRfidLine.is_valid_uid(uid)}")
+        print(f"{uid} is in resetter list: {CubeRfidLine.is_uid_in_resetter_list(uid)}")
+        print(f"{uid} == {uid1} : {CubeRfidLine.are_uids_the_same(uid, uid1)}")
+    exit(0)
+
+
 if __name__ == "__main__":
+    test_uid_equality()
     if is_windows():
         test_for_windows()
     elif is_raspberry_pi():
