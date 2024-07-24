@@ -49,12 +49,12 @@ class CubeRfidLine:
         self.timestamp: Seconds = timestamp
         self.uid: str = uid
 
-    @staticmethod
-    def is_char_valid_uid_char(char: str) -> bool:
+    @classmethod
+    def is_char_valid_uid_char(cls, char: str) -> bool:
         return char in "0123456789abcdefABCDEF"
 
-    @staticmethod
-    def is_valid_uid(uid: str) -> bool:
+    @classmethod
+    def is_valid_uid(cls, uid: str) -> bool:
         if not all([CubeRfidLine.is_char_valid_uid_char(char) for char in uid]):
             return False
         if CubeRfidLine.CHECK_FOR_LENGTH:
@@ -63,8 +63,8 @@ class CubeRfidLine:
             return CubeRfidLine.MIN_UID_LENGTH <= len(uid) <= CubeRfidLine.MAX_UID_LENGTH
         return True
 
-    @staticmethod
-    def are_uids_the_same(uid1: str, uid2: str) -> bool:
+    @classmethod
+    def are_uids_the_same(cls, uid1: str, uid2: str) -> bool:
         if not CubeRfidLine.is_valid_uid(uid1) or not CubeRfidLine.is_valid_uid(uid2):
             return False
         if len(uid1) < len(uid2):
@@ -132,18 +132,20 @@ class CubeRfidLine:
         import string
         return CubeRfidLine(time.time(), "".join(random.choices(string.digits, k=cls.VALID_UID_LENGTH)))
 
-    @staticmethod
-    def is_uid_in_resetter_list(uid: str) -> bool:
+    @classmethod
+    def is_uid_in_resetter_list(cls, uid: str) -> bool:
         """Check if the given RFID UID is in the resetter list"""
         try:
-            config = CubeConfig()
-            return uid in config.get_resetter_rfids()
+            resetters = cls.get_resetter_uids_list()
+            for uid in resetters:
+                if cls.are_uids_the_same(uid, uid):
+                    return True
         except Exception as e:
             logging.error(f"Error checking RFID UID in resetter list: {e}")
             return False
 
-    @staticmethod
-    def get_resetter_uids_list() -> List[str]:
+    @classmethod
+    def get_resetter_uids_list(cls) -> List[str]:
         """Get the list of resetter UIDs from the config"""
         try:
             config = CubeConfig()
