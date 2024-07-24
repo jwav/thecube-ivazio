@@ -140,6 +140,7 @@ class CubeRfidLine:
             for uid in resetters:
                 if cls.are_uids_the_same(uid, uid):
                     return True
+            return False
         except Exception as e:
             logging.error(f"Error checking RFID UID in resetter list: {e}")
             return False
