@@ -46,6 +46,17 @@ class CubeSoundPlayer:
         except Exception as e:
             self.log.error(f"Error initializing CubeSoundPlayer: {e}")
             self._is_initialized = False
+            if "Could not setup connection to PulseAudio" in str(e):
+                self.log.info("Attempting to reinitialize CubeSoundPlayer with default audio driver...")
+                try:
+                    os.environ['SDL_AUDIODRIVER'] = 'alsa'
+                    mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
+                    self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
+                    self._is_initialized = True
+                    self.log.success("CubeSoundPlayer reinitialized with ALSA")
+                except Exception as e:
+                    self.log.error(f"Error reinitializing CubeSoundPlayer with ALSA: {e}")
+
 
     def is_initialized(self):
         return self._is_initialized
