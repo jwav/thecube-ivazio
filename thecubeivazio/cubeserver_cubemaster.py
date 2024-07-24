@@ -161,9 +161,7 @@ class CubeServerMaster:
             if self.highscores_screen.must_update_highscores or time.time() > next_highscores_update_time:
                 self.log.info("Updating highscores and playing teams")
                 self.highscores_screen.update_highscores_html_files()
-                self.log.critical("AAA")
                 self.highscores_screen.must_update_highscores = False
-                self.log.critical("BBB")
                 next_highscores_update_time = time.time() + HIGHSCORES_UPDATE_PERIOD_SEC
                 self.log.info("Highscores updated")
 

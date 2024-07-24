@@ -361,7 +361,6 @@ class CubeHighscoresScreenManager:
                                      today_teams: cgame.CubeTeamsStatusList = None):
         """Update the highscores subtables with the given teams. If no teams are given, fetch them from the database.
         This is actually the way it's supposed to be, i'm just providing these arguments for debug"""
-        CubeLogger.get_static_logger().critical("AAAAAAAAAAAAAAAA")
         if not all_time_teams:
             all_time_teams = self.database.find_teams_matching()
         if not month_teams:
@@ -371,21 +370,15 @@ class CubeHighscoresScreenManager:
         if not today_teams:
             today_teams = self.database.find_teams_matching(min_creation_timestamp=cutils.today_start_timestamp())
 
-        CubeLogger.get_static_logger().critical("FFFFFF")
         CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_ALLTIME_FILEPATH)
-        CubeLogger.get_static_logger().critical("GGGGGGGG")
         CubeHighscoresSubtable(month_teams, "CE MOIS-CI").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_THISMONTH_FILEPATH)
-        CubeLogger.get_static_logger().critical("HHHHHHHHHH")
         CubeHighscoresSubtable(week_teams, "CETTE SEMAINE").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_THISWEEK_FILEPATH)
-        CubeLogger.get_static_logger().critical("IIIIIIIIIIII")
         CubeHighscoresSubtable(today_teams, "AUJOURD'HUI").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_TODAY_FILEPATH)
-        CubeLogger.get_static_logger().critical("JJJJJJJJJJJJJJ")
         self.http_server.send_refresh_highscores()
-        CubeLogger.get_static_logger().critical("ZZZZ")
 
 
 

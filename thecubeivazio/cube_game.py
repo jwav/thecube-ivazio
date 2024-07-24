@@ -1040,7 +1040,6 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def add_team(self, team: CubeTeamStatus) -> bool:
         if not team.is_valid():
             return False
-        assert not self.has_team(team), f"CubeTeamsStatusList.add_team: team {team} already in list"
         if self.has_team(team):
             return False
         self.append(team)
