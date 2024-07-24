@@ -253,10 +253,13 @@ if is_raspberry_pi():
             self._thread.start()
 
         def stop(self):
-            self.log.info("Stopping RFID Event listener...")
-            self._keep_running = False
-            self._thread.join(timeout=0.5)
-            self.log.info("RFID Event listener stopped")
+            try:
+                self.log.info("Stopping RFID Event listener...")
+                self._keep_running = False
+                self._thread.join(timeout=0.5)
+                self.log.info("RFID Event listener stopped")
+            except Exception as e:
+                self.log.error(f"Error stopping RFID Event listener: {e}")
 
         def _event_read_loop(self):
             while self._keep_running:
