@@ -36,7 +36,7 @@ class CubeServerCubebox:
         # handles the wireless button presses
         self.button = cube_button.CubeButton()
         # handles sound playing
-        self.buzzer = cube_sounds.CubeSoundPlayer()
+        self.sound_player = cube_sounds.CubeSoundPlayer()
         # the neopixel ring light for the rfid reader
         self.neopixel = cube_neopixel.CubeNeopixel()
 
@@ -54,6 +54,8 @@ class CubeServerCubebox:
 
         # at startup, a cubebox is ready to play by default
         self.set_status_state(cube_game.CubeboxState.STATE_READY_TO_PLAY)
+
+        self.sound_player.play_startup_sound()
 
     @property
     def status(self):
@@ -262,7 +264,7 @@ class CubeServerCubebox:
     @cubetry
     def perform_reset(self):
         self.set_status_state(cube_game.CubeboxState.STATE_READY_TO_PLAY)
-        self.buzzer.play_cubebox_reset_sound()
+        self.sound_player.play_cubebox_reset_sound()
 
     @cubetry
     def _rfid_loop(self):
@@ -286,7 +288,7 @@ class CubeServerCubebox:
                 self.log.critical(f"Resetters: {cube_rfid.CubeRfidLine.get_resetter_uids_list()}")
                 if not rfid_line.is_valid():
                     self.rfid.remove_line(rfid_line)
-                    self.buzzer.play_rfid_error_sound()
+                    self.sound_player.play_rfid_error_sound()
                 # if this rfid uid is in the resetter list, set the box status to ready to play
                 elif cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_line.uid):
                     self.log.info(f"RFID {rfid_line.uid} is in the resetter list. Setting the box status to ready to play.")
@@ -295,7 +297,7 @@ class CubeServerCubebox:
                 # if the box is not ready to play, ignore the read
                 elif not self.status.is_ready_to_play():
                     self.log.warning("Trying to badge in a team but the box is not ready to play")
-                    self.buzzer.play_rfid_error_sound()
+                    self.sound_player.play_rfid_error_sound()
                 # if we're here. that means the box is ready to play. badge in the new team
                 else:
                     self.badge_in_new_team(rfid_line)
@@ -334,11 +336,11 @@ class CubeServerCubebox:
         self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
         if not rfid_line.is_valid():
             self.log.error("Trying to badge in an invalid RFID line")
-            self.buzzer.play_rfid_error_sound()
+            self.sound_player.play_rfid_error_sound()
             return False
         if not self.status.is_ready_to_play():
             self.log.warning("Trying to badge in a team but the box is not ready to play")
-            self.buzzer.play_rfid_error_sound()
+            self.sound_player.play_rfid_error_sound()
             return False
         # alright so it's a valid line. let's add it to our status
         self.status.last_valid_rfid_line = rfid_line
@@ -348,15 +350,15 @@ class CubeServerCubebox:
             require_ack=True)
         if not report.sent_ok:
             self.log.error("Failed to send RFID read message to CubeMaster")
-            self.buzzer.play_rfid_error_sound()
+            self.sound_player.play_rfid_error_sound()
             return False
         if not report.ack_msg:
             self.log.error("Sent RFID messages but the CubeMaster did not acknowledge it")
-            self.buzzer.play_rfid_error_sound()
+            self.sound_player.play_rfid_error_sound()
             return False
         if report.ack_info != cm.CubeAckInfos.OK:
             self.log.error(f"CubeMaster acked the RFID read message with error: {report.ack_info}")
-            self.buzzer.play_rfid_error_sound()
+            self.sound_player.play_rfid_error_sound()
             return False
         else:
             self.log.success("RFID read message sent to and okayed by the CubeMaster")
@@ -364,7 +366,7 @@ class CubeServerCubebox:
             self.set_status_state(cube_game.CubeboxState.STATE_PLAYING)
             self.log.info(f"is_box_being_played()={self.is_box_being_played()}, last_rfid_line={self.status.last_valid_rfid_line}")
             # self.log.critical(f"{self.status}")
-            self.buzzer.play_rfid_ok_sound()
+            self.sound_player.play_rfid_ok_sound()
             return True
 
     @cubetry
@@ -374,7 +376,7 @@ class CubeServerCubebox:
         else:
             self.log.info(f"Badging out team with RFID {self.status.last_valid_rfid_line.uid}")
             if play_game_over_sound:
-                self.buzzer.play_game_over_sound()
+                self.sound_player.play_game_over_sound()
         self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
         return True
 
@@ -408,7 +410,7 @@ class CubeServerCubebox:
                 self.log.info("Button press message sent to and acked by CubeMaster")
                 self.badge_out_current_team()
                 self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
-                self.buzzer.play_victory_sound()
+                self.sound_player.play_victory_sound()
             else:
                 self.log.error("Failed to send or get ack for button press message to CubeMaster")
             self.button.reset()

@@ -137,6 +137,9 @@ class CubeSoundPlayer:
     def play_cubebox_reset_sound(self):
         self.play_sound_file_matching("cubebox_reset")
 
+    def play_startup_sound(self):
+        self.play_sound_file_matching("startup")
+
 
 def test_sounds():
     player = CubeSoundPlayer()
