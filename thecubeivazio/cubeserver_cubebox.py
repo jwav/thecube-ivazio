@@ -139,6 +139,7 @@ class CubeServerCubebox:
             return True
         elif cmd == "rfid" and arg1 is not None:
             self.rfid.simulate_read(arg1)
+            return True
         else:
             self.log.error(f"Unknown command: {cmd}")
             return False
@@ -285,24 +286,22 @@ class CubeServerCubebox:
                 if not rfid_line.is_valid():
                     self.rfid.remove_line(rfid_line)
                     self.buzzer.play_rfid_error_sound()
-                    continue
                 # if this rfid uid is in the resetter list, set the box status to ready to play
-                if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_line.uid):
+                elif cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_line.uid):
                     self.log.info(f"RFID {rfid_line.uid} is in the resetter list. Setting the box status to ready to play.")
                     self.perform_reset()
-                    self.rfid.remove_line(rfid_line)
-                    continue
                 # ok, so the line is valid and it's not a resetter rfid, which means it's a team rfid.
                 # if the box is not ready to play, ignore the read
-                if not self.status.is_ready_to_play():
+                elif not self.status.is_ready_to_play():
                     self.log.warning("Trying to badge in a team but the box is not ready to play")
                     self.buzzer.play_rfid_error_sound()
-                    self.rfid.remove_line(rfid_line)
-                    continue
                 # if we're here. that means the box is ready to play. badge in the new team
-                self.badge_in_new_team(rfid_line)
+                else:
+                    self.badge_in_new_team(rfid_line)
+                # finally, in any case, remove the line from the rfid listener
                 self.rfid.remove_line(rfid_line)
 
+    @cubetry
     def _rfid_setup_loop(self) -> bool:
         """while the rfid is not setup, try to set it up, first as a serial listener, then as a keyboard listener"""
         self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_ERROR)
@@ -324,7 +323,12 @@ class CubeServerCubebox:
         self.set_status_state(self._status.get_state())
         return True
 
+    @cubetry
     def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine) -> bool:
+        if rfid_line.is_uid_in_resetter_list():
+            self.log.warning(f"Trying to badge in a team with a resetter RFID {rfid_line.uid}")
+            self.perform_reset()
+            return False
         self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
         if not rfid_line.is_valid():
             self.log.error("Trying to badge in an invalid RFID line")

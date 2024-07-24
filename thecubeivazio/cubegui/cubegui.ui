@@ -50,7 +50,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -339,7 +339,7 @@ QPushButton:focus {
              <string>Pour certaines équipes comme par exemple de grands groupes, il est recommandé d'utiliser une alarme sonore pour la notifier que son temps s'est écoulé. À utiliser avec parcimonie.</string>
             </property>
             <property name="text">
-             <string>Utiliser l'alarme pour cette équipe</string>
+             <string>🔊 Utiliser l'alarme pour cette équipe</string>
             </property>
            </widget>
           </item>
@@ -670,7 +670,7 @@ QPushButton:focus {
              <string>Sélectionnez ce champ de texte et badgez un tag RFID pour le remplir, ou entrez le numéro à la main</string>
             </property>
             <property name="text">
-             <string>1234567890</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -759,6 +759,19 @@ QPushButton:focus {
            <widget class="QLabel" name="label_12">
             <property name="text">
              <string> jours</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="label_4">
+            <property name="toolTip">
+             <string>Entrez un ID RFID partiel à la main ou sélectionnez le champ de texte et badgez pour remplir le champ de texte</string>
+            </property>
+            <property name="text">
+             <string>🛈 </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -913,7 +926,7 @@ QPushButton:focus {
           <item row="2" column="0" colspan="6">
            <widget class="QLabel" name="lblTeamsStatusInfo">
             <property name="text">
-             <string>TextLabel</string>
+             <string>---</string>
             </property>
            </widget>
           </item>

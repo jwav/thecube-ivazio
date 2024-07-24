@@ -205,13 +205,19 @@ class CubeGuiForm(QMainWindow,
                 return
             if self.fd.rfid.has_new_lines():
                 lines = self.fd.rfid.get_completed_lines()
+                if not lines:
+                    self.update_new_team_rfid_status_label("", "")
+                    return
                 for line in lines:
                     self.fd.rfid.remove_line(line)
                     if not line.is_valid():
                         self.update_new_team_rfid_status_label("RFID non valide", "error")
-                        break
+                        return
                     self.log.info(f"RFID line: {line}")
-                    # update the rfid display according to the current tab
+
+                    # Update the rfid display according to the current tab
+
+                    # if this is the new team tab, update the rfid line regardless of the focus
                     if self.ui.tabWidget.currentIndex() == self.TABINDEX_NEWTEAM:
                         self.ui.lineNewteamRfid.setText(f"{line.uid}")
                         if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(line.uid):
@@ -221,8 +227,17 @@ class CubeGuiForm(QMainWindow,
                         else:
                             self.update_new_team_rfid_status_label("RFID valide", "ok")
                             break
+
+                    # if this is the teams tab, update the rfid line ONLY if the rfid field is focused
                     elif self.ui.tabWidget.currentIndex() == self.TABINDEX_TEAMS:
-                        self.ui.lineTeamsRfid.setText(f"{line.uid}")
+                        if self.ui.lineTeamsRfid.hasFocus():
+                            self.ui.lineTeamsRfid.setText(f"{line.uid}")
+                            return
+
+                    # if this is the admin tab, update the rfid line regardless of the focus
+                    elif self.ui.tabWidget.currentIndex() == self.TABINDEX_ADMIN:
+                        self.ui.lineAdminRfidResetter.setText(f"{line.uid}")
+                        return
 
 
         except Exception as e:
