@@ -416,13 +416,14 @@ class CubeTrophy:
         self.french_name = french_name
         self.description = description
         self.points = points
-        self.image_filename = image_filename
-        if image_filename is not None:
-            self.image_filename = DEFAULT_TROPHY_IMAGE_FILENAME
+        self.image_filename = image_filename or DEFAULT_TROPHY_IMAGE_FILENAME
 
     @property
     def image_filepath(self) -> str:
-        return str(os.path.join(IMAGES_DIR, self.image_filename))
+        try:
+            return str(os.path.join(IMAGES_DIR, self.image_filename))
+        except:
+            return str(DEFAULT_TROPHY_IMAGE_FILEPATH)
 
     def to_string(self):
         sep = ","

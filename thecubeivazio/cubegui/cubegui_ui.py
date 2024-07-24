@@ -391,6 +391,7 @@ class Ui_Form(object):
         self.tableTeamsTrophyList.setHorizontalHeaderItem(3, item)
         self.tableTeamsTrophyList.horizontalHeader().setStretchLastSection(True)
         self.tableTeamsTrophyList.verticalHeader().setVisible(False)
+        self.tableTeamsTrophyList.verticalHeader().setStretchLastSection(False)
         self.verticalLayout_3.addWidget(self.tableTeamsTrophyList)
         self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_14.setObjectName("horizontalLayout_14")

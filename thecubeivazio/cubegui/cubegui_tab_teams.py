@@ -87,9 +87,14 @@ class CubeGuiTabTeamsMixin:
     def get_trophy_pixmap(self, trophy: cube_game.CubeTrophy, width: int=None, height: int=None) -> QtGui.QPixmap:
         """Get the pixmap for a trophy"""
         assert trophy
-        assert QFile.exists(trophy.image_filepath)
-        pixmap = QtGui.QPixmap(trophy.image_filepath)
-        if not pixmap:
+        try:
+            # self.log.critical(f"trophy.image_filename: {trophy.image_filename}")
+            # self.log.critical(f"trophy.image_filepath: {trophy.image_filepath}")
+            assert QFile.exists(trophy.image_filepath)
+            pixmap = QtGui.QPixmap(trophy.image_filepath)
+            # self.log.success(f"Loaded pixmap from file {trophy.image_filepath}")
+        except Exception as e:
+            # self.log.error(f"{e} : Could not load pixmap from file {trophy.image_filepath}")
             pixmap = QtGui.QPixmap(DEFAULT_TROPHY_IMAGE_FILEPATH)
         if width and height:
             pixmap = pixmap.scaled(width, height)
@@ -134,7 +139,7 @@ class CubeGuiTabTeamsMixin:
         return trophy_french_name
 
     @cubetry
-    def on_teams_results_cell_clicked(self):
+    def on_teams_results_cell_clicked(self: 'CubeGuiForm'):
         self.ui: Ui_Form
         self.log: cube_logger.CubeLogger
         table = self.ui.tableTeamsTrophyList
@@ -167,6 +172,12 @@ class CubeGuiTabTeamsMixin:
         total_row_height += table.horizontalHeader().height() + 2
         max_row_height = 5*table.rowHeight(0) + table.horizontalHeader().height() + 2
         table.setFixedHeight(min(total_row_height, max_row_height))
+        table.resizeColumnsToContents()
+        table.horizontalHeader().setStretchLastSection(False)
+        table.horizontalHeader().setStretchLastSection(True)
+        table.updateGeometry()
+        self.update_tab_teams()
+        self.update_gui()
 
 
 
@@ -385,7 +396,7 @@ class CubeGuiTabTeamsMixin:
             return
 
         self.ui.tableTeamsResults.clearContents()
-        self.ui.tableTeamsResults.setColumnCount(9)
+        self.ui.tableTeamsResults.setColumnCount(11)
         self.ui.tableTeamsResults.setHorizontalHeaderLabels(
             ["CrTmstmp", "Date", "Nom", "Nom personnalisé", "Score", "Cubes faits", "Trophées", "Création", "Début", "Fin", "RFID"])
         self.ui.tableTeamsResults.setRowCount(len(teams))
