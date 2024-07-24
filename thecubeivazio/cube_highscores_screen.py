@@ -374,12 +374,16 @@ class CubeHighscoresScreenManager:
         CubeLogger.get_static_logger().critical("FFFFFF")
         CubeHighscoresSubtable(all_time_teams, "DEPUIS TOUJOURS").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_ALLTIME_FILEPATH)
+        CubeLogger.get_static_logger().critical("GGGGGGGG")
         CubeHighscoresSubtable(month_teams, "CE MOIS-CI").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_THISMONTH_FILEPATH)
+        CubeLogger.get_static_logger().critical("HHHHHHHHHH")
         CubeHighscoresSubtable(week_teams, "CETTE SEMAINE").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_THISWEEK_FILEPATH)
+        CubeLogger.get_static_logger().critical("IIIIIIIIIIII")
         CubeHighscoresSubtable(today_teams, "AUJOURD'HUI").save_subtable_to_html_file(
             HIGHSCORES_SUBTABLE_TODAY_FILEPATH)
+        CubeLogger.get_static_logger().critical("JJJJJJJJJJJJJJ")
         self.http_server.send_refresh_highscores()
         CubeLogger.get_static_logger().critical("ZZZZ")
 
