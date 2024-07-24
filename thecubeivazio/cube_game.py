@@ -564,7 +564,8 @@ class CubeTeamStatus:
         for box in self.completed_cubeboxes:
             cube_id = box.cube_id
             # check if it's a hard one
-            preset_name = CubeboxesScoringSettings.get_preset_name_for_cube_id(cube_id)
+            scoring_settings = CubeboxesScoringSettings()
+            preset_name = scoring_settings.get_preset_name_for_cube_id(cube_id)
             if preset_name == "hard" and box.completion_time_sec < 10 * 60:
                 self.add_trophy_by_name("EXPERT")
                 break

@@ -124,14 +124,14 @@ class CubeGuiTabTeamsMixin:
         return team
 
     @cubetry
-    def get_selected_trophy_name(self) -> Optional[str]:
+    def get_selected_trophy_french_name(self) -> Optional[str]:
         """Get the trophy name selected in the trophies table."""
         row = self.ui.tableTeamsTrophyList.currentRow()
         if row < 0:
             self.log.error("get_selected_trophy_name: No row selected.")
             return None
-        trophy_name = self.ui.tableTeamsTrophyList.item(row, 0).text()
-        return trophy_name
+        trophy_french_name = self.ui.tableTeamsTrophyList.item(row, 0).text()
+        return trophy_french_name
 
     @cubetry
     def on_teams_results_cell_clicked(self):
@@ -287,11 +287,11 @@ class CubeGuiTabTeamsMixin:
     def click_remove_trophy(self: 'CubeGuiForm'):
         try:
             # get the selected trophy name
-            trophy_name = self.get_selected_trophy_name()
+            trophy_french_name = self.get_selected_trophy_french_name()
             # check existence, validity
-            assert trophy_name, "Aucun trophée sélectionné."
-            trophy = cube_game.CubeTrophy.make_from_name(trophy_name)
-            assert trophy, f"Impossible de trouver le trophée {trophy_name}."
+            assert trophy_french_name, "Aucun trophée sélectionné."
+            trophy = cube_game.CubeTrophy.make_from_french_name(trophy_french_name)
+            assert trophy, f"Impossible de trouver le trophée {trophy_french_name}."
             # get the selected team
             team = self.get_selected_team()
             # check existence, validity
@@ -363,7 +363,7 @@ class CubeGuiTabTeamsMixin:
             # TODO: query current teams from the cubemaster
             # TODO: apply filters?
             matching_teams = self.fd.teams
-            self.log.critical(f"playing teams: {self.fd.teams}")
+            self.log.debug(f"playing teams: {self.fd.teams}")
 
         else:
             nb_days = self.ui.spinTeamsAmountOfDays.value()
@@ -402,7 +402,7 @@ class CubeGuiTabTeamsMixin:
                 team.start_timestamp, separators=":", secs=False)
             end_tod = cube_utils.timestamp_to_hhmmss_time_of_day_string(
                 team.end_timestamp, separators=":", secs=False)
-            self.log.critical(f"team: {team}, trophies_names: {team.trophies_names}")
+            self.log.debug(f"team: {team}, trophies_names: {team.trophies_names}")
             # trophies_str = ", ".join((trophy_name for trophy_name in team.trophies_names))
             # display one 🏆 for each trophy
             trophies_str = "🏆 " * len(team.trophies_names)

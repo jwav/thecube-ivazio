@@ -141,9 +141,8 @@ class CubeServerFrontdesk:
             self.log.info(f"Received request for the teams database from {message.sender}")
             rdt_msg = cm.CubeMsgRequestDatabaseTeams(copy_msg=message)
             oldest_timestamp = rdt_msg.oldest_timestamp
-            self.log.critical(f"requested oldest_timestamp={oldest_timestamp}")
             local_db_timestamp = self.database.get_database_file_last_modif_timestamp()
-            self.log.critical(f"local_db_timestamp={local_db_timestamp}")
+            self.log.info(f"Requested oldest_timestamp={oldest_timestamp}, local_db_timestamp={local_db_timestamp}")
             assert oldest_timestamp, "_handle_request_database_teams: oldest_timestamp is None"
             teams = self.database.find_teams_matching(min_modification_timestamp=oldest_timestamp)
             # if teams is None or empty, this function will still send
@@ -166,7 +165,10 @@ class CubeServerFrontdesk:
             reply_msg = cm.CubeMsgReplyDatabaseTeams(
                 sender=self.net.node_name,
                 no_team=True)
-            self.net.send_msg_to_cubemaster(reply_msg)
+            report = self.net.send_msg_to_cubemaster(reply_msg)
+            if not report:
+                self.log.error("Failed to send the database team message for no teams")
+                return False
             return True
         # if there are teams that are younger, send messages each
         # detailing each team. if the cubemaster doesn't ack,
