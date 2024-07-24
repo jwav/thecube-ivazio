@@ -66,6 +66,9 @@ class CubeSoundPlayer:
 
     def _play_sound_file(self, soundfile: str):
         try:
+            if not self.is_initialized():
+                self.log.warning("CubeSoundPlayer not initialized. Initializing...")
+                self.initialize()
             if not os.path.exists(soundfile):
                 soundfile = os.path.join(SOUNDS_DIR, soundfile)
             if not os.path.exists(soundfile):
@@ -80,6 +83,9 @@ class CubeSoundPlayer:
                 pgtime.Clock().tick(10)
         except Exception as e:
             self.log.error(f"Error playing sound file: '{soundfile}': {e}")
+            if "mixer not initialized" in str(e):
+                self.log.info("Trying to reinitialize mixer...")
+                self.initialize()
 
     @cubetry
     def is_playing(self):
