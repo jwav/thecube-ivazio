@@ -325,7 +325,7 @@ class CubeServerCubebox:
 
     @cubetry
     def badge_in_new_team(self, rfid_line: cube_rfid.CubeRfidLine) -> bool:
-        if rfid_line.is_uid_in_resetter_list():
+        if cube_rfid.CubeRfidLine.is_uid_in_resetter_list(rfid_line.uid):
             self.log.warning(f"Trying to badge in a team with a resetter RFID {rfid_line.uid}")
             self.perform_reset()
             return False
