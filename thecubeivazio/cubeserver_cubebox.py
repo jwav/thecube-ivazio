@@ -329,6 +329,7 @@ class CubeServerCubebox:
             self.log.warning(f"Trying to badge in a team with a resetter RFID {rfid_line.uid}")
             self.perform_reset()
             return False
+
         self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
         if not rfid_line.is_valid():
             self.log.error("Trying to badge in an invalid RFID line")
