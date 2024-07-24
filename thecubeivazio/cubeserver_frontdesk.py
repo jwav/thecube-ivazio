@@ -93,7 +93,7 @@ class CubeServerFrontdesk:
                 if message.msgtype == cm.CubeMsgTypes.ACK:
                     continue
                 elif message.msgtype == cm.CubeMsgTypes.NOTIFY_TEAM_TIME_UP:
-                    self._handle_notify_team_time_up(message)
+                    self._handle_notify_team_time_up_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_DATABASE_TEAMS:
                     self._handle_request_database_teams(message)
                 elif message.msgtype == cm.CubeMsgTypes.CUBEBOX_BUTTON_PRESS:
@@ -112,23 +112,27 @@ class CubeServerFrontdesk:
                     self._handle_reply_all_teams_status_hashes(message)
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_ALL_CUBEBOXES_STATUS_HASHES:
                     self._handle_reply_all_cubeboxes_status_hashes(message)
-                # TODO: handle other message types
                 else:
-                    self.log.warning(f"Unhandled message type: {message.msgtype}. Removing")
+                    self.log.debug(f"Unhandled message type: {message.msgtype}. Removing")
                 self.net.remove_msg_from_incoming_queue(message)
 
-    def _handle_notify_team_time_up(self, message: cm.CubeMessage):
+    def _handle_notify_team_time_up_message(self, message: cm.CubeMessage):
         self.log.info(f"Received team time up message from {message.sender}")
         nttu_msg = cm.CubeMsgNotifyTeamTimeUp(copy_msg=message)
         try:
             team_name = nttu_msg.team_name
+            assert team_name, "_handle_notify_team_time_up_message: team_name is None"
             team = self.teams.get_team_by_name(team_name)
-            assert team, f"Team {team_name} not found"
-            self.log.info(f"Team {team_name} time is up")
+            assert team, f"_handle_notify_team_time_up_message: team {team_name} not found"
+            self.log.info(f"Team {team_name} has run out of time")
+            team.auto_compute_trophies()
             self.move_team_to_database(team_name)
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            assert self.send_database_teams_to_cubemaster([team]), "_handle_notify_team_time_up_message: send_database_teams_to_cubemaster failed"
             return True
         except Exception as e:
-            self.log.error(f"Error handling team time up message: {e}")
+            self.log.error(f"Error handling notify team time up message: {e}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
             return False
 
     def _handle_request_database_teams(self, message: cm.CubeMessage):
@@ -273,6 +277,7 @@ class CubeServerFrontdesk:
             self.log.info(f"new cubemaster status: {new_cubemaster_status.to_json()}")
             self.log.info(f"new frontdesk teams statuses: {self.teams.to_json()}")
             self.log.info(f"new frontdesk cubeboxes statuses: {self.cubeboxes.to_json()}")
+            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
             return True
         except Exception as e:
             self.log.error(f"Error handling reply cubemaster status message: {e}")
@@ -383,9 +388,10 @@ class CubeServerFrontdesk:
         if not report:
             self.log.error(f"Failed to send the delete team message : {team.name}")
             return False
-        if not report.ack_ok:
+        if not report.ack_msg:
             self.log.error(f"The CubeMaster did not respond to the delete team message : {team.name}")
             return None
+        # whatever the cubemaster replied, as long as it replied we know the team is gone
         self.log.success(f"The CubeMaster deleted the team : {team.name}")
         self.teams.remove_team(team.name)
         return True

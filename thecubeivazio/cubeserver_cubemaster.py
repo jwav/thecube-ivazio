@@ -352,7 +352,7 @@ class CubeServerMaster:
                 elif message.msgtype == cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS:
                     self._handle_reply_cubebox_status(message)
                 else:
-                    self.log.warning(f"Unhandled message : ({message.hash}) : {message}. Removing")
+                    self.log.debug(f"Unhandled message : ({message.hash}) : {message}. Removing")
                 self.net.remove_msg_from_incoming_queue(message)
 
     def register_team_to_cubebox(self, team: cube_game.CubeTeamStatus, new_cubebox_id: CubeId):
@@ -519,6 +519,7 @@ class CubeServerMaster:
             self.log.error(f"Failed to add new team: {ntmsg.team.name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
 
+    @cubetry
     def _handle_frontdesk_remove_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received remove team message from {message.sender}")
         rtmsg = cm.CubeMsgFrontdeskDeleteTeam(copy_msg=message)
@@ -527,12 +528,15 @@ class CubeServerMaster:
         if not team:
             self.log.error(f"Team not found: {rtmsg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
+            return False
         elif self.teams.remove_team(team.name):
             self.log.info(f"Removed team: {rtmsg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+            return True
         else:
             self.log.error(f"Failed to remove team: {rtmsg.team_name}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+            return False
 
     @cubetry
     def _handle_command_message(self, message: cm.CubeMessage) -> bool:
@@ -627,20 +631,39 @@ class CubeServerMaster:
     def _handle_team_time_up(self, team: cube_game.CubeTeamStatus):
         """Handle the fact that a team is out of time"""
         self.log.info(f"Team {team.name} is out of time.")
-        if team.use_alarm:
-            self.run_alarm()
-        report = self.net.send_msg_to_frontdesk(
-            cm.CubeMsgNotifyTeamTimeUp(self.net.node_name, team_name=team.name),
-            require_ack=True, nb_tries=3)
-        if not report:
-            self.log.error("Failed to send the team time up message to the frontdesk")
+        try:
+            team_name = team.name
+            team = self.teams.get_team_by_name(team_name)
+            assert team, f"Team {team_name} not found in the local teams list"
+            if team.use_alarm:
+                self.run_alarm()
+
+            # notify the frontdesk
+            nttu_msg = cm.CubeMsgNotifyTeamTimeUp(self.net.node_name, team_name=team.name)
+            report = self.net.send_msg_to_frontdesk(nttu_msg, require_ack=True, nb_tries=3)
+            assert report, "Failed to send the team time up message to the frontdesk"
+            assert report.ack_msg, "Sent the team time up message to the frontdesk but no ACK received"
+            assert report.ack_ok, "Sent the team time up message to the frontdesk but the ACK was not OK"
+            self.log.success("Sent the team time up message to the frontdesk and received ACK OK")
+
+            # instruct the cubebox to badge out this team
+            cubebox = self.cubeboxes.get_cubebox_by_cube_id(team.current_cubebox_id)
+            assert cubebox, f"Failed to find the cubebox of team {team.name} in the local cubeboxes list"
+            otbo_msg = cm.CubeMsgOrderCubeboxTeamBadgeOut(
+                self.net.node_name, team_name=team.name, cube_id=cubebox.cube_id)
+            report = self.net.send_msg_to(
+                message=otbo_msg, node_name=cubebox.node_name, require_ack=True, nb_tries=3)
+            assert report, "Failed to send the order team badge out message to the cubebox"
+            assert report.ack_msg, "Sent the order team badge out message to the cubebox but no ACK received"
+            assert report.ack_ok, "Sent the order team badge out message to the cubebox but the ACK was not OK"
+            self.log.success("Sent the order team badge out message to the cubebox and received ACK")
+
+            assert self.teams.remove_team(team.name), "Failed to remove the team from the local teams list"
+            self.log.success(f"Removed team {team.name} from the local teams list")
+            return True
+        except Exception as e:
+            self.log.error(f"Error in _handle_team_time_up: {e}")
             return False
-        if not report.ack_ok:
-            self.log.warning("Sent the team time up message to the frontdesk but no ACK received")
-            return False
-        self.log.success("Sent the team time up message to the frontdesk and received ACK")
-        self.teams.remove_team(team.name)
-        return True
 
     def _rfid_loop(self):
         """check the RFID lines and handle them"""

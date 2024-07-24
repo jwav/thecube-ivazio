@@ -245,7 +245,11 @@ if is_raspberry_pi():
                 return False
 
         def run(self):
+            if self._keep_running:
+                self.stop()
             self._keep_running = True
+            self._thread = threading.Thread(target=self._event_read_loop, daemon=True)
+            self.log.info("Starting RFID Event listener...")
             self._thread.start()
 
         def stop(self):

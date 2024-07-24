@@ -26,6 +26,11 @@ class CubeDatabase:
             return None
 
     @cubetry
+    def clear_database(self) -> bool:
+        self.delete_database()
+        self.create_database()
+
+    @cubetry
     def create_database(self) -> bool:
         if os.path.exists(self.db_filename):
             return True

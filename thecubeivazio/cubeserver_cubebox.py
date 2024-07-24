@@ -106,7 +106,6 @@ class CubeServerCubebox:
         self.log.success("Config updated and saved.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
-
     @cubetry
     def _handle_command_message(self, message: cm.CubeMessage) -> bool:
         self.log.info(f"Received command message from {message.sender}")
@@ -178,7 +177,7 @@ class CubeServerCubebox:
         """Start the RFID, button, and networking threads"""
         self._thread_rfid = threading.Thread(target=self._rfid_loop, daemon=True)
         self._thread_button = threading.Thread(target=self._button_loop, daemon=True)
-        self._thread_networking = threading.Thread(target=self._msg_handling_loop, daemon=True)
+        self._thread_networking = threading.Thread(target=self._message_handling_loop, daemon=True)
         self._keep_running = True
         self._thread_rfid.start()
         self._thread_button.start()
@@ -191,7 +190,7 @@ class CubeServerCubebox:
         self._thread_button.join(timeout=0.1)
         self._thread_networking.join(timeout=0.1)
 
-    def _msg_handling_loop(self):
+    def _message_handling_loop(self):
         """check the incoming messages and handle them"""
         self.net.run()
         while self._keep_running:
@@ -206,8 +205,10 @@ class CubeServerCubebox:
                     continue
                 elif message.msgtype == cm.CubeMsgTypes.COMMAND:
                     self._handle_command_message(message)
-                if message.msgtype == cm.CubeMsgTypes.CONFIG:
+                elif message.msgtype == cm.CubeMsgTypes.CONFIG:
                     self._handle_config_message(message)
+                elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TEAM_BADGE_OUT:
+                    self._handle_order_team_badge_out_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_WAIT_FOR_RESET:
                     self._handle_order_cubebox_to_wait_for_reset_message(message)
                 elif message.msgtype == cm.CubeMsgTypes.ORDER_CUBEBOX_TO_RESET:
@@ -217,8 +218,25 @@ class CubeServerCubebox:
                 elif message.msgtype == cm.CubeMsgTypes.REQUEST_CUBEBOX_STATUS:
                     self._handle_request_cubebox_status_message(message)
                 else:
-                    self.log.warning(f"Unhandled message: {message}")
+                    self.log.debug(f"Unhandled message: {message}")
                 self.net.remove_msg_from_incoming_queue(message)
+
+    def _handle_order_team_badge_out_message(self, message: cm.CubeMessage) -> bool:
+        self.log.info("Received order to badge out a team")
+        otbo_msg = cm.CubeMsgOrderCubeboxTeamBadgeOut(copy_msg=message)
+        try:
+            cube_id = otbo_msg.cube_id
+            team_name = otbo_msg.team_name
+            assert cube_id == self.cubebox_index
+            self.badge_out_current_team()
+            self.log.success(f"Team {team_name} badged out")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+            return True
+        except Exception as e:
+            self.log.error(f"Error handling order to badge out a team: {e}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
+            return False
+
 
     @cubetry
     def _handle_order_cubebox_to_reset_message(self, message: cm.CubeMessage) -> bool:
@@ -258,6 +276,7 @@ class CubeServerCubebox:
             # if the rfid gets disconnected, try to set it up again
             if not self.rfid.is_setup():
                 self._rfid_setup_loop()
+                self.rfid.run()
                 continue
             for rfid_line in self.rfid.get_completed_lines():
                 rfid_line: cube_rfid.CubeRfidLine
@@ -342,10 +361,8 @@ class CubeServerCubebox:
             self.buzzer.play_rfid_ok_sound()
             return True
 
-
-    def badge_out_current_team(self, play_game_over_sound=False):
-        # TODO: send a message to the CubeMaster to badge out the team?
-        #  i dont think it's needed. The CubeMaster handles this on itw own.
+    @cubetry
+    def badge_out_current_team(self, play_game_over_sound=False) -> bool:
         if self.status.last_valid_rfid_line is None:
             self.log.warning("Trying to badge out a team but there is no team to badge out")
         else:
@@ -353,6 +370,7 @@ class CubeServerCubebox:
             if play_game_over_sound:
                 self.buzzer.play_game_over_sound()
         self.set_status_state(cube_game.CubeboxState.STATE_WAITING_FOR_RESET)
+        return True
 
     @cubetry
     def _button_loop(self):
