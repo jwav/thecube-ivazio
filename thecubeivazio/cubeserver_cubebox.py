@@ -283,6 +283,7 @@ class CubeServerCubebox:
                 rfid_line: cube_rfid.CubeRfidLine
                 self.log.info(
                     f"Line entered at {rfid_line.timestamp}: {rfid_line.uid} : {'valid' if rfid_line.is_valid() else 'invalid'}")
+                self.log.critical(f"Resetters: {cube_rfid.CubeRfidLine.get_resetter_uids_list()}")
                 if not rfid_line.is_valid():
                     self.rfid.remove_line(rfid_line)
                     self.buzzer.play_rfid_error_sound()

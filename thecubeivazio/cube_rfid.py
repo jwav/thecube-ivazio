@@ -75,6 +75,9 @@ class CubeRfidLine:
             longer = uid1.lower()
         return longer.startswith(shorter)
 
+    def is_resetter(self) -> bool:
+        return CubeRfidLine.is_uid_in_resetter_list(self.uid)
+
     def is_valid(self):
         try:
             return self.is_valid_uid(self.uid) and self.timestamp is not None
@@ -138,6 +141,17 @@ class CubeRfidLine:
         except Exception as e:
             logging.error(f"Error checking RFID UID in resetter list: {e}")
             return False
+
+    @staticmethod
+    def get_resetter_uids_list() -> List[str]:
+        """Get the list of resetter UIDs from the config"""
+        try:
+            config = CubeConfig()
+            return config.get_resetter_rfids()
+        except Exception as e:
+            logging.error(f"Error getting resetter UIDs list: {e}")
+            return []
+
 
 
 class CubeRfidListenerBase:
