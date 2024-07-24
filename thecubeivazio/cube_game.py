@@ -519,10 +519,10 @@ class CubeTeamStatus:
         self.creation_timestamp = creation_timestamp or time.time()
         # the team's code name (a city name)
         self.name = name
-        # the custom names chosen by the customers
-        if not isinstance(custom_name, str):
-            custom_name = ""
-        self.custom_name = custom_name[:self.CUSTOM_NAME_MAX_LENGTH]
+        # the custom names chosen by the customers. If no custom name, we use the name
+        self.custom_name = custom_name or name
+        # if the custom name is too long, we truncate it
+        self.custom_name = self.custom_name[:self.CUSTOM_NAME_MAX_LENGTH]
         # the RFID UID of the team
         self.rfid_uid = rfid_uid
         # the maximum time allowed to play the CubeGame
@@ -1546,7 +1546,7 @@ def generate_sample_teams() -> CubeTeamsStatusList:
 
     # Lists of parameters for each team
     names = ["Dakar", "Paris", "Tokyo", "New York", "London"]
-    custom_names = ["Riri & Jojo", "Émile et Gégé", "Sakura & Kenji", "Mikey & John", "Elizabeth & Charles"]
+    custom_names = ["Riri & Jojo", "Émile et Gégé", "Sakura & Kenji", "Mikey & John", ""]
     rfid_uids = ["1234567890", "0987654321", "1122334455", "5566778899", "6677889900"]
     max_times = [3600, 3600, 7200, 5400, 3600]
     creation_timestamps = [
@@ -1626,8 +1626,15 @@ def generate_sample_teams() -> CubeTeamsStatusList:
     print(f"Generated teams: {teams}")
     return teams
 
+def test_custom_name():
+    team = CubeTeamStatus(name="Budapest", max_time_sec=60.0, rfid_uid="123456789")
+    assert team.custom_name == "Budapest", f"team.custom_name='{team.custom_name}'"
+    team = CubeTeamStatus(name="Paris", custom_name="A"*40, max_time_sec=60.0, rfid_uid="123456789")
+    assert team.custom_name == "A"*CubeTeamStatus.CUSTOM_NAME_MAX_LENGTH, f"team.custom_name='{team.custom_name}'"
+    exit(0)
 
 if __name__ == "__main__":
+    test_custom_name()
     import thecubeivazio.cube_database as cubedb
 
     database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)

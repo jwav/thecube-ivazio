@@ -644,20 +644,24 @@ class CubeServerMaster:
             report = self.net.send_msg_to_frontdesk(nttu_msg, require_ack=True, nb_tries=3)
             assert report, "Failed to send the team time up message to the frontdesk"
             assert report.ack_msg, "Sent the team time up message to the frontdesk but no ACK received"
-            assert report.ack_ok, "Sent the team time up message to the frontdesk but the ACK was not OK"
-            self.log.success("Sent the team time up message to the frontdesk and received ACK OK")
+            if not report.ack_ok:
+                self.log.warning("Sent the team time up message to the frontdesk but the ACK was not OK."
+                                 "Removing the team nonetheless")
+            else:
+                self.log.success("Sent the team time up message to the frontdesk and received ACK OK")
 
-            # instruct the cubebox to badge out this team
+            # if the team still has a cubebox, instruct the cubebox to badge out this team
             cubebox = self.cubeboxes.get_cubebox_by_cube_id(team.current_cubebox_id)
-            assert cubebox, f"Failed to find the cubebox of team {team.name} in the local cubeboxes list"
-            otbo_msg = cm.CubeMsgOrderCubeboxTeamBadgeOut(
-                self.net.node_name, team_name=team.name, cube_id=cubebox.cube_id)
-            report = self.net.send_msg_to(
-                message=otbo_msg, node_name=cubebox.node_name, require_ack=True, nb_tries=3)
-            assert report, "Failed to send the order team badge out message to the cubebox"
-            assert report.ack_msg, "Sent the order team badge out message to the cubebox but no ACK received"
-            assert report.ack_ok, "Sent the order team badge out message to the cubebox but the ACK was not OK"
-            self.log.success("Sent the order team badge out message to the cubebox and received ACK")
+            if cubebox:
+                self.log.info("Team still has a cubebox. Instructing the cubebox to badge out the team")
+                otbo_msg = cm.CubeMsgOrderCubeboxTeamBadgeOut(
+                    self.net.node_name, team_name=team.name, cube_id=cubebox.cube_id)
+                report = self.net.send_msg_to(
+                    message=otbo_msg, node_name=cubebox.node_name, require_ack=True, nb_tries=3)
+                assert report, "Failed to send the order team badge out message to the cubebox"
+                assert report.ack_msg, "Sent the order team badge out message to the cubebox but no ACK received"
+                assert report.ack_ok, "Sent the order team badge out message to the cubebox but the ACK was not OK"
+                self.log.success("Sent the order team badge out message to the cubebox and received ACK")
 
             assert self.teams.remove_team(team.name), "Failed to remove the team from the local teams list"
             self.log.success(f"Removed team {team.name} from the local teams list")
