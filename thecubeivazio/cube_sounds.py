@@ -31,11 +31,19 @@ class CubeSoundPlayer:
         except Exception as e:
             self.log.error(f"Error cleaning up CubeSoundPlayer: {e}")
 
-    def initialize(self):
+    def initialize(self) -> bool:
+        if self._initialize("pulseaudio"):
+            return True
+        if self._initialize("alsa"):
+            return True
+        return False
+
+    def _initialize(self, sdl_audiodriver: str = 'pulseaudio') -> bool:
         try:
-            # alsa fails for cubemaster, but pulseaudio works
+            # alsa fails for cubemaster, but pulseaudio works.
+            # further note : pulseaudio doesnt work for cubebox, but alsa does. WTF?
             # os.environ['SDL_AUDIODRIVER'] = 'alsa'
-            os.environ['SDL_AUDIODRIVER'] = 'pulseaudio'
+            os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
             os.environ['AUDIODEV'] = 'hw:1,0'
 
             # mixer.init()
@@ -46,17 +54,8 @@ class CubeSoundPlayer:
         except Exception as e:
             self.log.error(f"Error initializing CubeSoundPlayer: {e}")
             self._is_initialized = False
-            if "Could not setup connection to PulseAudio" in str(e):
-                self.log.info("Attempting to reinitialize CubeSoundPlayer with default audio driver...")
-                try:
-                    os.environ['SDL_AUDIODRIVER'] = 'alsa'
-                    mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
-                    self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
-                    self._is_initialized = True
-                    self.log.success("CubeSoundPlayer reinitialized with ALSA")
-                except Exception as e:
-                    self.log.error(f"Error reinitializing CubeSoundPlayer with ALSA: {e}")
-
+        finally:
+            return self._is_initialized
 
     def is_initialized(self):
         return self._is_initialized

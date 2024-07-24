@@ -1,6 +1,6 @@
 [Unit]
 Description=Ivazio CubeBox
-After=network-online.target sound.target
+After=network-online.target
 Wants=network-online.target
 
 [Service]
@@ -13,9 +13,6 @@ RestartSec=10
 User=ivazio
 Group=ivazio
 TimeoutStopSec=5
-Environment="SDL_AUDIODRIVER=pulseaudio"
-Environment="AUDIODEV=hw:1,0"
-Environment="PULSE_SERVER=unix:/run/user/1000/pulse/native"
 
 
 
