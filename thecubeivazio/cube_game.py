@@ -1036,16 +1036,14 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
     def make_from_json(cls, json_str: str) -> Optional['CubeTeamsStatusList']:
         return cls.make_from_dict(json.loads(json_str))
 
+    @cubetry
     def add_team(self, team: CubeTeamStatus) -> bool:
-        try:
-            assert team.is_valid(), f"CubeTeamsStatusList.add_team: invalid team {team}"
-            assert self.get_team_by_name(
-                team.name) is None, f"CubeTeamsStatusList.add_team: team {team.name} already in list"
-            self.append(team)
-            return True
-        except Exception as e:
-            CubeLogger.static_error(f"CubeTeamsStatusList.add_team {e}")
+        if not team.is_valid():
             return False
+        if self.has_team(team):
+            return False
+        self.append(team)
+        return True
 
     @cubetry
     def remove_team_by_name(self, name: str) -> bool:
