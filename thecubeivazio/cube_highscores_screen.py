@@ -308,7 +308,9 @@ class CubeHighscoresSubtable:
     @cubetry
     def save_subtable_to_html_file(self, filepath: str) -> bool:
         with open(filepath, "w") as f:
+            CubeLogger.get_static_logger().info("*************")
             f.write(self.generate_html())
+            CubeLogger.get_static_logger().info("////////////")
         return True
 
 
