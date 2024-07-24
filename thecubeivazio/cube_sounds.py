@@ -144,6 +144,8 @@ class CubeSoundPlayer:
 def test_sounds():
     player = CubeSoundPlayer()
     player.log.setLevel(logging.DEBUG)
+    player.log.info("Playing startup sound")
+    player.play_startup_sound()
     player.log.info("Playing RFID OK sound")
     player.play_rfid_ok_sound()
     player.log.info("Playing RFID error sound")
@@ -167,6 +169,6 @@ def test_volume():
     player.play_sound_file_matching("rfid_ok")
 
 if __name__ == "__main__":
-    # test_sounds()
-    test_volume()
+    test_sounds()
+    # test_volume()
 
