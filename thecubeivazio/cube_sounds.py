@@ -74,8 +74,7 @@ class CubeSoundPlayer:
         # mixer.music.set_volume(float(volume_percent) / 100.0)
 
         self.log.info(f"Setting volume to {volume_percent}%")
-        # Ensure volume_percent is within the valid range (0-100)
-        volume_level = min(max(volume_percent, 0), 100)
+        volume_level = int(float(volume_percent)/100.0)
 
         # Use subprocess to call amixer and set the volume for ALSA
         try:
