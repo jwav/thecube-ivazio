@@ -38,6 +38,7 @@ if not cube_utils.is_raspberry_pi():
 
 
 class CubeServerMaster:
+    ALARM_LIGHT_PIN = 25
     def __init__(self):
         # set up the logger
         self.log = cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NODENAME,
@@ -216,13 +217,18 @@ class CubeServerMaster:
             self.log.warning(f"No alarm duration set in the config file. Using {default_duration_sec} seconds")
             duration_sec = default_duration_sec
         end_time = time.time() + duration_sec
-        CubeGpio.set_pin(25, True)
+        CubeGpio.set_pin(self.ALARM_LIGHT_PIN, True)
         self.sound_player.set_volume_percent(100)
         self.sound_player.play_sound_file_matching("alarm")
         while time.time() < end_time:
             time.sleep(1)
-        CubeGpio.set_pin(25, False)
+        CubeGpio.set_pin(self.ALARM_LIGHT_PIN, False)
         self._is_running_alarm = False
+
+    def stop_alarm(self):
+        if self._is_running_alarm:
+            self.sound_player.stop_playing()
+            CubeGpio.set_pin(self.ALARM_LIGHT_PIN, False)
 
     def _rgb_loop(self):
         """Periodically updates the RGBMatrix"""
