@@ -71,6 +71,9 @@ class CubeSoundPlayer:
         """Set the system-wide volume using both ALSA (amixer) and PulseAudio (pactl)."""
         # this doesnt work. We'll use amixer and pactl instead.
         # mixer.music.set_volume(float(volume_percent) / 100.0)
+        if not self._is_initialized:
+            self.log.warning("CubeSoundPlayer not initialized. Initializing...")
+            self.initialize()
 
         # handle incorrect args:
         if not isinstance(volume_percent, (int, float)):
