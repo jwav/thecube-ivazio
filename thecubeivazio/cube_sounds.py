@@ -26,7 +26,6 @@ class CubeSoundPlayer:
         self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
         self.initialize()
 
-
     def __del__(self):
         try:
             # self.stop_playing()
@@ -68,7 +67,7 @@ class CubeSoundPlayer:
         self.set_volume_percent(self.MAX_VOLUME_PERCENT)
 
     @cubetry
-    def set_volume_percent(self, volume_percent: Union[int,float]):
+    def set_volume_percent(self, volume_percent: Union[int, float]):
         """Set the system-wide volume using both ALSA (amixer) and PulseAudio (pactl)."""
         # this doesnt work. We'll use amixer and pactl instead.
         # mixer.music.set_volume(float(volume_percent) / 100.0)
@@ -78,14 +77,16 @@ class CubeSoundPlayer:
 
         # Use subprocess to call amixer and set the volume for ALSA
         try:
-            subprocess.run(['amixer', 'set', 'Master', f'{volume_level}%'], check=True)
+            subprocess.run(['amixer', 'set', 'Master', f'{volume_level}%'],
+                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self.log.info(f"Volume set to {volume_level}% using amixer")
         except subprocess.CalledProcessError as e:
             self.log.error(f"Failed to set volume using amixer: {e}")
 
         # Use subprocess to call pactl and set the volume for PulseAudio
         try:
-            subprocess.run(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', f'{volume_level}%'], check=True)
+            subprocess.run(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', f'{volume_level}%'],
+                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self.log.info(f"Volume set to {volume_level}% using pactl")
         except subprocess.CalledProcessError as e:
             self.log.error(f"Failed to set volume using pactl: {e}")
@@ -157,7 +158,6 @@ class CubeSoundPlayer:
         if soundfile:
             self.play_sound_file(soundfile)
 
-
     def play_rfid_ok_sound(self):
         self.play_sound_file_matching("rfid_ok")
 
@@ -194,6 +194,7 @@ def test_sounds():
     player.play_cubebox_reset_sound()
     player.log.info("Done")
 
+
 def test_volume():
     player = CubeSoundPlayer()
     player.log.setLevel(logging.DEBUG)
@@ -204,7 +205,7 @@ def test_volume():
     player.set_volume_percent(10)
     player.play_sound_file_matching("rfid_ok")
 
+
 if __name__ == "__main__":
     test_sounds()
     # test_volume()
-

@@ -1,1 +1,128 @@
-{"game_durations": ["0h0m5s", "0h0m10s", "0h30", "1h00", "1h30", "2h00"], "team_names": ["Oslo", "Stockholm", "Dakar", "Berne", "Budapest", "Kiev", "Naples", "Belgrade", "Moscou", "Madrid", "Paris", "Ankara"], "trophies": [{"name": "SOCIAL_MEDIA", "french_name": "Post sur m\u00e9dia social", "description": "Partager son exp\u00e9rience TheCube sur un m\u00e9dia social", "points": 10, "image_filename": "trophy_social_media.png"}, {"name": "12_CUBES_DONE", "french_name": "12 cubes termin\u00e9s", "description": "Terminer tous les 12 cubes de TheCube", "points": 100, "image_filename": "trophy_12_cubes_done.png"}, {"name": "6_CUBES_DONE", "french_name": "6 cubes termin\u00e9s", "description": "Terminer 6 cubes", "points": 100, "image_filename": "trophy_6_cubes_done.png"}, {"name": "CUBE_DONE_FAST", "french_name": "Sprinter", "description": "Terminer un cube en moins de 5 minutes", "points": 20, "image_filename": "trophy_done_fast.png"}, {"name": "EXPERT", "french_name": "Expert", "description": "Terminer un cube difficile en moins de 10 minutes", "points": 10, "image_filename": "trophy_expert.png"}, {"name": "NEW_REGISTRATION", "french_name": "One of us", "description": "S'enregistrer comme membre d'Ivazio", "points": 10, "image_filename": "trophy_welcome.png"}], "valid_node_names": ["CubeMaster", "CubeFrontdesk", "CubeBox1", "CubeBox2", "CubeBox3", "CubeBox4", "CubeBox5", "CubeBox6", "CubeBox7", "CubeBox8", "CubeBox9", "CubeBox10", "CubeBox11", "CubeBox12"], "cubeboxes_scoring_presets": {"easy": {"max_score": 100, "min_score": 10, "max_time_sec": 1200, "scoring_function_type": "linear"}, "medium": {"max_score": 200, "min_score": 20, "max_time_sec": 1500, "scoring_function_type": "linear"}, "hard": {"max_score": 500, "min_score": 50, "max_time_sec": 2000, "scoring_function_type": "linear"}}, "cubeboxes_scoring_settings": {"1": "easy", "2": "easy", "3": "easy", "4": "easy", "5": "medium", "6": "medium", "7": "medium", "8": "medium", "9": "hard", "10": "hard", "11": "hard", "12": "hard"}, "resetter_rfids": ["1111111111", "40001ecce2"], "display_team_names_on_rgb": true, "cubebox_audio_volume_percent": 100, "cubemaster_audio_volume_percent": 100, "test": "test1721840874.3541343", "foo": "barf"}
+{
+  "game_durations": [
+    "0h0m5s",
+    "0h0m10s",
+    "0h30",
+    "1h00",
+    "1h30",
+    "2h00"
+  ],
+  "team_names": [
+    "Oslo",
+    "Stockholm",
+    "Dakar",
+    "Berne",
+    "Budapest",
+    "Kiev",
+    "Naples",
+    "Belgrade",
+    "Moscou",
+    "Madrid",
+    "Paris",
+    "Ankara"
+  ],
+  "trophies": [
+    {
+      "name": "SOCIAL_MEDIA",
+      "french_name": "Post sur m\u00e9dia social",
+      "description": "Partager son exp\u00e9rience TheCube sur un m\u00e9dia social",
+      "points": 10,
+      "image_filename": "trophy_social_media.png"
+    },
+    {
+      "name": "12_CUBES_DONE",
+      "french_name": "12 cubes termin\u00e9s",
+      "description": "Terminer tous les 12 cubes de TheCube",
+      "points": 100,
+      "image_filename": "trophy_12_cubes_done.png"
+    },
+    {
+      "name": "6_CUBES_DONE",
+      "french_name": "6 cubes termin\u00e9s",
+      "description": "Terminer 6 cubes",
+      "points": 100,
+      "image_filename": "trophy_6_cubes_done.png"
+    },
+    {
+      "name": "CUBE_DONE_FAST",
+      "french_name": "Sprinter",
+      "description": "Terminer un cube en moins de 5 minutes",
+      "points": 20,
+      "image_filename": "trophy_done_fast.png"
+    },
+    {
+      "name": "EXPERT",
+      "french_name": "Expert",
+      "description": "Terminer un cube difficile en moins de 10 minutes",
+      "points": 10,
+      "image_filename": "trophy_expert.png"
+    },
+    {
+      "name": "NEW_REGISTRATION",
+      "french_name": "One of us",
+      "description": "S'enregistrer comme membre d'Ivazio",
+      "points": 10,
+      "image_filename": "trophy_welcome.png"
+    }
+  ],
+  "valid_node_names": [
+    "CubeMaster",
+    "CubeFrontdesk",
+    "CubeBox1",
+    "CubeBox2",
+    "CubeBox3",
+    "CubeBox4",
+    "CubeBox5",
+    "CubeBox6",
+    "CubeBox7",
+    "CubeBox8",
+    "CubeBox9",
+    "CubeBox10",
+    "CubeBox11",
+    "CubeBox12"
+  ],
+  "cubeboxes_scoring_presets": {
+    "easy": {
+      "max_score": 100,
+      "min_score": 10,
+      "max_time_sec": 1200,
+      "scoring_function_type": "linear"
+    },
+    "medium": {
+      "max_score": 200,
+      "min_score": 20,
+      "max_time_sec": 1500,
+      "scoring_function_type": "linear"
+    },
+    "hard": {
+      "max_score": 500,
+      "min_score": 50,
+      "max_time_sec": 2000,
+      "scoring_function_type": "linear"
+    }
+  },
+  "cubeboxes_scoring_settings": {
+    "1": "easy",
+    "2": "easy",
+    "3": "easy",
+    "4": "easy",
+    "5": "medium",
+    "6": "medium",
+    "7": "medium",
+    "8": "medium",
+    "9": "hard",
+    "10": "hard",
+    "11": "hard",
+    "12": "hard"
+  },
+  "resetter_rfids": [
+    "1111111111",
+    "40001ecce2"
+  ],
+  "alarm_duration_sec": 3,
+  "display_team_names_on_rgb": true,
+  "cubebox_audio_volume_percent": 100,
+  "cubemaster_audio_volume_percent": 100,
+  "test": "test1721840874.3541343",
+  "foo": "barf"
+}
