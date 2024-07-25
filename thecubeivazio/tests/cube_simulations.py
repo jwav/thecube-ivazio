@@ -5,9 +5,12 @@ import threading
 import time
 from typing import Callable
 
-from thecubeivazio import cube_game
+from thecubeivazio import cube_game as cgame
 from thecubeivazio import cube_logger
-from thecubeivazio import cubeserver_cubebox, cubeserver_frontdesk, cubeserver_cubemaster
+from thecubeivazio.cube_neopixel import CubeNeopixel
+from thecubeivazio.cubeserver_cubebox import CubeServerCubebox
+from thecubeivazio.cubeserver_frontdesk import CubeServerFrontdesk
+from thecubeivazio.cubeserver_cubemaster import CubeServerMaster
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_rfid import CubeRfidLine
 from thecubeivazio import cube_database as cubedb
@@ -70,6 +73,11 @@ class TestResults:
         self.info = info
 
 
+def get_random_resetter_uid():
+    resetters = CubeRfidLine.get_resetter_uids_list()[0]
+    return random.choice(resetters)
+
+
 class CubeTester:
     COMM_DELAY_SEC = 3
 
@@ -77,19 +85,52 @@ class CubeTester:
         self.cube_id = 1
         self.name = name
         self.logger = cube_logger.CubeLogger(name)
-        self.cubeboxes = [cubeserver_cubebox.CubeServerCubebox(i+1) for i in range(nb_cubeboxes)]
-        self.frontdesk = cubeserver_frontdesk.CubeServerFrontdesk()
-        self.master = cubeserver_cubemaster.CubeServerMaster()
-        self.cubebox_threads = [threading.Thread(target=cubebox.run, daemon=True) for cubebox in self.cubeboxes]
+        self._cubeboxes = [CubeServerCubebox(i+1) for i in range(nb_cubeboxes)]
+        self.frontdesk = CubeServerFrontdesk()
+        self.master = CubeServerMaster()
+        self.cubebox_threads = [threading.Thread(target=cubebox.run, daemon=True) for cubebox in self._cubeboxes]
         self.frontdesk_thread = threading.Thread(target=self.frontdesk.run, daemon=True)
         self.master_thread = threading.Thread(target=self.master.run, daemon=True)
         self.results = TestResults()
+        # if this flag is False, the cubebox instances will be locally defined instances of CubeServerCubebox
+        # if this flag is True, we expect that actual cubeboxes are running on the network.
+        # The local instances used for testing will be updated with status replies from the cubeboxes,
+        # triggered by requests from the (local) frontdesk.
+        # see update_cubeboxes_statuses in this class for more details.
+        self.test_remotely = False
+
+    @property
+    def cubeboxes(self):
+        if not self.test_remotely:
+            return self._cubeboxes
+        else:
+            return self.frontdesk.cubeboxes
 
     @property
     def nb_cubeboxes(self):
-        return len(self.cubeboxes)
+        return len(self._cubeboxes)
+
+    @property
+    def cubeboxes_ids(self) -> list[CubeId]:
+        return [cubebox.status.cube_id for cubebox in self._cubeboxes]
+
+    def update_cubeboxes_statuses(self) -> bool:
+        if not self.test_remotely:
+            return True
+        ret = True
+        for cube_id in self.cubeboxes_ids:
+            if not self.frontdesk.request_cubebox_status(cube_id):
+                self.logger.error(f"Error requesting status for cubebox {cube_id}")
+                ret = False
+        return ret
 
     def common_start(self):
+        """Common setup for the tests:
+        - start the servers
+        - set the log levels to INFO
+        - disable the RFID listeners
+        - use custom databases
+        """
         for cubebox_thread in self.cubebox_threads:
             cubebox_thread.start()
         self.frontdesk_thread.start()
@@ -133,7 +174,7 @@ class CubeTester:
         nb_tests = len(self.results.statements)
         nb_pass = self.results.results.count(TestResults.RESULT_PASS)
         nb_fail = self.results.results.count(TestResults.RESULT_FAIL)
-        self.logger.info("TestResults:")
+        self.logger.info("\n--------------------\nTestResults:\n--------------------\n")
         for i, statement in enumerate(self.results.statements):
             if self.results.results[i] == TestResults.RESULT_PASS:
                 # LOGGER.info(f"PASS : {statement}: {self.results[i]}")
@@ -235,15 +276,73 @@ class CubeTester:
             self.logger.error(f"An error occurred while waiting for '{condition}': {e}")
             traceback.print_exc()
 
-    def valid_simulation(self):
-        cubebox = self.cubeboxes[0]
+    def partial_test_create_new_team(self, team:cgame.CubeTeamStatus):
+        """A common test to create a new team on the frontdesk and check:
+        - that the team is added to the master
+        - that the team is correctly configured master-side (no cubebox associated, no completed cubeboxes)
+        - that the team is correctly configured frontdesk-side (same as master)
+        """
+        team_name = team.name
+        self.frontdesk.add_new_team(team)
+        self.wait_until(lambda: self.master.teams.get_team_by_name(team_name) is not None,
+                        message="waiting for the team to be added to the master",
+                        timeout=self.COMM_DELAY_SEC)
+        self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).current_cubebox_id, None,
+                     "Team should not be associated with a cubebox")
+        self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).completed_cubebox_ids, [],
+                     "Team should not have completed any cubeboxes")
+        self.test_eq(lambda: self.frontdesk.teams.get_team_by_name(team_name).current_cubebox_id, None,
+                        "Team should not be associated with a cubebox")
+        self.test_eq(lambda: self.frontdesk.teams.get_team_by_name(team_name).completed_cubebox_ids, [],
+                        "Team should not have completed any cubeboxes")
+
+    def partial_test_badge_team_in_cubebox(self, team:cgame.CubeTeamStatus, cubebox:CubeServerCubebox):
+        """A common test to badge a team in on a cubebox and check:
+        - that the cubebox is playing
+        - that the team is associated with the cubebox
+        """
+        # badge the team in
+        uid = team.rfid_uid
+        cube_id = cubebox.status.cube_id
+        team_name = team.name
+        cubebox.rfid.simulate_read(uid)
+
+        # check that the cubebox and cubemaster are up to date with this badge-in
+        self.wait_until(lambda: cubebox.is_box_being_played() is True,
+                        message="waiting for the box to be played",
+                        timeout=self.COMM_DELAY_SEC)
+        self.test(lambda: cubebox.is_box_being_played() is True, "Cubebox should be playing")
+        self.test(lambda: cubebox.status.last_valid_rfid_line is not None, "Cubebox should have a valid RFID line")
+        self.test_eq(lambda: cubebox.status.last_valid_rfid_line.uid, uid, "Cubebox should have the correct RFID UID")
+        self.test_eq(lambda: cubebox.neopixel.color, CubeNeopixel.COLOR_CURRENTLY_PLAYING, "Cubebox should be playing")
+        self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).current_cubebox_id, cube_id,
+                     "Team should be associated with the cubebox")
+
+    def partial_test_reset_cubebox_with_rfid(self, cubebox:CubeServerCubebox, rfid_uid:str=None):
+        """A common test to reset a cubebox with a RFID read and check:
+        - that the cubebox is ready to play
+        - that the neopixel color is correct
+        """
+        rfid_uid = rfid_uid or get_random_resetter_uid()
+        cubebox.rfid.simulate_read(rfid_uid)
+        self.wait_until(lambda: cubebox.status.is_ready_to_play() is True,
+                        message="waiting for cubebox to be ready to play",
+                        timeout=1)
+        self.test(lambda: cubebox.status.is_ready_to_play() is True, "Cubebox should be ready to play")
+        self.test(lambda: cubebox.status.last_valid_rfid_line is not None, "Cubebox should have a valid RFID line")
+        self.test_eq(lambda: cubebox.status.last_valid_rfid_line.uid, rfid_uid, "Cubebox should have the correct RFID UID")
+        self.test_eq(lambda: cubebox.neopixel.color, CubeNeopixel.COLOR_WAITING_FOR_RESET, "Cubebox should be waiting for reset")
+
+
+    def full_test_valid_simulation(self):
         self.common_start()
+        cubebox = self.cubeboxes[0]
         team_name = "Paris"
         team_custom_name = "Paris Custom"
         cube_id = 1
         rfid_uid = CubeRfidLine.generate_random_rfid_line().uid
         rfid_uid2 = CubeRfidLine.generate_random_rfid_line().uid
-        rfid_uid_resetter = "11111111"
+        rfid_uid_resetter = CubeRfidLine.get_resetter_uids_list()[0]
         max_time = 3650.0
 
         cubebox.net.log.setLevel(logging.CRITICAL)
@@ -252,7 +351,7 @@ class CubeTester:
         self.frontdesk.log.setLevel(logging.CRITICAL)
         self.frontdesk.net.log.setLevel(logging.CRITICAL)
 
-        team = cube_game.CubeTeamStatus(name=team_name, custom_name=team_custom_name, rfid_uid=rfid_uid, max_time_sec=max_time)
+        team = cgame.CubeTeamStatus(name=team_name, custom_name=team_custom_name, rfid_uid=rfid_uid, max_time_sec=max_time)
         self.logger.infoplus("Frontdesk Adding a new team")
         self.frontdesk.add_new_team(team)
         self.wait_until(lambda: self.master.teams.get_team_by_name(team_name) is not None, message="waiting for the team to be added to the master", timeout=self.COMM_DELAY_SEC)
@@ -297,21 +396,22 @@ class CubeTester:
         self.test(lambda: team_from_cubemaster.current_cubebox_id is None, "Team should not be associated with a cubebox")
         self.test(lambda: team_from_cubemaster.completed_cubebox_ids == [cube_id], "Team should have completed cubebox 1")
 
-    def unregistered_rfid(self):
+    def full_test_unregistered_rfid(self):
         cubebox = self.cubeboxes[0]
         self.common_start()
         team_name = "Paris"
-        rfid_uid = "1234567890"
+        correct_uid = "1234567890"
+        incorrect_uid = "1234567891"
         cube_id = 1
-        team = cube_game.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=3650)
+        team = cgame.CubeTeamStatus(name=team_name, rfid_uid=correct_uid, max_time_sec=3650)
         self.frontdesk.add_new_team(team)
         self.wait_until(lambda: self.master.teams.get_team_by_name(team_name) is not None, message="waiting for the team to be added to the master", timeout=self.COMM_DELAY_SEC)
-        cubebox.rfid.simulate_read("1234567891")
+        cubebox.rfid.simulate_read(incorrect_uid)
         self.wait(self.COMM_DELAY_SEC, "waiting for the rfid msg to be sent to the master")
         self.logger.info(f"CUBEBOX.is_box_being_played()={cubebox.is_box_being_played()}")
         self.test(lambda: cubebox.is_box_being_played() is False, "Cubebox should not be playing")
 
-    def test_testing_system(self):
+    def full_test_testing_system(self):
         self.logger.critical("Testing test()")
         self.test(lambda: 1 == 1, "should pass")
         self.test(lambda: 1 == 2, "should fail")
@@ -335,7 +435,7 @@ class CubeTester:
         self.test_neq(get_one(), 1, "should fail: get_one() != 1, hurr durr")
         self.test_neq(lambda: 1, 1, "should fail: lambda: 1 != 1, hurr durr")
 
-    def test_alarm_triggering(self):
+    def full_test_alarm_triggering(self):
         """simulates the following scenario:
         - a team is registered on the frontdesk, with the flag 'use_alarm', and its info is sent to the cubemaster
         - we check that the cubemaster has got the right team info
@@ -354,7 +454,7 @@ class CubeTester:
         cube_id = 1
 
         max_time_sec = 3650
-        team = cube_game.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=max_time_sec, use_alarm=True)
+        team = cgame.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=max_time_sec, use_alarm=True)
         self.frontdesk.add_new_team(team)
         self.wait_until(lambda: self.master.teams.get_team_by_name(team_name) is not None,
                         message="waiting for the team to be added to the master",
@@ -404,7 +504,7 @@ class CubeTester:
         self.test(lambda: self.master.teams.get_team_by_name(team_name).completed_cubebox_ids == [cube_id],
                   f"Team should have completed cubebox {cube_id}")
 
-    def test_team_time_up(self):
+    def full_test_team_time_up(self):
         """simulates the following scenario:
         - a team is registered on the frontdesk. The team has a max time of 1 second.
         - we check that the cubemaster has got the right team info
@@ -423,29 +523,11 @@ class CubeTester:
         rfid_uid = CubeRfidLine.generate_random_rfid_line().uid
         max_time_sec = 1
 
-        team = cube_game.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=max_time_sec)
+        team = cgame.CubeTeamStatus(name=team_name, rfid_uid=rfid_uid, max_time_sec=max_time_sec)
 
-        self.frontdesk.add_new_team(team)
-        self.wait_until(lambda: self.master.teams.get_team_by_name(team_name) is not None,
-                        message="waiting for the team to be added to the master",
-                        timeout=self.COMM_DELAY_SEC)
-        self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).current_cubebox_id, None,
-                     "Team should not be associated with a cubebox")
-        self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).completed_cubebox_ids, [],
-                     "Team should not have completed any cubeboxes")
+        self.partial_test_create_new_team(team)
 
-        # badge the team in
-        cubebox.rfid.simulate_read(rfid_uid)
-
-        # check that the cubebox and cubemaster are up to date with this badge-in
-        self.wait_until(lambda: cubebox.is_box_being_played() is True,
-                        message="waiting for the box to be played",
-                        timeout=self.COMM_DELAY_SEC)
-        self.test(lambda: cubebox.is_box_being_played() is True, "Cubebox should be playing")
-        self.test(lambda: cubebox.status.last_valid_rfid_line is not None, "Cubebox should have a valid RFID line")
-        self.test_eq(lambda: cubebox.status.last_valid_rfid_line.uid, rfid_uid, "Cubebox should have the correct RFID UID")
-        self.test_eq(lambda: self.master.teams.get_team_by_name(team_name).current_cubebox_id, cube_id,
-                     "Team should be associated with the cubebox")
+        self.partial_test_badge_team_in_cubebox(team, cubebox)
 
         # wait for the team's time to be up
         self.wait_until(lambda: self.master.teams.get_team_by_name(team_name).is_time_up(),
@@ -488,7 +570,7 @@ if __name__ == "__main__":
         # cube_tester.test_alarm_triggering()
         # cube_tester.unregistered_rfid()
         # cube_tester.test_testing_system()
-        cube_tester.test_team_time_up()
+        cube_tester.full_test_team_time_up()
     except Exception as e:
         cube_tester.logger.error(f"An error occurred: {e}")
         traceback.print_exc()

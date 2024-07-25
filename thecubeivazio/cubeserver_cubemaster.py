@@ -213,10 +213,11 @@ class CubeServerMaster:
         default_duration_sec = 5
         duration_sec = self.config.get_field("alarm_duration_sec")
         if not duration_sec:
-            self.log.error(f"No alarm duration set in the config file. Using {default_duration_sec} seconds")
+            self.log.warning(f"No alarm duration set in the config file. Using {default_duration_sec} seconds")
             duration_sec = default_duration_sec
         end_time = time.time() + duration_sec
         CubeGpio.set_pin(25, True)
+        self.sound_player.set_volume_percent(100)
         self.sound_player.play_sound_file_matching("alarm")
         while time.time() < end_time:
             time.sleep(1)
@@ -804,29 +805,16 @@ class CubeServerMaster:
             master.log.error(f"TestRGB: Exception: {e}")
 
 
-def main(use_prompt=False):
+def main():
     print("Running CubeMaster main()")
     import atexit
 
     master = CubeServerMaster()
     atexit.register(master.stop)
 
-    try:
-        master.run()
-        master.log.setLevel(cube_logger.logging.INFO)
-        master.net.log.setLevel(cube_logger.logging.INFO)
-
-        while True:
-            time.sleep(0.1)
-            if use_prompt:
-                command = input("Enter command: ")
-                if command == "exit":
-                    break
-                master.handle_command(command)
-    except KeyboardInterrupt:
-        print("KeyboardInterrupt received. Stopping CubeMaster...")
-    finally:
-        master.stop()
+    master.run()
+    master.log.setLevel(cube_logger.logging.INFO)
+    master.net.log.setLevel(cube_logger.logging.INFO)
 
 
 def test_highscores():
