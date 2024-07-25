@@ -61,7 +61,7 @@ from rgbmatrix import graphics
 from cube_rgbmatrix_server import CubeRgbMatrixContentDict, CubeRgbMatrixContent, CubeRgbServer
 
 
-class MockLogger:
+class CubeRgbMatrixDaemonLogger:
     def __init__(self, name):
         self.name = name
         self.enabled = True
@@ -99,25 +99,13 @@ class CubeRgbMatrixDaemon(SampleBase):
     _static_process = None
 
     # Create a logger object
-    # log = logging.getLogger('RGBMatrixDaemon')
-    log = MockLogger('RGBMatrixDaemon')
+    log = CubeRgbMatrixDaemonLogger('RGBMatrixDaemon')
     log.enabled = False
-    # log.setLevel(logging.DEBUG)
-    # file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # file_handler.setFormatter(formatter)
-    # log.addHandler(file_handler)
 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # known_args, _ = self.parser.parse_known_args([
-        #     f'--led-cols={PANEL_WIDTH}',
-        #     f'--led-rows={PANEL_HEIGHT}',
-        #     f'--led-chain={NB_MATRICES}',
-        #     f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}',
-        # ])
-        # self.args = known_args
         sys.argv.extend([
             f'--led-cols={PANEL_WIDTH}',
             f'--led-rows={PANEL_HEIGHT}',
@@ -127,7 +115,6 @@ class CubeRgbMatrixDaemon(SampleBase):
         # print("CubeRgbTextDrawer args:", self.args)
         self._keep_running = False
         self.server = CubeRgbServer(is_rgb=True, debug=False)
-        # self.create_log_file()
 
         self.font = graphics.Font()
         self.font.LoadFont(os.path.join(RGBMATRIX_DAEMON_FONTS_DIR, "7x13.bdf"))
@@ -139,6 +126,9 @@ class CubeRgbMatrixDaemon(SampleBase):
             console_handler = logging.StreamHandler()
             console_handler.setFormatter(cls.formatter)
             cls.log.addHandler(console_handler)
+            cls.log.enabled = True
+        else:
+            cls.log.enabled = False
 
     @classmethod
     def create_log_file(cls) -> bool:
@@ -158,8 +148,11 @@ class CubeRgbMatrixDaemon(SampleBase):
                 cls.log.warning(f"{cls.__name__} :  process already running")
                 return False
             daemon_path = os.path.abspath(__file__)
-            cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
-            cls.log.info(f"{cls.__name__} :  process launched")
+            cls._static_process = subprocess.Popen(
+                ['sudo', 'python3', daemon_path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
             return True
         except Exception as e:
             cls.log.error(f"{cls.__name__} : Error launching process: {e}")
@@ -172,6 +165,7 @@ class CubeRgbMatrixDaemon(SampleBase):
             if cls._static_process:
                 cls._static_process.terminate()
                 cls._static_process.wait(timeout=timeout)
+                cls._static_process = None
         except Exception as e:
             print(f"{cls.__name__} : Error stopping process: {e}")
 
