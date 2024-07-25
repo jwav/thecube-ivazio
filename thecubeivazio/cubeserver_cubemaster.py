@@ -24,8 +24,7 @@ HIGHSCORES_UPDATE_PERIOD_SEC = 2
 
 # only import cube_rgbmatrix_daemon if we're running this script as the main script,
 # not if we're importing it as a module
-DISABLE_RGBMATRIX = True
-DISABLE_HIGHSCORES = True
+
 if __name__ == "__main__":
     print("Importing thecubeivazio.cube_rgbmatrix_daemon")
     from thecubeivazio.cube_rgbmatrix_daemon import cube_rgbmatrix_daemon as crd
@@ -33,6 +32,10 @@ if __name__ == "__main__":
 
     DISABLE_RGBMATRIX = False
     DISABLE_HIGHSCORES = False
+else:
+    DISABLE_RGBMATRIX = True
+    DISABLE_HIGHSCORES = True
+
 if not cube_utils.is_raspberry_pi():
     DISABLE_RGBMATRIX = True
 
@@ -122,11 +125,13 @@ class CubeServerMaster:
         self._keep_running = False
         self.net.stop()
         self.rfid.stop()
+        self.stop_alarm()
         self._thread_message_handling.join(timeout=0.1)
         self._thread_rfid.join(timeout=0.1)
         self._thread_rgb.join(timeout=0.1)
         self._thread_status_update.join(timeout=0.1)
         self._thread_highscores.join(timeout=0.1)
+
 
     def _highscores_loop(self):
         if DISABLE_HIGHSCORES:
