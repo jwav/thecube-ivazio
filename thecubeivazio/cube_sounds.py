@@ -64,7 +64,6 @@ class CubeSoundPlayer:
     @cubetry
     def set_volume_percent(self, volume_percent: Union[int,float]):
         """Set the system-wide volume using both ALSA (amixer) and PulseAudio (pactl)."""
-
         # this doesnt work. We'll use amixer and pactl instead.
         # mixer.music.set_volume(float(volume_percent) / 100.0)
 
