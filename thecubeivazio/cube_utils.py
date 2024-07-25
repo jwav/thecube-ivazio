@@ -439,6 +439,11 @@ def reboot():
     subprocess.run(['sudo', 'reboot'])
     return True
 
+@cubetry
+def stty_sane():
+    """Set the terminal to a sane state"""
+    subprocess.run(['stty', 'sane'])
+    return True
 
 ###########
 # TESTS

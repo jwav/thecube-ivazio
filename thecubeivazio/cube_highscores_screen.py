@@ -4,7 +4,7 @@ import subprocess
 import textwrap
 import time
 
-from thecubeivazio import cube_database as cubedb
+from thecubeivazio import cube_database as cubedb, cube_utils
 from thecubeivazio import cube_game as cgame
 from thecubeivazio import cube_identification as cid
 from thecubeivazio import cube_utils as cutils
@@ -76,6 +76,7 @@ class CubeBrowserManager:
         # Execute the command in a non-blocking manner using shell=True
         print(f"Launching Chromium with command: '{command}'")
         self._process = subprocess.Popen(command, shell=True)
+        cube_utils.stty_sane()
 
     @staticmethod
     def close_chromium():
