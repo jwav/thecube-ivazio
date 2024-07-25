@@ -97,13 +97,41 @@ class MockLogger:
 class CubeRgbMatrixDaemon(SampleBase):
     # singleton instance for the subprocess
     _static_process = None
-    _log_file = None
-    enable_logging = False
 
     # Create a logger object
+    # log = logging.getLogger('RGBMatrixDaemon')
     log = MockLogger('RGBMatrixDaemon')
     log.enabled = False
+    # log.setLevel(logging.DEBUG)
+    # file_handler = RotatingFileHandler(RGBMATRIX_DAEMON_LOG_FILEPATH, maxBytes=1024*1024, backupCount=1)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # file_handler.setFormatter(formatter)
+    # log.addHandler(file_handler)
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # known_args, _ = self.parser.parse_known_args([
+        #     f'--led-cols={PANEL_WIDTH}',
+        #     f'--led-rows={PANEL_HEIGHT}',
+        #     f'--led-chain={NB_MATRICES}',
+        #     f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}',
+        # ])
+        # self.args = known_args
+        sys.argv.extend([
+            f'--led-cols={PANEL_WIDTH}',
+            f'--led-rows={PANEL_HEIGHT}',
+            f'--led-chain={NB_MATRICES}',
+            f'--led-slowdown-gpio={LED_SLOWDOWN_GPIO}'
+        ])
+        # print("CubeRgbTextDrawer args:", self.args)
+        self._keep_running = False
+        self.server = CubeRgbServer(is_rgb=True, debug=False)
+        # self.create_log_file()
+
+        self.font = graphics.Font()
+        self.font.LoadFont(os.path.join(RGBMATRIX_DAEMON_FONTS_DIR, "7x13.bdf"))
+        self.textColor = graphics.Color(255, 255, 0)
 
     @classmethod
     def enable_log_stdout(cls, enable=True):
@@ -111,31 +139,27 @@ class CubeRgbMatrixDaemon(SampleBase):
             console_handler = logging.StreamHandler()
             console_handler.setFormatter(cls.formatter)
             cls.log.addHandler(console_handler)
-            cls.log.enabled = True
-        else:
-            cls.log.enabled = False
+
+    @classmethod
+    def create_log_file(cls) -> bool:
+        try:
+            with open(RGBMATRIX_DAEMON_LOG_FILEPATH, "w") as f:
+                f.write("")
+                return True
+        except Exception as e:
+            cls.log.error(f"Error creating log file: {e}")
+            return False
+
 
     @classmethod
     def launch_process(cls) -> bool:
         try:
             if cls._static_process:
-                cls.log.warning(f"{cls.__name__} : process already running")
+                cls.log.warning(f"{cls.__name__} :  process already running")
                 return False
             daemon_path = os.path.abspath(__file__)
-            if cls.enable_logging:
-                cls._log_file = open(RGBMATRIX_DAEMON_LOG_FILEPATH, 'w')
-                cls._static_process = subprocess.Popen(
-                    ['sudo', 'python3', daemon_path],
-                    stdout=cls._log_file,
-                    stderr=cls._log_file
-                )
-            else:
-                cls._static_process = subprocess.Popen(
-                    ['sudo', 'python3', daemon_path],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
-            cls.log.info(f"{cls.__name__} : process launched")
+            cls._static_process = subprocess.Popen(['sudo', 'python3', daemon_path])
+            cls.log.info(f"{cls.__name__} :  process launched")
             return True
         except Exception as e:
             cls.log.error(f"{cls.__name__} : Error launching process: {e}")
@@ -148,10 +172,6 @@ class CubeRgbMatrixDaemon(SampleBase):
             if cls._static_process:
                 cls._static_process.terminate()
                 cls._static_process.wait(timeout=timeout)
-                cls._static_process = None
-            if cls._log_file:
-                cls._log_file.close()
-                cls._log_file = None
         except Exception as e:
             print(f"{cls.__name__} : Error stopping process: {e}")
 
@@ -160,7 +180,6 @@ class CubeRgbMatrixDaemon(SampleBase):
         return cls._static_process is not None
 
     def start(self):
-        """Calls SampleBase.process(), which is the standard way of running the RGB matrices."""
         return self.process()
 
     @staticmethod
