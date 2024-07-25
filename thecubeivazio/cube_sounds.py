@@ -64,7 +64,7 @@ class CubeSoundPlayer:
     def set_volume_percent(self, volume_percent: int):
         """Set the volume of the buzzer."""
         self.log.info(f"Setting volume to {volume_percent}%")
-        mixer.music.set_volume(volume_percent / 100)
+        mixer.music.set_volume(float(volume_percent) / 100.0)
 
     @cubetry
     def play_sound_file(self, soundfile: str):
