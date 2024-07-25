@@ -106,6 +106,10 @@ class CubeServerMaster:
         self.net.send_msg_to_frontdesk(
             cm.CubeMsgReplyCubemasterStatus(self.net.node_name, self.game_status))
 
+        # play the startup sound to notify that the CubeMaster is ready
+        self.sound_player.set_volume_percent(100)
+        self.sound_player.play_sound_file_matching("startup")
+
     def run(self):
         self._keep_running = True
         self._thread_rfid.start()
