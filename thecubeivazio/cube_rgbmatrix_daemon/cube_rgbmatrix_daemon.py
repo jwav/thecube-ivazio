@@ -149,19 +149,16 @@ class CubeRgbMatrixDaemon(SampleBase):
                 return False
             # get the absolute path of this very script
             daemon_path = os.path.abspath(__file__)
-            # cls._static_process = subprocess.Popen(
-            #     ['sudo', 'python3', daemon_path],
-            #     stdout=subprocess.DEVNULL,  # Redirect stdout to DEVNULL
-            #     stderr=subprocess.DEVNULL,  # Redirect stderr to DEVNULL
-            #     # preexec_fn=os.setsid  # Create a new session
-            # )
-            with open(os.devnull, 'wb') as devnull:
-                cls._static_process = subprocess.Popen(
-                    ['sudo', 'python3', daemon_path],
-                    stdout=devnull,  # Explicitly use devnull for stdout
-                    stderr=devnull,  # Explicitly use devnull for stderr
-                    preexec_fn=os.setsid  # Create a new session
-                )
+            cls._static_process = subprocess.Popen(
+                ['sudo', 'python3', daemon_path],
+                stdout=subprocess.DEVNULL,  # Redirect stdout to DEVNULL
+                stderr=subprocess.DEVNULL,  # Redirect stderr to DEVNULL
+                # preexec_fn=os.setsid  # Create a new session
+            )
+            cls.log.info(f"{cls.__name__} :  process launched")
+            # run `stty sane` to avoid the staggering problem
+            subprocess.run(['stty', 'sane'])
+
             return True
         except Exception as e:
             cls.log.error(f"{cls.__name__} : Error launching process: {e}")
