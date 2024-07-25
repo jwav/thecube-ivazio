@@ -210,18 +210,19 @@ class CubeServerMaster:
     def _run_alarm(self):
         """sounds the alarm and activate the lights for a given amount of time"""
         self.log.info("Running alarm")
-        self._is_running_alarm = True
         default_duration_sec = 5
         duration_sec = self.config.get_field("alarm_duration_sec")
         if not duration_sec:
             self.log.warning(f"No alarm duration set in the config file. Using {default_duration_sec} seconds")
             duration_sec = default_duration_sec
         end_time = time.time() + duration_sec
-        CubeGpio.set_pin(self.ALARM_LIGHT_PIN, True)
-        self.sound_player.set_volume_percent(100)
-        self.sound_player.play_sound_file_matching("alarm")
-        while time.time() < end_time:
-            time.sleep(1)
+        self._is_running_alarm = True
+        while True:
+            CubeGpio.set_pin(self.ALARM_LIGHT_PIN, True)
+            self.sound_player.set_volume_to_maximum()
+            self.sound_player.play_sound_file_matching("alarm")
+            if time.time() > end_time:
+                break
         CubeGpio.set_pin(self.ALARM_LIGHT_PIN, False)
         self._is_running_alarm = False
 

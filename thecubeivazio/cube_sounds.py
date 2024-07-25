@@ -4,6 +4,7 @@ import logging
 import random
 import subprocess
 import threading
+import time
 
 import pygame.mixer as mixer
 import pygame.time as pgtime
@@ -14,6 +15,7 @@ from thecubeivazio.cube_common_defines import *
 
 class CubeSoundPlayer:
     DEFAULT_VOLUME_PERCENT = 100
+    MAX_VOLUME_PERCENT = 1000
     SUPPORTED_EXTENSIONS = ['.wav', '.mp3', '.ogg', '.flac', '.mod', '.s3m', '.it', '.xm']
 
     def __init__(self):
@@ -62,6 +64,10 @@ class CubeSoundPlayer:
         return self._is_initialized
 
     @cubetry
+    def set_volume_to_maximum(self):
+        self.set_volume_percent(self.MAX_VOLUME_PERCENT)
+
+    @cubetry
     def set_volume_percent(self, volume_percent: Union[int,float]):
         """Set the system-wide volume using both ALSA (amixer) and PulseAudio (pactl)."""
         # this doesnt work. We'll use amixer and pactl instead.
@@ -93,7 +99,7 @@ class CubeSoundPlayer:
         self._playing_thread.start()
         self._playing_thread.join(timeout=STATUS_REPLY_TIMEOUT)
 
-    def _play_sound_file(self, soundfile: str):
+    def _play_sound_file(self, soundfile: str, wait_for_finish: bool = True):
         try:
             if not self.is_initialized():
                 self.log.warning("CubeSoundPlayer not initialized. Initializing...")
@@ -108,8 +114,9 @@ class CubeSoundPlayer:
             mixer.music.load(soundfile)
             mixer.music.play()
             # Wait for the music to play
-            while mixer.music.get_busy():
-                pgtime.Clock().tick(10)
+            if wait_for_finish:
+                while mixer.music.get_busy():
+                    pgtime.Clock().tick(10)
         except Exception as e:
             self.log.error(f"Error playing sound file: '{soundfile}': {e}")
             if "mixer not initialized" in str(e):
@@ -150,6 +157,7 @@ class CubeSoundPlayer:
         soundfile = self.find_sound_file_matching(partial_filename, random_choice)
         if soundfile:
             self.play_sound_file(soundfile)
+
 
     def play_rfid_ok_sound(self):
         self.play_sound_file_matching("rfid_ok")
