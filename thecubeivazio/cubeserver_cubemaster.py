@@ -816,6 +816,9 @@ def main():
     master.log.setLevel(cube_logger.logging.INFO)
     master.net.log.setLevel(cube_logger.logging.INFO)
 
+    while True:
+        time.sleep(1)
+
 
 def test_highscores():
     import atexit
