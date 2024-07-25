@@ -217,6 +217,7 @@ class CubeServerMaster:
             duration_sec = default_duration_sec
         end_time = time.time() + duration_sec
         self._is_running_alarm = True
+
         while True:
             CubeGpio.set_pin(self.ALARM_LIGHT_PIN, True)
             self.sound_player.set_volume_to_maximum()
