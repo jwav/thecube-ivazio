@@ -150,8 +150,9 @@ class CubeRgbMatrixDaemon(SampleBase):
             daemon_path = os.path.abspath(__file__)
             cls._static_process = subprocess.Popen(
                 ['sudo', 'python3', daemon_path],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stdout=subprocess.DEVNULL,  # Redirect stdout to DEVNULL
+                stderr=subprocess.DEVNULL,  # Redirect stderr to DEVNULL
+                preexec_fn=os.setsid  # Create a new session
             )
             return True
         except Exception as e:
