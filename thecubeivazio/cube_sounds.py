@@ -72,6 +72,11 @@ class CubeSoundPlayer:
         # this doesnt work. We'll use amixer and pactl instead.
         # mixer.music.set_volume(float(volume_percent) / 100.0)
 
+        # handle incorrect args:
+        if not isinstance(volume_percent, (int, float)):
+            self.log.warning(f"Invalid volume_percent: {volume_percent}. Using default volume.")
+            volume_percent = self.DEFAULT_VOLUME_PERCENT
+
         self.log.info(f"Setting volume to {volume_percent}%")
         volume_level = int(volume_percent)
 

@@ -33,20 +33,20 @@
 
 - [ ] write an SD card cloner script
 - [ ] handle commands :
-    - [ ] simulate press button
-    - [ ] simulate rfid read
+    - [x] simulate press button
+    - [x] simulate rfid read
 
 # CubeMaster
 
 - [x] test with real hardware
 - [x] !! improve display, have room for 12 teams max
     - [x] problème grésillement relais
-- [ ] rgb_test command doesnt work
+- [x] rgb_test command doesnt work
 - [ ] !! implement a way to stop and resume time for a team
 - [x] fix the highscores page background : we can't see the background image
 - [x] make it so the cubemaster cannot be hacked from the x11 session
-- [ ] the sound on cubemaster doesnt work
-- [ ] handle teams being out of time
+- [x] the sound on cubemaster doesnt work
+- [x] handle teams being out of time
 
 
 # CubeRGBMatrix

@@ -215,9 +215,9 @@ class CubeConfig:
             return None
 
     @property
-    def cubemaster_audio_volume_percent(self) -> Optional[int]:
+    def cubemaster_alarm_audio_volume_percent(self) -> Optional[int]:
         try:
-            return int(self.config_dict.get("cubemaster_audio_volume_percent"))
+            return int(self.config_dict.get("cubemaster_alarm_audio_volume_percent"))
         except:
             return None
 

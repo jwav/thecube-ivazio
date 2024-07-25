@@ -37,6 +37,7 @@ class CubeServerCubebox:
         self.button = cube_button.CubeButton()
         # handles sound playing
         self.sound_player = cube_sounds.CubeSoundPlayer()
+        self.sound_player.set_volume_percent(self.config.cubebox_audio_volume_percent)
         # the neopixel ring light for the rfid reader
         self.neopixel = cube_neopixel.CubeNeopixel()
 
@@ -107,6 +108,8 @@ class CubeServerCubebox:
         self.config.save_to_json_file()
         self.log.success("Config updated and saved.")
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
+        # adjust the volume of the sound player
+        self.sound_player.set_volume_percent(self.config.cubebox_audio_volume_percent)
 
     @cubetry
     def _handle_command_message(self, message: cm.CubeMessage) -> bool:

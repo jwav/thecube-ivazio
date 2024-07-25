@@ -220,7 +220,11 @@ class CubeServerMaster:
 
         while True:
             CubeGpio.set_pin(self.ALARM_LIGHT_PIN, True)
-            self.sound_player.set_volume_to_maximum()
+            volume_percent = self.config.cubemaster_alarm_audio_volume_percent
+            if not volume_percent:
+                self.log.warning(f"No volume percent set in the config file. Setting to {self.sound_player.MAX_VOLUME_PERCENT}")
+                volume_percent = self.sound_player.MAX_VOLUME_PERCENT
+            self.sound_player.set_volume_percent(volume_percent)
             self.sound_player.play_sound_file_matching("alarm")
             if time.time() > end_time:
                 break
