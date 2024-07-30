@@ -12,10 +12,11 @@ CUBEWEBAPP_PORT = 5555
 CUBEWEBAPP_HOST = "0.0.0.0"
 # CUBEWEBAPP_HOST = "localhost"
 
+# TODO: handle extraction of destination and command from the received message
 class CubeWebAppReceivedCommand:
-    def __init__(self, request_id, command):
+    def __init__(self, request_id, full_command):
         self.request_id = request_id
-        self.command = command
+        self.full_command = full_command
 
 class CubeWebAppServer:
     def __init__(self):
@@ -23,27 +24,27 @@ class CubeWebAppServer:
         self.command_queue = Queue()
         self.response_dict = {}
         self.app = Flask(__name__)
-        self.add_routes()
+        self._add_routes()
         self.server = None
 
-    def derive_key(self, password: str) -> bytes:
+    def _derive_key(self, password: str) -> bytes:
         """Derive a key directly from the password using SHA-256."""
         digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
         digest.update(password.encode())
         return digest.finalize()
 
-    def decrypt(self, encrypted_message: str, key: bytes) -> str:
+    def _decrypt(self, encrypted_message: str, key: bytes) -> str:
         data = base64.b64decode(encrypted_message)
         cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
         decryptor = cipher.decryptor()
         decrypted_message = decryptor.update(data) + decryptor.finalize()
-        return self.unpad_pkcs7(decrypted_message).decode('utf-8')
+        return self._unpad_pkcs7(decrypted_message).decode('utf-8')
 
-    def unpad_pkcs7(self, padded_message: bytes) -> bytes:
+    def _unpad_pkcs7(self, padded_message: bytes) -> bytes:
         padding_length = padded_message[-1]
         return padded_message[:-padding_length]
 
-    def add_routes(self):
+    def _add_routes(self):
         @self.app.route('/')
         def index():
             return render_template('cubewebapp.html')
@@ -54,10 +55,10 @@ class CubeWebAppServer:
             request_id = threading.get_ident()
             print("received encrypted message: ", data.get('fullcommand'))
             encrypted_message = data.get('fullcommand')
-            key = self.derive_key(self.WEBAPP_PASSWORD)
+            key = self._derive_key(self.WEBAPP_PASSWORD)
 
             try:
-                decrypted_message = self.decrypt(encrypted_message, key)
+                decrypted_message = self._decrypt(encrypted_message, key)
                 print("decrypted message: ", decrypted_message)
                 if not decrypted_message:
                     raise Exception("Mot de passe erronné")
@@ -90,12 +91,31 @@ class CubeWebAppServer:
             return self.command_queue.get()
         return None
 
+    def remove_oldest_command(self):
+        if not self.command_queue.empty():
+            self.command_queue.get()
+
+    def pop_oldest_command(self):
+        if not self.command_queue.empty():
+            return self.command_queue.get()
+        return None
+
+    def has_commands(self):
+        return not self.command_queue.empty()
+
     def send_reply_ok(self, received_command: CubeWebAppReceivedCommand):
         request_id = received_command.request_id
-        command = received_command.command
+        command = received_command.full_command
         reply_msg = f"Commande '{command}' exécutée"
         self.response_dict[request_id] = reply_msg
         print(f"Reply sent: {reply_msg}")
+
+    def send_reply_error(self, received_command: CubeWebAppReceivedCommand, error_message: str):
+        request_id = received_command.request_id
+        reply_msg = f"Erreur: {error_message}"
+        self.response_dict[request_id] = reply_msg
+        print(f"Error reply sent: {reply_msg}")
+
 
 # Example usage:
 if __name__ == '__main__':
@@ -115,6 +135,7 @@ if __name__ == '__main__':
             received_command = server.get_oldest_command()
             if received_command:
                 print(f"Processing command: {received_command.command}")
+
                 server.send_reply_ok(received_command)
             time.sleep(1)  # Polling interval
     except KeyboardInterrupt:
