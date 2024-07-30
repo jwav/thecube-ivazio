@@ -12,7 +12,6 @@ import pygame.time as pgtime
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
 
-
 class CubeSoundPlayer:
     DEFAULT_VOLUME_PERCENT = 100
     MAX_VOLUME_PERCENT = 1000
@@ -20,7 +19,8 @@ class CubeSoundPlayer:
 
     def __init__(self):
         self._is_initialized = False
-        self.log = cube_logger.CubeLogger("Buzzer")
+        self._is_initializing = False  # Flag to prevent recursion
+        self.log = cube_logger.CubeLogger("CubeSoundPlayer")
         self.log.setLevel(logging.INFO)
         self._playing_thread = None
         self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
@@ -34,21 +34,28 @@ class CubeSoundPlayer:
             self.log.error(f"Error cleaning up CubeSoundPlayer: {e}")
 
     def initialize(self) -> bool:
+        if self._is_initialized:
+            return True
+        if self._is_initializing:  # Prevent re-entry
+            self.log.error("Initialization already in progress, preventing re-entry.")
+            return False
+        self._is_initializing = True  # Set the flag
+
         if self._initialize("pulseaudio"):
+            self._is_initializing = False  # Clear the flag on success
             return True
         if self._initialize("alsa"):
+            self._is_initializing = False  # Clear the flag on success
             return True
+
+        self._is_initializing = False  # Clear the flag on failure
         return False
 
     def _initialize(self, sdl_audiodriver: str = 'pulseaudio') -> bool:
         try:
-            # alsa fails for cubemaster, but pulseaudio works.
-            # further note : pulseaudio doesnt work for cubebox, but alsa does. WTF?
-            # os.environ['SDL_AUDIODRIVER'] = 'alsa'
             os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
             os.environ['AUDIODEV'] = 'hw:1,0'
 
-            # mixer.init()
             mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
             self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
             self._is_initialized = True
@@ -68,14 +75,12 @@ class CubeSoundPlayer:
 
     @cubetry
     def set_volume_percent(self, volume_percent: Union[int, float]):
-        """Set the system-wide volume using both ALSA (amixer) and PulseAudio (pactl)."""
-        # this doesnt work. We'll use amixer and pactl instead.
-        # mixer.music.set_volume(float(volume_percent) / 100.0)
         if not self._is_initialized:
             self.log.warning("CubeSoundPlayer not initialized. Initializing...")
-            self.initialize()
+            if not self.initialize():
+                self.log.error("Failed to initialize CubeSoundPlayer.")
+                return
 
-        # handle incorrect args:
         if not isinstance(volume_percent, (int, float)):
             self.log.warning(f"Invalid volume_percent: {volume_percent}. Using default volume.")
             volume_percent = self.DEFAULT_VOLUME_PERCENT
@@ -83,7 +88,6 @@ class CubeSoundPlayer:
         self.log.info(f"Setting volume to {volume_percent}%")
         volume_level = int(volume_percent)
 
-        # Use subprocess to call amixer and set the volume for ALSA
         try:
             subprocess.run(['amixer', 'set', 'Master', f'{volume_level}%'],
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -91,7 +95,6 @@ class CubeSoundPlayer:
         except subprocess.CalledProcessError as e:
             self.log.error(f"Failed to set volume using amixer: {e}")
 
-        # Use subprocess to call pactl and set the volume for PulseAudio
         try:
             subprocess.run(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', f'{volume_level}%'],
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -101,7 +104,6 @@ class CubeSoundPlayer:
 
     @cubetry
     def play_sound_file(self, soundfile: str):
-        """Play a sound file or a tune on the buzzer."""
         self.log.info(f"Playing sound file: '{soundfile}'")
         self._playing_thread = threading.Thread(target=self._play_sound_file, args=(soundfile,), daemon=True)
         self._playing_thread.start()
@@ -111,17 +113,17 @@ class CubeSoundPlayer:
         try:
             if not self.is_initialized():
                 self.log.warning("CubeSoundPlayer not initialized. Initializing...")
-                self.initialize()
+                if not self.initialize():
+                    self.log.error("Failed to initialize CubeSoundPlayer.")
+                    return
             if not os.path.exists(soundfile):
                 soundfile = os.path.join(SOUNDS_DIR, soundfile)
             if not os.path.exists(soundfile):
                 self.log.error(f"Sound file not found: '{soundfile}'")
                 return
             self.log.debug(f"Playing sound file: '{soundfile}'")
-            # soundfile = self.get_sound_file_path(soundfile)
             mixer.music.load(soundfile)
             mixer.music.play()
-            # Wait for the music to play
             if wait_for_finish:
                 while mixer.music.get_busy():
                     pgtime.Clock().tick(10)
@@ -129,7 +131,8 @@ class CubeSoundPlayer:
             self.log.error(f"Error playing sound file: '{soundfile}': {e}")
             if "mixer not initialized" in str(e):
                 self.log.info("Trying to reinitialize mixer...")
-                self.initialize()
+                if not self._initialize():
+                    self.log.error("Failed to reinitialize mixer.")
 
     @cubetry
     def is_playing(self):
@@ -137,11 +140,6 @@ class CubeSoundPlayer:
 
     @cubetry
     def find_sound_file_matching(self, filename: str, random_choice=False) -> Optional[str]:
-        """searches for a sound file matching `filename` in the SOUNDS_DIR directory.
-        A filename is a match if its name contains `filename` as a substring, ignoring case.
-        If `random` is True and there are several matches, chooses one at random.
-        If `random` is False and there are several matches, chooses the first one."""
-        # Get list of all mp3 files in the SOUNDS_DIR directory
         all_files = [f for f in os.listdir(SOUNDS_DIR)]
         sound_files = [f for f in all_files if os.path.splitext(f)[1].lower() in self.SUPPORTED_EXTENSIONS]
         matches = [f for f in sound_files if filename.lower() in f.lower()]
@@ -150,7 +148,6 @@ class CubeSoundPlayer:
             self.log.error(f"No matching sound files found for '{filename}'")
             return None
 
-        # Choose a file based on the random parameter
         chosen_file = random.choice(matches) if random_choice else matches[0]
         return chosen_file
 
@@ -161,7 +158,6 @@ class CubeSoundPlayer:
 
     @cubetry
     def play_sound_file_matching(self, partial_filename: str, random_choice: bool = False):
-        """Play a sound file matching `partial_filename` in the SOUNDS_DIR directory."""
         soundfile = self.find_sound_file_matching(partial_filename, random_choice)
         if soundfile:
             self.play_sound_file(soundfile)

@@ -135,11 +135,12 @@ class CubeWebAppServer:
         return None
 
     def send_reply_handling(self, received_command: CubeWebAppReceivedCommand):
-        request_id = received_command.request_id
-        command = received_command.full_command
-        reply_msg = f"{self._datetime_str()} : ⏳ Commande '{command}' en cours de traitement"
-        self._send_reply(request_id, reply_msg)
-        print(f"Handling reply sent: {reply_msg}")
+        pass
+        # request_id = received_command.request_id
+        # command = received_command.full_command
+        # reply_msg = f"{self._datetime_str()} : ⏳ Commande '{command}' en cours de traitement"
+        # self._send_reply(request_id, reply_msg)
+        # print(f"Handling reply sent: {reply_msg}")
 
     def send_reply_ok(self, received_command: CubeWebAppReceivedCommand):
         request_id = received_command.request_id
