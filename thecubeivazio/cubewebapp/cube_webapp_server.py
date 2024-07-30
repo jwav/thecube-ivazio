@@ -70,7 +70,8 @@ class CubeWebAppServer:
                 return jsonify(message=response_message)
 
     def run(self):
-        self.server = make_server('localhost', 5000, self.app)
+        # self.server = make_server('localhost', 5000, self.app)
+        self.server = make_server('0.0.0.0', 5000, self.app)  # Bind to all interfaces
         self.server.serve_forever()
 
     def stop(self):
