@@ -14,6 +14,7 @@ import thecubeivazio.cube_utils as cube_utils
 from thecubeivazio import cube_config
 from thecubeivazio import cube_database as cubedb
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cubewebapp.cube_webapp_server import CubeWebAppServer, CubeWebAppReceivedCommand
 
 
 class CubeServerFrontdesk:
@@ -33,8 +34,13 @@ class CubeServerFrontdesk:
         # the local teams database
         self.database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
 
+        # web app server for staff interventions
+        self.webapp_server = CubeWebAppServer()
+
         # params for threading
-        self._msg_handling_thread = None
+        self._msg_handling_thread = threading.Thread(target=self._message_handling_loop, daemon=True)
+        self._webapp_thread = threading.Thread(target=self._webapp_loop, daemon=True)
+
         self._keep_running = False
 
         # heartbeat setup
@@ -44,6 +50,7 @@ class CubeServerFrontdesk:
         # holds the information about the teams
         # TODO: do something with them. update them, request updates, etc
         self.game_status = cube_game.CubeGameStatus()
+
 
         # on startup, send the config to everyone
         self.send_config_message_to_all()
@@ -66,9 +73,9 @@ class CubeServerFrontdesk:
 
     def run(self):
         self.rfid.run()
-        self._msg_handling_thread = threading.Thread(target=self._message_handling_loop, daemon=True)
         self._keep_running = True
         self._msg_handling_thread.start()
+        self._webapp_thread.start()
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
@@ -76,6 +83,22 @@ class CubeServerFrontdesk:
         self.net.stop()
         self.rfid.stop()
         self._msg_handling_thread.join(timeout=0.1)
+
+    def _webapp_loop(self):
+        self.webapp_server.run()
+        while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
+            command = self.webapp_server.pop_oldest_command()
+            if command:
+                self.log.info(f"Received full command from the webapp: {command.full_command}")
+                report = self.send_full_command(command.full_command)
+                if not report.sent_ok:
+                    self.webapp_server.send_reply_error(command, "Échec de l'envoi de la commande")
+                    continue
+                if not report.ack_ok:
+                    self.webapp_server.send_reply_error(command, "Échec de l'exécution de la commande")
+                    continue
+                self.webapp_server.send_reply_ok(command)
 
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""
@@ -769,7 +792,24 @@ def generate_sample_database():
     fd.database.generate_sample_teams_sqlite_database()
     fd.database.display_teams_sqlite_database()
 
+def main():
+    print("Running CubeFrontdesk main()")
+    import atexit
+
+    frontdesk = CubeServerFrontdesk()
+    atexit.register(frontdesk.stop)
+
+    frontdesk.run()
+    frontdesk.log.setLevel(cube_logger.logging.INFO)
+    frontdesk.net.log.setLevel(cube_logger.logging.INFO)
+
+    while True:
+        time.sleep(1)
+    exit(0)
+
+
 if __name__ == "__main__":
+    main()
     test_send_config()
     # generate_sample_teams_json_database()
     generate_sample_database()

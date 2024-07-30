@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import base64
 from queue import Queue
 import threading
+import time
 from werkzeug.serving import make_server
 from thecubeivazio.cube_identification import CUBEMASTER_NODENAME, CUBEBOXES_NODENAMES
 from thecubeivazio.cube_utils import timestamp_to_french_date, timestamp_to_hhmmss_time_of_day_string
@@ -92,9 +93,7 @@ class CubeWebAppServer:
                 print("decrypted message: ", decrypted_message)
                 if not decrypted_message:
                     raise Exception("Mot de passe erronné")
-                with self.lock:
-                    self.command_queue.put(CubeWebAppReceivedCommand(request_id, decrypted_message))
-                response_message = "Commande reçue"
+                self._add_command_to_queue(CubeWebAppReceivedCommand(request_id, decrypted_message))
 
                 def generate_reply():
                     while request_id not in self.response_dict:
@@ -123,11 +122,24 @@ class CubeWebAppServer:
         if self.server_thread:
             self.server_thread.join()
 
-    def get_oldest_command(self):
+    def _add_command_to_queue(self, command: CubeWebAppReceivedCommand):
+        """Add a command to the queue and notify the client that the command is being handled"""
+        with self.lock:
+            self.command_queue.put(command)
+        self.send_reply_handling(command)
+
+    def pop_oldest_command(self):
         with self.lock:
             if not self.command_queue.empty():
                 return self.command_queue.get()
         return None
+
+    def send_reply_handling(self, received_command: CubeWebAppReceivedCommand):
+        request_id = received_command.request_id
+        command = received_command.full_command
+        reply_msg = f"{self._datetime_str()} : ⏳ Commande '{command}' en cours de traitement"
+        self._send_reply(request_id, reply_msg)
+        print(f"Handling reply sent: {reply_msg}")
 
     def send_reply_ok(self, received_command: CubeWebAppReceivedCommand):
         request_id = received_command.request_id
@@ -162,7 +174,7 @@ if __name__ == '__main__':
 
         # Example of retrieving and processing commands
         while True:
-            received_command = server.get_oldest_command()
+            received_command = server.pop_oldest_command()
             if received_command:
                 print(f"Processing command: {received_command.full_command}")
                 if received_command.destination == CUBEMASTER_NODENAME:
