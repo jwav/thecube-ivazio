@@ -34,7 +34,7 @@ class CubeGuiTabAdminMixin:
 
         # server orders region
         self.ui.comboAdminServerToOrder.clear()
-        self.ui.comboAdminServerToOrder.addItems(ci.CUBEBOX_NODENAMES)
+        self.ui.comboAdminServerToOrder.addItems(ci.CUBEBOXES_NODENAMES)
         self.ui.comboAdminServerToOrder.addItems([ci.CUBEMASTER_NODENAME])
         self.ui.btnAdminOrderServerReset.clicked.connect(self.order_server_reset)
         self.ui.btnAdminOrderServerReboot.clicked.connect(self.order_server_reboot)
@@ -133,7 +133,7 @@ class CubeGuiTabAdminMixin:
             print("update_tab_admin")
             table = self.ui.tableAdminServersInfo
             table.clearContents()
-            node_names = [ci.CUBEFRONTDESK_NODENAME, ci.CUBEMASTER_NODENAME] + list(ci.CUBEBOX_NODENAMES)
+            node_names = [ci.CUBEFRONTDESK_NODENAME, ci.CUBEMASTER_NODENAME] + list(ci.CUBEBOXES_NODENAMES)
             # rows: FrontDesk, CubeMaster, CubeBoxes 1 to NB_CUBEBOXES
             # vertical headers: Node name
             # columns: last message time (hh:mm:ss) IP address, Status

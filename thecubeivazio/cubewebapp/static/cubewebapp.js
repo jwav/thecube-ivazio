@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const messageList = document.getElementById('messageList');
                 const listItem = document.createElement('li');
                 listItem.textContent = data.message;
-                messageList.appendChild(listItem);
+                // Prepend the new message to the message list
+                messageList.insertBefore(listItem, messageList.firstChild);
             });
         };
 
