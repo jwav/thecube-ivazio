@@ -8,9 +8,14 @@ import threading
 from werkzeug.serving import make_server
 
 CUBEWEBAPP_PASSWORD = "pwd"
-CUBEWEBAPP_PORT = 5000
+CUBEWEBAPP_PORT = 5555
 CUBEWEBAPP_HOST = "0.0.0.0"
 # CUBEWEBAPP_HOST = "localhost"
+
+class CubeWebAppReceivedCommand:
+    def __init__(self, request_id, command):
+        self.request_id = request_id
+        self.command = command
 
 class CubeWebAppServer:
     def __init__(self):
@@ -56,7 +61,7 @@ class CubeWebAppServer:
                 print("decrypted message: ", decrypted_message)
                 if not decrypted_message:
                     raise Exception("Mot de passe erronné")
-                self.command_queue.put((request_id, decrypted_message))
+                self.command_queue.put(CubeWebAppReceivedCommand(request_id, decrypted_message))
                 response_message = "Commande reçue"
 
                 def generate_reply():
@@ -85,16 +90,20 @@ class CubeWebAppServer:
             return self.command_queue.get()
         return None
 
-    def send_reply(self, reply_msg: str):
-        request_id, reply = reply_msg
-        self.response_dict[request_id] = reply
-        print(f"Reply sent: {reply}")
+    def send_reply_ok(self, received_command: CubeWebAppReceivedCommand):
+        request_id = received_command.request_id
+        command = received_command.command
+        reply_msg = f"Commande '{command}' exécutée"
+        self.response_dict[request_id] = reply_msg
+        print(f"Reply sent: {reply_msg}")
 
 # Example usage:
 if __name__ == '__main__':
     server = CubeWebAppServer()
     server_thread = threading.Thread(target=server.run)
     server_thread.start()
+
+    print("Server started.")  # Indicate that the server has started.
 
     # In a real application, the following part would be part of a different module or thread.
     try:
@@ -103,11 +112,10 @@ if __name__ == '__main__':
 
         # Example of retrieving and processing commands
         while True:
-            command_tuple = server.get_oldest_command()
-            if command_tuple:
-                request_id, command = command_tuple
-                print(f"Processing command: {command}")
-                server.send_reply((request_id, f"Commande '{command}' exécutée"))
+            received_command = server.get_oldest_command()
+            if received_command:
+                print(f"Processing command: {received_command.command}")
+                server.send_reply_ok(received_command)
             time.sleep(1)  # Polling interval
     except KeyboardInterrupt:
         print("Stopping server...")
