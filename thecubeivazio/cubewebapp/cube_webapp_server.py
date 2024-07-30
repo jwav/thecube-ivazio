@@ -8,6 +8,9 @@ import threading
 from werkzeug.serving import make_server
 
 CUBEWEBAPP_PASSWORD = "pwd"
+CUBEWEBAPP_PORT = 5000
+CUBEWEBAPP_HOST = "0.0.0.0"
+# CUBEWEBAPP_HOST = "localhost"
 
 class CubeWebAppServer:
     def __init__(self):
@@ -70,8 +73,7 @@ class CubeWebAppServer:
                 return jsonify(message=response_message)
 
     def run(self):
-        # self.server = make_server('localhost', 5000, self.app)
-        self.server = make_server('0.0.0.0', 5000, self.app)  # Bind to all interfaces
+        self.server = make_server(CUBEWEBAPP_HOST, CUBEWEBAPP_PORT, self.app)  # Bind to all interfaces
         self.server.serve_forever()
 
     def stop(self):
