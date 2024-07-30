@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheCube WebApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+<h1>TheCube WebApp</h1>
+<label for="password">Mot de passe:</label>
+<input type="password" id="password">
+<br><br>
+<select id="destination">
+    <option value="CubeMaster">CubeMaster</option>
+    <option value="CubeBox1">CubeBox1</option>
+    <option value="CubeBox2">CubeBox2</option>
+    <option value="CubeBox3">CubeBox3</option>
+    <option value="CubeBox4">CubeBox4</option>
+    <option value="CubeBox5">CubeBox5</option>
+    <option value="CubeBox6">CubeBox6</option>
+    <option value="CubeBox7">CubeBox7</option>
+    <option value="CubeBox8">CubeBox8</option>
+    <option value="CubeBox9">CubeBox9</option>
+    <option value="CubeBox10">CubeBox10</option>
+    <option value="CubeBox11">CubeBox11</option>
+    <option value="CubeBox12">CubeBox12</option>
+</select>
+<select id="action">
+    <option value="reset">reset</option>
+    <option value="button">button</option>
+</select>
+<button id="send">Envoyer</button>
+<br><br>
+<input type="checkbox" id="disablePopup" checked>
+<label for="disablePopup">Désactiver la vérification (⚠️)</label>
+<ul id="messageList"></ul>
+<script src="/static/cubewebapp.js"></script>
+</body>
+</html>

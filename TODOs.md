@@ -25,8 +25,8 @@
 - [x] !! CHECK THAT THE GUI RUNS FINE ON WINDOWS
 - [ ] "heure dernier message" doesnt update
 - [x] bugs in current team search : too many teams displayed, maybe due to rgb_test
-- [ ] implement add and remove trophy in gui
-- [ ] do not display in gui the teams code names that are already occupied
+- [x] implement add and remove trophy in gui
+- [x] do not display in gui the teams code names that are already occupied
 - [ ] the table in the team search tab does not have the right columns and data
 
 # CubeBoxes
