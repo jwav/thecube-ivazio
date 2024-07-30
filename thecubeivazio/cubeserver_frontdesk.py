@@ -91,6 +91,13 @@ class CubeServerFrontdesk:
             command = self.webapp_server.pop_oldest_command()
             if command:
                 self.log.info(f"Received full command from the webapp: {command.full_command}")
+                # do not allow reboots from the webapp
+                if "reboot" in command.full_command:
+                    self.webapp_server.send_reply_error(command, "Reboot interdit depuis la webapp")
+                    continue
+                if command.destination == cubeid.CUBEMASTER_NODENAME and "reset" in command.full_command:
+                    self.webapp_server.send_reply_error(command, "Reset du CubeMaster interdit depuis la webapp")
+                    continue
                 report = self.send_full_command(command.full_command)
                 if not report.sent_ok:
                     self.webapp_server.send_reply_error(command, "Échec de l'envoi de la commande")
