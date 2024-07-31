@@ -97,7 +97,7 @@ class CubeServerMaster:
         self._is_running_alarm = False
 
         # heartbeat setup
-        self.heartbeat_timer = cube_utils.SimpleTimer(10)
+        self.heartbeat_timer = cube_utils.CubeSimpleTimer(10)
         self.enable_heartbeat = False
 
         # if the play database does not exist, create it
@@ -872,7 +872,5 @@ if __name__ == "__main__":
     elif "--test-highscores" in sys.argv:
         chs.test_run(launch_browser=True)
         exit(0)
-    elif "--prompt" in sys.argv:
-        main(use_prompt=True)
     else:
         main()

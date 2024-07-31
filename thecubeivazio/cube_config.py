@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Tuple
+from typing import Tuple, Any
 
 import thecubeivazio.cube_utils as cube_utils
 from thecubeivazio import cube_logger
@@ -227,7 +227,7 @@ class CubeConfig:
         return True
 
     @cubetry
-    def get_field(self, field_name:str) -> Optional[str]:
+    def get_field(self, field_name:str) -> Optional[Any]:
         return self.config_dict.get(field_name, None)
 
     @cubetry

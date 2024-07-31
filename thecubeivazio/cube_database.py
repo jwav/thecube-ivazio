@@ -28,7 +28,7 @@ class CubeDatabase:
     @cubetry
     def clear_database(self) -> bool:
         self.delete_database()
-        self.create_database()
+        return self.create_database()
 
     @cubetry
     def create_database(self) -> bool:
@@ -270,7 +270,7 @@ def expanded_test_find_teams_matching():
             creation_timestamp=time.time() - 10000,
             start_timestamp=time.time() - 10000,
             current_cubebox_id=1,
-            completed_cubeboxes=[
+            completed_cubeboxes=cg.CompletedCubeboxStatusList([
                 cg.CompletedCubeboxStatus(
                     cube_id=1,
                     current_team_name="TestTeam1",
@@ -278,7 +278,7 @@ def expanded_test_find_teams_matching():
                     win_timestamp=time.time() - 9000,
                     state=cg.CubeboxState.STATE_PLAYING
                 )
-            ],
+            ]),
             trophies_names=["Trophy1"],
             use_alarm=False
         ),
@@ -290,7 +290,7 @@ def expanded_test_find_teams_matching():
             creation_timestamp=time.time() - 5000,
             start_timestamp=time.time() - 5000,
             current_cubebox_id=2,
-            completed_cubeboxes=[
+            completed_cubeboxes=cg.CompletedCubeboxStatusList([
                 cg.CompletedCubeboxStatus(
                     cube_id=2,
                     current_team_name="TestTeam2",
@@ -298,7 +298,7 @@ def expanded_test_find_teams_matching():
                     win_timestamp=time.time() - 4000,
                     state=cg.CubeboxState.STATE_READY_TO_PLAY
                 )
-            ],
+            ]),
             trophies_names=["Trophy2"],
             use_alarm=True
         ),
@@ -310,7 +310,7 @@ def expanded_test_find_teams_matching():
             creation_timestamp=time.time() - 2000,
             start_timestamp=time.time() - 2000,
             current_cubebox_id=3,
-            completed_cubeboxes=[],
+            completed_cubeboxes=cg.CompletedCubeboxStatusList(),
             trophies_names=[],
             use_alarm=False
         )

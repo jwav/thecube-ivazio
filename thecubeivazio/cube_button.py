@@ -9,7 +9,7 @@ import time
 
 from thecubeivazio import cube_logger, cube_utils
 from thecubeivazio.cube_common_defines import *
-from thecubeivazio.cube_utils import SimpleTimer, XvfbManager
+from thecubeivazio.cube_utils import CubeSimpleTimer, XvfbManager
 
 # pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
 if not XvfbManager.has_x_server():
@@ -45,7 +45,7 @@ class CubeButton:
             self._is_raspberry_pi = False
         self._pressed = False
         self._timer_started = False
-        self._press_timer = SimpleTimer(self.DEBOUNCE_TIME)
+        self._press_timer = CubeSimpleTimer(self.DEBOUNCE_TIME)
         self._pressed_long_enough = False
         self._thread = None
         self._keep_running = True

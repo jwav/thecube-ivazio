@@ -336,7 +336,8 @@ class CubeScoresheet:
 
 
 if __name__ == "__main__":
-    sample_teams = cfd.generate_sample_teams()
+    from thecubeivazio import cube_game as cg
+    sample_teams = cg.generate_sample_teams()
     sample_team = sample_teams[0]
     print(f"Sample team: {sample_team}")
     scoresheet = CubeScoresheet(sample_team)

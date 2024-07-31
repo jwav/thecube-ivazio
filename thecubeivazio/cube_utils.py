@@ -100,7 +100,7 @@ class XvfbManager:
             print("Xvfb process not found")
 
 
-class SimpleTimer:
+class CubeSimpleTimer:
     def __init__(self, timeout):
         self.timeout = timeout
         self.start_time = time.time()

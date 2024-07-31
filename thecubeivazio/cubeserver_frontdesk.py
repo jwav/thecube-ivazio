@@ -44,7 +44,7 @@ class CubeServerFrontdesk:
         self._keep_running = False
 
         # heartbeat setup
-        self.heartbeat_timer = cube_utils.SimpleTimer(10)
+        self.heartbeat_timer = cube_utils.CubeSimpleTimer(10)
         self.enable_heartbeat = False
 
         # holds the information about the teams
@@ -610,116 +610,6 @@ class CubeServerFrontdesk:
         self.log.critical("_handle_reply_all_cubeboxes_status_hashes: not implemented")
         return False
 
-
-class CubeServerFrontdeskWithPrompt(CubeServerFrontdesk):
-    def __init__(self):
-        super().__init__()
-
-    @staticmethod
-    def print_help():
-        print("Commands:")
-        print("q, quit : stop the CubeFrontdesk and exit the program")
-        print("h, help : display this help")
-        print("t, teams : display the list of teams")
-        print("cb, cubeboxes : display the list of cubeboxes")
-        print("ni, netinfo : display the network nodes info")
-        print("wi, whois : send a WhoIs message to all nodes")
-        print("at, addteam (name [, custom_name, uid, max_time_sec]) : add a new team")
-        print("atr, addtrophy (team_name, name [, points, description, image_path]) : add a new trophy")
-        print("rcms, requestcubemasterstatus : request the CubeMaster status")
-        print("rts, requestteamstatus (team_name) : request the team status")
-        print("rats, requestallteamsstatus : request the status of all teams")
-        print("rbs, requestcubeboxstatus (cubebox_id) : request the cubebox status")
-        print("rabs, requestallcubeboxstatus : request the status of all cubeboxes")
-
-    def stop(self):
-        super().stop()
-
-    def run(self, no_prompt=False):
-        super().run()
-        # stop the rfid listener since we're gonna press the enter key a lot while using the prompt
-        self.rfid.stop()
-        if no_prompt:
-            return
-        try:
-            self.prompt_loop()
-        except KeyboardInterrupt:
-            print("KeyboardInterrupt. Stopping the CubeFrontdesk")
-            self.stop()
-
-    @staticmethod
-    def pad_args(argslist: Sized, *defaults):
-        ret = list(argslist) + list(defaults)
-        print(f"pad_args: {ret}")
-        return ret
-
-    def prompt_loop(self):
-        while True:
-            line = input("CubeFrontdesk Command > ")
-            self.handle_input(line)
-
-    def handle_input(self, line: str) -> bool:
-        cmd = line.split()[0] if line else None
-        args = line.split()[1:]
-        if not cmd:
-            return True
-        elif cmd in ["q", "quit"]:
-            self.stop()
-            return True
-        elif cmd in ["h", "help"]:
-            self.print_help()
-        elif cmd in ["t", "teams"]:
-            print(self.teams.to_string())
-        elif cmd in ["cb", "cubeboxes"]:
-            print(self.cubeboxes.to_string())
-        elif cmd in ["ni", "netinfo"]:
-            # display the nodes in the network and their info
-            print(self.net.nodes_list.to_string())
-        elif cmd in ["wi", "whois"]:
-            self.net.send_msg_to_all(cm.CubeMsgWhoIs(self.net.node_name, cubeid.EVERYONE_NODENAME))
-        elif cmd in ["at", "addteam"]:
-            if len(args) < 3:
-                print("Usage: addteam (name [, custom_name, uid, max_time_sec])")
-                return False
-            # if there are less than 4 args, pad the rest with default values until there are 4 args
-            args = self.pad_args(args, "CustomName", "1234567890", 60.0)
-            name, custom_name, uid, max_time_sec = args
-
-            max_time_sec = Seconds(max_time_sec)
-            team = cube_game.CubeTeamStatus(rfid_uid=uid, name=name, custom_name=custom_name, max_time_sec=max_time_sec)
-            self.add_new_team(team)
-        elif cmd in ["atr", "addtrophy"]:
-            if len(args) < 2:
-                print("Usage: ddtrophy (team_name, name [, points, description, image_path])")
-                return False
-            args = self.pad_args(args, 100, "FooDescription", "foo.png")
-            team_name, name, points, description, image_path = args
-            team = self.teams.get_team_by_name(team_name)
-            if team is None:
-                print(f"Team {team_name} not found")
-                return False
-            points = int(points)
-            trophy = cube_game.CubeTrophy(name=name, description=description, points=points, image_filename=image_path)
-            team.trophies_names.append(trophy)
-            self.log.info(f"Added trophy {trophy.name} to team {team.name}:")
-            self.log.info(f"{team}")
-        elif cmd in ["rcms", "requestcubemasterstatus"]:
-            self.request_cubemaster_status()
-        elif cmd in ["rts", "requestteamstatus"]:
-            if len(args) < 1:
-                print("Usage: requestteamstatus (team_name)")
-                return False
-            team_name = args[0]
-            self.request_team_status(team_name, reply_timeout=STATUS_REPLY_TIMEOUT)
-        elif cmd in ["rats", "requestallteamsstatus"]:
-            self.request_all_teams_status(reply_timeout=STATUS_REPLY_TIMEOUT)
-        # elif cmd in ["rabs", "requestallcubeboxstatus"]:
-        #     self.request_all_cubeboxes_statuses_at_once()
-        else:
-            print("Unknown command")
-            return False
-
-
 def test():
     import atexit
     fd = CubeServerFrontdesk()
@@ -737,27 +627,6 @@ def test():
     time.sleep(5)
 
 
-def test_prompt_commands():
-    import atexit
-    fd = CubeServerFrontdeskWithPrompt()
-    atexit.register(fd.stop)
-
-    fd.run(no_prompt=True)
-    fd.handle_input("at London")
-
-
-
-
-
-
-
-
-
-def run_prompt():
-    import atexit
-    fd = CubeServerFrontdeskWithPrompt()
-    atexit.register(fd.stop)
-    fd.run()
 
 def test_send_config():
     from thecubeivazio.cubeserver_cubebox import CubeServerCubebox
@@ -812,14 +681,14 @@ def main():
 
     while True:
         time.sleep(1)
-    exit(0)
 
 
 if __name__ == "__main__":
     main()
+    exit(0)
+
     test_send_config()
     # generate_sample_teams_json_database()
     generate_sample_database()
-
     exit(0)
     run_prompt()

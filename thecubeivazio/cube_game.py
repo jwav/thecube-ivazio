@@ -13,7 +13,6 @@ from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_logger import CubeLogger
 
-
 class CubeboxState(enum.Enum):
     # TODO: implement the unknown state, useful for the frontdesk
     STATE_UNKNOWN = "UNKNOWN"
@@ -220,7 +219,7 @@ class CubeboxStatus:
         self._state = other.get_state()
 
     @property
-    def completion_time_sec(self) -> Seconds:
+    def completion_time_sec(self) -> Optional[Seconds]:
         try:
             if CUBE_TIME_METHOD == CUBE_TIME_RFID_TO_PRESS or self._prev_cubebox_win_timestamp is None:
                 return self.win_timestamp - self.start_timestamp
@@ -1355,7 +1354,7 @@ class CubeboxesScoringSettings(Dict[CubeId, ScoringPresetName]):
 
     @classmethod
     @cubetry
-    def make_from_dict(cls, settings_dict):
+    def make_from_dict(cls, settings_dict:Dict) -> 'CubeboxesScoringSettings':
         ret = cls()
         for str_id, preset_name in settings_dict.items():
             str_id = "".join([c for c in str_id if c in "0123456789"])

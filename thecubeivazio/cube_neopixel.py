@@ -20,6 +20,18 @@ class _CubeNeopixelInterface:
     def set_color(self, color: tuple[int, int, int]):
         raise NotImplementedError
 
+    def set_color_wait_for_reset(self):
+        self.set_color(self.COLOR_WAITING_FOR_RESET)
+
+    def set_color_ready_to_play(self):
+        self.set_color(self.COLOR_READY_TO_PLAY)
+
+    def set_color_currently_playing(self):
+        self.set_color(self.COLOR_CURRENTLY_PLAYING)
+
+    def set_color_error(self):
+        self.set_color(self.COLOR_ERROR)
+
 
 # if we're not on an rpi, we'll be using this mock class
 if not is_raspberry_pi():
@@ -42,10 +54,6 @@ else:
 
     class CubeNeopixel(_CubeNeopixelInterface):
         """Class to control the neopixel when running on a raspberry pi"""
-        COLOR_WAITING_FOR_RESET = (25, 0, 0)
-        COLOR_READY_TO_PLAY = (0, 25, 0)
-        COLOR_CURRENTLY_PLAYING = (0, 0, 25)
-        COLOR_ERROR = (25, 0, 25)
 
         def __init__(self):
             super().__init__()
@@ -62,6 +70,7 @@ else:
 
         def __del__(self):
             try:
+                # turn off the light
                 self.set_color((0, 0, 0))
             except Exception as e:
                 print(f"Error in CubeNeopixel.__del__: {e}")

@@ -4,13 +4,14 @@ import logging
 import random
 import subprocess
 import threading
-import time
 
 import pygame.mixer as mixer
 import pygame.time as pgtime
 
 from thecubeivazio import cube_logger
 from thecubeivazio.cube_common_defines import *
+from thecubeivazio.cube_utils import is_raspberry_pi
+
 
 class CubeSoundPlayer:
     DEFAULT_VOLUME_PERCENT = 100
@@ -53,8 +54,10 @@ class CubeSoundPlayer:
 
     def _initialize(self, sdl_audiodriver: str = 'pulseaudio') -> bool:
         try:
-            os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
-            os.environ['AUDIODEV'] = 'hw:1,0'
+            # only set SDL_AUDIODRIVER and AUDIODEV on RaspberryPi, not on desktop
+            if is_raspberry_pi():
+                os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
+                os.environ['AUDIODEV'] = 'hw:1,0'
 
             mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
             self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
@@ -75,6 +78,8 @@ class CubeSoundPlayer:
 
     @cubetry
     def set_volume_percent(self, volume_percent: Union[int, float]):
+        if not is_raspberry_pi():
+            return
         if not self._is_initialized:
             self.log.warning("CubeSoundPlayer not initialized. Initializing...")
             if not self.initialize():

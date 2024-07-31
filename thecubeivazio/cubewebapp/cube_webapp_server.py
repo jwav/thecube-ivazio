@@ -128,7 +128,7 @@ class CubeWebAppServer:
             self.command_queue.put(command)
         self.send_reply_handling(command)
 
-    def pop_oldest_command(self):
+    def pop_oldest_command(self) -> Optional[CubeWebAppReceivedCommand]:
         with self.lock:
             if not self.command_queue.empty():
                 return self.command_queue.get()

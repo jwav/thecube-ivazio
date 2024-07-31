@@ -20,8 +20,9 @@ class CubeRgbMatrixContent:
         self.max_time_sec = max_time_sec
         # assert self.is_valid()
 
+    # noinspection PyBroadException
     @property
-    def remaining_secs(self) -> float:
+    def remaining_secs(self) -> Optional[float]:
         try:
             if self.max_time_sec and self.end_timestamp is None:
                 return self.max_time_sec
@@ -33,6 +34,7 @@ class CubeRgbMatrixContent:
         except:
             return None
 
+    # noinspection PyBroadException
     @property
     def remaining_time_str(self) -> str:
         try:
