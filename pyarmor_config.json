@@ -1,0 +1,37 @@
+{
+  "name": "thecubeivazio_obfuscation",
+  "src": "thecubeivazio/cubegui",
+  "entry": "cubegui.py",
+  "output": "thecubeivazio/cubegui",
+  "exclude": [
+    "venv",
+    "__pycache__",
+    "venv_windows",
+    "logs",
+    "tests",
+    "dist",
+    "build",
+    "*.egg-info",
+    "*.conf",
+    ".env",
+    "docs"
+  ],
+  "runtime_path": "./pytransform",
+  "manifest": {
+    "include": ["**/*.py"],
+    "exclude": [
+      "venv/**",
+      "__pycache__/**",
+      "venv_windows/**",
+      "logs/**",
+      "tests/**",
+      "dist/**",
+      "build/**",
+      "*.egg-info/**",
+      "*.conf",
+      ".env",
+      "docs/**"
+    ]
+  },
+  "output_name": "cubegui_pyarmor.py"
+}

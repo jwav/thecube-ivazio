@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #set -x
 
-echo "Launching CubeMaster service..."
+echo "Launching CubeMaster..."
 cd "${HOME}/thecube-ivazio/thecubeivazio" || {
   echo "Failed to change directory"
   exit 1
@@ -14,4 +14,4 @@ python3 ./cubeserver_cubemaster.py || {
   echo "Failed to start CubeMaster"
   exit 1
 }
-echo "CubeMaster service started."
+echo "CubeMaster started."

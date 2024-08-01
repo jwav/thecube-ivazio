@@ -26,6 +26,8 @@ class CubeServerCubebox:
 
         self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
 
+        self.log.info("Starting CubeServerCubebox...")
+
         # create a config object which we'll use to access the config file's contents
         # and keep it updated with possible changes from the frontdesk
         self.config = cube_config.CubeConfig.get_config()
@@ -83,6 +85,8 @@ class CubeServerCubebox:
 
         # notify the people around that the cubebox has booted and is ready
         self.sound_player.play_startup_sound()
+
+        self.log.success("CubeServerCubebox started.")
 
     @property
     def status(self):

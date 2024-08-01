@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #set -x
 
-echo "Launching CubeBox service..."
+echo "Launching CubeBox..."
 cd "${HOME}/thecube-ivazio/thecubeivazio" || {
   echo "Failed to change directory"
   exit 1
@@ -14,4 +14,4 @@ python3 ./cubeserver_cubebox.py || {
   echo "Failed to start CubeBox"
   exit 1
 }
-echo "CubeBox service started."
+echo "CubeBox started."
