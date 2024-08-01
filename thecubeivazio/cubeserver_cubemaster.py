@@ -14,10 +14,12 @@ import thecubeivazio.cube_utils as cube_utils
 from thecubeivazio import cube_database as cubedb
 from thecubeivazio import cube_highscores_screen as chs
 from thecubeivazio import cube_messages as cm
-from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_gpio import CubeGpio
 from thecubeivazio.cube_sounds import CubeSoundPlayer
+from thecubeivazio.cubewebapp.cube_webapp_server import CubeWebAppServer, CubeWebAppReceivedCommand
+from thecubeivazio.cube_common_defines import *
+
 
 DB_REQUEST_PERIOD_SEC = 3
 HIGHSCORES_UPDATE_PERIOD_SEC = 2
@@ -64,13 +66,21 @@ class CubeServerMaster:
         # we're not using the rfid listener for the CubeMaster
         self.rfid.disable()
 
-        # setup an RGB server
+        # setup an RGB server. It will be set up in the _rgb_loop
         self.rgb_sender = None
 
         # objects to handle the alarm
         self.sound_player = CubeSoundPlayer()
 
+        # setup the local database
         self.database = cubedb.CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
+        # if the play database does not exist, create it
+        if not self.database.does_database_exist():
+            self.database.create_database()
+            self.log.info("Created the local database")
+
+        # web app server for staff interventions
+        self.webapp_server = CubeWebAppServer()
 
         # used to manage the highscores screen (display, update, etc.)
         self.highscores_screen = chs.CubeHighscoresScreenManager(
@@ -90,6 +100,8 @@ class CubeServerMaster:
         self._thread_rgb = threading.Thread(target=self._rgb_loop, daemon=True)
         self._thread_alarm = threading.Thread(target=self._run_alarm, daemon=True)
         self._thread_highscores = threading.Thread(target=self._highscores_loop, daemon=True)
+        self._webapp_thread = threading.Thread(target=self._webapp_loop, daemon=True)
+
 
         self._keep_running = False
         self._last_game_status_sent_to_frontdesk_hash: Optional[Hash] = None
@@ -99,11 +111,6 @@ class CubeServerMaster:
         # heartbeat setup
         self.heartbeat_timer = cube_utils.CubeSimpleTimer(10)
         self.enable_heartbeat = False
-
-        # if the play database does not exist, create it
-        if not self.database.does_database_exist():
-            self.database.create_database()
-            self.log.info("Created the local database")
 
         # on startup, send the game status to the frontdesk
         self.net.send_msg_to_frontdesk(
@@ -120,6 +127,8 @@ class CubeServerMaster:
         self._thread_status_update.start()
         self._thread_rgb.start()
         self._thread_highscores.start()
+        self._webapp_thread.start()
+
 
     def stop(self):
         self._keep_running = False
@@ -132,6 +141,28 @@ class CubeServerMaster:
         self._thread_status_update.join(timeout=0.1)
         self._thread_highscores.join(timeout=0.1)
 
+    def _webapp_loop(self):
+        self.webapp_server.run()
+        while self._keep_running:
+            time.sleep(LOOP_PERIOD_SEC)
+            command = self.webapp_server.pop_oldest_command()
+            if command:
+                self.log.info(f"Received full command from the webapp: {command.full_command}")
+                # do not allow reboots from the webapp
+                if "reboot" in command.full_command:
+                    self.webapp_server.send_reply_error(command, "Reboot interdit depuis la webapp")
+                    continue
+                if command.destination == cubeid.CUBEMASTER_NODENAME and "reset" in command.full_command:
+                    self.webapp_server.send_reply_error(command, "Reset du CubeMaster interdit depuis la webapp")
+                    continue
+                report = self.send_full_command(command.full_command)
+                if not report.sent_ok:
+                    self.webapp_server.send_reply_error(command, "Échec de l'envoi de la commande")
+                    continue
+                if not report.ack_ok:
+                    self.webapp_server.send_reply_error(command, "Échec de l'exécution de la commande")
+                    continue
+                self.webapp_server.send_reply_ok(command)
 
     def _highscores_loop(self):
         if DISABLE_HIGHSCORES:
@@ -188,6 +219,7 @@ class CubeServerMaster:
             for team in self.teams:
                 if team.is_time_up():
                     self._handle_team_time_up(team)
+
 
     def send_status_to_frontdesk(self) -> bool:
         """Send the cubemaster status to the frontdesk"""

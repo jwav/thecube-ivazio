@@ -14,11 +14,12 @@ import thecubeivazio.cube_utils as cube_utils
 from thecubeivazio import cube_config
 from thecubeivazio import cube_database as cubedb
 from thecubeivazio.cube_common_defines import *
-from thecubeivazio.cubewebapp.cube_webapp_server import CubeWebAppServer, CubeWebAppReceivedCommand
+from thecubeivazio. cubeserver_base import CubeServerBase
 
 
-class CubeServerFrontdesk:
+class CubeServerFrontdesk(CubeServerBase):
     def __init__(self):
+        super().__init__()
         # set up the logger
         self.log = cube_logger.CubeLogger(name=cubeid.CUBEFRONTDESK_NODENAME,
                                           log_filename=cube_logger.CUBEFRONTDESK_LOG_FILENAME)
@@ -31,15 +32,17 @@ class CubeServerFrontdesk:
         # instanciate the RFID listener
         self.rfid = cube_rfid.CubeRfidKeyboardListener()
 
-        # the local teams database
+        # the local teams database of all teams that have played
         self.database = cubedb.CubeDatabase(FRONTDESK_SQLITE_DATABASE_FILEPATH)
+        # if the play database does not exist, create it
+        if not self.database.does_database_exist():
+            self.database.create_database()
+            self.log.info("Created the local database")
 
-        # web app server for staff interventions
-        self.webapp_server = CubeWebAppServer()
+
 
         # params for threading
         self._msg_handling_thread = threading.Thread(target=self._message_handling_loop, daemon=True)
-        self._webapp_thread = threading.Thread(target=self._webapp_loop, daemon=True)
 
         self._keep_running = False
 
@@ -75,7 +78,6 @@ class CubeServerFrontdesk:
         self.rfid.run()
         self._keep_running = True
         self._msg_handling_thread.start()
-        self._webapp_thread.start()
         # self.net.send_msg_with_udp(cm.CubeMsgHeartbeat(self.net.node_name))
 
     def stop(self):
@@ -83,29 +85,6 @@ class CubeServerFrontdesk:
         self.net.stop()
         self.rfid.stop()
         self._msg_handling_thread.join(timeout=0.1)
-
-    def _webapp_loop(self):
-        self.webapp_server.run()
-        while self._keep_running:
-            time.sleep(LOOP_PERIOD_SEC)
-            command = self.webapp_server.pop_oldest_command()
-            if command:
-                self.log.info(f"Received full command from the webapp: {command.full_command}")
-                # do not allow reboots from the webapp
-                if "reboot" in command.full_command:
-                    self.webapp_server.send_reply_error(command, "Reboot interdit depuis la webapp")
-                    continue
-                if command.destination == cubeid.CUBEMASTER_NODENAME and "reset" in command.full_command:
-                    self.webapp_server.send_reply_error(command, "Reset du CubeMaster interdit depuis la webapp")
-                    continue
-                report = self.send_full_command(command.full_command)
-                if not report.sent_ok:
-                    self.webapp_server.send_reply_error(command, "Échec de l'envoi de la commande")
-                    continue
-                if not report.ack_ok:
-                    self.webapp_server.send_reply_error(command, "Échec de l'exécution de la commande")
-                    continue
-                self.webapp_server.send_reply_ok(command)
 
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""
@@ -353,27 +332,27 @@ class CubeServerFrontdesk:
             self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")
         return report
 
-    @cubetry
-    def send_full_command(self, full_command:str) -> cubenet.SendReport:
-        """Send a full command to the CubeMaster. Returns True if the command was sent, False if not."""
-        self.log.info(f"Sending full command: {full_command}")
-        msg = cm.CubeMsgCommand(self.net.node_name, full_command=full_command)
-        self.log.critical(f"words={msg.words}")
-        destination_node = msg.target
-        if destination_node not in cubeid.ALL_NODENAMES:
-            self.log.error(f"Invalid destination node: {destination_node}")
-            return cubenet.SendReport(sent_ok=False, raw_info=f"Invalid destination node: {destination_node}")
-        report = self.net.send_msg_to(msg, destination_node, require_ack=True)
-        if not report:
-            self.log.error(f"Failed to send the full command : {full_command}")
-            report._raw_info = f"Failed to send the command : '{full_command}'"
-            return report
-        if not report.ack_ok:
-            self.log.error(f"Node {destination_node} did not acknowledge the full command : '{full_command}'")
-            report._raw_info = f"Node {destination_node} did not acknowledge the full command : '{full_command}'"
-            return report
-        self.log.success(f"Node {destination_node} acknowledged the full command : {full_command}")
-        return report
+    # @cubetry
+    # def send_full_command(self, full_command:str) -> cubenet.SendReport:
+    #     """Send a full command to a node. Returns True if the command was sent, False if not."""
+    #     self.log.info(f"Sending full command: {full_command}")
+    #     msg = cm.CubeMsgCommand(self.net.node_name, full_command=full_command)
+    #     self.log.critical(f"words={msg.words}")
+    #     destination_node = msg.target
+    #     if destination_node not in cubeid.ALL_NODENAMES:
+    #         self.log.error(f"Invalid destination node: {destination_node}")
+    #         return cubenet.SendReport(sent_ok=False, raw_info=f"Invalid destination node: {destination_node}")
+    #     report = self.net.send_msg_to(msg, destination_node, require_ack=True)
+    #     if not report:
+    #         self.log.error(f"Failed to send the full command : {full_command}")
+    #         report._raw_info = f"Failed to send the command : '{full_command}'"
+    #         return report
+    #     if not report.ack_ok:
+    #         self.log.error(f"Node {destination_node} did not acknowledge the full command : '{full_command}'")
+    #         report._raw_info = f"Node {destination_node} did not acknowledge the full command : '{full_command}'"
+    #         return report
+    #     self.log.success(f"Node {destination_node} acknowledged the full command : {full_command}")
+    #     return report
 
     @cubetry
     def move_team_to_database(self, team_name) -> bool:
