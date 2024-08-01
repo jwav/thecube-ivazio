@@ -66,6 +66,7 @@ class XvfbManager:
         """Way simpler than the older method: we check the hostname.
         If it contains "cubebox", then it has no display and we need Xvfb.
         Else, it means we're either running the CubeMaster or CubeFrontdesk, who have a display."""
+        print(f"System hostname: {get_system_hostname()}")
         return "cubebox" in get_system_hostname()
 
     @classmethod
