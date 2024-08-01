@@ -72,7 +72,7 @@ class CubeServerMaster(CubeServerBase):
         self.rgb_sender = None
 
         # objects to handle the alarm
-        self.sound_player = CubeSoundPlayer()
+        self.sound_player = CubeSoundPlayer(init_timeout_sec=3)
 
         # setup the local database
         self.database = cubedb.CubeDatabase(CUBEMASTER_SQLITE_DATABASE_FILEPATH)
