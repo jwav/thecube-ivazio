@@ -4,7 +4,7 @@ import logging
 import random
 import subprocess
 import threading
-
+import time
 import pygame.mixer as mixer
 import pygame.time as pgtime
 
@@ -18,14 +18,14 @@ class CubeSoundPlayer:
     MAX_VOLUME_PERCENT = 1000
     SUPPORTED_EXTENSIONS = ['.wav', '.mp3', '.ogg', '.flac', '.mod', '.s3m', '.it', '.xm']
 
-    def __init__(self):
+    def __init__(self, init_timeout_sec:float=None):
         self._is_initialized = False
         self._is_initializing = False  # Flag to prevent recursion
         self.log = cube_logger.CubeLogger("CubeSoundPlayer")
         self.log.setLevel(logging.INFO)
         self._playing_thread = None
         self.log.info(f"Sounds directory: '{SOUNDS_DIR}'")
-        self.initialize()
+        self.initialize(init_timeout_sec=init_timeout_sec)
 
     def __del__(self):
         try:
@@ -34,20 +34,38 @@ class CubeSoundPlayer:
         except Exception as e:
             self.log.error(f"Error cleaning up CubeSoundPlayer: {e}")
 
-    def initialize(self) -> bool:
-        if self._is_initialized:
-            return True
-        if self._is_initializing:  # Prevent re-entry
-            self.log.error("Initialization already in progress, preventing re-entry.")
-            return False
-        self._is_initializing = True  # Set the flag
+    def initialize(self, init_timeout_sec:float=None) -> bool:
+        """Initialize the sound player.
+        First tries to initialize using PulseAudio, then falls back to ALSA.
+        if init_timeout_sec is not None, it will wait for the initialization to complete for that many seconds.
+        """
+        end_time = time.time() + (init_timeout_sec or 0)
+        success = False
+        while True:
+            if self._is_initialized:
+                success = True
+                break
+            if self._is_initializing:  # Prevent re-entry
+                self.log.warning("Initialization already in progress, preventing re-entry.")
+                return False
+            self._is_initializing = True  # Set the flag
 
-        if self._initialize("pulseaudio"):
-            self._is_initializing = False  # Clear the flag on success
-            return True
-        if self._initialize("alsa"):
-            self._is_initializing = False  # Clear the flag on success
-            return True
+            if self._initialize("pulseaudio"):
+                success = True
+                break
+            if self._initialize("alsa"):
+                success = True
+                break
+            if init_timeout_sec and time.time() > end_time:
+                self.log.error("Initialization timed out.")
+                self._is_initializing = False
+                success = False
+                break
+            time.sleep(0.5)
+
+        self._is_initialized = success
+        return success
+
 
         self._is_initializing = False  # Clear the flag on failure
         return False
