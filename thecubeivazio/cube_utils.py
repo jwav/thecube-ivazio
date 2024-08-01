@@ -63,18 +63,37 @@ class XvfbManager:
 
     @classmethod
     def has_x_server(cls):
-        """Check if an X server is running on the machine. Return True if it is, False otherwise."""
+        """Way simpler than the older method: we check the hostname.
+        If it contains "cubebox", then it has no display and we need Xvfb.
+        Else, it means we're either running the CubeMaster or CubeFrontdesk, who have a display."""
+        return "cubebox" in get_system_hostname()
+
+    @classmethod
+    def old_has_x_server(cls):
+        """NOTE: this method doesn't work!
+        Check if an X server or Wayland server is running on the machine.
+        Return True if it is, False otherwise."""
         try:
-            # Try to run `xdpyinfo` to check for an X server
-            subprocess.run(['xdpyinfo'],
-                           stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL,
-                           check=True)
-            print("X server is running.")
+            print("Checking for X server...")
+            result = subprocess.run(['xdpyinfo'],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    check=True)
+            print("X server is running. xdpyinfo output:", result.stdout.decode())
             return True
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print("xdpyinfo returned an error:", e.stderr.decode())
             print("X server is not running.")
-            return False
+        except FileNotFoundError:
+            print("xdpyinfo not found. Ensure it is installed.")
+
+        # Check for Wayland
+        if 'WAYLAND_DISPLAY' in os.environ:
+            print("Wayland server is running.")
+            return True
+
+        print("No display server is running.")
+        return False
 
     @classmethod
     def start_xvfb(cls, force_start=False):
