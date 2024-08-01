@@ -315,7 +315,7 @@ def is_raspberry_pi():
         return False
 
 
-def test():
+def test_RgbMatrixDaemon():
     if is_raspberry_pi():
         print("Using the real CubeRgbMatrixDaemon")
         daemon = CubeRgbMatrixDaemon()
@@ -346,6 +346,8 @@ def test():
         "Paris",
         "Ankara",
     ]
+    for i,team_name in enumerate(team_names):
+        team_names[i] = f"{i}{team_name}"
 
     nb_teams = len(team_names)
 
@@ -416,6 +418,6 @@ if __name__ == "__main__":
             # remove "--test" from sys.argv to avoid problems for the SampleBase.
             # if we leave it, it will try to parse it as an argument and raise an error.
             sys.argv.remove("--test")
-        test()
+        test_RgbMatrixDaemon()
     else:
         main()
