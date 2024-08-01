@@ -58,6 +58,8 @@ class CubeSoundPlayer:
             if is_raspberry_pi():
                 os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
                 os.environ['AUDIODEV'] = 'hw:1,0'
+                # start pulseaudio if not running
+                subprocess.run(['pulseaudio', '--start'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
             self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)

@@ -47,6 +47,8 @@
 - [x] make it so the cubemaster cannot be hacked from the x11 session
 - [x] the sound on cubemaster doesnt work
 - [x] handle teams being out of time
+- [x] flicker on the highscores page's icons, but not the text
+- [ ] no sound on cubemaster if launched as a service, but as a script it works
 
 
 # CubeRGBMatrix
