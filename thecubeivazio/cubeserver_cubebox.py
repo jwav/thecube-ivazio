@@ -25,7 +25,7 @@ class CubeServerCubebox:
             node_name = self.determine_cubebox_node_name()
 
         self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
-
+        self.log.setLevel(cube_logger.logging.INFO)
         self.log.info("Starting CubeServerCubebox...")
 
         # create a config object which we'll use to access the config file's contents
