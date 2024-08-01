@@ -11,11 +11,11 @@ else
   THECUBE_DIR="/mnt/shared/thecube-ivazio"
 fi
 
-# Ensure the update_version.sh script exists
-if [[ ! -f "${THECUBE_DIR}/update_version.sh" ]]; then
-  echo "Error: ${THECUBE_DIR}/update_version.sh not found"
+# Ensure the update_thecube.sh script exists
+if [[ ! -f "${THECUBE_DIR}/update_thecube.sh" ]]; then
+  echo "Error: ${THECUBE_DIR}/update_thecube.sh not found"
   exit 1
 fi
 
-# Run the update_version.sh script with the --full-update argument
-bash "${THECUBE_DIR}/update_version.sh" --full-update
+# Run the update_thecube.sh script with the --full-update argument
+bash "${THECUBE_DIR}/update_thecube.sh" --full-update

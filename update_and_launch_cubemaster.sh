@@ -9,7 +9,7 @@ cd "${HOME}/thecube-ivazio" || exit
 source venv/bin/activate
 
 if [ "$THECUBE_SKIP_UPDATE" = false ]; then
-  bash ./update_version.sh
+  bash ./update_thecube.sh
 fi
 
 bash ./launch_cubemaster.sh

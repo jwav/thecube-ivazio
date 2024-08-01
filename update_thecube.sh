@@ -132,6 +132,7 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   "activate_venv.sh"
   "install_required_apt_packages.sh"
   "*update*.sh"
+  "configure_ssh_firewall.sh"
   )
   for script in "${scripts_to_copy[@]}"; do
     for file in $script; do
