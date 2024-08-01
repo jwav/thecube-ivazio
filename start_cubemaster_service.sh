@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-ARG=""
+THECUBE_SKIP_UPDATE=false
 
 for arg in "$@"; do
   case $arg in
     --skip-update)
-      ARG="--skip-update"
+      THECUBE_SKIP_UPDATE=true
       shift
       ;;
     *)
@@ -14,6 +14,14 @@ for arg in "$@"; do
   esac
 done
 
+# hide mouse cursor
+/usr/bin/unclutter -idle 1 -root &
+
 sudo systemctl stop thecubeivazio.cubemaster.service
-sudo systemctl start thecubeivazio.cubemaster.service $ARG
+
+if [ "$THECUBE_SKIP_UPDATE" = true ]; then
+  sudo THECUBE_SKIP_UPDATE=true systemctl start thecubeivazio.cubemaster.service
+else
+  sudo systemctl start thecubeivazio.cubemaster.service
+fi
 #sudo systemctl status thecubeivazio.cubemaster.service

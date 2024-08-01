@@ -1,18 +1,6 @@
 #!/usr/bin/env bash
 
-SKIP_UPDATE=false
-
-for arg in "$@"; do
-  case $arg in
-    --skip-update)
-      SKIP_UPDATE=true
-      shift
-      ;;
-    *)
-      shift
-      ;;
-  esac
-done
+THECUBE_SKIP_UPDATE=${THECUBE_SKIP_UPDATE:-false}
 
 # hide mouse cursor
 /usr/bin/unclutter -idle 1 -root &
@@ -20,7 +8,7 @@ done
 cd "${HOME}/thecube-ivazio" || exit
 source venv/bin/activate
 
-if [ "$SKIP_UPDATE" = false ]; then
+if [ "$THECUBE_SKIP_UPDATE" = false ]; then
   bash ./update_version.sh
 fi
 
