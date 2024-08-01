@@ -12,6 +12,7 @@ function refreshSection(visibleId, hiddenId, url) {
         return;
     }
 
+
     hiddenIframe.src = url;
 
     hiddenIframe.onload = () => {
