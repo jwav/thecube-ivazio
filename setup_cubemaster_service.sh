@@ -6,13 +6,12 @@ DESTINATION_PATH="/etc/systemd/system/thecubeivazio.cubemaster.service"
 
 # Check if the source file exists
 if [ ! -f "$SOURCE_PATH" ]; then
-    echo "Source file does not exist: $SOURCE_PATH"
-    exit 1
+  echo "Source file does not exist: $SOURCE_PATH"
+  exit 1
 fi
 
 # Copy the file to the destination, overwriting if it exists
 sudo install -m 644 "$SOURCE_PATH" "$DESTINATION_PATH" || exit 1
-
 
 # Reload systemd daemon to recognize the new service file
 sudo systemctl daemon-reload || exit 1
@@ -36,6 +35,5 @@ sudo systemctl daemon-reload
 
 # if the status is not enabled, print so
 if ! sudo systemctl is-enabled --quiet thecubeivazio.cubemaster.service; then
-    echo "ERROR: Service is not enabled!"
+  echo "ERROR: Service is not enabled!"
 fi
-

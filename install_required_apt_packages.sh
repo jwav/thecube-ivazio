@@ -12,19 +12,17 @@ fi
 
 sudo apt update
 sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
-vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils \
-libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev libtiff-dev libgif-dev \
-libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession
-
-
+  libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+  xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
+  vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils \
+  libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev libtiff-dev libgif-dev \
+  libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession
 
 if [ -d "venv" ]; then
-    echo "The venv folder exists."
+  echo "The venv folder exists."
 else
-    echo "The venv folder does not exist. Creating."
-    python3 -m venv venv
+  echo "The venv folder does not exist. Creating."
+  python3 -m venv venv
 fi
 # enter the venv
 source myenv/bin/activate
@@ -32,7 +30,6 @@ pip install --upgrade pip
 pip install --upgrade setuptools
 pip install --upgrade wheel
 pip install pip_search
-
 
 if command -v pyenv >/dev/null 2>&1; then
   echo "pyenv is installed"
@@ -45,8 +42,7 @@ else
   eval "$(pyenv virtualenv-init -)"
 fi
 
-if python3.9 --version &> /dev/null
-then
+if python3.9 --version &>/dev/null; then
   echo "Python 3.9 is installed"
 else
   echo "Python 3.9 is not installed"

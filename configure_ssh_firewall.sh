@@ -2,21 +2,21 @@
 
 # Usage function
 usage() {
-    echo "Usage: $0 <subnet>"
-    echo "Example: $0 192.168.1.0/24"
-    echo "This script configures iptables to allow SSH access only from the specified subnet."
-    exit 1
+  echo "Usage: $0 <subnet>"
+  echo "Example: $0 192.168.1.0/24"
+  echo "This script configures iptables to allow SSH access only from the specified subnet."
+  exit 1
 }
 
 # Check for --help argument or no arguments
 if [ "$1" == "--help" ] || [ "$#" -ne 1 ]; then
-    usage
+  usage
 fi
 
 # Validate the subnet argument
 if [[ ! "$1" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}/[0-9]{1,2}$ ]]; then
-    echo "Error: Invalid subnet format."
-    usage
+  echo "Error: Invalid subnet format."
+  usage
 fi
 
 SUBNET=$1

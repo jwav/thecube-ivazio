@@ -4,13 +4,13 @@ THECUBE_SKIP_UPDATE=false
 
 for arg in "$@"; do
   case $arg in
-    --skip-update)
-      THECUBE_SKIP_UPDATE=true
-      shift
-      ;;
-    *)
-      shift
-      ;;
+  --skip-update)
+    THECUBE_SKIP_UPDATE=true
+    shift
+    ;;
+  *)
+    shift
+    ;;
   esac
 done
 

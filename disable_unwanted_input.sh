@@ -8,7 +8,7 @@ RFID_PRODUCT_ID="0035"
 disable_device() {
   local device_path="$1"
   echo "Disabling device at $device_path"
-  echo "0" | sudo tee "$device_path/authorized" > /dev/null
+  echo "0" | sudo tee "$device_path/authorized" >/dev/null
 }
 
 # Disable existing devices

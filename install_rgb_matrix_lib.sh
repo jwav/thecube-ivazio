@@ -8,5 +8,3 @@ make build-python
 sudo make install-python
 cd bindings/python
 sudo python3 setup.py install
-
-
