@@ -39,6 +39,7 @@ class CubeSoundPlayer:
         First tries to initialize using PulseAudio, then falls back to ALSA.
         if init_timeout_sec is not None, it will wait for the initialization to complete for that many seconds.
         """
+        self.log.info("Initializing CubeSoundPlayer...")
         end_time = time.time() + (init_timeout_sec or 0)
         success = False
         while True:
@@ -62,7 +63,6 @@ class CubeSoundPlayer:
                 success = False
                 break
             time.sleep(0.5)
-
         self._is_initialized = success
         return success
 
