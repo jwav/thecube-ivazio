@@ -5,17 +5,12 @@ DEBUG=true
 # Define CUBE_HOSTNAME globally
 CUBE_HOSTNAME=$(hostname)
 
-# if the hostname contains "cube", use this defined directory
-if [[ "$CUBE_HOSTNAME" == *"cube"* ]]; then
-  THECUBE_DIR="${HOME}/thecube-ivazio"
-else
-  THECUBE_DIR="/mnt/shared/thecube-ivazio"
-fi
-export THECUBE_DIR
+
 
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Functions for colored echo
@@ -27,8 +22,12 @@ echo_green() {
   echo -e "${GREEN}$1${NC}"
 }
 
+echo_blue() {
+  echo -e "${BLUE}$1${NC}"
+}
+
 generate_cubebox_scripts_from_cubemaster_scripts() {
-  echo "Generating cubeboxes scripts from the cubemaster scripts..."
+  echo_blue "Generating cubeboxes scripts from the cubemaster scripts..."
 
   # Define a function to replace cubemaster with cubebox in a file
   replace_cubemaster_with_cubebox() {
@@ -109,7 +108,7 @@ copy_relevant_scripts_to_home() {
 
   # Copy and chmod+x the filtered scripts
   for script in "${filtered_scripts[@]}"; do
-    echo "Copying $script to home directory and making it executable."
+    echo_blue "Copying $script to home directory and making it executable."
     cp "$script" ~/
     chmod +x ~/"$script"
   done
@@ -118,33 +117,43 @@ copy_relevant_scripts_to_home() {
 setup_relevant_service() {
   # Setup the service according to the hostname
   if [[ "$CUBE_HOSTNAME" == "cubemaster" ]]; then
-    echo "Setting up cubemaster service..."
+    echo_blue "Setting up cubemaster service..."
     bash ./setup_cubemaster_service.sh
   elif [[ "$CUBE_HOSTNAME" == *"cubebox"* ]]; then
-    echo "Setting up cubebox service..."
+    echo_blue "Setting up cubebox service..."
     bash ./setup_cubebox_service.sh
   else
-    echo "Hostname does not match cubemaster or cubebox patterns."
+    echo_red "Hostname does not match cubemaster or cubebox patterns."
   fi
 }
 
-# Get the directory of the script
-# SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCRIPT_DIR="${THECUBE_DIR}"
 
-cd "$SCRIPT_DIR" || exit 1
-source "${SCRIPT_DIR}/venv/bin/activate"
 
 # ACTUAL SCRIPT LOGIC :
 
 # Run the script logic inside a subshell
 (
+  # if the hostname contains "cube", use this defined directory
+  if [[ "$CUBE_HOSTNAME" == *"cube"* ]]; then
+    THECUBE_DIR="${HOME}/thecube-ivazio"
+  else
+    THECUBE_DIR="/mnt/shared/thecube-ivazio"
+  fi
+  export THECUBE_DIR
+
+  # Get the directory of the script
+  # SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  SCRIPT_DIR="${THECUBE_DIR}"
+
+  cd "$SCRIPT_DIR" || exit 1
+  source "${SCRIPT_DIR}/venv/bin/activate"
+
   cd "$SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
 
   # If debug, skip apt and pip
   if [ "$DEBUG" = true ]; then
-    echo "DEBUG: Skipping APT and pip updates"
+    echo_blue "DEBUG: Skipping APT and pip updates"
     SKIP_APT=true
     SKIP_PIP_REQ=true
   fi
@@ -153,20 +162,20 @@ source "${SCRIPT_DIR}/venv/bin/activate"
     if [ "$arg" == "--full-update" ]; then
       SKIP_APT=false
       SKIP_PIP_REQ=false
-      echo "Full update"
+      echo_blue "Full update"
       break
     elif [ "$arg" == "--skip-apt" ]; then
       SKIP_APT=true
-      echo "Skipping APT update and install"
+      echo_blue "Skipping APT update and install"
     elif [ "$arg" == "--skip-pip" ]; then
       SKIP_PIP_REQ=true
-      echo "Skipping pip install"
+      echo_blue "Skipping pip install"
     fi
   done
 
-  echo "Stashing local changes..."
+  echo_blue "Stashing local changes..."
   git stash
-  echo "Pulling git..."
+  echo_blue "Pulling git..."
   git pull
   if [ $? -ne 0 ]; then
     echo_red "ERROR: git pull failed"
@@ -176,7 +185,7 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   fi
 
   if [ "$SKIP_APT" = false ]; then
-    echo "Updating APT and installing required packages.."
+    echo_blue "Updating APT and installing required packages.."
     bash ./install_required_apt_packages.sh
     if [ $? -ne 0 ]; then
       echo_red "ERROR: APT update and install failed"
@@ -187,7 +196,7 @@ source "${SCRIPT_DIR}/venv/bin/activate"
   fi
 
   if [ "$SKIP_PIP_REQ" = false ]; then
-    echo "pip install requirements..."
+    echo_blue "pip install requirements..."
     pip install -r ./requirements.txt
     if [ $? -ne 0 ]; then
       echo_red "ERROR: pip install requirements failed"
@@ -197,7 +206,7 @@ source "${SCRIPT_DIR}/venv/bin/activate"
     fi
   fi
 
-  echo "Installing the project package..."
+  echo_blue "Installing the project package..."
   pip install .
   if [ $? -ne 0 ]; then
     echo_red "ERROR: project package install failed"
@@ -212,7 +221,7 @@ source "${SCRIPT_DIR}/venv/bin/activate"
 
   setup_relevant_service
 
-  echo_green "Update OK: APT packages installed, git pulled, project package pip installed, scripts copied, service set up."
+  echo_green "Update OK and done."
 
 )
 # End of subshell
