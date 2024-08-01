@@ -6,6 +6,7 @@
 - [ ] !! make full scale simulations that can be run on localhost or on the local network (aka for realsies)
 - [ ] use int milliseconds for timestamps
     - [ ] oh, the refactory. Dude, that's not gonna happen.
+- [ ] make sure that we can't ssh into any machine from the internet
 
 
 # CubeWebApp

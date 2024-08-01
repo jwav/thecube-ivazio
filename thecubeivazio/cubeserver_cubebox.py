@@ -189,6 +189,7 @@ class CubeServerCubebox:
 
     @property
     def play_start_timestamp(self) -> Optional[Seconds]:
+        # noinspection PyBroadException
         try:
             return self.status.last_valid_rfid_line.timestamp
         except:

@@ -1060,9 +1060,11 @@ class CubeTeamsStatusList(List[CubeTeamStatus]):
         return None
 
     @cubetry
-    def get_team_by_name(self, name: str) -> Optional[CubeTeamStatus]:
+    def get_team_by_name(self, name: str, ignore_case=True) -> Optional[CubeTeamStatus]:
         for team in self:
-            if team.name == name:
+            if ignore_case and team.name.lower() == name.lower():
+                return team
+            if not ignore_case and team.name == name:
                 return team
         return None
 

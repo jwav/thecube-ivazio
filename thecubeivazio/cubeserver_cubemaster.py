@@ -18,6 +18,7 @@ from thecubeivazio.cube_config import CubeConfig
 from thecubeivazio.cube_gpio import CubeGpio
 from thecubeivazio.cube_sounds import CubeSoundPlayer
 from thecubeivazio.cubewebapp.cube_webapp_server import CubeWebAppServer, CubeWebAppReceivedCommand
+from thecubeivazio.cubeserver_base import CubeServerBase
 from thecubeivazio.cube_common_defines import *
 
 
@@ -42,9 +43,10 @@ if not cube_utils.is_raspberry_pi():
     DISABLE_RGBMATRIX = True
 
 
-class CubeServerMaster:
+class CubeServerMaster(CubeServerBase):
     ALARM_LIGHT_PIN = 25
     def __init__(self):
+        super().__init__()
         # set up the logger
         self.log = cube_logger.CubeLogger(name=cubeid.CUBEMASTER_NODENAME,
                                           log_filename=cube_logger.CUBEMASTER_LOG_FILENAME)
@@ -221,6 +223,7 @@ class CubeServerMaster:
                     self._handle_team_time_up(team)
 
 
+    @cubetry
     def send_status_to_frontdesk(self) -> bool:
         """Send the cubemaster status to the frontdesk"""
         self.log.info("Sending game status to frontdesk")
@@ -233,10 +236,11 @@ class CubeServerMaster:
         else:
             if not report.ack_ok:
                 self.log.warning("Sent game status to frontdesk but no ACK received")
+                return False
             else:
                 self.log.success("Sent game status to frontdesk and received ACK")
-            self._last_game_status_sent_to_frontdesk_hash = self.game_status.hash
-        return True
+                self._last_game_status_sent_to_frontdesk_hash = self.game_status.hash
+                return True
 
     def run_alarm(self):
         try:
@@ -342,22 +346,6 @@ class CubeServerMaster:
             self._last_teams_status_sent_to_rgb_daemon_hash = self.teams.hash
         else:
             self.log.error("Failed to send RGBMatrixContentDict to RGBMatrix Daemon")
-
-    @property
-    def teams(self) -> cube_game.CubeTeamsStatusList:
-        return self.game_status.teams
-
-    @property
-    def cubeboxes(self) -> cube_game.CubeboxesStatusList:
-        return self.game_status.cubeboxes
-
-    @teams.setter
-    def teams(self, value: cube_game.CubeTeamsStatusList):
-        self.game_status.teams = value
-
-    @cubeboxes.setter
-    def cubeboxes(self, value: cube_game.CubeboxesStatusList):
-        self.game_status.cubeboxes = value
 
     @cubetry
     def _message_handling_loop(self):
@@ -508,29 +496,36 @@ class CubeServerMaster:
         self.register_team_to_cubebox(team, sending_cubebox_id)
         self.net.acknowledge_this_message(message, cm.CubeAckInfos.OK)
 
-    def _handle_cubebox_button_press_message(self, message: cm.CubeMessage):
+    @cubetry
+    def _handle_cubebox_button_press_message(self, message: cm.CubeMessage) -> bool:
         self.log.info(f"Received button press message from {message.sender} : {message}")
         # update teams and cubegames to reflect the fact that this cubebox was just won by the team currently playing it
         # first, check if it's a valid button press (i.e. a valid team is currently playing it)
-        cubebox: cube_game.CubeboxStatus = self.cubeboxes.get_cubebox_by_node_name(message.sender)
+        cbp_msg = cm.CubeMsgButtonPress(copy_msg=message)
+        if not cbp_msg.has_valid_times():
+            self.log.error(f"Invalid button press message: {cbp_msg}")
+            self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
+            return False
+        cube_id = cbp_msg.cube_id
+        cubebox = self.cubeboxes.get_cubebox_by_cube_id(cube_id)
         if not cubebox:
             self.log.error(
                 f"WHAT?! Cubebox not found: {message.sender} (THIS SHOULD NEVER HAPPEN. There's bad code somewhere)")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.ERROR)
-            return
+            return False
         self.log.info(cubebox.to_string())
         self.log.info(self.teams.to_string())
         team = self.teams.get_team_by_current_cube_id(cubebox.cube_id)
         if not team:
             self.log.error(f"No team is playing that cubebox: {cubebox.cube_id}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
-            return
+            return False
         cbp_msg = cm.CubeMsgButtonPress(copy_msg=message)
         self.log.info(f"CubeMsgButtonPress : {cbp_msg.to_string()}")
         if not cbp_msg.has_valid_times():
             self.log.error(f"Invalid button press message: {cbp_msg}")
             self.net.acknowledge_this_message(message, cm.CubeAckInfos.INVALID)
-            return
+            return False
         # ok, it's a valid button press, which means a team is playing this cubebox.
         # Let's record that win. But first, acknowledge the message to the cubebox
         self.log.info(
@@ -544,15 +539,10 @@ class CubeServerMaster:
 
         self.log.info(f"Teams after button press update : {self.teams.to_string()}")
 
-        # indicate that the cubebox needs to be reset by a staff member
-        # TODO: the cubebox does the status update and signaling on its own
-        cubebox.set_state_waiting_for_reset()
-        # and update the local cubeboxes teams status lists
-        self.cubeboxes.update_from_cubebox(cubebox)
-
         # if the team has the use_alarm flag, sound the alarm
         if team.use_alarm:
             self.run_alarm()
+        return True
 
     def _handle_frontdesk_new_team_message(self, message: cm.CubeMessage):
         self.log.info(f"Received new team message from {message.sender}")
@@ -612,6 +602,11 @@ class CubeServerMaster:
     @cubetry
     def handle_command(self, command: str) -> bool:
         self.log.info(f"Handling command: '{command}'")
+        parts = command.split()
+        if not parts:
+            self.log.error("Empty command received")
+            return False
+        cmd, *args = parts
         if command == "reset":
             self.teams = cube_game.CubeTeamsStatusList()
             self.cubeboxes = cube_game.CubeboxesStatusList()
@@ -631,6 +626,22 @@ class CubeServerMaster:
         elif command == "alarm":
             self.run_alarm()
             return True
+        elif cmd == "bage_in":
+            if len(args) < 2:
+                self.log.error("Missing arguments. Usage : `bage_in <team_name> <cube_id>`")
+                return False
+            team_name = args[0]
+            cube_id = args[1]
+            # find the rfid of that team
+            team = self.teams.get_team_by_name(team_name)
+            if not team:
+                self.log.error(f"Team not found: {team_name}")
+                return False
+            uid = team.rfid_uid
+            dest_node = cubeid.cubebox_index_to_node_name(cube_id)
+            full_command = f"{dest_node} rfid {uid}"
+            report = self.send_full_command(full_command)
+            return report.sent_ok and report.ack_ok
         else:
             self.log.error(f"Unknown command: {command}")
             return False
@@ -754,70 +765,8 @@ class CubeServerMaster:
                 return False
             return self._handle_reply_all_cubeboxes_status_message(reply_msg)
 
-    def _handle_reply_all_cubeboxes_status_message(self, message: cm.CubeMessage) -> bool:
-        try:
-            self.log.info(f"Received reply all cubeboxes status message from {message.sender}")
-            acsr_msg = cm.CubeMsgReplyAllCubeboxesStatuses(copy_msg=message)
-            new_cubeboxes = acsr_msg.cubeboxes_statuses
-            assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
-            assert self.cubeboxes.update_from_cubeboxes(
-                new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
-            report = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-            assert report.sent_ok, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
-            return True
-        except Exception as e:
-            self.log.error(f"Error handling reply all cubeboxes status message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
-            return False
 
-    @cubetry
-    def _handle_reply_cubebox_status(self, message: cm.CubeMessage) -> bool:
-        self.log.info(f"Received reply cubebox status message from {message.sender}")
-        acsr_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=message)
-        new_cubebox = acsr_msg.cubebox
-        assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
-        assert self.cubeboxes.update_from_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
-        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-        return True
 
-    def request_all_cubeboxes_statuses_one_by_one(self, reply_timeout: Seconds = None) -> bool:
-        """Send a message to the CubeMaster to request the status of all cubeboxes one by one.
-        if a reply_timout is specified, wait for the reply for that amount of time.
-        If the request send or the reply receive fails, return False."""
-        for cubebox_id in cubeid.CUBEBOX_IDS:
-            self.log.info(f"Requesting cubebox status for cubebox {cubebox_id}")
-            if not self.request_cubebox_status(cubebox_id, reply_timeout):
-                self.log.warning(
-                    f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
-                return False
-            else:
-                self.log.success(f"Received status reply from cubebox {cubebox_id}")
-        self.log.success("All cubeboxes statuses requested")
-        return True
-
-    @cubetry
-    def request_cubebox_status(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
-        """Send a message to a CubeBox to request its status.
-        if a reply_timout is specified, wait for the reply for that amount of time.
-        If the request send or the reply receive fails, return False."""
-        msg = cm.CubeMsgRequestCubeboxStatus(self.net.node_name, cubebox_id)
-        report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
-        if not report:
-            self.log.error(f"Failed to send the request cubebox status message for cubebox {cubebox_id}")
-            return True
-        if reply_timeout is not None:
-            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS, timeout=reply_timeout)
-            if not reply_msg:
-                self.log.error(f"Failed to receive the cubebox status reply for cubebox {cubebox_id}")
-                return False
-            assert self._handle_reply_cubebox_status(reply_msg)
-            rcs_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=reply_msg)
-            reply_cubebox_id = rcs_msg.cubebox.cube_id
-            if reply_cubebox_id != cubebox_id:
-                self.log.error(f"Received cubebox status reply for cubebox {reply_cubebox_id} instead of {cubebox_id}")
-                return False
-            self.log.success(f"Received cubebox status reply for cubebox {cubebox_id}")
-            return True
 
     def test_sound(self):
         self.sound_player.set_volume_percent(100)
