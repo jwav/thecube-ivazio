@@ -1,4 +1,4 @@
-function refreshSection(visibleId, hiddenId, url) {
+function refreshSection(visibleId, hiddenId, url, isPlayingTeams = false) {
     const visibleIframe = document.getElementById(visibleId);
     const hiddenIframe = document.getElementById(hiddenId);
 
@@ -12,7 +12,6 @@ function refreshSection(visibleId, hiddenId, url) {
         return;
     }
 
-
     hiddenIframe.src = url;
 
     hiddenIframe.onload = () => {
@@ -22,7 +21,16 @@ function refreshSection(visibleId, hiddenId, url) {
 
             if (newContent) {
                 const visibleDoc = visibleIframe.contentDocument || visibleIframe.contentWindow.document;
-                visibleDoc.body.innerHTML = newContent;
+                if (isPlayingTeams) {
+                    visibleDoc.body.innerHTML = newContent;
+                } else {
+                    const highscoreTable = hiddenDoc.querySelector('.highscore-table');
+                    if (highscoreTable) {
+                        visibleDoc.querySelector('.highscore-table').innerHTML = highscoreTable.innerHTML;
+                    } else {
+                        console.error(`Highscore table not found in hidden iframe for ${visibleId}.`);
+                    }
+                }
             } else {
                 console.error(`Hidden iframe content not accessible for ${visibleId}.`);
             }
@@ -34,14 +42,12 @@ function refreshSection(visibleId, hiddenId, url) {
     hiddenIframe.onerror = () => {
         console.error(`Error loading hidden iframe for ${visibleId}.`);
     };
-    //console.log(`Section ${visibleId} refreshed`);
 }
 
 function refreshHighscores() {
     refreshSection('highscores_id_1', 'hidden_highscores_id_1', 'highscores_subtable_1.html');
     refreshSection('highscores_id_2', 'hidden_highscores_id_2', 'highscores_subtable_2.html');
     refreshSection('highscores_id_3', 'hidden_highscores_id_3', 'highscores_subtable_3.html');
-    //console.log('Highscores refreshed');
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -49,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     eventSource.onmessage = function(event) {
         if (event.data === 'refresh_playing_teams') {
-            refreshSection('playing_teams_id', 'hidden_playing_teams_id', 'playing_teams_subtable.html');
+            refreshSection('playing_teams_id', 'hidden_playing_teams_id', 'playing_teams_subtable.html', true);
         } else if (event.data === 'refresh_highscores') {
             refreshHighscores();
         }
