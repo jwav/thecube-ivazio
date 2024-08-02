@@ -22,7 +22,7 @@ class CubeServerCubebox:
     def __init__(self, cube_id: int = 1):
         node_name = cubeid.cubebox_index_to_node_name(cube_id)
         if not node_name:
-            node_name = self.determine_cubebox_node_name()
+            node_name = self._determine_cubebox_node_name()
 
         self.log = cube_logger.CubeLogger(name=node_name, log_filename=cube_logger.CUBEBOX_LOG_FILENAME)
         self.log.setLevel(cube_logger.logging.INFO)
@@ -89,8 +89,12 @@ class CubeServerCubebox:
         self.log.success("CubeServerCubebox started.")
 
     @property
-    def status(self):
+    def status(self) -> cube_game.CubeboxStatus:
         return self._status
+
+    @property
+    def node_name(self) -> str:
+        return self.net.node_name
 
     @cubetry
     def set_status_state(self, state: cube_game.CubeboxState):
@@ -116,7 +120,7 @@ class CubeServerCubebox:
             require_ack=False)
 
     @cubetry
-    def determine_cubebox_node_name(self) -> str:
+    def _determine_cubebox_node_name(self) -> str:
         """determine the node name from the hostname"""
         return cubeid.hostname_to_valid_cubebox_name()
 
@@ -161,14 +165,22 @@ class CubeServerCubebox:
             cube_utils.reboot()
             return True
         elif cmd == "button":
-            self.button.simulate_long_press()
+            self.simulate_button_long_press()
             return True
         elif cmd == "rfid" and arg1 is not None:
-            self.rfid.simulate_read(arg1)
+            self.simulate_rfid_read(arg1)
             return True
         else:
             self.log.error(f"Unknown command: {cmd}")
             return False
+
+    @cubetry
+    def simulate_rfid_read(self, uid: str):
+        self.rfid.simulate_read(uid)
+
+    @cubetry
+    def simulate_button_long_press(self):
+        self.button.simulate_long_press()
 
     @property
     def cubebox_index(self):
@@ -211,10 +223,16 @@ class CubeServerCubebox:
 
     def stop(self):
         """Stop the RFID, button, and networking threads"""
-        self._keep_running = False
-        self._thread_rfid.join(timeout=0.1)
-        self._thread_button.join(timeout=0.1)
-        self._thread_networking.join(timeout=0.1)
+        try:
+            self._keep_running = False
+            self._thread_button.join(timeout=0.1)
+            self._thread_networking.join(timeout=0.1)
+            self._thread_rfid.join(timeout=0.1)
+            self.log.info("Stopped the CubeServerCubebox")
+        except Exception as e:
+            self.log.error(f"Error stopping threads: {e}")
+
+
 
     def _message_handling_loop(self):
         """check the incoming messages and handle them"""

@@ -737,17 +737,17 @@ class CubeMsgAck(CubeMessage):
     The `info` parameter can be used to give more information about the acknowledgement.
     See the CubeMsgReplies enumeration for the standard values."""
 
-    def __init__(self, sender: str = None, acked_msg: CubeMessage = None, info: Union[CubeAckInfos,str] = None,
+    def __init__(self, sender: str = None, acked_msg: CubeMessage = None, ack_info: Union[CubeAckInfos,str] = None,
                  copy_msg: CubeMessage = None):
         if copy_msg is not None:
             super().__init__(copy_msg=copy_msg)
         else:
-            super().__init__(msgtype=CubeMsgTypes.ACK, sender=sender, acked_hash=acked_msg.hash, info=info)
+            super().__init__(msgtype=CubeMsgTypes.ACK, sender=sender, acked_hash=acked_msg.hash, ack_info=ack_info)
         self.require_ack = False
 
     @property
-    def info(self) -> CubeAckInfos:
-        return self.kwargs.get("info", CubeAckInfos.NONE)
+    def ack_info(self) -> CubeAckInfos:
+        return self.kwargs.get("ack_info", CubeAckInfos.NONE)
 
 
 class CubeMsgHeartbeat(CubeMessage):
@@ -857,7 +857,7 @@ def test_make_from_message():
     add_team_msg_1 = CubeMsgFrontdeskNewTeam("CubeFrontDesk",
                                              cube_game.CubeTeamStatus(name="Team1", rfid_uid="1234567890",
                                                                       max_time_sec=1200))
-    ack_msg_1 = CubeMsgAck("CubeMaster", add_team_msg_1, info=CubeAckInfos.OK)
+    ack_msg_1 = CubeMsgAck("CubeMaster", add_team_msg_1, ack_info=CubeAckInfos.OK)
     msg_from_ack = CubeMessage(copy_msg=ack_msg_1)
     msg_from_team = CubeMessage(copy_msg=add_team_msg_1)
     ack_msg_2 = CubeMsgAck(copy_msg=msg_from_ack)
@@ -874,7 +874,7 @@ def test_make_from_message():
 
     assert ack_msg_1.to_string() == ack_msg_2.to_string()
     assert add_team_msg_1.to_string() == add_team_msg_2.to_string()
-    assert ack_msg_1.info == ack_msg_2.info
+    assert ack_msg_1.ack_info == ack_msg_2.ack_info
     assert add_team_msg_1.team.name == add_team_msg_2.team.name
     assert add_team_msg_1.team.rfid_uid == add_team_msg_2.team.rfid_uid
     assert add_team_msg_1.team.max_time_sec == add_team_msg_2.team.max_time_sec
@@ -1155,13 +1155,13 @@ if __name__ == "__main__":
     print(CubeMsgReplies.OK)
     ack_msg = CubeMsgAck("CubeMaster", CubeMessage(CubeMsgTypes.TEST, "CubeFrontDesk"), info=CubeMsgReplies.OK)
     print(ack_msg.to_string())
-    assert ack_msg.info == CubeMsgReplies.OK
+    assert ack_msg.ack_info == CubeMsgReplies.OK
     msg = CubeMessage()
     msg.build_from_string(ack_msg.to_string())
     print("msg=", msg)
     ack_msg_2 = CubeMsgAck(copy_msg=msg)
     print("ack_msg_2=", ack_msg_2)
-    assert ack_msg_2.info == CubeMsgReplies.OK, f"'{ack_msg_2.info}' != '{CubeMsgReplies.OK}'"
+    assert ack_msg_2.ack_info == CubeMsgReplies.OK, f"'{ack_msg_2.ack_info}' != '{CubeMsgReplies.OK}'"
     exit(0)
 
     # test the CubeMessage class and all its subclasses

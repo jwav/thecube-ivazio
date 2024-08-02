@@ -32,7 +32,7 @@ class SendReport:
         try:
             if self._raw_info:
                 return self._raw_info
-            return self.ack_msg.info
+            return self.ack_msg.ack_info
         except:
             return None
 
@@ -47,6 +47,12 @@ class SendReport:
     def __bool__(self):
         """enables the use of SendReport as a boolean, like `if send_report:`"""
         return self.sent_ok
+
+    def __str__(self):
+        return f"SendReport(sent_ok={self.sent_ok}, ack_info={self.ack_info})"
+
+    def __repr__(self):
+        return str(self)
 
 
 class CubeNetworking:
@@ -136,11 +142,14 @@ class CubeNetworking:
 
     def stop(self):
         """stops the main loop thread"""
-        self.log.info("Stopping networking...")
-        self._keep_running = False
-        self._udp_socket.close()
-        self._listenThread.join(timeout=0.1)
-        self.log.info("Networking stopped")
+        try:
+            self.log.info("Stopping networking...")
+            self._keep_running = False
+            self._udp_socket.close()
+            self._listenThread.join(timeout=0.1)
+            self.log.info("Networking stopped")
+        except Exception as e:
+            self.log.error(f"Error stopping networking: {e}")
 
     def get_incoming_msg_queue(self) -> Tuple[CubeMessage, ...]:
         """Returns the incoming_messages queue"""
@@ -234,14 +243,14 @@ class CubeNetworking:
                 self.log.error(f"Failed to remove message from waiting for message queue ({message.shortinfo})")
                 return False
 
-    def acknowledge_this_message(self, message: cm.CubeMessage, info: Union[cm.CubeAckInfos,str] = None) -> SendReport:
+    def acknowledge_this_message(self, message: cm.CubeMessage, ack_info: Union[cm.CubeAckInfos,str] = None) -> SendReport:
         """Sends an acknowledgement message for the given message"""
-        self.log.debug(f"Acknowledging message: ({message.shortinfo})")
-        ack_msg = cm.CubeMsgAck(self.node_name, message, info=info)
+        self.log.debug(f"Acknowledging message: ({message.shortinfo}) with AckInfo: {ack_info}")
+        ack_msg = cm.CubeMsgAck(self.node_name, message, ack_info=ack_info)
         ack_msg.require_ack = False
         report = self.send_msg_to(ack_msg, message.sender)
         if report.sent_ok:
-            self.log.infoplus(f"Acknowledgement sent. Removing acked message: ({ack_msg.hash})")
+            self.log.infoplus(f"Acknowledgement sent with AckInfo='{ack_info}'. Removing acked message: ({ack_msg.hash})")
             self.remove_msg_from_incoming_queue(message)
         else:
             self.log.error(f"Failed to send ack: ({ack_msg.hash})")
@@ -476,7 +485,8 @@ class CubeNetworking:
                 # print("/", end="")
                 # if it's an ACK message acknowledging the message we're waiting for, success
                 if msg.is_ack_of(msg_to_ack):
-                    self.log.info(f"Received ack of message: ({msg_to_ack.hash})")
+                    ack_msg = cm.CubeMsgAck(copy_msg=msg)
+                    self.log.info(f"Received ack of message: ({msg_to_ack.hash}) with ack_info='{ack_msg.ack_info}'")
                     if ack_sender is not None and msg.sender != ack_sender:
                         self.log.warning(f"Received ack from unexpected sender: {msg.sender} instead of {ack_sender}")
                         continue
@@ -519,7 +529,32 @@ class CubeNetworking:
             return None
 
 
-if __name__ == "__main__":
+def test_ack_timeout():
+    net1 = CubeNetworking(cubeid.CUBEFRONTDESK_NODENAME)
+    net2 = CubeNetworking(cubeid.CUBEMASTER_NODENAME)
+    net1.run()
+    net2.run()
+    net1.ACK_WAIT_TIMEOUT = 1
+    msg = cm.CubeMsgCommand(full_command="Test 123")
+
+    # program a thread for net2 to ack the msg some time
+    # after it's received a message, continuously
+    def ack_thread():
+        while True:
+            if net2.get_incoming_msg_queue():
+                time.sleep(2.5)
+                net2.acknowledge_this_message(msg, ack_info=cm.CubeAckInfos.OK)
+
+    threading.Thread(target=ack_thread, daemon=True).start()
+    net1.send_msg_to(
+        message=msg,
+        node_name=net2.node_name,
+        require_ack=True,
+    )
+    exit(0)
+
+
+def test():
     # use the first argument as a node name. if blank, use CubeMaster
     import sys
 
@@ -538,6 +573,10 @@ if __name__ == "__main__":
         net.log.success(f"Message sent to and acked by CubeMaster")
     else:
         net.log.error(f"Failed to send message to CubeMaster")
+    exit(0)
 
+if __name__ == "__main__":
+    # test()
+    test_ack_timeout()
 
 

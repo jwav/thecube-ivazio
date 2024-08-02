@@ -118,12 +118,12 @@ class CubeServerFrontdesk(CubeServerBase):
             self.log.info(f"Team {team_name} has run out of time")
             team.auto_compute_trophies()
             self.move_team_to_database(team_name)
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
             assert self.send_database_teams_to_cubemaster([team]), "_handle_notify_team_time_up_message: send_database_teams_to_cubemaster failed"
             return True
         except Exception as e:
             self.log.error(f"Error handling notify team time up message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.ERROR)
             return False
 
     def _handle_request_database_teams(self, message: cm.CubeMessage):
@@ -192,11 +192,11 @@ class CubeServerFrontdesk(CubeServerBase):
             assert new_teams, "_handle_reply_all_teams_status: new_teams is None"
             assert self.teams.update_from_teams_list(
                 new_teams), "_handle_reply_all_teams_status: update_from_teams_list failed"
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
             return True
         except Exception as e:
             self.log.error(f"Error handling reply all teams status message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.ERROR)
             return False
 
     def _handle_reply_team_status_message(self, message: cm.CubeMessage) -> bool:
@@ -207,11 +207,11 @@ class CubeServerFrontdesk(CubeServerBase):
             assert new_team_status.is_valid(), "_handle_team_status_reply: new_team_status is invalid"
             assert self.teams.update_team(new_team_status), "_handle_team_status_reply: update_team failed"
             self.log.info(f"Updated team status: {new_team_status}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
             return True
         except Exception as e:
             self.log.error(f"Error handling team status reply message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.INVALID)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.INVALID)
             return False
 
 
@@ -231,15 +231,15 @@ class CubeServerFrontdesk(CubeServerBase):
             assert self.cubeboxes.update_from_cubeboxes(
                 new_cubemaster_status.cubeboxes), "_handle_reply_cubemaster_status: update_from_cubeboxes failed"
             self.log.success(f"Updated teams and cubeboxes from cubemaster status")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
-            self.log.info(f"new cubemaster status: {new_cubemaster_status.to_json()}")
-            self.log.info(f"new frontdesk teams statuses: {self.teams.to_json()}")
-            self.log.info(f"new frontdesk cubeboxes statuses: {self.cubeboxes.to_json()}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
+            # self.log.info(f"new cubemaster status: {new_cubemaster_status.to_json()}")
+            # self.log.info(f"new frontdesk teams statuses: {self.teams.to_json()}")
+            # self.log.info(f"new frontdesk cubeboxes statuses: {self.cubeboxes.to_json()}")
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
             return True
         except Exception as e:
             self.log.error(f"Error handling reply cubemaster status message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.ERROR)
             return False
 
     @cubetry
@@ -257,11 +257,11 @@ class CubeServerFrontdesk(CubeServerBase):
         self.log.debug(f"add_new_team ack_msg={ack_msg.to_string() if ack_msg else None}")
         if ack_msg is None:
             self.log.error(f"The CubeMaster did not respond to the new team message : {team.name}")
-        elif ack_msg.info == cm.CubeAckInfos.OK:
+        elif ack_msg.ack_info == cm.CubeAckInfos.OK:
             self.log.info(f"The CubeMaster added the new team : {team.name}")
             self.teams.add_team(team)
         else:
-            self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.info}")
+            self.log.error(f"The CubeMaster did not add the new team : {team.name} ; info={ack_msg.ack_info}")
         return report
 
 
@@ -340,6 +340,7 @@ class CubeServerFrontdesk(CubeServerBase):
         """Send a message to the CubeMaster to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
+        self.log.info("Sending request cubemaster status message...")
         reply_timeout = reply_timeout or STATUS_REPLY_TIMEOUT
         msg = cm.CubeMsgRequestCubemasterStatus(self.net.node_name)
         report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
@@ -379,9 +380,9 @@ class CubeServerFrontdesk(CubeServerBase):
             if not ack_msg:
                 self.log.error(f"Timed out waiting for ack from {node_name}.")
                 return cubenet.SendReport(sent_ok=False, raw_info=f"Timed out waiting for ack from {node_name}")
-            if ack_msg.info != cm.CubeAckInfos.OK:
-                self.log.error(f"{node_name} acked but with info {ack_msg.info}")
-                return cubenet.SendReport(sent_ok=False, raw_info=f"{node_name} acked but with info {ack_msg.info}")
+            if ack_msg.ack_info != cm.CubeAckInfos.OK:
+                self.log.error(f"{node_name} acked but with info {ack_msg.ack_info}")
+                return cubenet.SendReport(sent_ok=False, raw_info=f"{node_name} acked but with info {ack_msg.ack_info}")
             self.log.success(f"Sent config message to {node_name}")
         self.log.success(f"Sent config message to all nodes")
         return cubenet.SendReport(sent_ok=True)
@@ -543,8 +544,28 @@ def main():
     while True:
         time.sleep(1)
 
+def test_send_full_command():
+    from thecubeivazio.cubeserver_cubemaster import CubeServerMaster
+    fd = CubeServerFrontdesk()
+    master = CubeServerMaster()
+    fd.run()
+    master.run()
+    fd.log.info("-"*20)
+    fd.log.critical("SENDING FULL COMMAND TEST")
+    fd.log.info("-"*20)
+
+    time.sleep(2)
+    fd.send_full_command("CubeMaster reset")
+    fd.log.info("-"*20)
+    fd.log.critical("test_send_full_command finished")
+    fd.log.info("-"*20)
+
+    master.stop()
+    fd.stop()
+    exit(0)
 
 if __name__ == "__main__":
+    # test_send_full_command()
     main()
     exit(0)
 

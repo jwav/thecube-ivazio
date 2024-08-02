@@ -67,9 +67,6 @@ class CubeSoundPlayer:
         return success
 
 
-        self._is_initializing = False  # Clear the flag on failure
-        return False
-
     def _initialize(self, sdl_audiodriver: str = 'pulseaudio') -> bool:
         try:
             # only set SDL_AUDIODRIVER and AUDIODEV on RaspberryPi, not on desktop

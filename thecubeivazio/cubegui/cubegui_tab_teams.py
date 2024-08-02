@@ -9,7 +9,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QFile
 from PyQt5.QtGui import QIcon, QPainter, QImage
 from PyQt5.QtPrintSupport import QPrinter, QPrintPreviewDialog
-from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QMessageBox, QAbstractItemView
 
 from cubegui_ui import Ui_Form
 from thecubeivazio import cube_game
@@ -49,6 +49,8 @@ class CubeGuiTabTeamsMixin:
 
         # connect the "search" button
         self.ui.btnTeamsSearch.clicked.connect(self.click_search_teams)
+        # connect the spinbox to the search teams method when pressing enter
+        self.ui.spinTeamsAmountOfDays.editingFinished.connect(self.click_search_teams)
 
         # connect the "delete team" button
         self.ui.btnTeamsDeleteTeam.clicked.connect(self.click_delete_team)
@@ -176,6 +178,8 @@ class CubeGuiTabTeamsMixin:
         table.horizontalHeader().setStretchLastSection(False)
         table.horizontalHeader().setStretchLastSection(True)
         table.updateGeometry()
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.update_tab_teams()
         self.update_gui()
 
@@ -364,7 +368,6 @@ class CubeGuiTabTeamsMixin:
 
     @cubetry
     def click_search_teams(self: 'CubeGuiForm'):
-        self.ui: Ui_Form
         # assert False
         team_name = self.ui.comboTeamsTeamName.currentText()
         custom_name: str = self.ui.lineTeamsCustomName.text()
@@ -386,8 +389,6 @@ class CubeGuiTabTeamsMixin:
 
     @cubetry
     def display_teams(self, teams: cube_game.CubeTeamsStatusList):
-        self.ui: Ui_Form
-
         if not teams:
             self.log.info("No matching teams found.")
             teams = cube_game.CubeTeamsStatusList()
@@ -419,22 +420,26 @@ class CubeGuiTabTeamsMixin:
             trophies_str = "🏆 " * len(team.trophies_names)
 
             # print(f"team: {team}")
-            self.ui.tableTeamsResults.setItem(i, 0, QTableWidgetItem(str(team.creation_timestamp)))
-            self.log.debug(f"team.creation_timestamp: {team.name} : {team.creation_timestamp} : {self.ui.tableTeamsResults.item(i, 0).text()}")
-            self.ui.tableTeamsResults.setItem(i, 1, QTableWidgetItem(short_date))
-            self.ui.tableTeamsResults.setItem(i, 2, QTableWidgetItem(team.name))
-            self.ui.tableTeamsResults.setItem(i, 3, QTableWidgetItem(team.custom_name))
-            self.ui.tableTeamsResults.setItem(i, 4, QTableWidgetItem(str(team.calculate_team_score())))
-            self.ui.tableTeamsResults.setItem(i, 5, QTableWidgetItem(str(team.completed_cubebox_ids)))
-            self.ui.tableTeamsResults.setItem(i, 6, QTableWidgetItem(trophies_str))
-            self.ui.tableTeamsResults.setItem(i, 7, QTableWidgetItem(creation_tod))
-            self.ui.tableTeamsResults.setItem(i, 8, QTableWidgetItem(start_tod))
-            self.ui.tableTeamsResults.setItem(i, 9, QTableWidgetItem(end_tod))
-            self.ui.tableTeamsResults.setItem(i, 10, QTableWidgetItem(team.rfid_uid))
+            table = self.ui.tableTeamsResults
+            table.setItem(i, 0, QTableWidgetItem(str(team.creation_timestamp)))
+            self.log.debug(
+                f"team.creation_timestamp: {team.name} : {team.creation_timestamp} : {table.item(i, 0).text()}")
+            table.setItem(i, 1, QTableWidgetItem(short_date))
+            table.setItem(i, 2, QTableWidgetItem(team.name))
+            table.setItem(i, 3, QTableWidgetItem(team.custom_name))
+            table.setItem(i, 4, QTableWidgetItem(str(team.calculate_team_score())))
+            table.setItem(i, 5, QTableWidgetItem(str(team.completed_cubebox_ids)))
+            table.setItem(i, 6, QTableWidgetItem(trophies_str))
+            table.setItem(i, 7, QTableWidgetItem(creation_tod))
+            table.setItem(i, 8, QTableWidgetItem(start_tod))
+            table.setItem(i, 9, QTableWidgetItem(end_tod))
+            table.setItem(i, 10, QTableWidgetItem(team.rfid_uid))
 
-        self.ui.tableTeamsResults.hideColumn(0)
-        # Resize columns to fit contents and headers
-        self.ui.tableTeamsResults.resizeColumnsToContents()
+            table.hideColumn(0)
+            # Resize columns to fit contents and headers
+            table.resizeColumnsToContents()
+            table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
 
 if __name__ == "__main__":

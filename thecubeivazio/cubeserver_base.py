@@ -43,14 +43,20 @@ class CubeServerBase:
         if destination_node not in cubeid.ALL_NODENAMES:
             self.log.error(f"Invalid destination node: {destination_node}")
             return cubenet.SendReport(sent_ok=False, raw_info=f"Invalid destination node: {destination_node}")
-        report = self.net.send_msg_to(msg, destination_node, require_ack=True)
-        if not report:
+        report = self.net.send_msg_to(
+            msg, destination_node, require_ack=True)
+        self.log.critical(f"report={report}")
+        if not report.sent_ok:
             self.log.error(f"Failed to send the full command : {full_command}")
             report._raw_info = f"Failed to send the command : '{full_command}'"
             return report
-        if not report.ack_ok:
+        if not report.ack_msg:
             self.log.error(f"Node {destination_node} did not acknowledge the full command : '{full_command}'")
             report._raw_info = f"Node {destination_node} did not acknowledge the full command : '{full_command}'"
+            return report
+        if not report.ack_ok:
+            self.log.error(f"Node {destination_node} acknowledged the full command with an error: {report.ack_info}")
+            report._raw_info = f"Node {destination_node} acknowledged the full command with an error: {report.ack_info}"
             return report
         self.log.success(f"Node {destination_node} acknowledged the full command : {full_command}")
         return report
@@ -104,7 +110,7 @@ class CubeServerBase:
         new_cubebox = acsr_msg.cubebox
         assert new_cubebox, "_handle_reply_cubebox_status: new_cubebox is None"
         assert self.cubeboxes.update_from_cubebox(new_cubebox), "_handle_reply_cubebox_status: update_cubebox failed"
-        self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+        self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
         return True
 
     def _handle_reply_all_cubeboxes_status_message(self, message: cm.CubeMessage) -> bool:
@@ -115,12 +121,12 @@ class CubeServerBase:
             assert new_cubeboxes, "_handle_reply_all_cubeboxes_status: new_cubeboxes is None"
             assert self.cubeboxes.update_from_cubeboxes(
                 new_cubeboxes), "_handle_reply_all_cubeboxes_status: update_from_cubeboxes_list failed"
-            report = self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.OK)
+            report = self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.OK)
             assert report.sent_ok, "_handle_reply_all_cubeboxes_status: acknowledge_this_message failed"
             return True
         except Exception as e:
             self.log.error(f"Error handling reply all cubeboxes status message: {e}")
-            self.net.acknowledge_this_message(message, info=cm.CubeAckInfos.ERROR)
+            self.net.acknowledge_this_message(message, ack_info=cm.CubeAckInfos.ERROR)
             return False
 
     def _handle_reply_all_cubeboxes_status_hashes(self, message: cm.CubeMessage):

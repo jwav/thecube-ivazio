@@ -133,15 +133,20 @@ class CubeServerMaster(CubeServerBase):
 
 
     def stop(self):
-        self._keep_running = False
-        self.net.stop()
-        self.rfid.stop()
-        self.stop_alarm()
-        self._thread_message_handling.join(timeout=0.1)
-        self._thread_rfid.join(timeout=0.1)
-        self._thread_rgb.join(timeout=0.1)
-        self._thread_status_update.join(timeout=0.1)
-        self._thread_highscores.join(timeout=0.1)
+        try:
+            self._keep_running = False
+            self.net.stop()
+            self.rfid.stop()
+            self.stop_alarm()
+            self._thread_message_handling.join(timeout=0.1)
+            self._thread_rfid.join(timeout=0.1)
+            self._thread_rgb.join(timeout=0.1)
+            self._thread_status_update.join(timeout=0.1)
+            self._thread_highscores.join(timeout=0.1)
+            self._webapp_thread.join(timeout=0.1)
+            self.log.info("Stopped the CubeMaster")
+        except Exception as e:
+            self.log.error(f"Error while stopping the CubeMaster: {e}")
 
     def _webapp_loop(self):
         self.webapp_server.run()
@@ -461,7 +466,7 @@ class CubeServerMaster(CubeServerBase):
             self.net.acknowledge_this_message(rdt_msg, cm.CubeAckInfos.OK)
         except Exception as e:
             self.log.error(f"Error in _handle_reply_database_teams_message: {e}")
-            self.net.acknowledge_this_message(rdt_msg, info=str(e))
+            self.net.acknowledge_this_message(rdt_msg, ack_info=str(e))
 
     def _handle_cubebox_rfid_read_message(self, message: cm.CubeMessage):
         self.log.info(f"Received RFID read message from {message.sender}")
@@ -626,7 +631,7 @@ class CubeServerMaster(CubeServerBase):
         elif command == "alarm":
             self.run_alarm()
             return True
-        elif cmd == "bage_in":
+        elif cmd == "badge_in":
             if len(args) < 2:
                 self.log.error("Missing arguments. Usage : `bage_in <team_name> <cube_id>`")
                 return False
