@@ -1,36 +1,85 @@
 import time
 
 from thecubeivazio.cube_utils import is_raspberry_pi, cubetry
+from thecubeivazio.cube_config import CubeConfig
 
+CubeNeopixelRgbHue = tuple[int, int, int]
+CubeNeopixelRgbColor = tuple[int, int, int]
 
 class _CubeNeopixelInterface:
     """Base interface to define the mock and real classes for the CubeNeopixel class"""
-    COLOR_WAITING_FOR_RESET = (25, 0, 0)
-    COLOR_READY_TO_PLAY = (0, 25, 0)
-    COLOR_CURRENTLY_PLAYING = (0, 0, 25)
-    COLOR_ERROR = (25, 0, 25)
+    HUE_UNINITIALIZED = (1, 1, 1)
+    HUE_WAITING_FOR_RESET = (1, 0, 0)
+    HUE_READY_TO_PLAY = (0, 1, 0)
+    HUE_CURRENTLY_PLAYING = (0, 0, 1)
+    HUE_ERROR = (1, 0, 1)
+    # from 0 to 255
+    DEFAULT_INTENSITY = 25
 
     def __init__(self):
-        self._color = None
+        self.hue = None
+        self._intensity = self.get_cubebox_intensity_from_config()
+        self.set_hue_uninitialized()
 
     @property
     def color(self):
-        return self._color
+        return self._hue_to_color(self.hue)
 
-    def set_color(self, color: tuple[int, int, int]):
+    def set_hue(self, color: CubeNeopixelRgbHue):
+        self.hue = color
+        actual_color = self._hue_to_color(color)
+        self._set_neopixel_color(actual_color)
+
+    def _set_neopixel_color(self, color: CubeNeopixelRgbColor):
+        """Must be implemented by the child class to actually
+        send a color to the neopixel"""
         raise NotImplementedError
 
-    def set_color_wait_for_reset(self):
-        self.set_color(self.COLOR_WAITING_FOR_RESET)
+    @cubetry
+    def _hue_to_color(self, hue: CubeNeopixelRgbHue) -> CubeNeopixelRgbColor:
+        # first, normalize the tuple so that the max value is 1
+        max_value = max(hue)
+        if max_value == 0:
+            return hue
+        normalized_hue = CubeNeopixelRgbHue(value / max_value for value in hue)
+        # then, multiply each value by the intensity
+        # noinspection PyTypeChecker
+        return CubeNeopixelRgbColor(int(value * self._intensity) for value in normalized_hue)
 
-    def set_color_ready_to_play(self):
-        self.set_color(self.COLOR_READY_TO_PLAY)
+    def set_intensity(self, intensity: int):
+        """sets the intensity from 0 to 255 then reapply the color"""
+        self._intensity = max(0, min(255, intensity))
+        self.set_hue(self.color)
 
-    def set_color_currently_playing(self):
-        self.set_color(self.COLOR_CURRENTLY_PLAYING)
+    def set_hue_wait_for_reset(self):
+        self.set_hue(self.HUE_WAITING_FOR_RESET)
 
-    def set_color_error(self):
-        self.set_color(self.COLOR_ERROR)
+    def set_hue_ready_to_play(self):
+        self.set_hue(self.HUE_READY_TO_PLAY)
+
+    def set_hue_currently_playing(self):
+        self.set_hue(self.HUE_CURRENTLY_PLAYING)
+
+    def set_hue_error(self):
+        self.set_hue(self.HUE_ERROR)
+
+    def set_hue_uninitialized(self):
+        self.set_hue(self.HUE_UNINITIALIZED)
+
+    def turn_off(self):
+        self.set_hue((0, 0, 0))
+
+    @classmethod
+    def get_cubebox_intensity_from_config(cls):
+        try:
+            config = CubeConfig.get_config()
+            return config.get_field("cubebox_neopixel_intensity",
+                              cls.DEFAULT_INTENSITY)
+        except Exception as e:
+            print(f"Error getting cubebox intensity from config: {e}")
+            return cls.DEFAULT_INTENSITY
+
+
 
 
 # if we're not on an rpi, we'll be using this mock class
@@ -39,11 +88,9 @@ if not is_raspberry_pi():
         """Mock class to simulate the neopixel library on non-raspberry pi devices"""
         def __init__(self):
             super().__init__()
-            self._color = None
 
-        def set_color(self, color: tuple[int, int, int]):
-            print("CubeNeopixel.set_color called with color: ", color)
-            self._color = color
+        def _set_neopixel_color(self, color: CubeNeopixelRgbColor):
+            print(f"{self.__class__.__name__}: setting color to {color} (hue: {self.hue}, color:{self.color})")
 
 
 # if we're on raspberry pi, we'll be using the neopixel library
@@ -56,34 +103,32 @@ else:
         """Class to control the neopixel when running on a raspberry pi"""
 
         def __init__(self):
-            super().__init__()
             self._neopixel = neopixel.NeoPixel(board.D10, 12)
-            self.set_color(self.COLOR_ERROR)
-            self._color = None
+            super().__init__()
             import atexit
             atexit.register(self.__del__)
 
-        @cubetry
-        def set_color(self, color: tuple[int, int, int]):
-            self._neopixel.fill(color)
-            self._color = color
+        def _set_neopixel_color(self, color: CubeNeopixelRgbColor):
+            try:
+                self._neopixel.fill(color)
+                self._color = color
+            except Exception as e:
+                print(f"Error setting neopixel color: {e}")
 
         def __del__(self):
-            try:
-                # turn off the light
-                self.set_color((0, 0, 0))
-            except Exception as e:
-                print(f"Error in CubeNeopixel.__del__: {e}")
+            self.turn_off()
 
 if __name__ == "__main__":
     # test colors and turning off
     cube = CubeNeopixel()
-    cube.set_color(CubeNeopixel.COLOR_ERROR)
+    cube.set_hue(CubeNeopixel.HUE_UNINITIALIZED)
     time.sleep(1)
-    cube.set_color(CubeNeopixel.COLOR_WAITING_FOR_RESET)
+    cube.set_hue(CubeNeopixel.HUE_ERROR)
     time.sleep(1)
-    cube.set_color(CubeNeopixel.COLOR_READY_TO_PLAY)
+    cube.set_hue(CubeNeopixel.HUE_WAITING_FOR_RESET)
     time.sleep(1)
-    cube.set_color(CubeNeopixel.COLOR_CURRENTLY_PLAYING)
+    cube.set_hue(CubeNeopixel.HUE_READY_TO_PLAY)
     time.sleep(1)
-    cube.set_color((0, 0, 0))
+    cube.set_hue(CubeNeopixel.HUE_CURRENTLY_PLAYING)
+    time.sleep(1)
+    cube.set_hue((0, 0, 0))

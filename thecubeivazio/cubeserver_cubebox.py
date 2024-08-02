@@ -102,13 +102,13 @@ class CubeServerCubebox:
         if self._status.set_state(state):
             self.send_status_to_all()
         if self._status.get_state() == cube_game.CubeboxState.STATE_WAITING_FOR_RESET:
-            self.neopixel.set_color_wait_for_reset()
+            self.neopixel.set_hue_wait_for_reset()
         elif self._status.get_state() == cube_game.CubeboxState.STATE_READY_TO_PLAY:
-            self.neopixel.set_color_ready_to_play()
+            self.neopixel.set_hue_ready_to_play()
         elif self._status.get_state() == cube_game.CubeboxState.STATE_PLAYING:
-            self.neopixel.set_color_currently_playing()
+            self.neopixel.set_hue_currently_playing()
         else:
-            self.neopixel.set_color_error()
+            self.neopixel.set_hue_error()
             self.log.error(f"Unknown state: {state}")
         self.log.debug(f"Set the neopixel to {self.neopixel.color}")
 
@@ -348,7 +348,7 @@ class CubeServerCubebox:
     @cubetry
     def _rfid_setup_loop(self) -> bool:
         """while the rfid is not setup, try to set it up, first as a serial listener, then as a keyboard listener"""
-        self.neopixel.set_color(cube_neopixel.CubeNeopixel.COLOR_ERROR)
+        self.neopixel.set_hue(cube_neopixel.CubeNeopixel.HUE_ERROR)
         while True:
             self.log.info("RFID not setup. Trying to set it up...")
             self.rfid = cube_rfid.CubeRfidSerialListener()

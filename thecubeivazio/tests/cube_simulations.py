@@ -497,7 +497,7 @@ class CubeTester:
                   "Cubebox should be playing")
 
         if cubebox in self.local_cubeboxes:
-            self.test_eq(lambda: cubebox.neopixel.color, CubeNeopixel.COLOR_CURRENTLY_PLAYING, "Cubebox should be playing")
+            self.test_eq(lambda: cubebox.neopixel.color, CubeNeopixel.HUE_CURRENTLY_PLAYING, "Cubebox should be playing")
 
         self.test(lambda: cubebox.status.last_valid_rfid_line is not None,
                   "Cubebox should have a valid RFID line")
@@ -521,7 +521,7 @@ class CubeTester:
         self.test(lambda: cubebox.status.is_ready_to_play() is True, "Cubebox should be ready to play")
 
         if cubebox in self.local_cubeboxes:
-            self.test_eq(lambda: cubebox.neopixel.color, CubeNeopixel.COLOR_WAITING_FOR_RESET, "Cubebox should be waiting for reset")
+            self.test_eq(lambda: cubebox.neopixel.color, CubeNeopixel.HUE_WAITING_FOR_RESET, "Cubebox should be waiting for reset")
             self.test(lambda: cubebox.status.last_valid_rfid_line is not None, "Cubebox should have a valid RFID line")
             self.test_eq(lambda: cubebox.status.last_valid_rfid_line.uid, rfid_uid,
                          "Cubebox should have the correct RFID UID")
