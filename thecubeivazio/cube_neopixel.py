@@ -8,11 +8,19 @@ CubeNeopixelRgbColor = tuple[int, int, int]
 
 class _CubeNeopixelInterface:
     """Base interface to define the mock and real classes for the CubeNeopixel class"""
-    HUE_UNINITIALIZED = (1, 1, 1)
-    HUE_WAITING_FOR_RESET = (1, 0, 0)
-    HUE_READY_TO_PLAY = (0, 1, 0)
-    HUE_CURRENTLY_PLAYING = (0, 0, 1)
-    HUE_ERROR = (1, 0, 1)
+    HUE_WHITE = (1, 1, 1)
+    HUE_RED = (1, 0, 0)
+    HUE_GREEN = (0, 1, 0)
+    HUE_BLUE = (0, 0, 1)
+    HUE_YELLOW = (1, 1, 0)
+    HUE_CYAN = (0, 1, 1)
+    HUE_MAGENTA = (1, 0, 1)
+
+    HUE_UNINITIALIZED = HUE_WHITE
+    HUE_WAITING_FOR_RESET = HUE_RED
+    HUE_READY_TO_PLAY = HUE_GREEN
+    HUE_CURRENTLY_PLAYING = HUE_BLUE
+    HUE_ERROR = HUE_MAGENTA
     # from 0 to 255
     DEFAULT_INTENSITY = 25
 
