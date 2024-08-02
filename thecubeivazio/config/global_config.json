@@ -121,7 +121,7 @@
   ],
   "display_team_names_on_rgb": true,
   "cubebox_audio_volume_percent": 80,
-  "cubebox_neopixel_intensity": 20,
+  "cubebox_neopixel_intensity": 15,
   "alarm_duration_sec": 3,
   "cubemaster_alarm_audio_volume_percent": 1000,
   "test": "test1721840874.3541343",
