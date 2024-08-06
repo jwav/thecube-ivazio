@@ -501,6 +501,28 @@ def main():
         box.stop()
 
 
+def test_functionalities():
+    """Tests all functionalities of the CubeServerCubebox class,
+    call all methods (for handling methods, create dummy messages), even the private ones"""
+    box = CubeServerCubebox(1)
+    print(box)
+    print(box.status)
+    print(box.is_box_being_played())
+    print(box.play_start_timestamp)
+    print(box.cubebox_index)
+    print(box.node_name)
+    print(box.to_string())
+    print(box.handle_command("reset"))
+    print(box.handle_command("reboot"))
+    print(box.handle_command("button"))
+    print(box.handle_command("rfid 1234567800"))
+    print(box.badge_out_current_team())
+    print(box.badge_out_current_team(play_game_over_sound=True))
+    box.simulate_button_long_press()
+    box.simulate_rfid_read("1234567890")
+
+
+
 def test():
     import atexit
     box = CubeServerCubebox(1)
