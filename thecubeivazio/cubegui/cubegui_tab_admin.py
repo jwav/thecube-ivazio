@@ -8,10 +8,12 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QTableWidgetItem
 
 from cubegui_ui import Ui_Form
-from thecubeivazio import cube_identification as ci
+from thecubeivazio import cube_identification as ci, cube_networking
 from thecubeivazio import cube_utils
 from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_rfid import CubeRfidLine
+
+from thecubeivazio.cubegui.cubegui_common import CubeGuiTaskResult
 
 if TYPE_CHECKING:
     from thecubeivazio.cubegui.cubegui import CubeGuiForm
@@ -24,7 +26,6 @@ class CubeGuiTabAdminMixin:
         # server info region
         self.ui.lblAdminCommandStatusText.setText("")
         self.ui.lblAdminServersInfoStatusText.setText("")
-        self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon())
         self.ui.btnAdminUpdateServersInfo.clicked.connect(self.request_servers_infos)
 
         # resetter rfid region
@@ -45,7 +46,8 @@ class CubeGuiTabAdminMixin:
         self.ui.lineAdminCommand.returnPressed.connect(self.ui.btnAdminSendCommand.click)
 
         # on startup, request the servers infos
-        self.request_servers_infos(background=True)
+        self.request_servers_infos(background_task=True)
+        self.log.success("setup_tab_admin done")
 
     @cubetry
     def order_server_reset(self: 'CubeGuiForm'):
@@ -96,37 +98,77 @@ class CubeGuiTabAdminMixin:
         if report:
             self.set_admin_command_status_text("✔️ Carte RFID supprimée avec succès.")
         else:
-            self.set_admin_command_status_text(
-                f"❌ Erreur lors de la suppression de la carte RFID: {report.ack_info}")
+            if report is None:
+                self.set_admin_command_status_text("❌ Erreur lors de la suppression de la carte RFID: Exception levée.")
+            else:
+                self.set_admin_command_status_text(f"❌ Erreur lors de la suppression de la carte RFID: {report.ack_info}")
         return report
 
     @cubetry
-    def request_servers_infos(self: 'CubeGuiForm', background=False):
-        """Calls a thread running _request_servers_infos"""
-        def task():
-            self.set_servers_info_status_label("hourglass", "En attente de réponse des Cubeboxes...")
-            self.fd.request_all_cubeboxes_statuses_one_by_one(reply_timeout=STATUS_REPLY_TIMEOUT)
+    def request_servers_infos(self: 'CubeGuiForm', background_task=False) -> 'CubeGuiTaskResult':
+        """Request the servers infos from the CubeMaster and CubeBoxes and update the GUI accordingly.
+        If background_task is True, the task will be started in a background thread."""
+
+        def _task_request_servers_infos() -> 'CubeGuiTaskResult':
+            task_success_info = ""
+            success = True
+            reply_timeout = STATUS_REPLY_TIMEOUT
+            reply_timeout = 1
+            give_up_if_cubemaster_unresponsive = False
             self.set_servers_info_status_label("hourglass", "En attente de réponse du CubeMaster...")
-            if self.fd.request_cubemaster_status(reply_timeout=STATUS_REPLY_TIMEOUT):
-                self.set_servers_info_status_label("ok", "Mise à jour totale effectuée.")
-            else:
+            report = self.fd.request_cubemaster_status(reply_timeout=reply_timeout)
+            if not report.ack_ok:
                 self.set_servers_info_status_label("error", "Erreur lors de la mise à jour totale.")
-        if background:
-            self.start_in_thread(task)
+                task_success_info = "❌ Le CubeMaster n'a pas répondu. "
+                success = False
+            else:
+                task_success_info = "✔️ CubeMaster a répondu. "
+
+            if success or not give_up_if_cubemaster_unresponsive:
+                self.set_servers_info_status_label("hourglass", "En attente de réponse des Cubeboxes...")
+                report = self.fd.request_all_cubeboxes_statuses_one_by_one(
+                    reply_timeout=reply_timeout,
+                    stop_at_first_failure=True)
+                if not report.ack_ok:
+                    success = False
+                    task_success_info += f"❌ CubeBoxes sans réponse: {str(report.ack_info)}"
+                else:
+                    task_success_info += "✔️ Toutes les CubeBoxes ont répondu."
+
+            if success:
+                self.log.success(task_success_info)
+            else:
+                self.log.error(task_success_info)
+            self.set_servers_info_status_label(icon="", info=task_success_info)
+            self.update_tab_admin()
+            return CubeGuiTaskResult(success, task_success_info)
+
+        if background_task:
+            self.start_in_thread(_task_request_servers_infos)
+            return CubeGuiTaskResult(True, "Task started in the background.")
         else:
-            task()
+            result = _task_request_servers_infos()
+            self.set_servers_info_status_label(icon="", info=result.info)
+            return result
 
     @cubetry
     def set_servers_info_status_label(self: 'CubeGuiForm', icon: str, info: str):
-        self.ui: Ui_Form
-        print(f"set_servers_info_status_label: {icon}, {info} called from {tb.extract_stack(limit=2)[0].name}")
+        # print(f"set_servers_info_status_label: {icon}, {info} called from {tb.extract_stack(limit=2)[0].name}")
+        icon = ""
+        if icon == "ok":
+            icon = "✅"
+        elif icon == "error":
+            icon = "❌"
+        elif icon == "warning":
+            icon = "⚠️"
+        elif icon in ("hourglass", "wait"):
+            icon = "⌛"
+        info = f"{icon} {info}"
         self.ui.lblAdminServersInfoStatusText.setText(info)
-        self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme(icon))
+        # self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme(icon))
         self.update_gui()
 
     def update_tab_admin(self: 'CubeGuiForm'):
-        self.ui: Ui_Form
-
         # print("update_tab_admin")
         try:
             # if True:
@@ -164,8 +206,7 @@ class CubeGuiTabAdminMixin:
         except Exception as e:
             traceback = tb.format_exc()
             self.log.error(f"Error in update_tab_admin: {e.with_traceback(e.__traceback__)}")
-            self.ui.lblAdminServersInfoStatusText.setText(f"{e}")
-            self.ui.btnIconAdminStatus.setIcon(QtGui.QIcon.fromTheme("error"))
+            self.set_servers_info_status_label("error", f" {e}")
 
     @cubetry
     def send_command_clicked(self: 'CubeGuiForm'):

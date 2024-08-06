@@ -14,12 +14,17 @@ from thecubeivazio.cube_utils import is_windows
 
 
 class SendReport:
-    def __init__(self, sent_ok: bool, reply_msg: Optional[CubeMessage]=None, raw_info=None):
+    def __init__(self, sent_ok: bool,
+                 reply_msg: CubeMessage=None,
+                 raw_info:Union[cm.CubeAckInfos,str]=None,
+                 ack_ok:bool=None):
         self.sent_ok = sent_ok
         self.reply_msg = reply_msg
         # this member is not meant to be used usually. It's kind of a hack to
         # pass information such as "the send didnt go well and this is why"
         self._raw_info = raw_info
+        if ack_ok:
+            self.set_ack_ok()
 
     @property
     def ack_msg(self):
@@ -43,6 +48,9 @@ class SendReport:
             return self.ack_info == cm.CubeAckInfos.OK
         except:
             return False
+
+    def set_ack_ok(self):
+        self._raw_info = cm.CubeAckInfos.OK
 
     def __bool__(self):
         """enables the use of SendReport as a boolean, like `if send_report:`"""

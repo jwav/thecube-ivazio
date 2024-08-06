@@ -100,7 +100,7 @@ class CubeBoxRemoteInterface(CubeServerCubebox):
 
     @cubetry
     def update_status(self) -> bool:
-        return self._frontdesk.request_cubebox_status(
+        return self._frontdesk.request_cubebox_status_from_cubemaster(
             cubebox_id=self.cube_id, timeout=self._update_timeout_sec)
 
     @property

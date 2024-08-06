@@ -6,22 +6,23 @@
 - [ ] !! make full scale simulations that can be run on localhost or on the local network (aka for realsies)
 - [ ] use int milliseconds for timestamps
     - [ ] oh, the refactory. Dude, that's not gonna happen.
-- [ ] make sure that we can't ssh into any machine from the internet
+- [x] make sure that we can't ssh into any machine from the internet
+    - [ ] confirm that in the final installation
 
 
 # CubeWebApp
 
-- [ ] !! simple web api that can get send commands and get statuses to handle the inevitable post-installation bugs
+- [x] !! simple web api that can get send commands and get statuses to handle the inevitable post-installation bugs
 - [ ] handle commands :
-    - [ ] reset cubebox, cubemaster
-    - [ ] reboot cubebox, cubemaster
-    - [ ] press button
+    - [x] reset cubebox, cubemaster
+    - [x] reboot cubebox, cubemaster
+    - [x] press button
     - [ ] stop and resume time for a team or everyone
 
 # CubeGui
 
-- [ ] "heure dernier message" doesnt update
-- [ ] the table in the team search tab does not have the right columns and data
+- [x] "heure dernier message" doesnt update
+- [x] the table in the team search tab does not have the right columns and data
 
 # CubeBoxes
 

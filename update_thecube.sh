@@ -5,8 +5,6 @@ DEBUG=true
 # Define CUBE_HOSTNAME globally
 CUBE_HOSTNAME=$(hostname)
 
-
-
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -126,8 +124,6 @@ setup_relevant_service() {
     echo_red "Hostname does not match cubemaster or cubebox patterns."
   fi
 }
-
-
 
 # ACTUAL SCRIPT LOGIC :
 

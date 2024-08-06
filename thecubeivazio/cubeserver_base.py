@@ -62,28 +62,72 @@ class CubeServerBase:
         return report
 
     @cubetry
-    def request_all_cubeboxes_statuses_one_by_one(self, reply_timeout: Seconds = None) -> bool:
+    def request_all_cubeboxes_statuses_one_by_one(self,
+                                                  reply_timeout: Seconds = None,
+                                                  nb_tries: int = None,
+                                                  stop_at_first_failure=True) -> cubenet.SendReport:
         """Send a message to the CubeMaster to request the status of all cubeboxes one by one.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
+        nb_tries = nb_tries or self.net.ACK_NB_TRIES
+        unresponsive_cubeids = []
+        ret = cubenet.SendReport(sent_ok=True)
         for cubebox_id in cubeid.CUBEBOX_IDS:
             self.log.info(f"Requesting cubebox status for cubebox {cubebox_id}")
-            if not self.request_cubebox_status(cubebox_id, reply_timeout):
+            if not self.request_cubebox_status_from_cubebox(
+                    cubebox_id=cubebox_id, reply_timeout=reply_timeout):
                 self.log.warning(
                     f"No response from cubebox {cubebox_id}. Ending request_all_cubeboxes_statuses_one_by_one")
-                return False
+                unresponsive_cubeids.append(cubebox_id)
+                if stop_at_first_failure:
+                    break
             else:
                 self.log.success(f"Received status reply from cubebox {cubebox_id}")
-        self.log.success("All cubeboxes statuses requested")
-        return True
+        if unresponsive_cubeids:
+            ret.sent_ok = False
+            ret._raw_info = f"{unresponsive_cubeids}"
+        else:
+            ret.sent_ok = True
+            ret.set_ack_ok()
+            self.log.success("All cubeboxes statuses obtained successfully")
+        return ret
 
     @cubetry
-    def request_cubebox_status(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
-        """Send a message to a CubeBox to request its status.
+    def request_cubebox_status_from_cubemaster(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
+        """Send a message to the CubeMaster to request the status of a CubeBox.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
         msg = cm.CubeMsgRequestCubeboxStatus(self.net.node_name, cubebox_id)
         report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
+        if not report:
+            self.log.error(f"Failed to send the request cubebox status message for cubebox {cubebox_id}")
+            return True
+        if reply_timeout is not None:
+            reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEBOX_STATUS, timeout=reply_timeout)
+            if not reply_msg:
+                self.log.error(f"Failed to receive the cubebox status reply for cubebox {cubebox_id}")
+                return False
+            assert self._handle_reply_cubebox_status(reply_msg)
+            rcs_msg = cm.CubeMsgReplyCubeboxStatus(copy_msg=reply_msg)
+            reply_cubebox_id = rcs_msg.cubebox.cube_id
+            if reply_cubebox_id != cubebox_id:
+                self.log.error(f"Received cubebox status reply for cubebox {reply_cubebox_id} instead of {cubebox_id}")
+                return False
+            self.log.success(f"Received cubebox status reply for cubebox {cubebox_id}")
+            return True
+        # no timeout? just return True
+        return True
+
+    @cubetry
+    def request_cubebox_status_from_cubebox(self, cubebox_id: int, reply_timeout: Seconds = None) -> bool:
+        """Send a message to a CubeBox to request its status.
+        if a reply_timout is specified, wait for the reply for that amount of time.
+        If the request send or the reply receive fails, return False."""
+        msg = cm.CubeMsgRequestCubeboxStatus(self.net.node_name, cubebox_id)
+        dest_nodename = cubeid.cubebox_index_to_node_name(cubebox_id)
+        report = self.net.send_msg_to(message=msg,
+                                      node_name=dest_nodename,
+                                      require_ack=False)
         if not report:
             self.log.error(f"Failed to send the request cubebox status message for cubebox {cubebox_id}")
             return True

@@ -336,7 +336,7 @@ class CubeServerFrontdesk(CubeServerBase):
         return self.send_config_message_to_all()
 
     @cubetry
-    def request_cubemaster_status(self, reply_timeout: Seconds=None) -> bool:
+    def request_cubemaster_status(self, reply_timeout: Seconds=None) -> cubenet.SendReport:
         """Send a message to the CubeMaster to request its status.
         if a reply_timout is specified, wait for the reply for that amount of time.
         If the request send or the reply receive fails, return False."""
@@ -345,16 +345,23 @@ class CubeServerFrontdesk(CubeServerBase):
         msg = cm.CubeMsgRequestCubemasterStatus(self.net.node_name)
         report = self.net.send_msg_to_cubemaster(msg, require_ack=False)
         if not report:
-            self.log.error("Failed to send the request cubemaster status message")
-            return False
+            info = "Failed to send the request cubemaster status message"
+            self.log.error(info)
+            return cubenet.SendReport(sent_ok=False, raw_info=info)
 
         if reply_timeout is not None:
             reply_msg = self.net.wait_for_message(msgtype=cm.CubeMsgTypes.REPLY_CUBEMASTER_STATUS,
                                                   timeout=reply_timeout)
             if not reply_msg:
-                self.log.error("Failed to receive the cubemaster status reply")
-                return False
-            return self._handle_reply_cubemaster_status_message(reply_msg)
+                info = "Failed to receive the cubemaster status reply"
+                self.log.error(info)
+                return cubenet.SendReport(sent_ok=False, raw_info=info)
+            handle_success = self._handle_reply_cubemaster_status_message(reply_msg)
+            if not handle_success:
+                info = "Failed to handle the cubemaster status reply"
+                self.log.error(info)
+                return cubenet.SendReport(sent_ok=False, raw_info=info)
+        return cubenet.SendReport(sent_ok=True, ack_ok=True)
 
     @cubetry
     def send_config_message_to_all(self, config: cube_config.CubeConfig=None, nodenames:list[NodeName]=cubeid.ALL_NODENAMES) -> cubenet.SendReport:

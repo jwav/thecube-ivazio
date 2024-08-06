@@ -50,7 +50,7 @@
        <locale language="French" country="France"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabMain">
        <attribute name="title">
@@ -1257,7 +1257,14 @@ QPushButton:focus {
             </property>
            </spacer>
           </item>
-          <item row="0" column="4">
+          <item row="0" column="2">
+           <widget class="QLabel" name="lblAdminServersInfoStatusText">
+            <property name="text">
+             <string>Statut de la mise à jour des infos serveurs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
            <spacer name="horizontalSpacer_22">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1270,46 +1277,10 @@ QPushButton:focus {
             </property>
            </spacer>
           </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="btnIconAdminStatus">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton {
-    background-color: none;
-    border: none;
-}
-QPushButton:pressed {
-    background-color: none;
-    border: none;
-}
-QPushButton:focus {
-    outline: none;
-}</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="btnAdminUpdateServersInfo">
             <property name="text">
              <string>🗘 Mise à jour infos serveurs</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="lblAdminServersInfoStatusText">
-            <property name="text">
-             <string>Statut de la mise à jour des infos serveurs</string>
             </property>
            </widget>
           </item>

@@ -502,32 +502,14 @@ class Ui_Form(object):
         self.gridLayout_7.setObjectName("gridLayout_7")
         spacerItem20 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_7.addItem(spacerItem20, 0, 0, 1, 1)
+        self.lblAdminServersInfoStatusText = QtWidgets.QLabel(self.tabAdmin)
+        self.lblAdminServersInfoStatusText.setObjectName("lblAdminServersInfoStatusText")
+        self.gridLayout_7.addWidget(self.lblAdminServersInfoStatusText, 0, 2, 1, 1)
         spacerItem21 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_7.addItem(spacerItem21, 0, 4, 1, 1)
-        self.btnIconAdminStatus = QtWidgets.QPushButton(self.tabAdmin)
-        self.btnIconAdminStatus.setEnabled(True)
-        self.btnIconAdminStatus.setStyleSheet("QPushButton {\n"
-"    background-color: none;\n"
-"    border: none;\n"
-"}\n"
-"QPushButton:pressed {\n"
-"    background-color: none;\n"
-"    border: none;\n"
-"}\n"
-"QPushButton:focus {\n"
-"    outline: none;\n"
-"}")
-        self.btnIconAdminStatus.setText("")
-        self.btnIconAdminStatus.setCheckable(False)
-        self.btnIconAdminStatus.setFlat(True)
-        self.btnIconAdminStatus.setObjectName("btnIconAdminStatus")
-        self.gridLayout_7.addWidget(self.btnIconAdminStatus, 0, 2, 1, 1)
+        self.gridLayout_7.addItem(spacerItem21, 0, 3, 1, 1)
         self.btnAdminUpdateServersInfo = QtWidgets.QPushButton(self.tabAdmin)
         self.btnAdminUpdateServersInfo.setObjectName("btnAdminUpdateServersInfo")
         self.gridLayout_7.addWidget(self.btnAdminUpdateServersInfo, 0, 1, 1, 1)
-        self.lblAdminServersInfoStatusText = QtWidgets.QLabel(self.tabAdmin)
-        self.lblAdminServersInfoStatusText.setObjectName("lblAdminServersInfoStatusText")
-        self.gridLayout_7.addWidget(self.lblAdminServersInfoStatusText, 0, 3, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_7)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -664,7 +646,7 @@ class Ui_Form(object):
         Form.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Form)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -768,8 +750,8 @@ class Ui_Form(object):
         item.setText(_translate("Form", "IP"))
         item = self.tableAdminServersInfo.horizontalHeaderItem(2)
         item.setText(_translate("Form", "Statut"))
-        self.btnAdminUpdateServersInfo.setText(_translate("Form", "🗘 Mise à jour infos serveurs"))
         self.lblAdminServersInfoStatusText.setText(_translate("Form", "Statut de la mise à jour des infos serveurs"))
+        self.btnAdminUpdateServersInfo.setText(_translate("Form", "🗘 Mise à jour infos serveurs"))
         self.lineAdminRfidResetter.setText(_translate("Form", "1234567890"))
         self.lineAdminRfidResetter.setPlaceholderText(_translate("Form", "----------"))
         self.btnAdminRemoveRfidResetter.setText(_translate("Form", "🗑  Retirer ce RFID de la liste des resetters"))

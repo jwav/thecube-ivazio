@@ -26,7 +26,8 @@ class _CubeNeopixelInterface:
 
     def __init__(self):
         self.hue = None
-        self._intensity = self.get_cubebox_intensity_from_config()
+        self._intensity = self.DEFAULT_INTENSITY
+        self.update_intensity_from_config()
         self.set_hue_uninitialized()
 
     @property
@@ -77,15 +78,15 @@ class _CubeNeopixelInterface:
     def turn_off(self):
         self.set_hue((0, 0, 0))
 
-    @classmethod
-    def get_cubebox_intensity_from_config(cls):
+    def update_intensity_from_config(self) -> bool:
         try:
             config = CubeConfig.get_config()
-            return config.get_field("cubebox_neopixel_intensity",
-                              cls.DEFAULT_INTENSITY)
+            self._intensity = config.get_field("cubebox_neopixel_intensity",
+                              self.DEFAULT_INTENSITY)
         except Exception as e:
             print(f"Error getting cubebox intensity from config: {e}")
-            return cls.DEFAULT_INTENSITY
+            self._intensity = self.DEFAULT_INTENSITY
+            return False
 
 
 

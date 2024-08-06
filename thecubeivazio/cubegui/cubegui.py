@@ -1,11 +1,7 @@
 # icon names : https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-import atexit
-import os
-import sys
-import traceback as tb
 
-from PyQt5.QtCore import QThread, QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
+import os
 
 sys.path.append(os.path.abspath('..'))
 
@@ -29,6 +25,13 @@ AUTO_UPDATE_PY_FROM_UI_AND_QRC = True
 if AUTO_UPDATE_PY_FROM_UI_AND_QRC:
     update_py_from_ui_and_qrc()
 
+import traceback as tb
+import atexit
+import os
+
+from PyQt5.QtCore import QThread, QTimer
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
 from cubegui_ui import Ui_Form
 from thecubeivazio import cubeserver_frontdesk as cfd, cube_rfid
 from thecubeivazio.cube_logger import CUBEGUI_LOG_FILENAME
@@ -38,37 +41,7 @@ from thecubeivazio.cubegui.cubegui_tab_teams import CubeGuiTabTeamsMixin
 from thecubeivazio.cubegui.cubegui_tab_admin import CubeGuiTabAdminMixin
 from thecubeivazio.cubegui.cubegui_tab_config import CubeGuiTabConfigMixin
 
-
-
-
-
-class ServersInfoHasher:
-    def __init__(self, fd: cfd.CubeServerFrontdesk):
-        self.teams_hash = fd.teams.hash
-        self.cubeboxes_hash = fd.cubeboxes.hash
-        self.nodes_list = fd.net.nodes_list.hash
-
-    @property
-    def hash(self) -> Hash:
-        try:
-            import hashlib
-            return hashlib.sha256(
-                f"{self.teams_hash}{self.cubeboxes_hash}{self.nodes_list}".encode()
-            ).hexdigest()
-        except Exception as e:
-            CubeLogger.static_error(f"Error in ServersInfoHash.hash: {e}")
-            CubeLogger.static_error(tb.format_exc())
-            return ""
-
-    def __repr__(self):
-        return self.hash
-
-    def __str__(self):
-        return self.hash
-
-    @classmethod
-    def get_current_servers_info_hash(cls, fd: cfd.CubeServerFrontdesk) -> Hash:
-        return ServersInfoHasher(fd).hash
+from thecubeivazio.cubegui.cubegui_common import CubeGuiThreadWorker, ServersInfoHasher
 
 
 class CubeGuiForm(QMainWindow,
@@ -112,13 +85,28 @@ class CubeGuiForm(QMainWindow,
         self._tabs_update_timer.start(1000)
 
     @classmethod
-    def start_in_thread(cls, function, *args, **kwargs):
+    def old_start_in_thread(cls, function, *args, **kwargs):
         print(f"Starting {function.__name__} in a thread.")
         thread = QThread()
         thread.run = lambda: function(*args, **kwargs)
         thread.finished.connect(lambda: cls.cleanup_threads())
         cls._threads.append(thread)
         thread.start()
+        return thread
+
+    def start_in_thread(self, function, *args, **kwargs):
+        print(f"Starting {function.__name__} in a thread.")
+        thread = QThread()
+        worker = CubeGuiThreadWorker(function, *args, **kwargs)
+        worker.moveToThread(thread)
+
+        worker.finished.connect(self.cleanup_threads)
+        worker.finished.connect(lambda result: self.handle_thread_result(result))
+
+        thread.started.connect(worker.run)
+        thread.start()
+
+        self._threads.append(thread)
         return thread
 
     @classmethod
@@ -160,8 +148,8 @@ class CubeGuiForm(QMainWindow,
         # print(f"{self.fd.net.nodes_list}\n---({self.fd.net.nodes_list.hash})---\n")
         # if received a new servers info hash, update the tab admin
         if self._last_displayed_servers_info_hash != current_servers_info_hash:
-            self.set_servers_info_status_label("ok", "Mise à jour partielle effectuée.")
             self.update_tab_admin()
+            self.set_servers_info_status_label("ok", "Mise à jour partielle effectuée.")
             self._last_displayed_servers_info_hash = current_servers_info_hash
 
         # in new teams tab, remove the team names (cities) that are already in use
