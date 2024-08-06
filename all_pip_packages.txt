@@ -1,56 +1,54 @@
-Package                                  Version
----------------------------------------- -------
-Adafruit-Blinka                          8.45.2
-adafruit-circuitpython-busdevice         5.2.9
-adafruit-circuitpython-connectionmanager 3.1.1
-adafruit-circuitpython-neopixel          6.3.11
-adafruit-circuitpython-pixelbuf          2.0.4
-adafruit-circuitpython-requests          4.1.3
-adafruit-circuitpython-typing            1.10.3
-Adafruit-PlatformDetect                  3.71.0
-Adafruit-PureIO                          1.1.11
-altgraph                                 0.17.4
-binho-host-adapter                       0.1.6
-blinker                                  1.8.2
-Brotli                                   1.0.9
-cffi                                     1.16.0
-click                                    8.1.7
-colorlog                                 6.8.2
-cryptography                             42.0.8
-evdev                                    1.7.1
-Flask                                    3.0.3
-future                                   0.18.3
-importlib_metadata                       8.0.0
-itsdangerous                             2.2.0
-jeepney                                  0.8.0
-Jinja2                                   3.1.4
-keyring                                  23.5.1
-lxml                                     4.9.4
-MarkupSafe                               2.1.5
-numpy                                    2.0.0
-packaging                                24.1
-pillow                                   10.4.0
-pip                                      23.0.1
-py                                       1.10.0
-pycparser                                2.22
-pyftdi                                   0.55.4
-pygame                                   2.5.2
-pyinstaller                              6.8.0
-pyinstaller-hooks-contrib                2024.7
-pynput                                   1.7.7
-pyserial                                 3.5
-python-xlib                              0.33
-pyusb                                    1.2.1
-RPi.GPIO                                 0.7.1
-rpi_ws281x                               5.0.0
-SecretStorage                            3.3.3
-setuptools                               65.5.1
-six                                      1.16.0
-sysv_ipc                                 1.1.0
-thecubeivazio                            0.5.0
-tornado                                  6.4.1
-typing_extensions                        4.1.1
-watchdog                                 4.0.1
-Werkzeug                                 3.0.3
-wheel                                    0.38.4
-zipp                                     3.19.2
+Adafruit-Blinka==8.45.2
+adafruit-circuitpython-busdevice==5.2.9
+adafruit-circuitpython-connectionmanager==3.1.1
+adafruit-circuitpython-neopixel==6.3.11
+adafruit-circuitpython-pixelbuf==2.0.4
+adafruit-circuitpython-requests==4.1.3
+adafruit-circuitpython-typing==1.10.3
+Adafruit-PlatformDetect==3.71.0
+Adafruit-PureIO==1.1.11
+altgraph==0.17.4
+binho-host-adapter==0.1.6
+blinker==1.8.2
+Brotli==1.0.9
+cffi==1.16.0
+click==8.1.7
+colorlog==6.8.2
+cryptography==42.0.8
+evdev==1.7.1
+Flask==3.0.3
+future==0.18.3
+importlib_metadata==8.0.0
+itsdangerous==2.2.0
+jeepney==0.8.0
+Jinja2==3.1.4
+keyring==23.5.1
+lxml==4.9.4
+MarkupSafe==2.1.5
+numpy==2.0.0
+packaging==24.1
+pillow==10.4.0
+pip==23.0.1
+py==1.10.0
+pycparser==2.22
+pyftdi==0.55.4
+pygame==2.5.2
+pyinstaller==6.8.0
+pyinstaller-hooks-contrib==2024.7
+pynput==1.7.7
+pyserial==3.5
+python-xlib==0.33
+pyusb==1.2.1
+RPi.GPIO==0.7.1
+rpi_ws281x==5.0.0
+SecretStorage==3.3.3
+setuptools==65.5.1
+six==1.16.0
+sysv_ipc==1.1.0
+thecubeivazio==0.5.0
+tornado==6.4.1
+typing_extensions==4.1.1
+watchdog==4.0.1
+Werkzeug==3.0.3
+wheel==0.38.4
+zipp==3.19.2
