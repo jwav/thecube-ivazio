@@ -14,7 +14,7 @@ generate_cubebox_scripts_from_cubemaster_scripts() {
   # Define a function to replace cubemaster with cubebox in a file
   replace_cubemaster_with_cubebox() {
     local tmpfile=$(mktemp)
-    sed 's/cubemaster/cubebox/g' "$1" >"$tmpfle"
+    sed 's/cubemaster/cubebox/g' "$1" >"$tmpfile"
     sed 's/CubeMaster/CubeBox/g' "$tmpfile" >"$2"
     rm "$tmpfile"
   }
