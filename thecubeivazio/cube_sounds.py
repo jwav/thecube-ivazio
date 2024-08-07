@@ -69,6 +69,8 @@ class CubeSoundPlayer:
 
     def _initialize(self, sdl_audiodriver: str = 'pulseaudio') -> bool:
         try:
+            self._is_initialized = False
+            self._is_initializing = True
             # only set SDL_AUDIODRIVER and AUDIODEV on RaspberryPi, not on desktop
             if is_raspberry_pi():
                 os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
@@ -81,16 +83,30 @@ class CubeSoundPlayer:
 
             mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
             self.set_volume_percent(self.DEFAULT_VOLUME_PERCENT)
-            self._is_initialized = True
+            self._is_initialized = self.wait_for_mixer_initialized(timeout_sec=3)
             self.log.success("CubeSoundPlayer initialized")
         except Exception as e:
             self.log.error(f"Error initializing CubeSoundPlayer: {e}")
             self._is_initialized = False
         finally:
+            self._is_initializing = False
             return self._is_initialized
 
     def is_initialized(self):
         return self._is_initialized
+
+    def check_mixer_initialized(self) -> bool:
+        """Check if the pygame mixer is initialized."""
+        return mixer.get_init() is not None
+
+    def wait_for_mixer_initialized(self, timeout_sec: float = 5.0) -> bool:
+        """Wait for the pygame mixer to be initialized."""
+        end_time = time.time() + timeout_sec
+        while time.time() < end_time:
+            if self.check_mixer_initialized():
+                return True
+            time.sleep(0.1)
+        return False
 
     @cubetry
     def set_volume_to_maximum(self):
