@@ -153,7 +153,7 @@ class CubeSoundPlayer:
         self._playing_thread.start()
         self._playing_thread.join(timeout=STATUS_REPLY_TIMEOUT)
 
-    def _play_sound_file(self, soundfile: str, wait_for_finish: bool = True):
+    def _play_sound_file(self, soundfile: str, wait_for_finish: bool = True) -> bool:
         try:
             if not self.is_initialized():
                 self.log.error("CubeSoundPlayer not initialized !")
@@ -163,19 +163,17 @@ class CubeSoundPlayer:
                 soundfile = os.path.join(SOUNDS_DIR, soundfile)
             if not os.path.exists(soundfile):
                 self.log.error(f"Sound file not found: '{soundfile}'")
-                return
+                return False
             self.log.debug(f"Playing sound file: '{soundfile}'")
             mixer.music.load(soundfile)
             mixer.music.play()
             if wait_for_finish:
                 while mixer.music.get_busy():
                     pgtime.Clock().tick(10)
+            return True
         except Exception as e:
             self.log.error(f"Error playing sound file: '{soundfile}': {e}")
-            if "mixer not initialized" in str(e):
-                self.log.info("Trying to reinitialize mixer...")
-                if not self._initialize():
-                    self.log.error("Failed to reinitialize mixer.")
+            return False
 
     @cubetry
     def is_playing(self):
