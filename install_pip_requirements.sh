@@ -23,5 +23,9 @@ else
   echo "OK : pip install requirements succeeded"
 fi
 
+# reinstall the project package
+echo "Reinstalling the project package..."
+yes | pip install .
+
 deactivate
 echo "Deactivated virtual environment"
