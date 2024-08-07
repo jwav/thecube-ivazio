@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "this_script_dir: $this_script_dir"
 source "${this_script_dir}/thecube_common_defines.sh" || {
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
+
 DEBUG=true
 SKIP_APT=false
 SKIP_PIP_REQ=false
