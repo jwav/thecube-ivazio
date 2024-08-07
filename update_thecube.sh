@@ -143,9 +143,7 @@ handle_arguments() {
       # if debug
     elif [ "$arg" == "--debug" ]; then
       DEBUG=true
-      echo_blue "Debug mode"
-      SKIP_APT=true
-      SKIP_PIP_REQ=true
+      apply_debug
     fi
 
   done
@@ -156,6 +154,16 @@ handle_arguments() {
     echo "SKIP_GIT: $SKIP_GIT"
     echo "SKIP_PROJECT_PACKAGE: $SKIP_PROJECT_PACKAGE"
     echo "DEBUG: $DEBUG"
+}
+
+apply_debug() {
+  if [ "$DEBUG" = true ]; then
+      echo_blue "Debug mode"
+      SKIP_APT=true
+      SKIP_PIP_REQ=true
+      SKIP_GIT=false
+      SKIP_PROJECT_PACKAGE=false
+  fi
 }
 
 do_git_pull() {
