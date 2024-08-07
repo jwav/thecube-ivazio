@@ -69,12 +69,18 @@ class XvfbManager:
     def _is_this_system_a_cubebox(cls):
         """Check if this system is a CubeBox"""
         return "cubebox" in get_system_hostname()
+
     @classmethod
     def _is_x_server_running(cls):
         try:
             # Check if X or Xvfb processes are running
             x_process = subprocess.run(["pgrep", "-x", "X"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             xvfb_process = subprocess.run(["pgrep", "-x", "Xvfb"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            print(f"pgrep X returncode: {x_process.returncode}")
+            print(f"pgrep X output: {x_process.stdout.decode().strip()}")
+            print(f"pgrep Xvfb returncode: {xvfb_process.returncode}")
+            print(f"pgrep Xvfb output: {xvfb_process.stdout.decode().strip()}")
 
             if x_process.returncode == 0 or xvfb_process.returncode == 0:
                 return True
