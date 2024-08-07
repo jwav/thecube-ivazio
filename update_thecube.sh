@@ -143,10 +143,11 @@ handle_arguments() {
       # if debug
     elif [ "$arg" == "--debug" ]; then
       DEBUG=true
-      apply_debug
     fi
 
   done
+
+      apply_debug
 
   echo_blue "Arguments handled:"
     echo "SKIP_APT: $SKIP_APT"
