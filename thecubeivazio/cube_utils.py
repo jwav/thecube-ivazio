@@ -60,6 +60,8 @@ class XvfbManager:
     """static class handling the Xvfb virtual display in case we're running without X and some module needs it"""
     xvfb_process = None
     ENVIRON_DISPLAY = ":1"
+    SCREEN_ID_STR = "0"
+    SCREEN_RESOLUTION_STR = "1024x768x16"
 
     @classmethod
     def is_x_server_already_running(cls):
@@ -122,8 +124,13 @@ class XvfbManager:
         if cls.is_x_server_already_running() and not force_start:
             print("X server is already running. Not starting.")
             return
+        if cls.is_x_server_already_running() and force_start:
+            print("X server is already running. Forcing start of Xvfb.")
+            print("Stopping Xvfb...")
+            cls.terminate_xvfb()
+
         # Start Xvfb on display :1 with screen 0
-        xvfb_cmd = ['Xvfb', cls.ENVIRON_DISPLAY, '-screen', '0', '1024x768x16']
+        xvfb_cmd = ['Xvfb', cls.ENVIRON_DISPLAY, '-screen', cls.SCREEN_ID_STR, cls.SCREEN_RESOLUTION_STR]
         cls.xvfb_process = subprocess.Popen(xvfb_cmd)
         print(f"Started Xvfb on display {cls.ENVIRON_DISPLAY}")
         # Set the DISPLAY environment variable to use the virtual display
@@ -132,13 +139,21 @@ class XvfbManager:
         atexit.register(cls.terminate_xvfb)
 
     @classmethod
-    def terminate_xvfb(cls):
+    def terminate_xvfb(cls, wait_until_terminated=True):
         try:
+            print("Terminating Xvfb...")
             # Terminate the Xvfb process
-            cls.xvfb_process.terminate()
-            print("Terminated Xvfb")
-        except AttributeError:
-            print("Xvfb process not found")
+            if cls.xvfb_process:
+                cls.xvfb_process.terminate()
+                if wait_until_terminated:
+                    print("Waiting for Xvfb to terminate...")
+                    cls.xvfb_process.wait()  # Wait until the process terminates
+                cls.xvfb_process = None  # Clear the reference
+                print("Terminated Xvfb")
+            else:
+                print("Xvfb process not found")
+        except Exception as e:
+            print(f"An error occurred while terminating Xvfb: {e}")
 
 
 class CubeSimpleTimer:
