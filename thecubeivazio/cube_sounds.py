@@ -120,10 +120,8 @@ class CubeSoundPlayer:
         if not is_raspberry_pi():
             return True
         if not self._is_initialized:
-            self.log.warning("CubeSoundPlayer not initialized. Initializing...")
-            if not self.initialize():
-                self.log.error("Failed to initialize CubeSoundPlayer.")
-                return False
+            self.log.warning("CubeSoundPlayer not initialized!")
+            return False
 
         if not isinstance(volume_percent, (int, float)):
             self.log.warning(f"Invalid volume_percent: {volume_percent}. Using default volume.")
