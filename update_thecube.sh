@@ -149,6 +149,13 @@ handle_arguments() {
     fi
 
   done
+
+  echo_blue "Arguments handled:"
+    echo "SKIP_APT: $SKIP_APT"
+    echo "SKIP_PIP_REQ: $SKIP_PIP_REQ"
+    echo "SKIP_GIT: $SKIP_GIT"
+    echo "SKIP_PROJECT_PACKAGE: $SKIP_PROJECT_PACKAGE"
+    echo "DEBUG: $DEBUG"
 }
 
 do_git_pull() {
