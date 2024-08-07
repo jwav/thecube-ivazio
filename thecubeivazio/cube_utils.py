@@ -124,10 +124,7 @@ class XvfbManager:
         if cls.is_x_server_already_running() and not force_start:
             print("X server is already running. Not starting.")
             return
-        if cls.is_x_server_already_running() and force_start:
-            print("X server is already running. Forcing start of Xvfb.")
-            print("Stopping Xvfb...")
-            cls.terminate_xvfb()
+        cls.terminate_xvfb()
 
         # Start Xvfb on display :1 with screen 0
         xvfb_cmd = ['Xvfb', cls.ENVIRON_DISPLAY, '-screen', cls.SCREEN_ID_STR, cls.SCREEN_RESOLUTION_STR]
