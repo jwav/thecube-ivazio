@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 
 this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${this_script_dir}/thecube_common_defines.sh" || { echo "ERROR: Could not load thecube_common_defines.sh"; exit 1; }
+source "${this_script_dir}/thecube_common_defines.sh" || {
+  echo "ERROR: Could not load thecube_common_defines.sh"
+  exit 1
+}
 DEBUG=true
-
-
-
-
+SKIP_APT=false
+SKIP_PIP_REQ=false
+SKIP_GIT=false
+SKIP_PROJECT_PACKAGE=false
 
 generate_cubebox_scripts_from_cubemaster_scripts() {
   echo_blue "Generating cubeboxes scripts from the cubemaster scripts..."
@@ -109,35 +112,7 @@ setup_relevant_service() {
   fi
 }
 
-# ACTUAL SCRIPT LOGIC :
-
-# Run the script logic inside a subshell
-(
-  # if the hostname contains "cube", use this defined directory
-  if [[ "$CUBE_HOSTNAME" == *"cube"* ]]; then
-    THECUBE_DIR="${HOME}/thecube-ivazio"
-  else
-    THECUBE_DIR="/mnt/shared/thecube-ivazio"
-  fi
-  export THECUBE_DIR
-
-  # Get the directory of the script
-  # SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  SCRIPT_DIR="${THECUBE_DIR}"
-
-  cd "$SCRIPT_DIR" || exit 1
-  source "${SCRIPT_DIR}/venv/bin/activate"
-
-  cd "$SCRIPT_DIR" || exit 1
-  echo "Current working directory: $(pwd)"
-
-  # If debug, skip apt and pip
-  if [ "$DEBUG" = true ]; then
-    echo_blue "DEBUG: Skipping APT and pip updates"
-    SKIP_APT=true
-    SKIP_PIP_REQ=true
-  fi
-
+handle_arguments() {
   for arg in "$@"; do
     if [ "$arg" == "--full-update" ]; then
       SKIP_APT=false
@@ -150,20 +125,46 @@ setup_relevant_service() {
     elif [ "$arg" == "--skip-pip" ]; then
       SKIP_PIP_REQ=true
       echo_blue "Skipping pip install"
+    elif [ "$arg" == "--skip-git" ]; then
+      SKIP_GIT=true
+      echo_blue "Skipping git pull"
+    elif [ "$arg" == "--skip-project-package" ]; then
+      SKIP_PROJECT_PACKAGE=true
+      echo_blue "Skipping project package install"
+    # skip-all
+    elif [ "$arg" == "--skip-all" ]; then
+      SKIP_APT=true
+      SKIP_PIP_REQ=true
+      SKIP_GIT=true
+      SKIP_PROJECT_PACKAGE=true
+      echo_blue "Skipping all"
+      # if debug
+    elif [ "$arg" == "--debug" ]; then
+      DEBUG=true
+      echo_blue "Debug mode"
+      SKIP_APT=true
+      SKIP_PIP_REQ=true
     fi
+
   done
+}
 
-  echo_blue "Stashing local changes..."
-  git stash
-  echo_blue "Pulling git..."
-  git pull
-  if [ $? -ne 0 ]; then
-    echo_red "ERROR: git pull failed"
-    exit 1
-  else
-    echo_green "OK : git pull succeeded"
+do_git_pull() {
+  if [ "$SKIP_GIT" = false ]; then
+    echo_blue "Stashing local changes..."
+    git stash
+    echo_blue "Pulling git..."
+    git pull
+    if [ $? -ne 0 ]; then
+      echo_red "ERROR: git pull failed"
+      exit 1
+    else
+      echo_green "OK : git pull succeeded"
+    fi
   fi
+}
 
+do_apt_update() {
   if [ "$SKIP_APT" = false ]; then
     echo_blue "Updating APT and installing required packages.."
     bash ./install_required_apt_packages.sh
@@ -174,7 +175,9 @@ setup_relevant_service() {
       echo_green "OK : APT update and install succeeded"
     fi
   fi
+}
 
+do_pip_req() {
   if [ "$SKIP_PIP_REQ" = false ]; then
     echo_blue "pip install requirements..."
     pip install -r ./requirements.txt
@@ -185,7 +188,13 @@ setup_relevant_service() {
       echo_green "OK : pip install requirements succeeded"
     fi
   fi
+}
 
+install_project_package() {
+  if [ "$SKIP_PROJECT_PACKAGE" = true ]; then
+    echo_blue "Skipping project package install"
+    return
+  fi
   echo_blue "Installing the project package..."
   pip install .
   if [ $? -ne 0 ]; then
@@ -194,6 +203,26 @@ setup_relevant_service() {
   else
     echo_green "OK : project package install succeeded"
   fi
+}
+# ACTUAL SCRIPT LOGIC :
+
+# Run the script logic inside a subshell
+(
+
+  activate_thecube_venv
+
+  cd "$THECUBE_SCRIPT_DIR" || exit 1
+  echo "Current working directory: $(pwd)"
+
+  handle_arguments "$@"
+
+  do_git_pull
+
+  do_apt_update
+
+  do_pip_req
+
+  install_project_package
 
   generate_cubebox_scripts_from_cubemaster_scripts
 

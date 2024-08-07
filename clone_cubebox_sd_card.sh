@@ -44,7 +44,7 @@ echo_yellow() {
   echo -e "\033[33m$1\033[0m"
 }
 
-resize_partition(){
+resize_partition() {
   local partition="$1"
   local size="$2"
   local fs_size="$3"
@@ -57,10 +57,10 @@ resize_partition(){
   fi
 
   # check that the fs_size is smaller than the size
-    if [ "$fs_size" -gt "$size" ]; then
-      echo_red "ERROR: The new filesystem size is larger than the partition size."
-      return 1
-    fi
+  if [ "$fs_size" -gt "$size" ]; then
+    echo_red "ERROR: The new filesystem size is larger than the partition size."
+    return 1
+  fi
 
   # Unmount the partition
   echo_blue "Unmounting $partition..."
@@ -381,7 +381,6 @@ copy_device_with_dd() {
   # ensure all data written to the device
   sync
 
-
   # check that the source and dest folders are identical
   if ! check_copy_correct; then
     echo_red "ERROR: Copy verification failed"
@@ -391,47 +390,46 @@ copy_device_with_dd() {
 }
 
 resize_partition() {
-    local partition="$1"
-    local size="$2"
+  local partition="$1"
+  local size="$2"
 
-    echo_blue "Function: resize_partition, Arguments: partition=$partition, size=$size"
+  echo_blue "Function: resize_partition, Arguments: partition=$partition, size=$size"
 
-    if [ -z "$partition" ] || [ -z "$size" ]; then
-        echo "Usage: resize_partition <partition> <size>"
-        return 1
-    fi
+  if [ -z "$partition" ] || [ -z "$size" ]; then
+    echo "Usage: resize_partition <partition> <size>"
+    return 1
+  fi
 
-    # Unmount the partition
-    echo "Unmounting $partition..."
-    sudo umount "$partition"
+  # Unmount the partition
+  echo "Unmounting $partition..."
+  sudo umount "$partition"
 
-    # Check the filesystem
-    echo "Checking the filesystem on $partition..."
-    sudo e2fsck -f "$partition"
+  # Check the filesystem
+  echo "Checking the filesystem on $partition..."
+  sudo e2fsck -f "$partition"
 
-    # Resize the filesystem to the specified size
-    echo "Resizing the filesystem on $partition to $size..."
-    sudo resize2fs "$partition" "$size"
-    if [ $? -ne 0 ]; then
-        echo "Error resizing the filesystem."
-        return 1
-    fi
+  # Resize the filesystem to the specified size
+  echo "Resizing the filesystem on $partition to $size..."
+  sudo resize2fs "$partition" "$size"
+  if [ $? -ne 0 ]; then
+    echo "Error resizing the filesystem."
+    return 1
+  fi
 
-    # Resize the partition
-    echo "Resizing the partition $partition to $size..."
-    sudo parted "${partition%[0-9]*}" --script resizepart "${partition##*[!0-9]}" "$size"
-    if [ $? -ne 0 ]; then
-        echo "Error resizing the partition."
-        return 1
-    fi
+  # Resize the partition
+  echo "Resizing the partition $partition to $size..."
+  sudo parted "${partition%[0-9]*}" --script resizepart "${partition##*[!0-9]}" "$size"
+  if [ $? -ne 0 ]; then
+    echo "Error resizing the partition."
+    return 1
+  fi
 
-    echo "Partition resize completed."
-    return 0
+  echo "Partition resize completed."
+  return 0
 }
 
 # Example call to the function
 # resize_partition /dev/sda2 10GB
-
 
 # Function to force unmount all partitions of a device
 force_unmount_device() {
@@ -463,6 +461,7 @@ check_hostname() {
   if [ "$actual_hostname" != "$expected_hostname" ]; then
     echo_red "ERROR: Hostname mismatch! Expected: '$expected_hostname', but found: '$actual_hostname'"
     return 1
+  fi
   echo_green "The hostname on the target device is correct: '$actual_hostname' == '$expected_hostname'"
 
   # Check the last line of /etc/hosts
@@ -470,12 +469,11 @@ check_hostname() {
 
   # Verify the last line with a regular expression
   if echo "$last_line" | grep -qE "^127\.0\.1\.1[[:space:]]+$new_hostname$"; then
-      echo "The last line is correct: '$last_line'"
+    echo "The last line is correct: '$last_line'"
   else
-      echo "The last line is incorrect. : '$last_line' should be '127.0.1.1 $new_hostname'"
-      return 1
+    echo "The last line is incorrect. : '$last_line' should be '127.0.1.1 $new_hostname'"
+    return 1
   fi
-
 
   echo_green "hostname check OK"
   return 0
@@ -717,10 +715,9 @@ fast_copy_directory() {
 
   # wipe the destination's contents
   sudo rm -rf "$target_dir"/*
-#  sudo rsync -aHAX --info=progress2 "$source_dir/" "$target_dir/"
-#  sudo rsync -a --progress "$source_dir/" "$target_dir/"
-  sudo rsync -a --delete --log-file=rsync_log.txt "$source_dir" "$target_dir" > /dev/null 2>&1 | tee rsync_errors.txt
-
+  #  sudo rsync -aHAX --info=progress2 "$source_dir/" "$target_dir/"
+  #  sudo rsync -a --progress "$source_dir/" "$target_dir/"
+  sudo rsync -a --delete --log-file=rsync_log.txt "$source_dir" "$target_dir" >/dev/null 2>&1 | tee rsync_errors.txt
 
 }
 
@@ -763,44 +760,42 @@ fast_copy_device() {
 }
 
 compare_dirs_by_file_checksums() {
-    local src_dir=$1
-    local dst_dir=$2
+  local src_dir=$1
+  local dst_dir=$2
 
-    # Define checksum file paths
-    local script_dir=$(dirname "$0")
-    # Memorize current directory
-    local current_dir=$(pwd)
-    local checksums_dir="/tmp"
-    local src_checksum_file="$checksums_dir/src_checksums.txt"
-    local dst_checksum_file="$checksums_dir/dst_checksums.txt"
+  # Define checksum file paths
+  local script_dir=$(dirname "$0")
+  # Memorize current directory
+  local current_dir=$(pwd)
+  local checksums_dir="/tmp"
+  local src_checksum_file="$checksums_dir/src_checksums.txt"
+  local dst_checksum_file="$checksums_dir/dst_checksums.txt"
 
+  # Generate checksums for the source directory with relative paths
+  cd "$src_dir"
+  echo_blue "Building checksums for $src_dir..."
+  sudo find . -type f -exec sha256sum {} + | sort >"$src_checksum_file"
+  # Generate checksums for the destination directory with relative paths
+  cd "$dst_dir"
+  echo_blue "Building checksums for $dst_dir..."
+  sudo find . -type f -exec sha256sum {} + | sort >"$dst_checksum_file"
 
+  # Return to the original directory
+  cd "$current_dir"
 
-    # Generate checksums for the source directory with relative paths
-    cd "$src_dir"
-    echo_blue "Building checksums for $src_dir..."
-    sudo find . -type f -exec sha256sum {} + | sort > "$src_checksum_file"
-    # Generate checksums for the destination directory with relative paths
-    cd "$dst_dir"
-    echo_blue "Building checksums for $dst_dir..."
-    sudo find . -type f -exec sha256sum {} + | sort > "$dst_checksum_file"
+  # Compare the checksum files
+  diff "$src_checksum_file" "$dst_checksum_file"
 
-    # Return to the original directory
-    cd "$current_dir"
-
-    # Compare the checksum files
-    diff "$src_checksum_file" "$dst_checksum_file"
-
-    # Check for differences and print appropriate message
-    if [ $? -ne 0 ]; then
-        echo_red "ERROR: Differences found between $src_dir and $dst_dir."
-        return 1
-    fi
-    echo_green "$src_dir and $dst_dir are identical."
-    return 0
+  # Check for differences and print appropriate message
+  if [ $? -ne 0 ]; then
+    echo_red "ERROR: Differences found between $src_dir and $dst_dir."
+    return 1
+  fi
+  echo_green "$src_dir and $dst_dir are identical."
+  return 0
 }
 
-check_copy_correct(){
+check_copy_correct() {
   echo_blue "check_copy_correct"
   local source_bootfs=$SOURCE_BOOTFS
   local source_rootfs=$SOURCE_ROOTFS
@@ -821,7 +816,7 @@ check_copy_correct(){
 
   echo_green "Boot and root partition contents are identical."
   return 0
-  }
+}
 
 # Function to check if the contents of the source and destination are the same
 old_check_copy_correct() {
@@ -841,31 +836,31 @@ old_check_copy_correct() {
   fi
 
   # root partitions should be the same except for the file /etc/hostname, which should have the new hostname
-echo_blue "Checking root partition copy correctness..."
-    local diff_found=false
+  echo_blue "Checking root partition copy correctness..."
+  local diff_found=false
 
-    if [ "$STOP_CHECK_AT_FIRST_DIFF" = true ]; then
-        echo_yellow "Stopping at the first difference found."
+  if [ "$STOP_CHECK_AT_FIRST_DIFF" = true ]; then
+    echo_yellow "Stopping at the first difference found."
 
-        while read -r line; do
-            echo_red "Root partition contents differ: $line"
-            diff_found=true
-            break
-        done < <(diff -r "$source_rootfs" "$target_rootfs" --exclude=hostname 2>&1)
-    else
-        if ! diff -rq "$source_rootfs" "$target_rootfs" --exclude=hostname; then
-            echo_red "Root partition contents differ."
-            diff_found=true
-        fi
+    while read -r line; do
+      echo_red "Root partition contents differ: $line"
+      diff_found=true
+      break
+    done < <(diff -r "$source_rootfs" "$target_rootfs" --exclude=hostname 2>&1)
+  else
+    if ! diff -rq "$source_rootfs" "$target_rootfs" --exclude=hostname; then
+      echo_red "Root partition contents differ."
+      diff_found=true
     fi
+  fi
 
-    if [ "$diff_found" = true ]; then
-        return 1
-    fi
+  if [ "$diff_found" = true ]; then
+    return 1
+  fi
 
-    echo_green "No differences found."
-    echo_green "Copy verification completed successfully."
-    return 0
+  echo_green "No differences found."
+  echo_green "Copy verification completed successfully."
+  return 0
 }
 
 # Function to check and display contents of mounted directories
@@ -928,7 +923,6 @@ change_target_hostname() {
   # the command to do this is:
   sudo sed -i '$s/.*/127.0.1.1\tcubebox2/' /etc/hosts
 
-
   check_hostname "$target_mount" "$new_hostname"
 }
 
@@ -972,7 +966,7 @@ main_function() {
     echo_blue "Copying $SOURCE_SOURCE_DEVICE to $TARGET_DEVICE..."
     # Copy contents from source to target with progress
     fast_copy_device "$SOURCE_DEVICE" "$TARGET_DEVICE"
-    else
+  else
     echo_blue "Copying source bootfs..."
     fast_copy_directory "$SOURCE_BOOTFS" "$TARGET_BOOTFS"
     echo_blue "Copying source rootfs..."

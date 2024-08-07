@@ -19,7 +19,7 @@ sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev openss
   xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
   vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils \
   libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev libtiff-dev libgif-dev \
-  libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession rustc ibffi-dev libssl-dev \
+  libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession rustc ibffi-dev libssl-dev
 
 if [ -d "venv" ]; then
   echo "The venv folder exists."
