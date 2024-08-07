@@ -113,14 +113,14 @@ class CubeSoundPlayer:
         self.set_volume_percent(self.MAX_VOLUME_PERCENT)
 
     @cubetry
-    def set_volume_percent(self, volume_percent: Union[int, float]):
+    def set_volume_percent(self, volume_percent: Union[int, float]) -> bool:
         if not is_raspberry_pi():
-            return
+            return True
         if not self._is_initialized:
             self.log.warning("CubeSoundPlayer not initialized. Initializing...")
             if not self.initialize():
                 self.log.error("Failed to initialize CubeSoundPlayer.")
-                return
+                return False
 
         if not isinstance(volume_percent, (int, float)):
             self.log.warning(f"Invalid volume_percent: {volume_percent}. Using default volume.")
@@ -142,6 +142,8 @@ class CubeSoundPlayer:
             self.log.info(f"Volume set to {volume_level}% using pactl")
         except subprocess.CalledProcessError as e:
             self.log.error(f"Failed to set volume using pactl: {e}")
+
+        return True
 
     @cubetry
     def play_sound_file(self, soundfile: str):
