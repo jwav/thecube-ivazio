@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 #set -x
 
+# stop the service if it's running
+sudo systemctl stop thecubeivazio.cubebox.service
+
 echo "Launching CubeBox..."
 cd "${HOME}/thecube-ivazio/thecubeivazio" || {
   echo "Failed to change directory"
