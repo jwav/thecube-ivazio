@@ -10,9 +10,13 @@ echo "Activating virtual environment at ${SCRIPT_DIR}/venv/bin/activate"
 if [[ "$1" == "--full-reinstall" ]]; then
   echo "Full reinstall requested. Forcing reinstallation of all requirements without cache..."
   yes | pip install --no-cache-dir --force-reinstall -r ./requirements.txt
+  echo "pip install Raspberry Pi requirements..."
+  yes | pip install --no-cache-dir --force-reinstall -r ./pip_requirements_rpi.txt
 else
-  echo "pip install requirements..."
+  echo "pip install common requirements..."
   yes | pip install -r ./requirements.txt
+  echo "pip install Raspberry Pi requirements..."
+  yes | pip install -r ./pip_requirements_rpi.txt
 fi
 
 if [ $? -ne 0 ]; then

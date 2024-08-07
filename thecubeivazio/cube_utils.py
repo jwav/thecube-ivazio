@@ -62,12 +62,27 @@ class XvfbManager:
     ENVIRON_DISPLAY = ":1"
 
     @classmethod
-    def has_x_server(cls):
-        """Way simpler than the older method: we check the hostname.
-        If it contains "cubebox", then it has no display and we need Xvfb.
-        Else, it means we're either running the CubeMaster or CubeFrontdesk, who have a display."""
-        print(f"System hostname: {get_system_hostname()}")
-        return "cubebox" not in get_system_hostname()
+    def is_x_server_already_running(cls):
+        return cls._is_x_server_running()
+
+    @classmethod
+    def _is_this_system_a_cubebox(cls):
+        """Check if this system is a CubeBox"""
+        return "cubebox" in get_system_hostname()
+    @classmethod
+    def _is_x_server_running(cls):
+        try:
+            # Check if X or Xvfb processes are running
+            x_process = subprocess.run(["pgrep", "-x", "X"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            xvfb_process = subprocess.run(["pgrep", "-x", "Xvfb"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            if x_process.returncode == 0 or xvfb_process.returncode == 0:
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
     @classmethod
     def old_has_x_server(cls):
@@ -98,7 +113,7 @@ class XvfbManager:
 
     @classmethod
     def start_xvfb(cls, force_start=False):
-        if cls.has_x_server() and not force_start:
+        if cls.is_x_server_already_running() and not force_start:
             print("X server is already running. Not starting.")
             return
         # Start Xvfb on display :1 with screen 0

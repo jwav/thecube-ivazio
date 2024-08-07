@@ -21,7 +21,7 @@ if is_raspberry_pi():
     import evdev
 
     # pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
-    if not XvfbManager.has_x_server():
+    if not XvfbManager.is_x_server_already_running():
         XvfbManager.start_xvfb()
 
 from pynput import keyboard

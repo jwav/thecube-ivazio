@@ -12,7 +12,7 @@ from thecubeivazio.cube_common_defines import *
 from thecubeivazio.cube_utils import CubeSimpleTimer, XvfbManager
 
 # pynput requires an X server to run, so we start a virtual one with XVFB if it's not already running
-if not XvfbManager.has_x_server():
+if not XvfbManager.is_x_server_already_running():
     print("No X server found, starting XVFB...")
     XvfbManager.start_xvfb()
 else:

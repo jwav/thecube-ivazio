@@ -11,14 +11,14 @@ keyring  # ~=23.5.0
 future  # ~=0.18.2
 pygame  # ~=2.5.2
 cffi
-#evdev  # ~=1.7.1
 pyinstaller
 colorlog
-#PyQt5
-#RPi.GPIO
+
 Pillow
 pyserial
 flask
 watchdog
 adafruit-circuitpython-neopixel
 psutil
+colorlog
+# these modules are not cross-compatible. they have to be installed on the target machine
