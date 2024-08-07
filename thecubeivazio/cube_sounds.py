@@ -101,11 +101,14 @@ class CubeSoundPlayer:
 
     def wait_for_mixer_initialized(self, timeout_sec: float = 5.0) -> bool:
         """Wait for the pygame mixer to be initialized."""
+        self.log.info(f"Waiting for mixer to be initialized (timeout={timeout_sec} sec)...")
         end_time = time.time() + timeout_sec
         while time.time() < end_time:
             if self.check_mixer_initialized():
+                self.log.info("Mixer initialized")
                 return True
             time.sleep(0.1)
+        self.log.error("wait_for_mixer_initialized timed out")
         return False
 
     @cubetry
@@ -155,10 +158,9 @@ class CubeSoundPlayer:
     def _play_sound_file(self, soundfile: str, wait_for_finish: bool = True):
         try:
             if not self.is_initialized():
-                self.log.warning("CubeSoundPlayer not initialized. Initializing...")
-                if not self.initialize():
-                    self.log.error("Failed to initialize CubeSoundPlayer.")
-                    return
+                self.log.error("CubeSoundPlayer not initialized !")
+                raise Exception("CubeSoundPlayer not initialized !")
+
             if not os.path.exists(soundfile):
                 soundfile = os.path.join(SOUNDS_DIR, soundfile)
             if not os.path.exists(soundfile):
