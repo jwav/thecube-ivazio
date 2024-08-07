@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${this_script_dir}/thecube_common_defines.sh" || { echo "ERROR: Could not load thecube_common_defines.sh"; exit 1; }
+
 
 echo "Setting up Raspberry Pi system..."
 echo "telling the system to boot to the console and not X11"

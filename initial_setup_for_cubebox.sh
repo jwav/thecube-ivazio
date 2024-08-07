@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source ./thecube_common_defines.sh || { echo "ERROR: Could not load thecube_common_defines.sh"; exit 1; }
+this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${this_script_dir}/thecube_common_defines.sh" || { echo "ERROR: Could not load thecube_common_defines.sh"; exit 1; }
 
 # This script is meant to be run on a fresh Raspberry Pi OS installation
 # once the git clone has been done.
