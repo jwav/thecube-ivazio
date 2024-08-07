@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-echo "this_script_dir: $this_script_dir"
 source "${this_script_dir}/thecube_common_defines.sh" || {
+  echo "this_script_dir: $this_script_dir"
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
@@ -217,6 +217,12 @@ install_project_package() {
   echo "Current working directory: $(pwd)"
 
   handle_arguments "$@"
+
+  echo "SKIP_APT: $SKIP_APT"
+  echo "SKIP_PIP_REQ: $SKIP_PIP_REQ"
+  echo "SKIP_GIT: $SKIP_GIT"
+  echo "SKIP_PROJECT_PACKAGE: $SKIP_PROJECT_PACKAGE"
+  echo "DEBUG: $DEBUG"
 
   do_git_pull
 
