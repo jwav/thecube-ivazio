@@ -63,7 +63,7 @@ class CubeSoundPlayer:
                 success = False
                 break
             time.sleep(0.5)
-        self._is_initialized = success
+        self._is_initialized = self.wait_for_mixer_initialized(timeout_sec=init_timeout_sec)
         return success
 
 
