@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 
+#$locale_to_set = "en_US.UTF-8"
+$locale_to_set = "en_GB.UTF-8"
+
 current_locale=$(locale | grep LANG | cut -d= -f2)
-if ! grep -q "en_US.UTF-8" /etc/locale.gen; then
-  sudo locale-gen en_US.UTF-8
+if ! grep -q "$locale_to_set" /etc/locale.gen; then
+  sudo locale-gen "$locale_to_set"
 fi
 
 if [[ "$current_locale" != "en_US.UTF-8" ]]; then
-  echo "Setting locale to en_US.UTF-8"
-  sudo update-locale LANG=en_US.UTF-8
+  echo "Setting locale to $locale_to_set"
+  sudo update-locale LANG="$locale_to_set"
 fi
 
 sudo apt update
-sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev openssl \
   libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
   xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
   vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils \
   libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev libtiff-dev libgif-dev \
-  libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession
+  libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession rustc ibffi-dev libssl-dev \
 
 if [ -d "venv" ]; then
   echo "The venv folder exists."
