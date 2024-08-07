@@ -56,6 +56,7 @@ class CubeServerCubebox:
 
         # handles sound playing
         self.sound_player = cube_sounds.CubeSoundPlayer(init_timeout_sec=5)
+        self.sound_player.wait_for_mixer_initialized(timeout_sec=5)
         self.sound_player.set_volume_percent(self.config.cubebox_audio_volume_percent)
 
         # the neopixel ring light for the rfid reader
