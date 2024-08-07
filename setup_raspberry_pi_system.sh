@@ -7,6 +7,7 @@ source "${this_script_dir}/thecube_common_defines.sh" || { echo "ERROR: Could no
 echo "Setting up Raspberry Pi system..."
 echo "telling the system to boot to the console and not X11"
 sudo raspi-config nonint do_boot_behaviour B2
+
 echo "enable SPI"
 sudo raspi-config nonint do_spi 0
 
@@ -42,4 +43,7 @@ else
     exit 1
 fi
 
-echo "SPI setup completed successfully."
+echo_blue "SPI setup completed successfully."
+
+echo_blue "Setting up sound"
+bash ./setup_rpi_audio.sh

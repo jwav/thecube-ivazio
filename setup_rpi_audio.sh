@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${this_script_dir}/thecube_common_defines.sh" || { echo "ERROR: Could not load thecube_common_defines.sh"; exit 1; }
+
+# Set audio output to 3.5mm jack using ALSA
+amixer cset numid=3 1
+
+# Check if PulseAudio is running and set the default sink to 3.5mm jack
+if pgrep -x "pulseaudio" > /dev/null; then
+    pactl set-default-sink 0
+else
+    echo "PulseAudio is not running."
+fi
+
+# Verify the ALSA setting
+echo "ALSA audio output set to:"
+amixer cget numid=3
+
+# Verify the PulseAudio setting
+if pgrep -x "pulseaudio" > /dev/null; then
+    echo "PulseAudio default sink set to:"
+    pactl info | grep "Default Sink"
+else
+    echo "PulseAudio is not running, skipping PulseAudio check."
+fi
+
+# Test the audio output
+#echo "Testing audio output through 3.5mm jack..."
+#speaker-test -t wav -c 2

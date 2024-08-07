@@ -374,7 +374,7 @@ class CubeServerCubebox:
             self.perform_reset()
             return False
 
-        self.log.info(f"Badging in team with RFID {rfid_line.uid}...")
+        self.log.info(f"Checking before badging in team with RFID {rfid_line.uid}...")
         if not rfid_line.is_valid():
             self.log.error("Trying to badge in an invalid RFID line")
             self.sound_player.play_rfid_error_sound()
@@ -386,9 +386,8 @@ class CubeServerCubebox:
         # alright so it's a valid line. let's add it to our status
         self.status.last_valid_rfid_line = rfid_line
         # send the RFID read message to the CubeMaster
-        report = self.net.send_msg_to_cubemaster(
-            cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp),
-            require_ack=True)
+        msg_rr = cm.CubeMsgRfidRead(self.net.node_name, uid=rfid_line.uid, timestamp=rfid_line.timestamp)
+        report = self.net.send_msg_to_cubemaster(msg_rr, require_ack=True, nb_tries=3)
         if not report.sent_ok:
             self.log.error("Failed to send RFID read message to CubeMaster")
             self.sound_player.play_rfid_error_sound()
