@@ -105,7 +105,7 @@ class CubeSoundPlayer:
         end_time = time.time() + timeout_sec
         while time.time() < end_time:
             if self.check_mixer_initialized():
-                self.log.info("Mixer initialized")
+                self.log.success("Mixer initialized")
                 return True
             time.sleep(0.1)
         self.log.error("wait_for_mixer_initialized timed out")
