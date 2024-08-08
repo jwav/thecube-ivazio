@@ -206,11 +206,13 @@ install_project_package() {
 
   handle_arguments "$@" || exit 1
 
+  echo "DEBUG: $DEBUG"
   echo "SKIP_APT: $SKIP_APT"
   echo "SKIP_PIP_REQ: $SKIP_PIP_REQ"
   echo "SKIP_GIT: $SKIP_GIT"
   echo "SKIP_PROJECT_PACKAGE: $SKIP_PROJECT_PACKAGE"
-  echo "DEBUG: $DEBUG"
+  echo "SKIP_SERVICE_SETUP: $SKIP_SERVICE_SETUP"
+
 
   do_git_pull || exit 1
 
