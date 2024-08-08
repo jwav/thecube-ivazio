@@ -28,10 +28,12 @@ else
   echo "PulseAudio is not running, skipping PulseAudio check."
 fi
 
-sudo usermod -aG audio ivazio
+sudo usermod -aG audio,video ivazio
 
 # Stop PulseAudio and kill any running instances
 pulseaudio --kill
+systemctl --user stop pipewire
+systemctl --user stop pipewire-pulse
 
 # Remove old PulseAudio PID files
 rm -f ~/.config/pulse/*pid

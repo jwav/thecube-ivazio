@@ -75,9 +75,13 @@ class CubeSoundPlayer:
             if is_raspberry_pi():
                 os.environ['SDL_AUDIODRIVER'] = sdl_audiodriver
                 os.environ['AUDIODEV'] = 'hw:1,0'
-                # start pulseaudio if not running
+                # reset pulseaudio
+                subprocess.run(['pulseaudio', '--kill'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(['systemctl', '--user', 'stop', 'pipewire'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(['systemctl', '--user', 'stop', 'pipewire-pulse'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 subprocess.run(['pulseaudio', '--start'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                # start alsa if not running
+                # reset alsa
+                subprocess.run(['sudo', 'systemctl', 'stop', 'alsa-restore'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 subprocess.run(['sudo', 'systemctl', 'start', 'alsa-restore'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 subprocess.run(['sudo', 'systemctl', 'start', 'alsa-state'], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -252,13 +256,15 @@ def test_volume():
 
 
 def simple_sound_test():
-    import pygame.mixer as mixer
-
-    mixer.init()
-    mixer.music.load('/home/ivazio/thecube-ivazio/copy_finished.mp3')
-    mixer.music.play()
-    while mixer.music.get_busy():
-        pass
+    import pygame
+    pygame.init()
+    pygame.mixer.init()
+    print(pygame.mixer.get_init())
+    print(pygame.mixer.get_num_channels())
+    pygame.mixer.music.load("/path/to/your/soundfile.mp3")
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)
 
 
 if __name__ == "__main__":
