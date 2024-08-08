@@ -58,6 +58,7 @@ setup_relevant_service() {
 }
 
 chmodx_scripts(){
+  echo_blue "Making all .sh files in the current directory executable..."
   # all .sh files in the current directory
   for file in *.sh; do
     chmod +x "$file"
