@@ -24,6 +24,11 @@ TC_COLOR_NC='\033[0m' # No Color
 
 activate_thecube_venv() {
   source "${THECUBE_PROJECT_DIR}/venv/bin/activate"
+  if [ $? -ne 0 ]; then
+    echo_red "Failed to activate virtual environment"
+    return 1
+  fi
+  return a
 }
 
 # Functions for colored echo: red, green blue, yellow

@@ -13,3 +13,4 @@ if [ "$THECUBE_SKIP_UPDATE" = false ]; then
 fi
 
 bash ./launch_cubebox.sh
+
