@@ -14,7 +14,7 @@ fi
 THECUBE_SCRIPTS_DIR="$THECUBE_THECUBE_PROJECT_DIR"
 
 THECUBE_SRC_DIR="$THECUBE_PROJECT_DIR/thecubeivazio"
-echo "===== src dir: $THECUBE_SRC_DIR"
+#echo "===== src dir: $THECUBE_SRC_DIR"
 
 # Colors
 TC_COLOR_RED='\033[0;31m'
