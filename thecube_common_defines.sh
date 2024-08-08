@@ -28,7 +28,8 @@ activate_thecube_venv() {
     echo_red "Failed to activate virtual environment"
     return 1
   fi
-  return a
+  echo_green "Activated virtual environment"
+  return 0
 }
 
 # Functions for colored echo: red, green blue, yellow
