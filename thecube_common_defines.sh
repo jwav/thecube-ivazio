@@ -141,7 +141,7 @@ create_thecube_venv() {
   return 0
 }
 
-recreate_the_venv() {
+recreate_thecube_venv() {
   echo_blue "Deleting existing virtual environment at ${THECUBE_PROJECT_DIR}/venv..."
   rm -rf "${THECUBE_PROJECT_DIR}/venv"
   create_thecube_venv
