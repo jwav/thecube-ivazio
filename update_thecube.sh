@@ -10,6 +10,7 @@ SKIP_APT=false
 SKIP_PIP_REQ=false
 SKIP_GIT=false
 SKIP_PROJECT_PACKAGE=false
+SKIP_SERVICE_SETUP=false
 
 copy_relevant_scripts_to_home() {
    local scripts_to_copy=(
@@ -49,6 +50,10 @@ copy_relevant_scripts_to_home() {
 
 
 setup_relevant_service() {
+  if [ "$SKIP_SERVICE_SETUP" = true ]; then
+    echo_blue "Skipping service setup"
+    return 0
+  fi
   setup_thecube_service
   if [ $? -ne 0 ]; then
     echo_red "ERROR: setup_thecube_service failed"
@@ -101,10 +106,12 @@ handle_arguments() {
       SKIP_PIP_REQ=true
       SKIP_GIT=true
       SKIP_PROJECT_PACKAGE=true
+      SKIP_SERVICE_SETUP=true
       echo_blue "Skipping all"
       # if debug
     elif [ "$arg" == "--debug" ]; then
       DEBUG=true
+      apply_debug
     fi
 
   done
