@@ -8,16 +8,10 @@ source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/s
 THECUBE_SKIP_UPDATE=${THECUBE_SKIP_UPDATE:-false}
 export THECUBE_SKIP_UPDATE
 
-activate_thecube_venv || {
-  echo "Failed to activate virtual environment"
-  exit 1
-}
 
 if [ "$THECUBE_SKIP_UPDATE" = false ]; then
   update_thecube || exit 1
-  fi
+fi
 
-name=$(get_either_cubemaster_or_cubebox_str)
-echo_green "Launching $name..."
 launch_thecube || exit 1
 
