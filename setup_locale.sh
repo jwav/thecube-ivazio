@@ -8,18 +8,14 @@ source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/s
 # Global variable for locale
 LOCALE="en_US"
 
-# Check if locale is already generated
-if locale -a | grep -q "${LOCALE}.utf8"; then
-    echo_green "Locale ${LOCALE}.UTF-8 is already generated."
-else
-    echo_blue "Generating locale ${LOCALE}.UTF-8..."
+# Ensure only the desired locale is uncommented in /etc/locale.gen
+echo_blue "Configuring /etc/locale.gen to generate only ${LOCALE}.UTF-8..."
+sudo sed -i 's/^[^#].*/# &/' /etc/locale.gen  # Comment all locales
+sudo sed -i "/^#.* ${LOCALE}.UTF-8/s/^#//" /etc/locale.gen  # Uncomment the desired locale
 
-    # Uncomment the locale in /etc/locale.gen
-    sudo sed -i "/^#.* ${LOCALE}.UTF-8/s/^#//" /etc/locale.gen
-
-    # Generate the locale
-    sudo locale-gen
-fi
+# Generate the locale
+echo_blue "Generating locale ${LOCALE}.UTF-8..."
+sudo locale-gen
 
 # Set locale environment variables in /etc/default/locale
 echo_blue "Setting locale environment variables..."
@@ -44,12 +40,4 @@ fi
 if ! grep -q "export LANGUAGE=${LOCALE}:en" ~/.bashrc; then
     echo "export LANGUAGE=${LOCALE}:en" >> ~/.bashrc
 fi
-if ! grep -q "export LC_ALL=${LOCALE}.UTF-8" ~/.bashrc; then
-    echo "export LC_ALL=${LOCALE}.UTF-8" >> ~/.bashrc
-fi
-
-# Verify the locale settings
-echo_blue "Verifying locale settings..."
-locale
-
-echo_green "Locale setup completed. Please restart your terminal session or source /etc/default/locale to apply the changes system-wide."
+if ! grep -q "export LC
