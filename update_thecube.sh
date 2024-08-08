@@ -198,10 +198,10 @@ install_project_package() {
 
 # Run the script logic inside a subshell
 (
+  cd "$THECUBE_SCRIPT_DIR" || exit 1
 
   activate_thecube_venv || exit 1
 
-  cd "$THECUBE_SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
 
   handle_arguments "$@" || exit 1
