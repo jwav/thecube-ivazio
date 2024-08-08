@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${this_script_dir}/thecube_common_defines.sh" || {
-  echo "this_script_dir: $this_script_dir"
+source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/shared/thecube-ivazio/thecube_common_defines.sh" || {
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
@@ -14,33 +12,35 @@ SKIP_GIT=false
 SKIP_PROJECT_PACKAGE=false
 
 generate_cubebox_scripts_from_cubemaster_scripts() {
-  echo_blue "Generating cubeboxes scripts from the cubemaster scripts..."
-
-  # Define a function to replace cubemaster with cubebox in a file
-  replace_cubemaster_with_cubebox() {
-    local tmpfile=$(mktemp)
-    sed 's/cubemaster/cubebox/g' "$1" >"$tmpfile"
-    sed 's/CubeMaster/CubeBox/g' "$tmpfile" >"$2"
-    rm "$tmpfile"
-  }
-
-  # List of files to process
-  local files=(
-    "thecubeivazio.cubemaster.service"
-    "launch_cubemaster.sh"
-    "start_cubemaster_service.sh"
-    "setup_cubemaster_service.sh"
-    "check_cubemaster_status.sh"
-    "update_and_launch_cubemaster.sh"
-    "stop_cubemaster_service.sh"
-    "view_cubemaster_logs.sh"
-  )
-
-  # Loop through the files and create new files with the replacements
-  for file in "${files[@]}"; do
-    local new_file=$(echo "$file" | sed 's/cubemaster/cubebox/g')
-    replace_cubemaster_with_cubebox "$file" "$new_file"
-  done
+  echo_red "Function deprecated."
+  return 1
+#  echo_blue "Generating cubeboxes scripts from the cubemaster scripts..."
+#
+#  # Define a function to replace cubemaster with cubebox in a file
+#  replace_cubemaster_with_cubebox() {
+#    local temp_file=$(mktemp)
+#    sed 's/cubemaster/cubebox/g' "$1" >"$temp_file"
+#    sed 's/CubeMaster/CubeBox/g' "$temp_file" >"$2"
+#    rm "$temp_file"
+#  }
+#
+#  # List of files to process
+#  local files=(
+#    "thecubeivazio.cubemaster.service"
+#    "launch_cubemaster.sh"
+#    "start_cubemaster_service.sh"
+#    "setup_cubemaster_service.sh"
+#    "check_cubemaster_status.sh"
+#    "update_and_launch_cubemaster.sh"
+#    "stop_cubemaster_service.sh"
+#    "view_cubemaster_logs.sh"
+#  )
+#
+#  # Loop through the files and create new files with the replacements
+#  for file in "${files[@]}"; do
+#    local new_file=$(echo "$file" | sed 's/cubemaster/cubebox/g')
+#    replace_cubemaster_with_cubebox "$file" "$new_file"
+#  done
 }
 
 copy_relevant_scripts_to_home() {
@@ -49,6 +49,7 @@ copy_relevant_scripts_to_home() {
     "activate_venv.sh"
     "install_required_apt_packages.sh"
     "*update*.sh"
+    "*thecube*.sh"
     "configure_ssh_firewall.sh"
   )
 
@@ -66,32 +67,32 @@ copy_relevant_scripts_to_home() {
   }
 
   # Function to exclude scripts based on pattern
-  exclude_scripts() {
-    local pattern=$1
-    local temp_array=()
-    for script in "${filtered_scripts[@]}"; do
-      if [[ "$script" != "$pattern" ]]; then
-        temp_array+=("$script")
-      fi
-    done
-    filtered_scripts=("${temp_array[@]}")
-  }
+#  exclude_scripts() {
+#    local pattern=$1
+#    local temp_array=()
+#    for script in "${filtered_scripts[@]}"; do
+#      if [[ "$script" != "$pattern" ]]; then
+#        temp_array+=("$script")
+#      fi
+#    done
+#    filtered_scripts=("${temp_array[@]}")
+#  }
 
   # Add the general scripts
   for script in "${scripts_to_copy[@]}"; do
     add_scripts "$script"
   done
 
-  # Modify the list based on the hostname
-  if [[ "$CUBE_HOSTNAME" == "cubemaster" ]]; then
-    echo "Hostname is cubemaster. Adding cubemaster scripts and excluding cubebox scripts..."
-    add_scripts "*cubemaster*.sh"
-    exclude_scripts "*cubebox*.sh"
-  elif [[ "$CUBE_HOSTNAME" == *"cubebox"* ]]; then
-    echo "Hostname contains cubebox. Adding cubebox scripts and excluding cubemaster scripts..."
-    add_scripts "*cubebox*.sh"
-    exclude_scripts "*cubemaster*.sh"
-  fi
+#  # Modify the list based on the hostname
+#  if [[ "$CUBE_HOSTNAME" == "cubemaster" ]]; then
+#    echo "Hostname is cubemaster. Adding cubemaster scripts and excluding cubebox scripts..."
+#    add_scripts "*cubemaster*.sh"
+#    exclude_scripts "*cubebox*.sh"
+#  elif [[ "$CUBE_HOSTNAME" == *"cubebox"* ]]; then
+#    echo "Hostname contains cubebox. Adding cubebox scripts and excluding cubemaster scripts..."
+#    add_scripts "*cubebox*.sh"
+#    exclude_scripts "*cubemaster*.sh"
+#  fi
 
   # Copy and chmod+x the filtered scripts
   for script in "${filtered_scripts[@]}"; do
@@ -102,16 +103,7 @@ copy_relevant_scripts_to_home() {
 }
 
 setup_relevant_service() {
-  # Setup the service according to the hostname
-  if [[ "$CUBE_HOSTNAME" == "cubemaster" ]]; then
-    echo_blue "Setting up cubemaster service..."
-    bash ./setup_cubemaster_service.sh
-  elif [[ "$CUBE_HOSTNAME" == *"cubebox"* ]]; then
-    echo_blue "Setting up cubebox service..."
-    bash ./setup_cubebox_service.sh
-  else
-    echo_red "Hostname does not match cubemaster or cubebox patterns."
-  fi
+  setup_thecube_service
 }
 
 handle_arguments() {
@@ -243,7 +235,7 @@ install_project_package() {
 
   install_project_package
 
-  generate_cubebox_scripts_from_cubemaster_scripts
+#  generate_cubebox_scripts_from_cubemaster_scripts
 
   copy_relevant_scripts_to_home
 
