@@ -142,12 +142,13 @@ update_thecube(){
   launch_thecube(){
     # enter the venv first
     activate_thecube_venv
-    bash "$THECUBE_SRC_DIR/launch_thecube.sh"
+    script_fullpath="$THECUBE_SRC_DIR/cubeserver_$(get_either_cubemaster_or_cubebox_str).py"
+    python3 "$script_fullpath"
     if [ $? -ne 0 ]; then
-        echo_red "Failed to launch thecube"
+        echo_red "Failed to launch $script_fullpath"
         return 1
     fi
-    echo_green "Launched thecube"
+    echo_green "Launched $script_fullpath"
 }
 
 THECUBE_COMMON_DEFINES_LOADED=1
