@@ -17,6 +17,8 @@ THECUBE_SERVICE_NAME="$(get_thecube_service_name)"
 
 THECUBE_SRC_DIR="$THECUBE_PROJECT_DIR/thecubeivazio"
 
+THECUBE_SERVERTYPE_NAME="$(get_either_cubemaster_or_cubebox_str)"
+
 # Colors
 TC_COLOR_RED='\033[0;31m'
 TC_COLOR_GREEN='\033[0;32m'

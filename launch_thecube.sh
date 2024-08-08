@@ -5,22 +5,12 @@ source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/s
   exit 1
 }
 
-name=$(get_either_cubemaster_or_cubebox_str)
+echo_blue "Launching $THECUBE_SERVERTYPE_NAME..."
 
-# stop the service if it's running
-sudo systemctl stop "thecubeivazio.${name}.service"
+stop_thecube_service || exit 1
 
-echo "Launching $name..."
-cd "$THECUBE_PROJECT_DIR/thecubeivazio" || {
-  echo "Failed to change directory"
-  exit 1
-}
-activate_thecube_venv || {
-  echo "Failed to activate virtual environment"
-  exit 1
-}
-python3 "$THECUBE_PROJECT_DIR/cubeserver_${name}.py" || {
-  echo "Failed to start $name"
-  exit 1
-}
-echo "$name started."
+activate_thecube_venv || exit 1
+
+launch_thecube || exit 1
+
+echo "${THECUBE_SERVERTYPE_NAME} launched successfully"
