@@ -74,6 +74,8 @@ chmodx_scripts(){
 }
 
 handle_arguments() {
+  apply_debug
+
   for arg in "$@"; do
     if [ "$arg" == "--full-update" ]; then
       SKIP_APT=false
@@ -106,7 +108,6 @@ handle_arguments() {
 
   done
 
-  apply_debug
 
   echo_blue "Arguments handled."
 }
