@@ -70,7 +70,9 @@ get_either_cubemaster_or_cubebox_str() {
 }
 
 get_thecube_service_name() {
-  echo "thecubeivazio.$(get_either_cubemaster_or_cubebox_str).service"
+#  echo "thecubeivazio.$(get_either_cubemaster_or_cubebox_str).service"
+  echo "thecubeivazio.thecube.service"
+
 }
 
 setup_thecube_service() {
