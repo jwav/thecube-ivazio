@@ -12,41 +12,63 @@ SKIP_GIT=false
 SKIP_PROJECT_PACKAGE=false
 
 copy_relevant_scripts_to_home() {
-  # Initialize an array for scripts to copy
-  local scripts_to_copy=(
-    "activate_venv.sh"
-    "*thecube*.sh"
-    "configure_ssh_firewall.sh"
-  )
+   # Initialize an array for scripts to copy
+   local scripts_to_copy=(
+     "activate_venv.sh"
+     "*thecube*.sh"
+     "configure_ssh_firewall.sh"
+   )
 
-  # Function to add scripts based on pattern
-  add_scripts() {
-    local pattern=$1
-    for file in $pattern; do
-      if [[ -f "$file" ]]; then
-        filtered_scripts+=("$file")
-      fi
-    done
-  }
+   # Initialize an array for the filtered scripts
+   local filtered_scripts=()
 
-  # Add the general scripts
-  for script in "${scripts_to_copy[@]}"; do
-    add_scripts "$script"
-  done
+   # Function to add scripts based on pattern
+   add_scripts() {
+     local pattern=$1
+     for file in $pattern; do
+       if [[ -f $file ]]; then
+         filtered_scripts+=("$file")
+       fi
+     done
+   }
 
-  # set filetered_scripts to scripts_to_copy. we might filter later on
-  filtered_scripts=("${scripts_to_copy[@]}")
+   # Add the general scripts
+   for script in "${scripts_to_copy[@]}"; do
+     add_scripts $script
+   done
 
-  # Copy and chmod+x the filtered scripts
-  for script in "${filtered_scripts[@]}"; do
-    echo_blue "Copying $script to home directory and making it executable."
-    cp "$script" ~/
-    chmod +x ~/"$script"
-  done
-}
+   # Copy and chmod+x the filtered scripts
+   for script in "${filtered_scripts[@]}"; do
+     echo_blue "Copying $script to home directory and making it executable."
+     cp "$script" ~/
+     chmod +x ~/"$script"
+   done
+ }
+
 
 setup_relevant_service() {
   setup_thecube_service
+  if [ $? -ne 0 ]; then
+    echo_red "ERROR: setup_thecube_service failed"
+    return 1
+  else
+    echo_green "OK : setup_thecube_service succeeded"
+  fi
+  return 0
+}
+
+chmodx_scripts(){
+  # all .sh files in the current directory
+  for file in *.sh; do
+    chmod +x "$file"
+  done
+  if [ $? -ne 0 ]; then
+    echo_red "ERROR: chmod +x failed"
+    return 1
+  else
+    echo_green "OK : chmod +x succeeded"
+  fi
+  return 0
 }
 
 handle_arguments() {
@@ -172,7 +194,7 @@ install_project_package() {
   cd "$THECUBE_SCRIPT_DIR" || exit 1
   echo "Current working directory: $(pwd)"
 
-  handle_arguments "$@"
+  handle_arguments "$@" || exit 1
 
   echo "SKIP_APT: $SKIP_APT"
   echo "SKIP_PIP_REQ: $SKIP_PIP_REQ"
@@ -187,6 +209,8 @@ install_project_package() {
   do_pip_req || exit 1
 
   install_project_package || exit 1
+
+  chmodx_scripts || exit 1
 
   copy_relevant_scripts_to_home || exit 1
 
