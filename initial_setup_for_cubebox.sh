@@ -15,7 +15,7 @@ cd "$THECUBE_PROJECT_DIR" || exit 1
 # Save the start time
 start_time=$(date +%s)
 
-sudo bash ./setup_sudo_no_password.sh
+bash ./setup_sudo_no_password.sh
 bash ./install_all_apt_packages.sh
 bash ./install_required_apt_packages.sh
 bash ./setup_python.sh

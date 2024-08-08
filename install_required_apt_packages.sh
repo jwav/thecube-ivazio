@@ -15,7 +15,7 @@ packages=(
     python-is-python3 xvfb x11-utils
     libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev
     libtiff-dev libgif-dev libossp-uuid-dev chromium-browser
-    alsa-utils pcmanfm lxsession rustc ibffi-dev libssl-dev
+    alsa-utils pcmanfm lxsession rustc libssl-dev
 )
 
 # Check for missing packages

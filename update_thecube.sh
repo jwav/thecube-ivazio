@@ -15,7 +15,6 @@ SKIP_SERVICE_SETUP=false
 copy_relevant_scripts_to_home() {
    local scripts_to_copy=(
      "activate_venv.sh"
-     "check_thecube_status.sh"
      "configure_ssh_firewall.sh"
      "*thecube*.sh"
    )
@@ -43,8 +42,8 @@ copy_relevant_scripts_to_home() {
 
    for script in "${filtered_scripts[@]}"; do
      echo_blue "Copying $script to home directory and making it executable."
-     cp "$script" ~/
-     chmod +x ~/"$script"
+     cp "$script" "$THECUBE_USER_HOME"
+     chmod +x "$THECUBE_USER_HOME/$script"
    done
  }
 

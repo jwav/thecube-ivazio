@@ -14,6 +14,8 @@ fi
 THECUBE_SCRIPTS_DIR="$THECUBE_THECUBE_PROJECT_DIR"
 
 THECUBE_SRC_DIR="$THECUBE_PROJECT_DIR/thecubeivazio"
+THECUBE_VENV_DIR="$THECUBE_PROJECT_DIR/venv"
+
 #echo "===== src dir: $THECUBE_SRC_DIR"
 
 # Colors
@@ -117,9 +119,9 @@ start_thecube_service() {
 }
 
 activate_thecube_venv() {
-  source "${THECUBE_PROJECT_DIR}/venv/bin/activate"
+  source "${THECUBE_VENV_DIR}/bin/activate"
   if [ $? -ne 0 ]; then
-    echo_red "Failed to activate virtual environment in ${THECUBE_PROJECT_DIR}/venv"
+    echo_red "Failed to activate virtual environment in ${THECUBE_VENV_DIR}"
     return 1
   fi
   echo_green "Activated virtual environment"
@@ -128,16 +130,16 @@ activate_thecube_venv() {
 
 create_thecube_venv() {
   if [ -d "${THECUBE_PROJECT_DIR}/venv" ]; then
-    echo_yellow "Virtual environment already exists"
+    echo_yellow "Virtual environment already exists at ${THECUBE_VENV_DIR}"
     return 0
   fi
-  echo_blue "Creating virtual environment..."
-  python3 -m venv "${THECUBE_PROJECT_DIR}/venv"
+  echo_blue "Creating virtual environment at ${THECUBE_VENV_DIR}..."
+  python3 -m venv "${THECUBE_VENV_DIR}"
   if [ $? -ne 0 ]; then
-    echo_red "Failed to create virtual environment"
+    echo_red "Failed to create virtual environment at ${THECUBE_VENV_DIR}"
     return 1
   fi
-  echo_green "Created virtual environment"
+  echo_green "Created virtual environment at ${THECUBE_VENV_DIR}"
   return 0
 }
 
