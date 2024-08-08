@@ -15,8 +15,6 @@ copy_relevant_scripts_to_home() {
   # Initialize an array for scripts to copy
   local scripts_to_copy=(
     "activate_venv.sh"
-    "install_required_apt_packages.sh"
-    "*update*.sh"
     "*thecube*.sh"
     "configure_ssh_firewall.sh"
   )
