@@ -78,17 +78,19 @@ get_thecube_service_name() {
 }
 
 setup_thecube_service(){
+  echo_blue "Setting up $THECUBE_SERVICE_NAME ..."
   bash "$THECUBE_PROJECT_DIR/setup_thecube_service.sh"
   if [ $? -ne 0 ]; then
-    echo_red "Failed to setup thecube service"
+    echo_red "Failed to setup $THECUBE_SERVICE_NAME"
     return 1
   fi
-  echo_green "Setup thecube service"
+  echo_green "$THECUBE_SERVICE_NAME setup successfully"
   return 0
 }
 
 stop_thecube_service() {
   service_name="$(get_thecube_service_name)"
+  echo_blue "Stopping $service_name ..."
   sudo systemctl stop "$service_name"
   if [ $? -ne 0 ]; then
     echo_red "Failed to stop $service_name"
