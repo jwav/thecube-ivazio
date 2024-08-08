@@ -141,6 +141,12 @@ create_thecube_venv() {
   return 0
 }
 
+recreate_the_venv() {
+  echo_blue "Deleting existing virtual environment at ${THECUBE_PROJECT_DIR}/venv..."
+  rm -rf "${THECUBE_PROJECT_DIR}/venv"
+  create_thecube_venv
+}
+
 update_thecube() {
   bash "$THECUBE_PROJECT_DIR/update_thecube.sh"
   if [ $? -ne 0 ]; then
