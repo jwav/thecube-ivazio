@@ -15,6 +15,8 @@ THECUBE_SCRIPTS_DIR="$THECUBE_THECUBE_PROJECT_DIR"
 
 THECUBE_SERVICE_NAME="$(get_thecube_service_name)"
 
+THECUBE_SRC_DIR="$THECUBE_PROJECT_DIR/thecubeivazio"
+
 # Colors
 TC_COLOR_RED='\033[0;31m'
 TC_COLOR_GREEN='\033[0;32m'
@@ -133,7 +135,9 @@ update_thecube(){
   }
 
   launch_thecube(){
-    bash "$THECUBE_PROJECT_DIR/launch_thecube.sh"
+    # enter the venv first
+    activate_thecube_venv
+    bash "$THECUBE_SRC_DIR/launch_thecube.sh"
     if [ $? -ne 0 ]; then
         echo_red "Failed to launch thecube"
         return 1
