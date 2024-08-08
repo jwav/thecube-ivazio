@@ -1,11 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Get the directory of the script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/shared/thecube-ivazio/thecube_common_defines.sh" || {
+  echo "ERROR: Could not load thecube_common_defines.sh"
+  exit 1
+}
 
-cd "$SCRIPT_DIR" || exit 1
-source "${SCRIPT_DIR}/venv/bin/activate"
-echo "Activating virtual environment at ${SCRIPT_DIR}/venv/bin/activate"
+activate_thecube_venv
+
+pip install --upgrade pip
+pip install --upgrade setuptools
+pip install --upgrade wheel
+
 
 if [[ "$1" == "--full-reinstall" ]]; then
   echo "Full reinstall requested. Forcing reinstallation of all requirements without cache..."
@@ -21,11 +26,10 @@ fi
 
 if [ $? -ne 0 ]; then
   echo "ERROR: pip install requirements failed"
-  deactivate
   exit 1
-else
-  echo "OK : pip install requirements succeeded"
 fi
+
+echo "OK : pip install requirements succeeded"
 
 # reinstall the project package
 echo "Reinstalling the project package..."

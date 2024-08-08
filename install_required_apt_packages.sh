@@ -1,64 +1,44 @@
 #!/usr/bin/env bash
 
-this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${this_script_dir}/thecube_common_defines.sh" || {
-  echo "this_script_dir: $this_script_dir"
+source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/shared/thecube-ivazio/thecube_common_defines.sh" || {
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
 
-#$locale_to_set = "en_US.UTF-8"
-$locale_to_set = "en_GB.UTF-8"
+# List of packages
+packages=(
+    make build-essential libssl-dev zlib1g-dev libbz2-dev openssl
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev
+    libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev
+    python3-openssl git libgdbm-dev libnss3-dev
+    vim software-properties-common python3-pip python3-venv
+    python-is-python3 xvfb x11-utils
+    libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev
+    libtiff-dev libgif-dev libossp-uuid-dev chromium-browser
+    alsa-utils pcmanfm lxsession rustc ibffi-dev libssl-dev
+)
 
-current_locale=$(locale | grep LANG | cut -d= -f2)
-if ! grep -q "$locale_to_set" /etc/locale.gen; then
-  sudo locale-gen "$locale_to_set"
-fi
+# Check for missing packages
+missing_packages=()
+for pkg in "${packages[@]}"; do
+    if ! dpkg -l | grep -qw "$pkg"; then
+        missing_packages+=("$pkg")
+    fi
+done
 
-if [[ "$current_locale" != "en_US.UTF-8" ]]; then
-  echo "Setting locale to $locale_to_set"
-  sudo update-locale LANG="$locale_to_set"
-fi
-
-sudo apt update
-sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev openssl \
-  libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-  xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git libgdbm-dev libnss3-dev \
-  vim software-properties-common python3-pip python3-venv python-is-python3 xvfb x11-utils \
-  libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev libtiff-dev libgif-dev \
-  libossp-uuid-dev chromium-browser alsa-utils pcmanfm lxsession rustc ibffi-dev libssl-dev
-
-if [ -d "venv" ]; then
-  echo "The venv folder exists."
+# Install missing packages if any
+if [ ${#missing_packages[@]} -gt 0 ]; then
+    echo "The following packages are missing and will be installed:"
+    for pkg in "${missing_packages[@]}"; do
+        echo "- $pkg"
+    done
+    sudo apt update
+    sudo apt install -y "${missing_packages[@]}" || {
+        echo "ERROR: Failed to install missing packages."
+        exit 1
+    }
 else
-  echo "The venv folder does not exist. Creating."
-  python3 -m venv venv
-fi
-# enter the venv
-source myenv/bin/activate
-pip install --upgrade pip
-pip install --upgrade setuptools
-pip install --upgrade wheel
-pip install pip_search
-
-if command -v pyenv >/dev/null 2>&1; then
-  echo "pyenv is installed"
-else
-  echo "pyenv is not installed"
-  curl https://pyenv.run | bash
-  export PATH="$HOME/.pyenv/bin:$PATH"
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+    echo "All packages are already installed."
 fi
 
-if python3.9 --version &>/dev/null; then
-  echo "Python 3.9 is installed"
-else
-  echo "Python 3.9 is not installed"
-  pyenv install -v 3.9.19
-fi
-
-pyenv global 3.9.19
-
-#deactivate
+echo "All required APT packages have been installed successfully."

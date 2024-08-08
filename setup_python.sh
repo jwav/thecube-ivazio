@@ -21,7 +21,7 @@ else
 
   # Add pyenv to the shell startup file
   if ! grep -q 'pyenv' ~/.bashrc; then
-    echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >>~/.bashrc
+    echo 'export PATH="$THECUBE_USER_HOME/.pyenv/bin:$PATH"' >>~/.bashrc
     echo 'eval "$(pyenv init --path)"' >>~/.bashrc
     echo 'eval "$(pyenv init -)"' >>~/.bashrc
     echo 'eval "$(pyenv virtualenv-init -)"' >>~/.bashrc

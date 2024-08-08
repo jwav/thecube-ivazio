@@ -126,6 +126,21 @@ activate_thecube_venv() {
   return 0
 }
 
+create_thecube_venv() {
+  if [ -d "${THECUBE_PROJECT_DIR}/venv" ]; then
+    echo_yellow "Virtual environment already exists"
+    return 0
+  fi
+  echo_blue "Creating virtual environment..."
+  python3 -m venv "${THECUBE_PROJECT_DIR}/venv"
+  if [ $? -ne 0 ]; then
+    echo_red "Failed to create virtual environment"
+    return 1
+  fi
+  echo_green "Created virtual environment"
+  return 0
+}
+
 update_thecube() {
   bash "$THECUBE_PROJECT_DIR/update_thecube.sh"
   if [ $? -ne 0 ]; then

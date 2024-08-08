@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${this_script_dir}/thecube_common_defines.sh" || {
+source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/shared/thecube-ivazio/thecube_common_defines.sh" || {
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
+
+echo_blue "Setting up audio..."
 
 # Set audio output to 3.5mm jack using ALSA
 amixer cset numid=3 1
@@ -50,3 +51,5 @@ sudo alsactl restore
 # Test the audio output
 #echo "Testing audio output through 3.5mm jack..."
 #speaker-test -t wav -c 2
+
+echo_green "Audio setup complete."
