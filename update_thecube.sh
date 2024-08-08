@@ -11,38 +11,6 @@ SKIP_PIP_REQ=false
 SKIP_GIT=false
 SKIP_PROJECT_PACKAGE=false
 
-generate_cubebox_scripts_from_cubemaster_scripts() {
-  echo_red "Function deprecated."
-  return 1
-#  echo_blue "Generating cubeboxes scripts from the cubemaster scripts..."
-#
-#  # Define a function to replace cubemaster with cubebox in a file
-#  replace_cubemaster_with_cubebox() {
-#    local temp_file=$(mktemp)
-#    sed 's/cubemaster/cubebox/g' "$1" >"$temp_file"
-#    sed 's/CubeMaster/CubeBox/g' "$temp_file" >"$2"
-#    rm "$temp_file"
-#  }
-#
-#  # List of files to process
-#  local files=(
-#    "thecubeivazio.cubemaster.service"
-#    "launch_cubemaster.sh"
-#    "start_cubemaster_service.sh"
-#    "setup_cubemaster_service.sh"
-#    "check_cubemaster_status.sh"
-#    "update_and_launch_cubemaster.sh"
-#    "stop_cubemaster_service.sh"
-#    "view_cubemaster_logs.sh"
-#  )
-#
-#  # Loop through the files and create new files with the replacements
-#  for file in "${files[@]}"; do
-#    local new_file=$(echo "$file" | sed 's/cubemaster/cubebox/g')
-#    replace_cubemaster_with_cubebox "$file" "$new_file"
-#  done
-}
-
 copy_relevant_scripts_to_home() {
   # Initialize an array for scripts to copy
   local scripts_to_copy=(
@@ -52,9 +20,6 @@ copy_relevant_scripts_to_home() {
     "*thecube*.sh"
     "configure_ssh_firewall.sh"
   )
-
-  # Initialize an array for the filtered scripts
-  local filtered_scripts=()
 
   # Function to add scripts based on pattern
   add_scripts() {
@@ -66,33 +31,13 @@ copy_relevant_scripts_to_home() {
     done
   }
 
-  # Function to exclude scripts based on pattern
-#  exclude_scripts() {
-#    local pattern=$1
-#    local temp_array=()
-#    for script in "${filtered_scripts[@]}"; do
-#      if [[ "$script" != "$pattern" ]]; then
-#        temp_array+=("$script")
-#      fi
-#    done
-#    filtered_scripts=("${temp_array[@]}")
-#  }
-
   # Add the general scripts
   for script in "${scripts_to_copy[@]}"; do
     add_scripts "$script"
   done
 
-#  # Modify the list based on the hostname
-#  if [[ "$CUBE_HOSTNAME" == "cubemaster" ]]; then
-#    echo "Hostname is cubemaster. Adding cubemaster scripts and excluding cubebox scripts..."
-#    add_scripts "*cubemaster*.sh"
-#    exclude_scripts "*cubebox*.sh"
-#  elif [[ "$CUBE_HOSTNAME" == *"cubebox"* ]]; then
-#    echo "Hostname contains cubebox. Adding cubebox scripts and excluding cubemaster scripts..."
-#    add_scripts "*cubebox*.sh"
-#    exclude_scripts "*cubemaster*.sh"
-#  fi
+  # set filetered_scripts to scripts_to_copy. we might filter later on
+  filtered_scripts=("${scripts_to_copy[@]}")
 
   # Copy and chmod+x the filtered scripts
   for script in "${filtered_scripts[@]}"; do
@@ -139,66 +84,75 @@ handle_arguments() {
 
   done
 
-      apply_debug
+  apply_debug
 
   echo_blue "Arguments handled."
 }
 
 apply_debug() {
   if [ "$DEBUG" = true ]; then
-      echo_blue "Debug mode"
-      SKIP_APT=true
-      SKIP_PIP_REQ=true
-      SKIP_GIT=false
-      SKIP_PROJECT_PACKAGE=false
+    echo_blue "Debug mode"
+    SKIP_APT=true
+    SKIP_PIP_REQ=true
+    SKIP_GIT=false
+    SKIP_PROJECT_PACKAGE=false
   fi
 }
 
 do_git_pull() {
-  if [ "$SKIP_GIT" = false ]; then
-    echo_blue "Stashing local changes..."
-    git stash
-    echo_blue "Pulling git..."
-    git pull
-    if [ $? -ne 0 ]; then
-      echo_red "ERROR: git pull failed"
-      exit 1
-    else
-      echo_green "OK : git pull succeeded"
-    fi
+  if [ "$SKIP_GIT" = true ]; then
+    echo_blue "Skipping git pull"
+    return 0
   fi
+  echo_blue "Stashing local changes..."
+  git stash
+  echo_blue "Pulling git..."
+  git pull
+  if [ $? -ne 0 ]; then
+    echo_red "ERROR: git pull failed"
+    exit 1
+  else
+    echo_green "OK : git pull succeeded"
+  fi
+  return 0
 }
 
 do_apt_update() {
-  if [ "$SKIP_APT" = false ]; then
-    echo_blue "Updating APT and installing required packages.."
-    bash ./install_required_apt_packages.sh
-    if [ $? -ne 0 ]; then
-      echo_red "ERROR: APT update and install failed"
-      exit 1
-    else
-      echo_green "OK : APT update and install succeeded"
-    fi
+  if [ "$SKIP_APT" = true ]; then
+    echo_blue "Skipping APT update and install"
+    return 0
   fi
+  echo_blue "Updating APT and installing required packages.."
+  bash ./install_required_apt_packages.sh
+  if [ $? -ne 0 ]; then
+    echo_red "ERROR: APT update and install failed"
+    return 1
+  else
+    echo_green "OK : APT update and install succeeded"
+  fi
+  return 0
 }
 
 do_pip_req() {
-  if [ "$SKIP_PIP_REQ" = false ]; then
-    echo_blue "pip install requirements..."
-    pip install -r ./requirements.txt
-    if [ $? -ne 0 ]; then
-      echo_red "ERROR: pip install requirements failed"
-      exit 1
-    else
-      echo_green "OK : pip install requirements succeeded"
-    fi
+  if [ "$SKIP_PIP_REQ" = true ]; then
+    echo_blue "Skipping pip install requirements"
+    return 0
   fi
+  echo_blue "pip install requirements..."
+  pip install -r ./requirements.txt
+  if [ $? -ne 0 ]; then
+    echo_red "ERROR: pip install requirements failed"
+    return 1
+  else
+    echo_green "OK : pip install requirements succeeded"
+  fi
+  return 0
 }
 
 install_project_package() {
   if [ "$SKIP_PROJECT_PACKAGE" = true ]; then
     echo_blue "Skipping project package install"
-    return
+    return 0
   fi
   echo_blue "Installing the project package..."
   pip install .
@@ -208,6 +162,7 @@ install_project_package() {
   else
     echo_green "OK : project package install succeeded"
   fi
+  return 0
 }
 # ACTUAL SCRIPT LOGIC :
 
@@ -227,19 +182,17 @@ install_project_package() {
   echo "SKIP_PROJECT_PACKAGE: $SKIP_PROJECT_PACKAGE"
   echo "DEBUG: $DEBUG"
 
-  do_git_pull
+  do_git_pull || exit 1
 
-  do_apt_update
+  do_apt_update || exit 1
 
-  do_pip_req
+  do_pip_req || exit 1
 
-  install_project_package
+  install_project_package || exit 1
 
-#  generate_cubebox_scripts_from_cubemaster_scripts
+  copy_relevant_scripts_to_home || exit 1
 
-  copy_relevant_scripts_to_home
-
-  setup_relevant_service
+  setup_relevant_service || exit 1
 
   echo_green "Update OK and done."
 

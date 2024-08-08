@@ -21,7 +21,6 @@ done
 
 export THECUBE_SKIP_UPDATE
 
-
 stop_thecube_service
 
 start_thecube_service

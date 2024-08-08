@@ -13,11 +13,8 @@ else
 fi
 THECUBE_SCRIPTS_DIR="$THECUBE_THECUBE_PROJECT_DIR"
 
-
-
 THECUBE_SRC_DIR="$THECUBE_PROJECT_DIR/thecubeivazio"
 echo "===== src dir: $THECUBE_SRC_DIR"
-
 
 # Colors
 TC_COLOR_RED='\033[0;31m'
@@ -42,7 +39,6 @@ echo_blue() {
 echo_yellow() {
   echo -e "${TC_COLOR_YELLOW}$1${TC_COLOR_NC}"
 }
-
 
 # returns true if the hostname contains "cubebox"
 is_cubebox() {
@@ -77,7 +73,7 @@ get_thecube_service_name() {
   echo "thecubeivazio.$(get_either_cubemaster_or_cubebox_str).service"
 }
 
-setup_thecube_service(){
+setup_thecube_service() {
   service_name="$(get_thecube_service_name)"
   echo_blue "Setting up $service_name ..."
   bash "$THECUBE_PROJECT_DIR/setup_thecube_service.sh"
@@ -128,27 +124,27 @@ activate_thecube_venv() {
   return 0
 }
 
-update_thecube(){
-    bash "$THECUBE_PROJECT_DIR/update_thecube.sh"
-    if [ $? -ne 0 ]; then
-        echo_red "Failed to update thecube"
-        return 1
-    fi
-    echo_green "Updated thecube"
-    return 0
+update_thecube() {
+  bash "$THECUBE_PROJECT_DIR/update_thecube.sh"
+  if [ $? -ne 0 ]; then
+    echo_red "Failed to update thecube"
+    return 1
+  fi
+  echo_green "Updated thecube"
+  return 0
 
-  }
+}
 
-  launch_thecube(){
-    # enter the venv first
-    activate_thecube_venv
-    script_fullpath="$THECUBE_SRC_DIR/cubeserver_$(get_either_cubemaster_or_cubebox_str).py"
-    python3 "$script_fullpath"
-    if [ $? -ne 0 ]; then
-        echo_red "Failed to launch $script_fullpath"
-        return 1
-    fi
-    echo_green "Launched $script_fullpath"
+launch_thecube() {
+  # enter the venv first
+  activate_thecube_venv
+  script_fullpath="$THECUBE_SRC_DIR/cubeserver_$(get_either_cubemaster_or_cubebox_str).py"
+  python3 "$script_fullpath"
+  if [ $? -ne 0 ]; then
+    echo_red "Failed to launch $script_fullpath"
+    return 1
+  fi
+  echo_green "Launched $script_fullpath"
 }
 
 THECUBE_COMMON_DEFINES_LOADED=1

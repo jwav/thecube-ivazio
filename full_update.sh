@@ -5,7 +5,6 @@ source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/s
   exit 1
 }
 
-
 # Stop the services
 stop_thecube_service
 

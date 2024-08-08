@@ -251,6 +251,17 @@ def test_volume():
     player.play_sound_file_matching("rfid_ok")
 
 
+def simple_sound_test():
+    import pygame.mixer as mixer
+
+    mixer.init()
+    mixer.music.load('your_sound_file.wav')
+    mixer.music.play()
+    while mixer.music.get_busy():
+        pass
+
+
 if __name__ == "__main__":
-    test_sounds()
+    simple_sound_test()
+    # test_sounds()
     # test_volume()
