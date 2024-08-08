@@ -255,7 +255,7 @@ def simple_sound_test():
     import pygame.mixer as mixer
 
     mixer.init()
-    mixer.music.load('your_sound_file.wav')
+    mixer.music.load('/home/ivazio/thecube-ivazio/copy_finished.mp3')
     mixer.music.play()
     while mixer.music.get_busy():
         pass
