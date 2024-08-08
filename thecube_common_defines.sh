@@ -13,11 +13,10 @@ else
 fi
 THECUBE_SCRIPTS_DIR="$THECUBE_THECUBE_PROJECT_DIR"
 
-THECUBE_SERVICE_NAME="$(get_thecube_service_name)"
+
 
 THECUBE_SRC_DIR="$THECUBE_PROJECT_DIR/thecubeivazio"
 
-THECUBE_SERVERTYPE_NAME="$(get_either_cubemaster_or_cubebox_str)"
 
 # Colors
 TC_COLOR_RED='\033[0;31m'
@@ -78,13 +77,14 @@ get_thecube_service_name() {
 }
 
 setup_thecube_service(){
-  echo_blue "Setting up $THECUBE_SERVICE_NAME ..."
+  service_name="$(get_thecube_service_name)"
+  echo_blue "Setting up $service_name ..."
   bash "$THECUBE_PROJECT_DIR/setup_thecube_service.sh"
   if [ $? -ne 0 ]; then
-    echo_red "Failed to setup $THECUBE_SERVICE_NAME"
+    echo_red "Failed to setup $service_name"
     return 1
   fi
-  echo_green "$THECUBE_SERVICE_NAME setup successfully"
+  echo_green "$service_name setup successfully"
   return 0
 }
 
@@ -156,3 +156,7 @@ export THECUBE_PROJECT_DIR
 export THECUBE_SCRIPTS_DIR
 export CUBE_HOSTNAME
 
+#THECUBE_SERVICE_NAME="$(get_thecube_service_name)"
+#export THECUBE_SERVICE_NAME
+#THECUBE_SERVERTYPE_NAME="$(get_either_cubemaster_or_cubebox_str)"
+#export THECUBE_SERVERTYPE_NAME
