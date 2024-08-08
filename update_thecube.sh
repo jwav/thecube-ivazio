@@ -12,17 +12,14 @@ SKIP_GIT=false
 SKIP_PROJECT_PACKAGE=false
 
 copy_relevant_scripts_to_home() {
-   # Initialize an array for scripts to copy
    local scripts_to_copy=(
      "activate_venv.sh"
-     "*thecube*.sh"
+     "check_thecube_status.sh"
      "configure_ssh_firewall.sh"
    )
 
-   # Initialize an array for the filtered scripts
    local filtered_scripts=()
 
-   # Function to add scripts based on pattern
    add_scripts() {
      local pattern=$1
      for file in $pattern; do
@@ -32,12 +29,16 @@ copy_relevant_scripts_to_home() {
      done
    }
 
-   # Add the general scripts
    for script in "${scripts_to_copy[@]}"; do
-     add_scripts $script
+     if [[ $script == *"*"* ]]; then
+       add_scripts "$script"
+     else
+       if [[ -f $script ]]; then
+         filtered_scripts+=("$script")
+       fi
+     fi
    done
 
-   # Copy and chmod+x the filtered scripts
    for script in "${filtered_scripts[@]}"; do
      echo_blue "Copying $script to home directory and making it executable."
      cp "$script" ~/
