@@ -16,6 +16,7 @@ copy_relevant_scripts_to_home() {
      "activate_venv.sh"
      "check_thecube_status.sh"
      "configure_ssh_firewall.sh"
+     "*thecube*.sh"
    )
 
    local filtered_scripts=()
