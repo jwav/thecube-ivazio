@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
-this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${this_script_dir}/thecube_common_defines.sh" || {
-  echo "this_script_dir: $this_script_dir"
+if [ -d "/home/ivazio/thecube-ivazio" ]; then
+  scripts_dir="/home/ivazio/thecube-ivazio"
+else
+  scripts_dir="/mnt/shared/thecube-ivazio"
+fi
+echo "scripts_dir is set to: $scripts_dir"
+source "${scripts_dir}/thecube_common_defines.sh" || {
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
