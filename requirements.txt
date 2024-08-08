@@ -19,7 +19,7 @@ Pillow
 pyserial
 flask
 watchdog
-adafruit-circuitpython-neopixel
+
 psutil
 colorlog
 # these modules are not cross-compatible. they have to be installed on the target machine

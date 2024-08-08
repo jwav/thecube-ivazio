@@ -1,3 +1,5 @@
 evdev  # ~=1.7.1
-RPi.GPIO
-board
+#RPi.GPIO
+#board
+adafruit-circuitpython-neopixel
+adafruit-blinka

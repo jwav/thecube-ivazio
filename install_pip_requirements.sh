@@ -18,9 +18,9 @@ if [[ "$1" == "--full-reinstall" ]]; then
   echo "pip install Raspberry Pi requirements..."
   yes | pip install --no-cache-dir --force-reinstall -r ./pip_requirements_rpi.txt
 else
-  echo "pip install common requirements..."
+  echo_blue "pip install common requirements..."
   yes | pip install -r ./requirements.txt
-  echo "pip install Raspberry Pi requirements..."
+  echo_blue "pip install Raspberry Pi requirements..."
   yes | pip install -r ./pip_requirements_rpi.txt
 fi
 

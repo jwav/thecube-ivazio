@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 
-this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${this_script_dir}/thecube_common_defines.sh" || {
+source "/home/ivazio/thecube-ivazio/thecube_common_defines.sh" || source "/mnt/shared/thecube-ivazio/thecube_common_defines.sh" || {
   echo "ERROR: Could not load thecube_common_defines.sh"
   exit 1
 }
 
-echo "Setting up Raspberry Pi system..."
-echo "telling the system to boot to the console and not X11"
+echo_blue "Setting up Raspberry Pi system..."
+echo_blue "telling the system to boot to the console and not X11"
 sudo raspi-config nonint do_boot_behaviour B2
 
-echo "enable SPI"
+echo_blue "enable SPI"
 sudo raspi-config nonint do_spi 0
 
 # Function to check if a module is already loaded at boot

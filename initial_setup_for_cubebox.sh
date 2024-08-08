@@ -15,17 +15,18 @@ cd "$THECUBE_PROJECT_DIR" || exit 1
 # Save the start time
 start_time=$(date +%s)
 
-bash ./setup_sudo_no_password.sh
-bash ./install_all_apt_packages.sh
-bash ./install_required_apt_packages.sh
-bash ./setup_python.sh
-bash ./install_pip_requirements.sh --full-reinstall
-bash ./install_libffi7.sh
-bash ./setup_rpi_audio.sh
-bash ./update_thecube.sh
-bash ./setup_raspberry_pi_system.sh
-create_thecube_venv
-bash ./update_thecube.sh --full-update
+bash ./setup_sudo_no_password.sh || exit 1
+bash ./setup_locale.sh || exit 1
+bash ./install_all_apt_packages.sh || exit 1
+bash ./install_required_apt_packages.sh || exit 1
+bash ./setup_python.sh || exit 1
+create_thecube_venv || exit 1
+bash ./install_libffi7.sh || exit 1
+bash ./install_pip_requirements.sh --full-reinstall || exit 1
+bash ./update_thecube.sh --full-update || exit 1
+bash ./setup_raspberry_pi_system.sh || exit 1
+bash ./setup_rpi_audio.sh || exit 1
+
 
 # Save the end time
 end_time=$(date +%s)

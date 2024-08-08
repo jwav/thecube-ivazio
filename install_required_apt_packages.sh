@@ -16,6 +16,7 @@ packages=(
     libgraphicsmagick++-dev libwebp-dev libjpeg-dev libpng-dev
     libtiff-dev libgif-dev libossp-uuid-dev chromium-browser
     alsa-utils pcmanfm lxsession rustc libssl-dev
+    libssl1.1
 )
 
 # Check for missing packages
