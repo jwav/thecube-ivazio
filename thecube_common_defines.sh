@@ -119,7 +119,7 @@ start_thecube_service() {
 activate_thecube_venv() {
   source "${THECUBE_PROJECT_DIR}/venv/bin/activate"
   if [ $? -ne 0 ]; then
-    echo_red "Failed to activate virtual environment"
+    echo_red "Failed to activate virtual environment in ${THECUBE_PROJECT_DIR}/venv"
     return 1
   fi
   echo_green "Activated virtual environment"
