@@ -171,6 +171,9 @@ class CubeServerCubebox:
         elif cmd == "rfid" and arg1 is not None:
             self.simulate_rfid_read(arg1)
             return True
+        elif cmd == "test_sound":
+            self.sound_player.play_startup_sound()
+            return True
         else:
             self.log.error(f"Unknown command: {cmd}")
             return False
